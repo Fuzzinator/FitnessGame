@@ -13,6 +13,7 @@ public class SongInfoReader : MonoBehaviour
     public SongInfo songInfo;
 
     public float NoteSpeed => songInfo.NoteJumpMovementSpeed;
+    public float BeatsPerMinute => songInfo.BeatsPerMinute;
     
     private void Awake()
     {

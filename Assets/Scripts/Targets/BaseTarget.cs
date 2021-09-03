@@ -36,7 +36,6 @@ public class BaseTarget : MonoBehaviour, IPoolable
         if (IsValidDirection(other, out var impactDotProduct, out var dirDotProduct))
         {
             
-            var magnitude = other.rigidbody.velocity.magnitude;
             _successfulHitEvent?.Invoke(new HitInfo(impactDotProduct,  dirDotProduct, hand, other));
         }
     }

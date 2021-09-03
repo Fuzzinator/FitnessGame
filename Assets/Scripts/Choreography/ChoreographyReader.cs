@@ -49,6 +49,8 @@ public class ChoreographyReader : MonoBehaviour
             var sequenceables = GetChoreographSequenceables();
             sequenceables.Sort((sequenceable0, sequenceable1) => sequenceable0.Time.CompareTo(sequenceable1.Time));
             UpdateFormation(sequenceables);
+            json = string.Empty;
+            _choreography = new Choreography();
         }
 
         return _formations;
@@ -68,10 +70,10 @@ public class ChoreographyReader : MonoBehaviour
             sequenceables.Add(Obstacles[i]);
         }
 
-        for (int i = 0; i < Events.Length; i++)
+        /*for (int i = 0; i < Events.Length; i++)//Need to process Events differently. TODO: Figure this out
         {
             sequenceables.Add(Events[i]);
-        }
+        }*/
 
         return sequenceables;
     }
@@ -110,7 +112,7 @@ public class ChoreographyReader : MonoBehaviour
                 }
             }
 
-            if (Mathf.Abs(lastTime - sequenceable.Time) < .01f)
+            if (Mathf.Abs(lastTime - sequenceable.Time) < .01f) //if lastTime == sequenceable.Time but for floats
             {
                 if (sequenceable is ChoreographyNote note && thisTimeNote == null)
                 {
@@ -142,6 +144,44 @@ public class ChoreographyReader : MonoBehaviour
                             default:
                                 continue;
                         }
+                    }
+
+                    if (note.CutDir == ChoreographyNote.CutDirection.Uppercut ||
+                        note.CutDir == ChoreographyNote.CutDirection.UppercutLeft ||
+                        note.CutDir == ChoreographyNote.CutDirection.UppercutRight)
+                    {
+                        if (note.LineLayer == ChoreographyNote.LineLayerType.Low)
+                        {
+                            note.SetToBasicJab();
+                        }
+
+                        /*var randomValue = Random.Range(-1, 1);//We'll Test this later
+                        if (randomValue < 0)
+                        {
+                            note.SetToBasicJab();
+                        }*/
+                    }
+
+                    switch (note.HitSideType)
+                    {
+                        case HitSideType.Block:
+                            note.SetLineIndex(1);
+                            break;
+                        case HitSideType.Left:
+                            if (note.LineIndex > 1 ||
+                                (note.CutDir == ChoreographyNote.CutDirection.Jab && note.LineIndex != 1))
+                            {
+                                note.SetLineIndex(1);
+                            }
+
+                            break;
+                        case HitSideType.Right:
+                            if (note.LineIndex < 2 ||
+                                (note.CutDir == ChoreographyNote.CutDirection.Jab && note.LineIndex != 2))
+                        {
+                            note.SetLineIndex(2);
+                        }
+                            break;
                     }
 
                     thisTimeNote = note;

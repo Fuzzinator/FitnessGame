@@ -32,6 +32,27 @@ public struct ChoreographyNote : ISequenceable
         High = 2
     }
 
+    public void SetToBasicJab()
+    {
+        SetCutDirection(CutDirection.Jab);
+        SetLineLayer(LineLayerType.Middle);
+        SetLineIndex(_type == HitSideType.Left || _type == HitSideType.Block? 1:2);
+    }
+
+    public void SetCutDirection(CutDirection direction)
+    {
+        _cutDirection = direction;
+    }
+
+    public void SetLineLayer(LineLayerType layerType)
+    {
+        _lineLayer = layerType;
+    }
+
+    public void SetLineIndex(int index)
+    {
+        _lineIndex = index;
+    }
 
     public enum CutDirection
     {
@@ -41,8 +62,8 @@ public struct ChoreographyNote : ISequenceable
         HookRight = 3,//Only allowed on NoteType.Left
         UppercutLeft = 4,//Only allowed on NoteType.Right {Experimental}
         UppercutRight = 5,//Only allowed on NoteType.Left {Experimental}
-        HookLeftDown = 6,//Will be treated as HookLeft(2) {Only exists for BeatSaber map support}
-        HookRightDown = 7,//Will be treated as HookRight(3) {Only exists for BeatSaber map support}
+        HookLeftDown = 6,//Will be treated as Jab(8) {Only exists for BeatSaber map support}
+        HookRightDown = 7,//Will be treated as Jab(8) {Only exists for BeatSaber map support}
         Jab = 8
     }
 }

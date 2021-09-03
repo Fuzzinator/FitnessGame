@@ -93,13 +93,6 @@ public class ChoreographySequencer : MonoBehaviour
         _sequence = DOTween.Sequence();
 
         var formationSequence = CreateSequence(formations[0], 1);
-
-        //_sequence.Insert(formations[0].Time, formationSequence);
-        /*foreach (var formation in formations)
-        {
-            var tween = CreateSequence(formation);
-            _sequence.Insert(formation.Time, tween);
-        }*/
     }
 
     private Sequence CreateSequence(ChoreographyFormation formation, int nextFormationIndex)
@@ -126,7 +119,9 @@ public class ChoreographySequencer : MonoBehaviour
         );
 
         var sequence = DOTween.Sequence();
-        var delay = Mathf.Max(0, formation.Time - Time.time);
+        var beatsTime = SongInfoReader.Instance.BeatsPerMinute / 60;
+        var delay = Mathf.Max(0,
+            (formation.Time / beatsTime) - Time.time - _meterDistance / SongInfoReader.Instance.NoteSpeed);
 
         sequence.Insert(delay, tween);
 
@@ -150,7 +145,6 @@ public class ChoreographySequencer : MonoBehaviour
         //{
         if (formation.HasObstacle)
         {
-            
         }
 
         if (formation.HasNote)
@@ -176,9 +170,9 @@ public class ChoreographySequencer : MonoBehaviour
         ChoreographyNote.CutDirection.Jab => _jabPool.GetNewPoolable(),
         ChoreographyNote.CutDirection.JabDown => _jabPool.GetNewPoolable(),
         ChoreographyNote.CutDirection.HookLeft => _leftHookPool.GetNewPoolable(),
-        ChoreographyNote.CutDirection.HookLeftDown => _leftHookPool.GetNewPoolable(),
+        ChoreographyNote.CutDirection.HookLeftDown => _jabPool.GetNewPoolable(),
         ChoreographyNote.CutDirection.HookRight => _rightHookPool.GetNewPoolable(),
-        ChoreographyNote.CutDirection.HookRightDown => _rightHookPool.GetNewPoolable(),
+        ChoreographyNote.CutDirection.HookRightDown => _jabPool.GetNewPoolable(),
         ChoreographyNote.CutDirection.Uppercut => _uppercutPool.GetNewPoolable(),
         ChoreographyNote.CutDirection.UppercutLeft => _uppercutPool.GetNewPoolable(),
         ChoreographyNote.CutDirection.UppercutRight => _uppercutPool.GetNewPoolable(),

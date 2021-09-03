@@ -39,9 +39,14 @@ public class ScoringManager : MonoBehaviour
 
     private void Start()
     {
-        CurrentScore = 0;
+        ResetScore();
     }
 
+    public void ResetScore()
+    {
+        CurrentScore = 0;
+    }
+    
     public void AddToScore(int valueToAdd)
     {
         CurrentScore += valueToAdd;
