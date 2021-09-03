@@ -75,6 +75,13 @@ public class ChoreographySequencer : MonoBehaviour
         }
     }
 
+    public void TempStart()
+    {
+        TryGetComponent(out AudioSource source);
+        InitializeSequence();
+        source.Play();
+    }
+
     public void InitializeSequence()
     {
         if (ChoreographyReader.Instance == null)

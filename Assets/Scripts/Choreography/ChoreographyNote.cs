@@ -11,6 +11,7 @@ public struct ChoreographyNote : ISequenceable
     public LineLayerType LineLayer => _lineLayer;
     public HitSideType Type => _type;
     public CutDirection CutDir => _cutDirection;
+    public HitSideType HitSideType => _type;
 
     [SerializeField]
     private float _time;
@@ -22,8 +23,16 @@ public struct ChoreographyNote : ISequenceable
     private HitSideType _type;
     [SerializeField]
     private CutDirection _cutDirection;
-
-    public HitSideType HitSideType => _type;
+    
+    public ChoreographyNote(float time, int lineIndex, LineLayerType lineLayer, HitSideType hitSide,
+        CutDirection cutDirection)
+    {
+        _time = time;
+        _lineIndex = lineIndex;
+        _lineLayer = lineLayer;
+        _type = hitSide;
+        _cutDirection = cutDirection;
+    }
 
     public enum LineLayerType
     {
@@ -66,6 +75,8 @@ public struct ChoreographyNote : ISequenceable
         HookRightDown = 7,//Will be treated as Jab(8) {Only exists for BeatSaber map support}
         Jab = 8
     }
+
+    
 }
 
 

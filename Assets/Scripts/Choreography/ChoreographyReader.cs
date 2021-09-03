@@ -173,14 +173,23 @@ public class ChoreographyReader : MonoBehaviour
                             {
                                 note.SetLineIndex(1);
                             }
+                            else if (note.CutDir == ChoreographyNote.CutDirection.HookLeft)
+                            {
+                                note.SetToBasicJab();
+                            }
 
                             break;
                         case HitSideType.Right:
                             if (note.LineIndex < 2 ||
                                 (note.CutDir == ChoreographyNote.CutDirection.Jab && note.LineIndex != 2))
-                        {
-                            note.SetLineIndex(2);
-                        }
+                            {
+                                note.SetLineIndex(2);
+                            }
+                            else if (note.CutDir == ChoreographyNote.CutDirection.HookRight)
+                            {
+                                note.SetToBasicJab();
+                            }
+
                             break;
                     }
 
