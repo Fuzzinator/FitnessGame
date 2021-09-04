@@ -157,6 +157,7 @@ public class ChoreographySequencer : MonoBehaviour
         if (formation.HasNote)
         {
             var target = GetTarget(formation.Note.CutDir);
+            target.SetUpTarget(formation.Note.Type);
             target.transform.SetParent(formationHolder.transform);
             target.transform.position = (GetTargetParent(formation.Note)).position;
             target.gameObject.SetActive(true);

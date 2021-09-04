@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class BaseTarget : MonoBehaviour, IPoolable
+public class BaseTarget : MonoBehaviour, IPoolable//, IColorable
 {
     [SerializeField]
     private HitSideType _noteType;
@@ -17,6 +17,9 @@ public class BaseTarget : MonoBehaviour, IPoolable
     
     [SerializeField]
     private UnityEvent<HitInfo> _successfulHitEvent;
+    
+    [SerializeField]
+    private UnityEvent<HitSideType> _targetCreated = new UnityEvent<HitSideType>();
 
     [SerializeField]
     private Vector3 _optimalHitDirection;
@@ -76,6 +79,12 @@ public class BaseTarget : MonoBehaviour, IPoolable
         var collisionDirection = Vector3.Normalize(other.contacts[0].point - transform.position);
         dirDotProd = Vector3.Dot(collisionDirection, _optimalHitDirection);
         return impactDotProd>_minMaxAllowance.x && dirDotProd > _minMaxAllowance.x;
+    }
+
+    public void SetUpTarget(HitSideType hitSideType)
+    {
+        _noteType = hitSideType;
+        _targetCreated?.Invoke(_noteType);
     }
 
     private float GetHitSpeed(Hand hand)
