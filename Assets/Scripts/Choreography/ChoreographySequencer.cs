@@ -71,7 +71,7 @@ public class ChoreographySequencer : MonoBehaviour
         if (test)
         {
             test = false;
-            InitializeSequence();
+            TempStart();
         }
     }
 
