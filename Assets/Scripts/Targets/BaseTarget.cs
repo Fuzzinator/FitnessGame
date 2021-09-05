@@ -36,7 +36,7 @@ public class BaseTarget : MonoBehaviour, IPoolable//, IColorable
 
         _collidedEvent?.Invoke(other);
         
-        if (IsValidDirection(other, out var impactDotProduct, out var dirDotProduct))
+        if (IsValidDirection(other, hand, out var impactDotProduct, out var dirDotProduct))
         {
             FakeLogger.Log("Is valid hit.");
             _successfulHitEvent?.Invoke(new HitInfo(impactDotProduct,  dirDotProduct, hand, other));
@@ -74,16 +74,16 @@ public class BaseTarget : MonoBehaviour, IPoolable//, IColorable
         return false;
     }
 
-    private bool IsValidDirection(Collision other, out float impactDotProd, out float dirDotProd)
+    private bool IsValidDirection(Collision other, Hand hand, out float impactDotProd, out float dirDotProd)
     {
-        var handDirection = Vector3.Normalize(other.rigidbody.velocity);
-        FakeLogger.Log("HandDirection: " + handDirection.ToString());
+        var handDirection = Vector3.Normalize(hand.MovementDirection);
+        FakeLogger.Log("HandDirection: " + handDirection);
         impactDotProd = Vector3.Dot(-handDirection, _optimalHitDirection);
-        FakeLogger.Log("Impact Dot Product: " + impactDotProd.ToString());
+        FakeLogger.Log("Impact Dot Product: " + impactDotProd);
         var collisionDirection = Vector3.Normalize(other.contacts[0].point - transform.position);
-        FakeLogger.Log("CollisionDirection: "+collisionDirection.ToString());
+        FakeLogger.Log("CollisionDirection: "+collisionDirection);
         dirDotProd = Vector3.Dot(collisionDirection, _optimalHitDirection);
-        FakeLogger.Log("Direction Dot Product: "+dirDotProd.ToString());
+        FakeLogger.Log("Direction Dot Product: "+dirDotProd);
         return impactDotProd>_minMaxAllowance.x && dirDotProd > _minMaxAllowance.x;
     }
 
