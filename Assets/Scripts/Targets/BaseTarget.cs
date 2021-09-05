@@ -38,7 +38,7 @@ public class BaseTarget : MonoBehaviour, IPoolable//, IColorable
         
         if (IsValidDirection(other, out var impactDotProduct, out var dirDotProduct))
         {
-            
+            FakeLogger.Log("Is valid hit.");
             _successfulHitEvent?.Invoke(new HitInfo(impactDotProduct,  dirDotProduct, hand, other));
         }
     }
@@ -59,7 +59,9 @@ public class BaseTarget : MonoBehaviour, IPoolable//, IColorable
     {
         if (col.gameObject.layer == LayerMask.NameToLayer("Hand"))
         {
-            var hasHand = col.TryGetComponent(out hand);
+            //var hasHand = col.TryGetComponent(out hand);
+            hand = col.GetComponentInParent<Hand>();
+            var hasHand = hand != null;
             if (_noteType == HitSideType.Block)
             {
                 return true;
@@ -75,9 +77,13 @@ public class BaseTarget : MonoBehaviour, IPoolable//, IColorable
     private bool IsValidDirection(Collision other, out float impactDotProd, out float dirDotProd)
     {
         var handDirection = Vector3.Normalize(other.rigidbody.velocity);
+        FakeLogger.Log("HandDirection: " + handDirection.ToString());
         impactDotProd = Vector3.Dot(-handDirection, _optimalHitDirection);
+        FakeLogger.Log("Impact Dot Product: " + impactDotProd.ToString());
         var collisionDirection = Vector3.Normalize(other.contacts[0].point - transform.position);
+        FakeLogger.Log("CollisionDirection: "+collisionDirection.ToString());
         dirDotProd = Vector3.Dot(collisionDirection, _optimalHitDirection);
+        FakeLogger.Log("Direction Dot Product: "+dirDotProd.ToString());
         return impactDotProd>_minMaxAllowance.x && dirDotProd > _minMaxAllowance.x;
     }
 

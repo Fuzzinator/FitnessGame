@@ -14,4 +14,13 @@ public class HitHaptics : MonoBehaviour, IValidHit
         
         info.HitHand.SendHapticPulse(amplitude, _effectLength);
     }
+
+    public void CollisionHaptics(Collision col)
+    {
+        var hasHand = col.rigidbody.TryGetComponent(out Hand hand);
+        if (hasHand)
+        {
+            hand.SendHapticPulse(1, 1);
+        }
+    }
 }
