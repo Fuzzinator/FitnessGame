@@ -11,7 +11,7 @@ public class Hand : MonoBehaviour
 
     public HitSideType AssignedHand => _assignedHand;
 
-    public Vector3 MovementDirection => Vector3.Normalize(_previousPosition - transform.position);
+    public Vector3 MovementDirection => Vector3.Normalize(transform.position - _previousPosition);
     private Vector3 _previousPosition;
 
     private List<InputDevice> _devices = new List<InputDevice>();
@@ -25,8 +25,8 @@ public class Hand : MonoBehaviour
     {
         var filter = InputDeviceCharacteristics.Controller | InputDeviceCharacteristics.TrackedDevice |
                      (_assignedHand == HitSideType.Left
-                         ? InputDeviceCharacteristics.Left
-                         : InputDeviceCharacteristics.Right);
+                          ? InputDeviceCharacteristics.Left
+                          : InputDeviceCharacteristics.Right);
         InputDevices.GetDevicesWithCharacteristics(filter, _devices);
     }
 
