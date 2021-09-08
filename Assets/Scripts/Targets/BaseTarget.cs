@@ -79,7 +79,7 @@ public class BaseTarget : MonoBehaviour, IPoolable
         impactDotProd = Vector3.Dot(-handDirection, _optimalHitDirection);
         var collisionDirection = Vector3.Normalize(other.contacts[0].point - transform.position);
         dirDotProd = Vector3.Dot(collisionDirection, _optimalHitDirection);
-        return impactDotProd>_minMaxAllowance.x && dirDotProd > _minMaxAllowance.x;
+        return impactDotProd>_minMaxAllowance.x;// && dirDotProd > _minMaxAllowance.x;
     }
 
     public void SetUpTarget(HitSideType hitSideType)
