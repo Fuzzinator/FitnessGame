@@ -18,6 +18,8 @@ GameObject:
   - component: {fileID: -4992076642799770043}
   - component: {fileID: 1972825640803934643}
   - component: {fileID: 7808860882321832570}
+  - component: {fileID: 3329512613624926614}
+  - component: {fileID: -309534086680282040}
   m_Layer: 8
   m_Name: Base Target
   m_TagString: Untagged
@@ -34,7 +36,7 @@ Transform:
   m_GameObject: {fileID: 7070346352395033538}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.15, y: 1.15, z: 1.15}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -2514,6 +2516,21 @@ MonoBehaviour:
   _collidedEvent:
     m_PersistentCalls:
       m_Calls: []
+  _missedHitEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3329512613624926614}
+        m_TargetAssemblyTypeName: UpdateHitStreak, Assembly-CSharp
+        m_MethodName: TriggerMissEffect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   _successfulHitEvent:
     m_PersistentCalls:
       m_Calls:
@@ -2543,6 +2560,30 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 1972825640803934643}
         m_TargetAssemblyTypeName: AddToScore, Assembly-CSharp
+        m_MethodName: TriggerHitEffect
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 3329512613624926614}
+        m_TargetAssemblyTypeName: UpdateHitStreak, Assembly-CSharp
+        m_MethodName: TriggerHitEffect
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: -309534086680282040}
+        m_TargetAssemblyTypeName: HitSpawnEffect, Assembly-CSharp
         m_MethodName: TriggerHitEffect
         m_Mode: 0
         m_Arguments:
@@ -2624,3 +2665,30 @@ MonoBehaviour:
   _targetRenderer: {fileID: 4683659880547737927}
   _isTarget: 1
   _isController: 0
+--- !u!114 &3329512613624926614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7070346352395033538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27a278f4adbf90b47b433ded88cda39a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-309534086680282040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7070346352395033538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e1b67eaefb5b1b45b290ffc8efd67a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _hitVFX: {fileID: 5676336534310626216, guid: ff63c74efb6e74440b2b720ea9336086, type: 3}
+  _thisRenderer: {fileID: 4683659880547737927}
+  _test: 1

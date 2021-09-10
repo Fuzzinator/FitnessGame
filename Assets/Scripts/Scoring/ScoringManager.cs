@@ -21,6 +21,7 @@ public class ScoringManager : MonoBehaviour
         }
     }
 
+    [SerializeField]
     private int _currentScore;
     
     public UnityEvent<int> currentScoreUpdated = new UnityEvent<int>();

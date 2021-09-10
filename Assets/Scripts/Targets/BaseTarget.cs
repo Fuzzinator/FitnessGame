@@ -16,6 +16,9 @@ public class BaseTarget : MonoBehaviour, IPoolable
     private UnityEvent<Collision> _collidedEvent;
     
     [SerializeField]
+    private UnityEvent _missedHitEvent = new UnityEvent();
+    
+    [SerializeField]
     private UnityEvent<HitInfo> _successfulHitEvent;
     
     [SerializeField]
@@ -27,10 +30,13 @@ public class BaseTarget : MonoBehaviour, IPoolable
     [SerializeField]
     private Vector2 _minMaxAllowance;
 
+    private bool _wasHit = false;
+
     protected void OnCollisionEnter(Collision other)
     {
         if (!IsHit(other.collider, out var hand))
         {
+            _wasHit = false;
             return;
         }
 
@@ -38,6 +44,7 @@ public class BaseTarget : MonoBehaviour, IPoolable
         
         if (IsValidDirection(other, hand, out var impactDotProduct, out var dirDotProduct))
         {
+            _wasHit = true;
             _successfulHitEvent?.Invoke(new HitInfo(impactDotProduct,  dirDotProduct, hand, other));
         }
     }
@@ -48,6 +55,10 @@ public class BaseTarget : MonoBehaviour, IPoolable
 
     public void ReturnToPool()
     {
+        if (!_wasHit)
+        {
+            _missedHitEvent?.Invoke();
+        }
         gameObject.SetActive(false);
         transform.SetParent(MyPoolManager.poolParent);
         ActiveTargetManager.Instance.RemoveActiveTarget(this);
@@ -75,22 +86,22 @@ public class BaseTarget : MonoBehaviour, IPoolable
 
     private bool IsValidDirection(Collision other, Hand hand, out float impactDotProd, out float dirDotProd)
     {
-        var handDirection = Vector3.Normalize(hand.MovementDirection);
+        var handDirection = Vector3.Normalize(transform.InverseTransformDirection(hand.MovementDirection));
         impactDotProd = Vector3.Dot(-handDirection, _optimalHitDirection);
         var collisionDirection = Vector3.Normalize(other.contacts[0].point - transform.position);
         dirDotProd = Vector3.Dot(collisionDirection, _optimalHitDirection);
+        if (impactDotProd <= _minMaxAllowance.x)
+        {
+            FakeLogger.Log("Hand Dir:"+handDirection);
+            FakeLogger.Log("Impact Prod: " +impactDotProd);
+        }
         return impactDotProd>_minMaxAllowance.x;// && dirDotProd > _minMaxAllowance.x;
     }
 
     public void SetUpTarget(HitSideType hitSideType)
     {
         _noteType = hitSideType;
+        _wasHit = false;
         _targetCreated?.Invoke(_noteType);
-    }
-
-    private float GetHitSpeed(Hand hand)
-    {
-        
-        return 0;
     }
 }
