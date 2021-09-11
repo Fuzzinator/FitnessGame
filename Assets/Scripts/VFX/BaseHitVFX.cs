@@ -49,5 +49,4 @@ public class BaseHitVFX : MonoBehaviour, IPoolable
         transform.SetParent(MyPoolManager.poolParent);
         MyPoolManager.ReturnToPool(this);
     }
-
 }

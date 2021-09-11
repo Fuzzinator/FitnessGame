@@ -2,17 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BaseObstacle : MonoBehaviour
+public class BaseObstacle : MonoBehaviour, IPoolable
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    
+    public PoolManager MyPoolManager { get; set; }
 
-    // Update is called once per frame
-    void Update()
+    public bool IsPooled { get; set; }
+    
+    public void ReturnToPool()
     {
-        
+        gameObject.SetActive(false);
+        transform.SetParent(MyPoolManager.poolParent);
+        MyPoolManager.ReturnToPool(this);
     }
 }
