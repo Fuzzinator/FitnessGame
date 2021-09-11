@@ -7,32 +7,35 @@ using UnityEngine.Events;
 public class BaseTarget : MonoBehaviour, IPoolable
 {
     [SerializeField]
-    private HitSideType _noteType;
+    protected HitSideType _noteType;
 
     [SerializeField]
-    private ChoreographyNote.CutDirection _cutDirection;
+    protected ChoreographyNote.CutDirection _cutDirection;
 
     [SerializeField]
-    private UnityEvent<Collision> _collidedEvent;
+    protected UnityEvent<Collision> _collidedEvent;
     
     [SerializeField]
-    private UnityEvent _missedHitEvent = new UnityEvent();
+    protected UnityEvent _missedHitEvent = new UnityEvent();
     
     [SerializeField]
-    private UnityEvent<HitInfo> _successfulHitEvent;
+    protected UnityEvent<HitInfo> _successfulHitEvent;
     
     [SerializeField]
-    private UnityEvent<HitSideType> _targetCreated = new UnityEvent<HitSideType>();
+    protected UnityEvent<HitSideType> _targetCreated = new UnityEvent<HitSideType>();
 
     [SerializeField]
-    private Vector3 _optimalHitDirection;
+    protected Vector3 _optimalHitDirection;
 
     [SerializeField]
-    private Vector2 _minMaxAllowance;
+    protected Vector2 _minMaxAllowance;
 
-    private bool _wasHit = false;
+    protected bool _wasHit = false;
 
-    protected void OnCollisionEnter(Collision other)
+    public PoolManager MyPoolManager { get; set; }
+
+    public bool IsPooled { get; set; }
+    protected virtual void OnCollisionEnter(Collision other)
     {
         if (!IsHit(other.collider, out var hand))
         {
@@ -49,9 +52,6 @@ public class BaseTarget : MonoBehaviour, IPoolable
         }
     }
 
-    public PoolManager MyPoolManager { get; set; }
-
-    public bool IsPooled { get; set; }
 
     public void ReturnToPool()
     {
@@ -65,7 +65,7 @@ public class BaseTarget : MonoBehaviour, IPoolable
         MyPoolManager.ReturnToPool(this);
     }
 
-    private bool IsHit(Collider col, out Hand hand)
+    protected bool IsHit(Collider col, out Hand hand)
     {
         if (col.gameObject.layer == LayerMask.NameToLayer("Hand"))
         {
@@ -84,7 +84,7 @@ public class BaseTarget : MonoBehaviour, IPoolable
         return false;
     }
 
-    private bool IsValidDirection(Collision other, Hand hand, out float impactDotProd, out float dirDotProd)
+    protected bool IsValidDirection(Collision other, Hand hand, out float impactDotProd, out float dirDotProd)
     {
         var handDirection = Vector3.Normalize(transform.InverseTransformDirection(hand.MovementDirection));
         impactDotProd = Vector3.Dot(-handDirection, _optimalHitDirection);
@@ -98,7 +98,7 @@ public class BaseTarget : MonoBehaviour, IPoolable
         return impactDotProd>_minMaxAllowance.x;// && dirDotProd > _minMaxAllowance.x;
     }
 
-    public void SetUpTarget(HitSideType hitSideType)
+    public virtual void SetUpTarget(HitSideType hitSideType)
     {
         _noteType = hitSideType;
         _wasHit = false;

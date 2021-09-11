@@ -30,6 +30,11 @@ public class ChoreographySequencer : MonoBehaviour
     private BaseTarget _uppercutTarget;
 
     private PoolManager _uppercutPool;
+    
+    [SerializeField]
+    private BlockTarget _baseBlockTarget;
+
+    private PoolManager _baseBlockPool;
 
     [SerializeField]
     private Transform _formationStart;
@@ -61,6 +66,7 @@ public class ChoreographySequencer : MonoBehaviour
         _leftHookPool = new PoolManager(_leftHookTarget, thisTransform);
         _rightHookPool = new PoolManager(_rightHookTarget, thisTransform);
         _uppercutPool = new PoolManager(_uppercutTarget, thisTransform);
+        _baseBlockPool = new PoolManager(_baseBlockTarget, thisTransform);
 
         _meterDistance = Vector3.Distance(_formationStart.position, _formationEnd.position);
     }
@@ -156,7 +162,7 @@ public class ChoreographySequencer : MonoBehaviour
 
         if (formation.HasNote)
         {
-            var target = GetTarget(formation.Note.CutDir);
+            var target = GetTarget(formation.Note);
             target.SetUpTarget(formation.Note.Type);
             target.transform.SetParent(formationHolder.transform);
             target.transform.position = (GetTargetParent(formation.Note)).position;
@@ -173,7 +179,19 @@ public class ChoreographySequencer : MonoBehaviour
         //}
     }
 
-    private BaseTarget GetTarget(ChoreographyNote.CutDirection cutDirection) => cutDirection switch
+    protected BaseTarget GetTarget(ChoreographyNote note)
+    {
+        if (note.HitSideType == HitSideType.Block)
+        {
+            return _baseBlockPool.GetNewPoolable() as BaseTarget;
+        }
+        else
+        {
+            return GetTargetSwitch(note.CutDir);
+        }
+    }
+    
+    private BaseTarget GetTargetSwitch(ChoreographyNote.CutDirection cutDirection) => cutDirection switch
     {
         ChoreographyNote.CutDirection.Jab => _jabPool.GetNewPoolable(),
         ChoreographyNote.CutDirection.JabDown => _jabPool.GetNewPoolable(),

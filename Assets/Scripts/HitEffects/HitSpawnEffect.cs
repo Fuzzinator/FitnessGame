@@ -7,8 +7,6 @@ using UnityEngine;
 public class HitSpawnEffect : MonoBehaviour, IValidHit
 {
     [SerializeField]
-    private BaseHitVFX _hitVFX;
-    [SerializeField]
     private Renderer _thisRenderer;
 
     private void OnValidate()
@@ -21,7 +19,12 @@ public class HitSpawnEffect : MonoBehaviour, IValidHit
 
     public void TriggerHitEffect(HitInfo info)
     {
-        var hitParticle = Instantiate(_hitVFX, null);
+        if (VFXManager.Instance == null)
+        {
+            return;
+        }
+
+        var hitParticle = VFXManager.GetBaseHitVFX;
         var hitParticleTransform = hitParticle.transform;
         var thisTransform = transform;
         

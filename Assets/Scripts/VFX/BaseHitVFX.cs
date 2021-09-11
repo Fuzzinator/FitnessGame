@@ -4,11 +4,16 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-public class BaseHitVFX : MonoBehaviour
+public class BaseHitVFX : MonoBehaviour, IPoolable
 {
     [SerializeField]
     private ParticleSystem _particleSystem;
 
+    private const int FRAMEDELAY = 5;
+    
+    public PoolManager MyPoolManager { get; set; }
+
+    public bool IsPooled { get; set; }
     private void OnValidate()
     {
         if (_particleSystem == null)
@@ -24,27 +29,25 @@ public class BaseHitVFX : MonoBehaviour
         main.startColor = color;
     }
 
-    public void PlayParticles()
+    public async UniTask PlayParticles()
     {
         _particleSystem.Play(true);
-        StartCoroutine(WaitParticleAlive());
-        //WaitParticleAlive().ToUniTask();
+        
+        await UniTask.DelayFrame(FRAMEDELAY);
+        WaitForParticleFinish();
     }
 
     private async UniTask WaitForParticleFinish()
     {
-        await WaitParticleAlive();
+        await UniTask.WaitWhile(()=>_particleSystem.IsAlive(true));
         Destroy(gameObject);
+    }
+    
+    public void ReturnToPool()
+    {
+        gameObject.SetActive(false);
+        transform.SetParent(MyPoolManager.poolParent);
+        MyPoolManager.ReturnToPool(this);
     }
 
-    private IEnumerator WaitParticleAlive()
-    {
-        var frameCountDown = 10;
-        while(_particleSystem.IsAlive(true)||frameCountDown>0)
-        {
-            frameCountDown--;
-            yield return null;
-        }
-        Destroy(gameObject);
-    }
 }
