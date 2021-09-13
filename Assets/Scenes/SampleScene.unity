@@ -17297,6 +17297,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _currentPlaylist:
     items:
+    - _songName: Without Me
+      _fileLocation: Songs/23c3 (Without Me - ILLENIUM Remix - styngme)
+      _difficulty: Easy
     - _songName: The Greatest Show
       _fileLocation: Songs\2087 (The greatest show reimagined - stumi)
       _difficulty: Easy
@@ -45240,6 +45243,30 @@ MonoBehaviour:
       - m_Target: {fileID: 744319519}
         m_TargetAssemblyTypeName: PlaylistManager, Assembly-CSharp
         m_MethodName: UpdateCurrentPlaylist
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 26562287}
+        m_TargetAssemblyTypeName: ChoreographySequencer, Assembly-CSharp
+        m_MethodName: SwitchFootPlacement
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1171833943}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: ResetForNextSong
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

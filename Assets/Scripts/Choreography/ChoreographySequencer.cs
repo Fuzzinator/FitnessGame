@@ -350,4 +350,9 @@ public class ChoreographySequencer : MonoBehaviour
     {
         formationHolder.ReturnRemainingChildren();
     }
+
+    public void SwitchFootPlacement()
+    {
+        _currentStance = _currentStance == HitSideType.Left ? HitSideType.Right : HitSideType.Left;
+    }
 }

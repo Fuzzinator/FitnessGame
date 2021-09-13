@@ -122,9 +122,10 @@ public class MusicManager : MonoBehaviour
         _musicAudioSource.clip = song;
     }
 
-    public void PlayMusic()
+    public async void PlayMusic()
     {
         _musicAudioSource.Play();
+        await WaitForSongFinish();
     }
 
     public void PauseMusic()

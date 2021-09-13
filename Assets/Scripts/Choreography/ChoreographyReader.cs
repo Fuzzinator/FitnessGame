@@ -28,7 +28,7 @@ public class ChoreographyReader : MonoBehaviour
     private float _minObstacleSpace = .75f; //This should go into a difficulty setting
 
     public UnityEvent finishedLoadingSong = new UnityEvent();
-    
+
     private void Awake()
     {
         if (Instance == null)
@@ -43,7 +43,8 @@ public class ChoreographyReader : MonoBehaviour
 
     public async void LoadJson(PlaylistItem item)
     {
-        using (var streamReader = new StreamReader($"{Application.dataPath}\\Resources\\{item.FileLocation}\\{item.Difficulty}.dat"))
+        using (var streamReader =
+            new StreamReader($"{Application.dataPath}\\Resources\\{item.FileLocation}\\{item.Difficulty}.dat"))
         {
             var reading = streamReader.ReadToEndAsync();
             await reading;
@@ -55,14 +56,14 @@ public class ChoreographyReader : MonoBehaviour
 
     public List<ChoreographyFormation> GetOrderedFormations()
     {
-        if (_formations == null || _formations.Count == 0)
-        {
-            _formations = new List<ChoreographyFormation>();
-            var sequenceables = GetChoreographSequenceables();
-            sequenceables.Sort((sequenceable0, sequenceable1) => sequenceable0.Time.CompareTo(sequenceable1.Time));
-            UpdateFormation(sequenceables);
-            _choreography = new Choreography();
-        }
+        //if (_formations == null || _formations.Count == 0)
+        //{
+        _formations = new List<ChoreographyFormation>();
+        var sequenceables = GetChoreographSequenceables();
+        sequenceables.Sort((sequenceable0, sequenceable1) => sequenceable0.Time.CompareTo(sequenceable1.Time));
+        UpdateFormation(sequenceables);
+        _choreography = new Choreography();
+        //}
 
         return _formations;
     }
