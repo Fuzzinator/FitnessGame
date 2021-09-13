@@ -20,7 +20,7 @@ public class Hand : MonoBehaviour
     {
         UpdateDevices();
     }
-
+    
     private void UpdateDevices()
     {
         var filter = InputDeviceCharacteristics.Controller | InputDeviceCharacteristics.TrackedDevice |

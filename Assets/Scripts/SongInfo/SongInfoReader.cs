@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class SongInfoReader : MonoBehaviour
 {
@@ -12,7 +14,12 @@ public class SongInfoReader : MonoBehaviour
     [SerializeField]
     public SongInfo songInfo;
 
-    public float NoteSpeed => songInfo.NoteJumpMovementSpeed;
+    [SerializeField]
+    private DifficultyInfo _difficultyInfo;
+    
+    public UnityEvent finishedLoadingSongInfo = new UnityEvent();
+    
+    public float NoteSpeed => _difficultyInfo.MovementSpeed;
     public float BeatsPerMinute => songInfo.BeatsPerMinute;
     
     private void Awake()
@@ -29,12 +36,29 @@ public class SongInfoReader : MonoBehaviour
 
     private void Start()
     {
-        UpdateSongInfo(info);
+        //UpdateSongInfo(info);
+    }
+    
+    public async void LoadJson(PlaylistItem item)
+    {
+        using (var streamReader = new StreamReader($"{Application.dataPath}\\Resources\\{item.FileLocation}\\Info.dat"))
+        {
+            var reading = streamReader.ReadToEndAsync();
+            await reading;
+            UpdateSongInfo(reading.Result, item);
+            finishedLoadingSongInfo?.Invoke();
+        }
     }
 
-    public void UpdateSongInfo(string json)
+    public void UpdateSongInfo(string json, PlaylistItem item)
     {
         info = json;
         songInfo = JsonUtility.FromJson<SongInfo>(json);
+        _difficultyInfo = songInfo.TryGetActiveDifficultySet(item.Difficulty);
+    }
+
+    public AudioClip GetCurrentSong()
+    {
+        return null;
     }
 }

@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.InputSystem;
 
 public class ChoreographySequencer : MonoBehaviour
 {
@@ -30,11 +32,26 @@ public class ChoreographySequencer : MonoBehaviour
     private BaseTarget _uppercutTarget;
 
     private PoolManager _uppercutPool;
-    
+
     [SerializeField]
     private BlockTarget _baseBlockTarget;
 
     private PoolManager _baseBlockPool;
+
+    [SerializeField]
+    private BaseObstacle _baseObstacle;
+
+    private PoolManager _baseObstaclePool;
+
+    [SerializeField]
+    private BaseObstacle _leftObstacle;
+
+    private PoolManager _leftObstaclePool;
+
+    [SerializeField]
+    private BaseObstacle _rightObstacle;
+
+    private PoolManager _rightObstaclePool;
 
     [SerializeField]
     private Transform _formationStart;
@@ -55,8 +72,19 @@ public class ChoreographySequencer : MonoBehaviour
 
     private List<Tween> _activeTweens = new List<Tween>();
 
+    [SerializeField]
+    private HitSideType _currentStance = HitSideType.Left;
+
     public bool test = false;
 
+
+    private Action<InputAction.CallbackContext> _selectAction;
+    
+    [SerializeField]
+    private UnityEvent _sequenceStarted = new UnityEvent();
+
+    public bool SequenceRunning { get; private set; }
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -68,7 +96,51 @@ public class ChoreographySequencer : MonoBehaviour
         _uppercutPool = new PoolManager(_uppercutTarget, thisTransform);
         _baseBlockPool = new PoolManager(_baseBlockTarget, thisTransform);
 
+        _baseObstaclePool = new PoolManager(_baseObstacle, thisTransform);
+        _leftObstaclePool = new PoolManager(_leftObstacle, thisTransform);
+        _rightObstaclePool = new PoolManager(_rightObstacle, thisTransform);
+
         _meterDistance = Vector3.Distance(_formationStart.position, _formationEnd.position);
+
+        _selectAction = (context) => TempStart();
+    }
+
+    private void OnEnable()
+    {
+        if (InputManager.Instance != null && InputManager.Instance.MainInput != null)
+        {
+            foreach (var action in InputManager.Instance.MainInput.actions)
+            {
+                switch (action.name)
+                {
+                    case "Select":
+                        action.started += _selectAction;
+                        break;
+                    case "Menu Button":
+                        action.started += ToggleChoreography;
+                        break;
+                }
+            }
+        }
+    }
+    
+    private void OnDisable()
+    {
+        if (InputManager.Instance != null && InputManager.Instance.MainInput != null)
+        {
+            foreach (var action in InputManager.Instance.MainInput.actions)
+            {
+                switch (action.name)
+                {
+                    case "Select":
+                        action.started -= _selectAction;
+                        break;
+                    case "Menu Button":
+                        action.started -= ToggleChoreography;
+                        break;
+                }
+            }
+        }
     }
 
     // Update is called once per frame
@@ -83,9 +155,11 @@ public class ChoreographySequencer : MonoBehaviour
 
     public void TempStart()
     {
-        TryGetComponent(out AudioSource source);
+        if (SequenceRunning)
+        {
+            return;
+        }
         InitializeSequence();
-        source.Play();
     }
 
     public void InitializeSequence()
@@ -106,6 +180,8 @@ public class ChoreographySequencer : MonoBehaviour
         _sequence = DOTween.Sequence();
 
         var formationSequence = CreateSequence(formations[0], 1);
+        
+        SequenceRunning = true;
     }
 
     private Sequence CreateSequence(ChoreographyFormation formation, int nextFormationIndex)
@@ -154,10 +230,19 @@ public class ChoreographySequencer : MonoBehaviour
 
     private void SpawnFormationObjects(FormationHolder formationHolder, ChoreographyFormation formation)
     {
-        //foreach (var sequenceable in formation.sequenceables)
-        //{
         if (formation.HasObstacle)
         {
+            var obstacle = GetObstacle(formation.Obstacle);
+            obstacle.transform.SetParent(formationHolder.transform);
+            obstacle.transform.localPosition = Vector3.zero;
+            obstacle.gameObject.SetActive(true);
+            
+            if (formationHolder.children == null)
+            {
+                formationHolder.children = new List<IPoolable>();
+            }
+
+            formationHolder.children.Add(obstacle);
         }
 
         if (formation.HasNote)
@@ -175,8 +260,18 @@ public class ChoreographySequencer : MonoBehaviour
 
             formationHolder.children.Add(target);
         }
+    }
 
-        //}
+    protected BaseObstacle GetObstacle(ChoreographyObstacle obstacle)
+    {
+        return obstacle.Type switch
+        {
+            ChoreographyObstacle.ObstacleType.Crouch => _baseObstaclePool.GetNewPoolable(),
+            ChoreographyObstacle.ObstacleType.Dodge => _currentStance == HitSideType.Left
+                ? _leftObstaclePool.GetNewPoolable()
+                : _rightObstaclePool.GetNewPoolable(),
+            _ => _baseObstaclePool.GetNewPoolable()
+        } as BaseObstacle;
     }
 
     protected BaseTarget GetTarget(ChoreographyNote note)
@@ -190,7 +285,7 @@ public class ChoreographySequencer : MonoBehaviour
             return GetTargetSwitch(note.CutDir);
         }
     }
-    
+
     private BaseTarget GetTargetSwitch(ChoreographyNote.CutDirection cutDirection) => cutDirection switch
     {
         ChoreographyNote.CutDirection.Jab => _jabPool.GetNewPoolable(),
@@ -217,8 +312,38 @@ public class ChoreographySequencer : MonoBehaviour
             default:
                 return null;
         }
+    }
 
-        //return _sequenceStartPoses[(note.LineIndex + (int) note.LineLayer * 4)];//If supporting 4 horizontal positions instead of 2
+    public void ToggleChoreography(InputAction.CallbackContext context)
+    {
+        if (SequenceRunning)
+        {
+            PauseChoreography();
+        }
+        else
+        {
+            ResumeChoreography();
+        }
+    }
+    
+    public void PauseChoreography()
+    {
+        foreach (var tween in _activeTweens)
+        {
+            tween.Pause();
+        }
+
+        SequenceRunning = false;
+    }
+
+    public void ResumeChoreography()
+    {
+        foreach (var tween in _activeTweens)
+        {
+            tween.Play();
+        }
+
+        SequenceRunning = true;
     }
 
     private void ClearFormationObjects(FormationHolder formationHolder)

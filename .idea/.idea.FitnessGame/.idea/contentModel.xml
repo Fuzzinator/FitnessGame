@@ -51,6 +51,9 @@
             <e p="Hand.cs" t="Include" />
             <e p="TempController.cs" t="Include" />
           </e>
+          <e p="GameManager" t="Include">
+            <e p="GameManager.cs" t="Include" />
+          </e>
           <e p="HitEffects" t="Include">
             <e p="BaseValidHitEffect.cs" t="Include" />
             <e p="HitHaptics.cs" t="Include" />
@@ -60,8 +63,16 @@
             <e p="IValidHit.cs" t="Include" />
             <e p="UpdateHitStreak.cs" t="Include" />
           </e>
+          <e p="Input" t="Include">
+            <e p="InputManager.cs" t="Include" />
+          </e>
           <e p="Obstacles" t="Include">
             <e p="BaseObstacle.cs" t="Include" />
+          </e>
+          <e p="Playlists" t="Include">
+            <e p="Playlist.cs" t="Include" />
+            <e p="PlaylistItem.cs" t="Include" />
+            <e p="PlaylistManager.cs" t="Include" />
           </e>
           <e p="Pooling" t="Include">
             <e p="IPoolable.cs" t="Include" />
@@ -74,8 +85,13 @@
             <e p="TMProDisplayUpdator.cs" t="Include" />
           </e>
           <e p="SongInfo" t="Include">
+            <e p="DifficultyInfo.cs" t="Include" />
             <e p="SongInfo.cs" t="Include" />
             <e p="SongInfoReader.cs" t="Include" />
+          </e>
+          <e p="Sound" t="Include">
+            <e p="MusicManager.cs" t="Include" />
+            <e p="SoundManager.cs" t="Include" />
           </e>
           <e p="Targets" t="Include">
             <e p="ActiveTargetManager.cs" t="Include" />

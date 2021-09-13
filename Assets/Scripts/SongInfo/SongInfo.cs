@@ -7,7 +7,8 @@ using UnityEngine;
 public class SongInfo
 {
    public float BeatsPerMinute => _beatsPerMinute;
-   public float NoteJumpMovementSpeed => _noteJumpMovementSpeed;
+
+   public string SongName => _songName;
    
    [SerializeField]
    private string _version;
@@ -24,6 +25,35 @@ public class SongInfo
    private float _beatsPerMinute;
    [SerializeField]
    private float _songTimeOffset;
+
    [SerializeField]
-   private float _noteJumpMovementSpeed;
+   private DifficultySet[] _difficultyBeatmapSets;
+
+   public DifficultyInfo TryGetActiveDifficultySet(string difficulty)
+   {
+      for (var i = 0; i < _difficultyBeatmapSets.Length; i++)
+      {
+         var difficulties = _difficultyBeatmapSets[i];
+         for (var j = 0; j < difficulties.DifficultyInfos.Length; j++)
+         {
+            var info = difficulties.DifficultyInfos[j];
+            if (info.Difficulty == difficulty)
+            {
+               return info;
+            }
+         }
+      }
+      return new DifficultyInfo();
+   }
+   
+   
+   
+   [Serializable]
+   public struct DifficultySet
+   {
+      [SerializeField]
+      private DifficultyInfo[] _difficultyBeatmaps;
+
+      public DifficultyInfo[] DifficultyInfos => _difficultyBeatmaps;
+   }
 }

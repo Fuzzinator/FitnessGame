@@ -1,13 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class ChoreographyReader : MonoBehaviour
 {
     public static ChoreographyReader Instance { get; private set; }
 
+    /*
     [TextArea]
-    public string json;
+    public string json;*/
 
     [SerializeField]
     private Choreography _choreography;
@@ -24,6 +27,8 @@ public class ChoreographyReader : MonoBehaviour
     [SerializeField]
     private float _minObstacleSpace = .75f; //This should go into a difficulty setting
 
+    public UnityEvent finishedLoadingSong = new UnityEvent();
+    
     private void Awake()
     {
         if (Instance == null)
@@ -36,9 +41,16 @@ public class ChoreographyReader : MonoBehaviour
         }
     }
 
-    private void Start()
+    public async void LoadJson(PlaylistItem item)
     {
-        _choreography = JsonUtility.FromJson<Choreography>(json);
+        using (var streamReader = new StreamReader($"{Application.dataPath}\\Resources\\{item.FileLocation}\\{item.Difficulty}.dat"))
+        {
+            var reading = streamReader.ReadToEndAsync();
+            await reading;
+            var json = reading.Result;
+            _choreography = JsonUtility.FromJson<Choreography>(json);
+            finishedLoadingSong?.Invoke();
+        }
     }
 
     public List<ChoreographyFormation> GetOrderedFormations()
@@ -49,7 +61,6 @@ public class ChoreographyReader : MonoBehaviour
             var sequenceables = GetChoreographSequenceables();
             sequenceables.Sort((sequenceable0, sequenceable1) => sequenceable0.Time.CompareTo(sequenceable1.Time));
             UpdateFormation(sequenceables);
-            json = string.Empty;
             _choreography = new Choreography();
         }
 

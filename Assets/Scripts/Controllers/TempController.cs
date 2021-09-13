@@ -13,11 +13,22 @@ public class TempController : MonoBehaviour
 
     [SerializeField]
     private UnityEvent<InputAction.CallbackContext> pressedButton;
+    
     // Start is called before the first frame update
     void Start()
     {
         _actionSubscription = (context) => pressedButton?.Invoke(context);
         _button.action.started += _actionSubscription;
+    }
+
+    public void OnEnable()
+    {
+        _button.action.Enable();
+    }
+
+    public void OnDisable()
+    {
+        _button.action.Disable();
     }
 
     private void OnDestroy()
