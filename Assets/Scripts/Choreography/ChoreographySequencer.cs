@@ -69,7 +69,11 @@ public class ChoreographySequencer : MonoBehaviour
     private Transform[] _sequenceEndPoses;
 
     private float _meterDistance;
-
+    private float _songStartTime;
+    private float _delayStartTime;
+    private float _delayEndTime;
+    
+    
     private List<Tween> _activeTweens = new List<Tween>();
 
     [SerializeField]
@@ -176,6 +180,9 @@ public class ChoreographySequencer : MonoBehaviour
             return;
         }
 
+        _songStartTime = Time.time;
+        _delayStartTime = 0;
+        _delayEndTime = 0;
         DOTween.Init(true, false);
         _sequence = DOTween.Sequence();
 
@@ -204,13 +211,12 @@ public class ChoreographySequencer : MonoBehaviour
         onComplete += () => _activeTweens.Remove(tween);
         tween.OnStart(onStart);
 
-        tween.OnComplete(onComplete
-        );
+        tween.OnComplete(onComplete);
 
         var sequence = DOTween.Sequence();
         var beatsTime = SongInfoReader.Instance.BeatsPerMinute / 60;
         var delay = Mathf.Max(0,
-            (formation.Time / beatsTime) - Time.time - _meterDistance / SongInfoReader.Instance.NoteSpeed);
+            (formation.Time / beatsTime) - (Time.time-(_songStartTime + _delayEndTime-_delayStartTime)) - _meterDistance / SongInfoReader.Instance.NoteSpeed);
 
         sequence.Insert(delay, tween);
 
@@ -332,7 +338,7 @@ public class ChoreographySequencer : MonoBehaviour
         {
             tween.Pause();
         }
-
+        _delayStartTime = Time.time;
         SequenceRunning = false;
     }
 
@@ -342,7 +348,7 @@ public class ChoreographySequencer : MonoBehaviour
         {
             tween.Play();
         }
-
+        _delayEndTime = Time.time;
         SequenceRunning = true;
     }
 

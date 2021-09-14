@@ -50,20 +50,27 @@ public class ChoreographyReader : MonoBehaviour
             await reading;
             var json = reading.Result;
             _choreography = JsonUtility.FromJson<Choreography>(json);
+            
             finishedLoadingSong?.Invoke();
         }
+        
+    }
+
+    public void ResetForNextSequence()
+    {
+        _formations = null;
     }
 
     public List<ChoreographyFormation> GetOrderedFormations()
     {
-        //if (_formations == null || _formations.Count == 0)
-        //{
-        _formations = new List<ChoreographyFormation>();
-        var sequenceables = GetChoreographSequenceables();
-        sequenceables.Sort((sequenceable0, sequenceable1) => sequenceable0.Time.CompareTo(sequenceable1.Time));
-        UpdateFormation(sequenceables);
-        _choreography = new Choreography();
-        //}
+        if (_formations == null || _formations.Count == 0)
+        {
+            _formations = new List<ChoreographyFormation>();
+            var sequenceables = GetChoreographSequenceables();
+            sequenceables.Sort((sequenceable0, sequenceable1) => sequenceable0.Time.CompareTo(sequenceable1.Time));
+            UpdateFormation(sequenceables);
+            _choreography = new Choreography();
+        }
 
         return _formations;
     }
@@ -255,7 +262,7 @@ public class ChoreographyReader : MonoBehaviour
             if ((i + 1 < target.Count && target[1 + i].Time > lastTime) || i + 1 == target.Count)
             {
                 _formations.Add(new ChoreographyFormation(lastTime, note: thisTimeNote, obstacle: thisTimeObstacle,
-                    choreographyEvent: thisTimeEvent));
+                                                          choreographyEvent: thisTimeEvent));
 
                 thisTimeNote = null;
                 thisTimeObstacle = null;
