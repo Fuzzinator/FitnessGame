@@ -72,8 +72,8 @@ public class ChoreographySequencer : MonoBehaviour
     private float _songStartTime;
     private float _delayStartTime;
     private float _delayEndTime;
-    
-    
+
+
     private List<Tween> _activeTweens = new List<Tween>();
 
     [SerializeField]
@@ -83,12 +83,12 @@ public class ChoreographySequencer : MonoBehaviour
 
 
     private Action<InputAction.CallbackContext> _selectAction;
-    
+
     [SerializeField]
     private UnityEvent _sequenceStarted = new UnityEvent();
 
     public bool SequenceRunning { get; private set; }
-    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -127,7 +127,7 @@ public class ChoreographySequencer : MonoBehaviour
             }
         }
     }
-    
+
     private void OnDisable()
     {
         if (InputManager.Instance != null && InputManager.Instance.MainInput != null)
@@ -163,6 +163,7 @@ public class ChoreographySequencer : MonoBehaviour
         {
             return;
         }
+
         InitializeSequence();
     }
 
@@ -187,7 +188,7 @@ public class ChoreographySequencer : MonoBehaviour
         _sequence = DOTween.Sequence();
 
         var formationSequence = CreateSequence(formations[0], 1);
-        
+
         SequenceRunning = true;
     }
 
@@ -199,13 +200,18 @@ public class ChoreographySequencer : MonoBehaviour
         formationTransform.SetParent(transform);
         formationTransform.position = _formationStart.position;
 
-        var tween = formationHolder.transform.DOLocalPath(new[] {formationTransform.position, _formationEnd.position},
-            _meterDistance / SongInfoReader.Instance.NoteSpeed);
+        var tweenSpeed = _meterDistance / SongInfoReader.Instance.NoteSpeed;
+        var tween = formationHolder.transform.DOLocalPath(new[]
+        {
+            formationTransform.position, _formationEnd.position
+        }, tweenSpeed);
+        
         tween.SetEase(Ease.Linear);
 
         TweenCallback onStart = () => SpawnFormationObjects(formationHolder, formation);
         onStart += () => TryCreateNextSequence(nextFormationIndex);
         onStart += () => _activeTweens.Add(tween);
+        onStart += () => Debug.Log(Time.time);
 
         TweenCallback onComplete = () => ClearFormationObjects(formationHolder);
         onComplete += () => _activeTweens.Remove(tween);
@@ -214,9 +220,9 @@ public class ChoreographySequencer : MonoBehaviour
         tween.OnComplete(onComplete);
 
         var sequence = DOTween.Sequence();
-        var beatsTime = SongInfoReader.Instance.BeatsPerMinute / 60;
-        var delay = Mathf.Max(0,
-            (formation.Time / beatsTime) - (Time.time-(_songStartTime + _delayEndTime-_delayStartTime)) - _meterDistance / SongInfoReader.Instance.NoteSpeed);
+        var beatsTime = 60/SongInfoReader.Instance.BeatsPerMinute;
+        var time = (Time.time - (_songStartTime + _delayEndTime - _delayStartTime));
+        var delay = Mathf.Max(0, (formation.Time * beatsTime) - time);// - tweenSpeed);
 
         sequence.Insert(delay, tween);
 
@@ -242,7 +248,7 @@ public class ChoreographySequencer : MonoBehaviour
             obstacle.transform.SetParent(formationHolder.transform);
             obstacle.transform.localPosition = Vector3.zero;
             obstacle.gameObject.SetActive(true);
-            
+
             if (formationHolder.children == null)
             {
                 formationHolder.children = new List<IPoolable>();
@@ -331,13 +337,14 @@ public class ChoreographySequencer : MonoBehaviour
             ResumeChoreography();
         }
     }
-    
+
     public void PauseChoreography()
     {
         foreach (var tween in _activeTweens)
         {
             tween.Pause();
         }
+
         _delayStartTime = Time.time;
         SequenceRunning = false;
     }
@@ -348,6 +355,7 @@ public class ChoreographySequencer : MonoBehaviour
         {
             tween.Play();
         }
+
         _delayEndTime = Time.time;
         SequenceRunning = true;
     }

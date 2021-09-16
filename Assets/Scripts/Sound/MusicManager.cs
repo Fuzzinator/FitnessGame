@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
@@ -13,10 +14,12 @@ public class MusicManager : MonoBehaviour
 
     [SerializeField]
     private AudioSource _musicAudioSource;
-    
+
     public UnityEvent finishedLoadingSong = new UnityEvent();
-    
+
     public UnityEvent songFinishedPlaying = new UnityEvent();
+
+    private CancellationToken _cancellationToken;
 
     private void OnValidate()
     {
@@ -36,6 +39,11 @@ public class MusicManager : MonoBehaviour
         {
             Destroy(this);
         }
+    }
+
+    private void Start()
+    {
+        _cancellationToken = this.GetCancellationTokenOnDestroy();
     }
 
     private void OnEnable()
@@ -109,7 +117,7 @@ public class MusicManager : MonoBehaviour
             }
         }
     }
-    
+
     public void StartNewSequence()
     {
         var music = SongInfoReader.Instance.GetCurrentSong();
@@ -152,7 +160,15 @@ public class MusicManager : MonoBehaviour
 
     private async UniTask WaitForSongFinish()
     {
-        await UniTask.WaitUntil(() => Math.Abs(_musicAudioSource.clip.length - _musicAudioSource.time) < .1f);
+        await UniTask.WaitUntil(
+            () => Math.Abs(_musicAudioSource != null && _musicAudioSource.clip != null
+                ? _musicAudioSource.clip.length - _musicAudioSource.time
+                : 1) < .1f, cancellationToken: _cancellationToken);
+        if (_cancellationToken.IsCancellationRequested)
+        {
+            return;
+        }
+        
         songFinishedPlaying?.Invoke();
     }
 }
