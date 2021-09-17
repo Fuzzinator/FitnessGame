@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -41,7 +42,14 @@ public class ChoreographyReader : MonoBehaviour
         }
     }
 
-    public async void LoadJson(PlaylistItem item)
+    public void LoadJson(PlaylistItem item)
+    {
+#pragma warning disable 4014
+        AsyncLoadJson(item);
+#pragma warning restore 4014
+    }
+
+    private async UniTaskVoid AsyncLoadJson(PlaylistItem item)
     {
         using (var streamReader =
             new StreamReader($"{Application.dataPath}\\Resources\\{item.FileLocation}\\{item.Difficulty}.dat"))
@@ -50,10 +58,9 @@ public class ChoreographyReader : MonoBehaviour
             await reading;
             var json = reading.Result;
             _choreography = JsonUtility.FromJson<Choreography>(json);
-            
+
             finishedLoadingSong?.Invoke();
         }
-        
     }
 
     public void ResetForNextSequence()
@@ -262,7 +269,7 @@ public class ChoreographyReader : MonoBehaviour
             if ((i + 1 < target.Count && target[1 + i].Time > lastTime) || i + 1 == target.Count)
             {
                 _formations.Add(new ChoreographyFormation(lastTime, note: thisTimeNote, obstacle: thisTimeObstacle,
-                                                          choreographyEvent: thisTimeEvent));
+                    choreographyEvent: thisTimeEvent));
 
                 thisTimeNote = null;
                 thisTimeObstacle = null;

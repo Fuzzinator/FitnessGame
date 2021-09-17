@@ -68,7 +68,11 @@ public class ChoreographySequencer : MonoBehaviour
     [SerializeField]
     private Transform[] _sequenceEndPoses;
 
+    [SerializeField]
+    private Transform _optimalStrikePoint;
+
     private float _meterDistance;
+    private float _optimalPointDistance;
     private float _songStartTime;
     private float _delayStartTime;
     private float _delayEndTime;
@@ -105,6 +109,7 @@ public class ChoreographySequencer : MonoBehaviour
         _rightObstaclePool = new PoolManager(_rightObstacle, thisTransform);
 
         _meterDistance = Vector3.Distance(_formationStart.position, _formationEnd.position);
+        _optimalPointDistance = Vector3.Distance(_formationStart.position, _optimalStrikePoint.position);
 
         _selectAction = (context) => TempStart();
     }
@@ -211,7 +216,6 @@ public class ChoreographySequencer : MonoBehaviour
         TweenCallback onStart = () => SpawnFormationObjects(formationHolder, formation);
         onStart += () => TryCreateNextSequence(nextFormationIndex);
         onStart += () => _activeTweens.Add(tween);
-        onStart += () => Debug.Log(Time.time);
 
         TweenCallback onComplete = () => ClearFormationObjects(formationHolder);
         onComplete += () => _activeTweens.Remove(tween);
@@ -220,9 +224,12 @@ public class ChoreographySequencer : MonoBehaviour
         tween.OnComplete(onComplete);
 
         var sequence = DOTween.Sequence();
+        
         var beatsTime = 60/SongInfoReader.Instance.BeatsPerMinute;
         var time = (Time.time - (_songStartTime + _delayEndTime - _delayStartTime));
-        var delay = Mathf.Max(0, (formation.Time * beatsTime) - time);// - tweenSpeed);
+        var timeToPoint = _optimalPointDistance / SongInfoReader.Instance.NoteSpeed;
+        
+        var delay = Mathf.Max(0, (formation.Time * beatsTime) - time - timeToPoint);
 
         sequence.Insert(delay, tween);
 

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -39,7 +40,14 @@ public class SongInfoReader : MonoBehaviour
         //UpdateSongInfo(info);
     }
     
-    public async void LoadJson(PlaylistItem item)
+    public void LoadJson(PlaylistItem item)
+    {
+#pragma warning disable 4014
+        AsyncLoadJson(item);
+#pragma warning restore 4014
+    }
+
+    private async UniTaskVoid AsyncLoadJson(PlaylistItem item)
     {
         using (var streamReader = new StreamReader($"{Application.dataPath}\\Resources\\{item.FileLocation}\\Info.dat"))
         {

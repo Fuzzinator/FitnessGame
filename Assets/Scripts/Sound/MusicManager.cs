@@ -94,7 +94,14 @@ public class MusicManager : MonoBehaviour
         StartNewSequence();
     }
 
-    public async void LoadFromPlaylist(PlaylistItem info)
+    public void LoadFromPlaylist(PlaylistItem info)
+    {
+#pragma warning disable 4014
+        AsyncLoadFromPlaylist(info);
+#pragma warning restore 4014
+    }
+
+    private async UniTaskVoid AsyncLoadFromPlaylist(PlaylistItem info)
     {
         var path = $"{Application.dataPath}\\Resources\\{info.FileLocation}\\song.ogg";
         using (var uwr = UnityWebRequestMultimedia.GetAudioClip(path, AudioType.OGGVORBIS))
@@ -130,10 +137,12 @@ public class MusicManager : MonoBehaviour
         _musicAudioSource.clip = song;
     }
 
-    public async void PlayMusic()
+    public void PlayMusic()
     {
         _musicAudioSource.Play();
-        await WaitForSongFinish();
+#pragma warning disable 4014
+        WaitForSongFinish();
+#pragma warning restore 4014
     }
 
     public void PauseMusic()
@@ -164,6 +173,7 @@ public class MusicManager : MonoBehaviour
             () => Math.Abs(_musicAudioSource != null && _musicAudioSource.clip != null
                 ? _musicAudioSource.clip.length - _musicAudioSource.time
                 : 1) < .1f, cancellationToken: _cancellationToken);
+
         if (_cancellationToken.IsCancellationRequested)
         {
             return;

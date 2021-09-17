@@ -1,20 +1,24 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class GameManager : MonoBehaviour
+public class LevelManager : MonoBehaviour
 {
-    public static GameManager Instance { get; private set; }
+    public static LevelManager Instance { get; private set; }
     
     public UnityEvent startedLevelLoad = new UnityEvent();
     public UnityEvent finishedLevelLoad = new UnityEvent();
-
+    public UnityEvent playLevel = new UnityEvent();
+    
     private bool _choreographyLoaded = false;
     private bool _songInfoLoaded = false;
     private bool _actualSongLoaded = false;
 
+    private CancellationToken _cancellationToken;
     public bool ChoreographyLoaded
     {
         get => _choreographyLoaded;
@@ -53,13 +57,13 @@ public class GameManager : MonoBehaviour
         {
             Destroy(this);
         }
-        DontDestroyOnLoad(this);
     }
 
     private void Start()
     {
         ResetForNextSong();
         startedLevelLoad?.Invoke();
+        _cancellationToken = this.GetCancellationTokenOnDestroy();
     }
 
     public void ResetForNextSong()
@@ -89,6 +93,23 @@ public class GameManager : MonoBehaviour
         if (_choreographyLoaded && _songInfoLoaded && _actualSongLoaded)
         {
             finishedLevelLoad?.Invoke();
+            DelaySongStart();
         }
+    }
+
+    private async void DelaySongStart()
+    {
+        await UniTask.Delay(TimeSpan.FromSeconds(5), cancellationToken: _cancellationToken);
+        if (_cancellationToken.IsCancellationRequested)
+        {
+            return;
+        }
+
+        PlayLevel();
+    }
+
+    private void PlayLevel()
+    {
+        playLevel?.Invoke();
     }
 }

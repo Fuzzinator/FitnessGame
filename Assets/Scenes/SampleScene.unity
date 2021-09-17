@@ -2395,6 +2395,7 @@ MonoBehaviour:
   - {fileID: 1719720723}
   - {fileID: 1145755302}
   - {fileID: 951690944}
+  _optimalStrikePoint: {fileID: 2001671568}
   _currentStance: 0
   test: 0
   _sequenceStarted:
@@ -26209,6 +26210,9 @@ MonoBehaviour:
         m_CallState: 2
   finishedLevelLoad:
     m_PersistentCalls:
+      m_Calls: []
+  playLevel:
+    m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 26562285}
         m_TargetAssemblyTypeName: ChoreographyReader, Assembly-CSharp
@@ -27280,6 +27284,7 @@ Transform:
   - {fileID: 1578743431}
   - {fileID: 1190012897}
   - {fileID: 1041961965}
+  - {fileID: 2001671568}
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -45029,6 +45034,36 @@ MonoBehaviour:
   m_MoveObjectIn: 14
   m_MoveObjectOut: 15
   m_PoseProvider: {fileID: 0}
+--- !u!1 &2001671567
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2001671568}
+  m_Layer: 0
+  m_Name: OptimalStrikePoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2001671568
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2001671567}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -12.241}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1329272266}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!43 &2022310939
 Mesh:
   m_ObjectHideFlags: 0
