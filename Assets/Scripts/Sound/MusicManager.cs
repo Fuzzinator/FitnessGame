@@ -128,10 +128,9 @@ public class MusicManager : MonoBehaviour
             var clip = request.asset as AudioClip;
             if (clip == null)
             {
-                Debug.LogError("Failed tto load local resource file");
+                Debug.LogError("Failed to load local resource file");
                 return;
             }
-            
             clip.name = item.SongName;
             SetNewMusic(clip);
         }
@@ -141,9 +140,7 @@ public class MusicManager : MonoBehaviour
 
     public void StartNewSequence()
     {
-        var music = SongInfoReader.Instance.GetCurrentSong();
-        SetNewMusic(music);
-        Instance.PlayMusic();
+        PlayMusic();
     }
 
     public void SetNewMusic(AudioClip song)

@@ -17,7 +17,6 @@ public class PlaylistManager : MonoBehaviour
         {
             if (_currentItem != value)
             {
-                Debug.LogError("Changed Current Item.");
                 _currentItem = value;
                 _playlistItemUpdated?.Invoke(value);
             }

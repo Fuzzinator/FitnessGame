@@ -11,9 +11,12 @@ public class LevelManager : MonoBehaviour
     public static LevelManager Instance { get; private set; }
 
     public UnityEvent startedLevelLoad = new UnityEvent();
-    public UnityEvent finishedLevelLoad = new UnityEvent();
+    public UnityEvent<int> finishedLevelLoad = new UnityEvent<int>();
     public UnityEvent playLevel = new UnityEvent();
 
+    [SerializeField]
+    private int _delayLength = 5;
+    
     private bool _choreographyLoaded = false;
     private bool _songInfoLoaded = false;
     private bool _actualSongLoaded = false;
@@ -62,7 +65,6 @@ public class LevelManager : MonoBehaviour
     private void Start()
     {
         ResetForNextSong();
-        Debug.LogError("Starting");
         startedLevelLoad?.Invoke();
         _cancellationToken = this.GetCancellationTokenOnDestroy();
     }
@@ -91,17 +93,16 @@ public class LevelManager : MonoBehaviour
 
     private async UniTask CheckIfLoaded()
     {
-        Debug.LogError($"{_choreographyLoaded} {_songInfoLoaded} {_actualSongLoaded}");
         if (_choreographyLoaded && _songInfoLoaded && _actualSongLoaded)
         {
-            finishedLevelLoad?.Invoke();
+            finishedLevelLoad?.Invoke(_delayLength);
             await DelaySongStart();
         }
     }
 
     private async UniTask DelaySongStart()
     {
-        await UniTask.Delay(TimeSpan.FromSeconds(5), cancellationToken: _cancellationToken);
+        await UniTask.Delay(TimeSpan.FromSeconds(_delayLength), cancellationToken: _cancellationToken);
         if (_cancellationToken.IsCancellationRequested)
         {
             return;
