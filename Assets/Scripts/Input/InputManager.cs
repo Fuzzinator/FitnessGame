@@ -9,19 +9,19 @@ public class InputManager : MonoBehaviour
     public static InputManager Instance { get; private set; }
 
     [SerializeField]
-    private InputActionMap _mainInput;
+    private InputActionAsset _mainInput;
 
-    public InputActionMap MainInput => _mainInput;
-
-    [SerializeField]
-    private InputActionMap _menuInput;
-
-    public InputActionMap MenuInput => _menuInput;
+    public InputActionAsset MainInput => _mainInput;
 
     [SerializeField]
-    private InputActionMap _inGameInput;
+    private InputActionAsset _menuInput;
 
-    public InputActionMap InGameInput => _inGameInput;
+    public InputActionAsset MenuInput => _menuInput;
+
+    [SerializeField]
+    private InputActionAsset _inGameInput;
+
+    public InputActionAsset InGameInput => _inGameInput;
 
     private void Awake()
     {
@@ -41,7 +41,7 @@ public class InputManager : MonoBehaviour
     {
         if (_mainInput != null)
         {
-            foreach (var action in _mainInput.actions)
+            foreach (var action in _mainInput.actionMaps)
             {
                 action.Enable();
             }

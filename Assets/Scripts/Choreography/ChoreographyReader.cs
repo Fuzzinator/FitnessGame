@@ -46,7 +46,6 @@ public class ChoreographyReader : MonoBehaviour
     public void LoadJson(PlaylistItem item)
     {
 #pragma warning disable 4014
-        Debug.LogError("Loadingg JSON");
         AsyncLoadJson(item);
         
 #pragma warning restore 4014
@@ -76,7 +75,6 @@ public class ChoreographyReader : MonoBehaviour
             }
             _choreography = JsonUtility.FromJson<Choreography>(((TextAsset)json).text);
         }
-        Debug.LogError("Finished reading Json");
         finishedLoadingSong?.Invoke();
     }
 

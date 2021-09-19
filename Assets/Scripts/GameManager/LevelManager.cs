@@ -101,12 +101,9 @@ public class LevelManager : MonoBehaviour
 
     private async UniTask DelaySongStart()
     {
-        Debug.LogError("Delaying");
         await UniTask.Delay(TimeSpan.FromSeconds(5), cancellationToken: _cancellationToken);
-        Debug.LogError("Finished Delay");
         if (_cancellationToken.IsCancellationRequested)
         {
-            Debug.LogError("Cancellation was requested");
             return;
         }
 

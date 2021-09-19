@@ -50,7 +50,7 @@ public class MusicManager : MonoBehaviour
     {
         if (InputManager.Instance != null && InputManager.Instance.MainInput != null)
         {
-            foreach (var action in InputManager.Instance.MainInput.actions)
+            foreach (var action in InputManager.Instance.MainInput)
             {
                 switch (action.name)
                 {
@@ -69,7 +69,7 @@ public class MusicManager : MonoBehaviour
     {
         if (InputManager.Instance != null && InputManager.Instance.MainInput != null)
         {
-            foreach (var action in InputManager.Instance.MainInput.actions)
+            foreach (var action in InputManager.Instance.MainInput)
             {
                 switch (action.name)
                 {
