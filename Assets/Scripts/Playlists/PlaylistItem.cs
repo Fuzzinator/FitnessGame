@@ -19,6 +19,19 @@ public struct PlaylistItem
     [SerializeField]
     private string _difficulty;
 
+    [SerializeField]
+    private bool _isCustomSong;
+    public bool IsCustomSong => _isCustomSong;
+
+    [SerializeField]
+    private SongInfo _songInfo;
+
+    public SongInfo SongInfo
+    {
+        get => _songInfo;
+        set => _songInfo = value;
+    }
+
     public string Difficulty => _difficulty;
 
     private static bool StringMatches(string string1, string string2)

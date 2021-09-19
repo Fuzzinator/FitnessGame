@@ -9,6 +9,7 @@ public class SongInfo
    public float BeatsPerMinute => _beatsPerMinute;
 
    public string SongName => _songName;
+   public string SongFilename => _songFilename;
    
    [SerializeField]
    private string _version;
@@ -25,6 +26,8 @@ public class SongInfo
    private float _beatsPerMinute;
    [SerializeField]
    private float _songTimeOffset;
+   [SerializeField]
+   private string _songFilename;
 
    [SerializeField]
    private DifficultySet[] _difficultyBeatmapSets;

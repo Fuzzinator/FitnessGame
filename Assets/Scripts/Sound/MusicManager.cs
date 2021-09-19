@@ -101,28 +101,42 @@ public class MusicManager : MonoBehaviour
 #pragma warning restore 4014
     }
 
-    private async UniTaskVoid AsyncLoadFromPlaylist(PlaylistItem info)
+    private async UniTaskVoid AsyncLoadFromPlaylist(PlaylistItem item)
     {
-        var path = $"{Application.dataPath}\\Resources\\{info.FileLocation}\\song.ogg";
-        using (var uwr = UnityWebRequestMultimedia.GetAudioClip(path, AudioType.OGGVORBIS))
+        if (item.IsCustomSong)
         {
-            uwr.SendWebRequest();
-            await UniTask.WaitUntil(() => uwr.isDone);
-            try
+            var path = $"file://{Application.persistentDataPath}/Resources/{item.FileLocation}/{item.SongInfo.SongFilename}";
+            var uwr = UnityWebRequestMultimedia.GetAudioClip(path, AudioType.OGGVORBIS);
+            await uwr.SendWebRequest();
+            if (uwr.isDone && uwr.result == UnityWebRequest.Result.Success)
             {
-                if (uwr.isDone && uwr.result == UnityWebRequest.Result.Success)
-                {
-                    var clip = DownloadHandlerAudioClip.GetContent(uwr);
-                    clip.name = info.SongName;
-                    SetNewMusic(clip);
-                    finishedLoadingSong?.Invoke();
-                }
+                var clip = DownloadHandlerAudioClip.GetContent(uwr);
+                clip.name = item.SongName;
+                SetNewMusic(clip);
             }
-            catch (Exception error)
+            else
             {
-                Debug.LogWarning($"{error.Message}\n{error.StackTrace}");
+                Debug.LogError("failed to get audio clip");
+                return;
             }
         }
+        else
+        {
+            var fileName = item.SongInfo.SongFilename.Substring(0, item.SongInfo.SongFilename.LastIndexOf('.'));
+            var request = Resources.LoadAsync<AudioClip>($"{item.FileLocation}/{fileName}");
+            await request;
+            var clip = request.asset as AudioClip;
+            if (clip == null)
+            {
+                Debug.LogError("Failed tto load local resource file");
+                return;
+            }
+            
+            clip.name = item.SongName;
+            SetNewMusic(clip);
+        }
+        
+        finishedLoadingSong?.Invoke();
     }
 
     public void StartNewSequence()

@@ -4,6 +4,7 @@ using System.IO;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class ChoreographyReader : MonoBehaviour
 {
@@ -45,22 +46,38 @@ public class ChoreographyReader : MonoBehaviour
     public void LoadJson(PlaylistItem item)
     {
 #pragma warning disable 4014
+        Debug.LogError("Loadingg JSON");
         AsyncLoadJson(item);
+        
 #pragma warning restore 4014
     }
 
     private async UniTaskVoid AsyncLoadJson(PlaylistItem item)
     {
-        using (var streamReader =
-            new StreamReader($"{Application.dataPath}\\Resources\\{item.FileLocation}\\{item.Difficulty}.dat"))
+        if (item.IsCustomSong)
         {
+            var streamReader =
+                new StreamReader($"{Application.persistentDataPath}/Resources/{item.FileLocation}/{item.Difficulty}.dat");
+            
             var reading = streamReader.ReadToEndAsync();
             await reading;
             var json = reading.Result;
             _choreography = JsonUtility.FromJson<Choreography>(json);
-
-            finishedLoadingSong?.Invoke();
         }
+        else
+        {
+            var request = Resources.LoadAsync<TextAsset>($"{item.FileLocation}/{item.Difficulty}");
+            await request;
+            var json = request.asset as TextAsset;
+            if (json == null)
+            {
+                Debug.LogError("Failed to load local resource file");
+                return;
+            }
+            _choreography = JsonUtility.FromJson<Choreography>(((TextAsset)json).text);
+        }
+        Debug.LogError("Finished reading Json");
+        finishedLoadingSong?.Invoke();
     }
 
     public void ResetForNextSequence()

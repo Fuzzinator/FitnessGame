@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -7,6 +8,8 @@ public class FakeLogger : MonoBehaviour
     private TextMeshProUGUI _textField;
     
     public static FakeLogger Instance { get; private set; }
+
+    private Application.LogCallback _callback;
 
     private void Awake()
     {
@@ -18,6 +21,25 @@ public class FakeLogger : MonoBehaviour
         {
             Destroy(Instance);
         }
+    }
+
+    private void Start()
+    {
+        _callback = (text, stacktrace, logType) =>
+                    {
+                        if (logType != LogType.Error)
+                        {
+                            //return;
+                        }
+                        Log(text);
+                        //Log(stacktrace);
+                    };
+        Application.logMessageReceived += _callback;
+    }
+
+    private void OnDestroy()
+    {
+        Application.logMessageReceived -= _callback;
     }
 
     public static void Log(string text)

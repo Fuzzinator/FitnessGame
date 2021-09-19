@@ -8,7 +8,7 @@ using UnityEngine.Events;
 public class SongInfoReader : MonoBehaviour
 {
     public static SongInfoReader Instance { get; private set; }
-    
+
     [TextArea]
     public string info;
 
@@ -17,12 +17,12 @@ public class SongInfoReader : MonoBehaviour
 
     [SerializeField]
     private DifficultyInfo _difficultyInfo;
-    
-    public UnityEvent finishedLoadingSongInfo = new UnityEvent();
-    
+
+    public UnityEvent<PlaylistItem> finishedLoadingSongInfo = new UnityEvent<PlaylistItem>();
+
     public float NoteSpeed => _difficultyInfo.MovementSpeed;
     public float BeatsPerMinute => songInfo.BeatsPerMinute;
-    
+
     private void Awake()
     {
         if (Instance == null)
@@ -39,7 +39,7 @@ public class SongInfoReader : MonoBehaviour
     {
         //UpdateSongInfo(info);
     }
-    
+
     public void LoadJson(PlaylistItem item)
     {
 #pragma warning disable 4014
@@ -49,13 +49,35 @@ public class SongInfoReader : MonoBehaviour
 
     private async UniTaskVoid AsyncLoadJson(PlaylistItem item)
     {
-        using (var streamReader = new StreamReader($"{Application.dataPath}\\Resources\\{item.FileLocation}\\Info.dat"))
+        if (item.IsCustomSong)
         {
+            var streamReader = new StreamReader($"{Application.persistentDataPath}/Resources/{item.FileLocation}/Info.dat");
             var reading = streamReader.ReadToEndAsync();
             await reading;
-            UpdateSongInfo(reading.Result, item);
-            finishedLoadingSongInfo?.Invoke();
+            if (reading.IsCompleted)
+            {
+                UpdateSongInfo(reading.Result, item);
+            }
+            else
+            {
+                Debug.LogError("Failed to read song info");
+                return;
+            }
         }
+        else
+        {
+            var request = Resources.LoadAsync<TextAsset>($"{item.FileLocation}/Info");
+            await request;
+            var json = request.asset as TextAsset;
+            if (json == null)
+            {
+                Debug.LogError("Failed to load local resource file");
+                return;
+            }
+            UpdateSongInfo(json.text, item);
+        }
+        item.SongInfo = songInfo;
+        finishedLoadingSongInfo?.Invoke(item);
     }
 
     public void UpdateSongInfo(string json, PlaylistItem item)
