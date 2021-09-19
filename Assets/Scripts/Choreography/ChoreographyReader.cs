@@ -55,8 +55,13 @@ public class ChoreographyReader : MonoBehaviour
     {
         if (item.IsCustomSong)
         {
-            var streamReader =
-                new StreamReader($"{Application.persistentDataPath}/Resources/{item.FileLocation}/{item.Difficulty}.dat");
+#if UNITY_ANDROID && !UNITY_EDITOR
+            var path = $"{Application.persistentDataPath}/Resources/{item.FileLocation}/{item.Difficulty}.dat";
+#elif UNITY_EDITOR
+            var path = $"{Application.dataPath}/Resources/{item.FileLocation}/{item.Difficulty}.txt";
+#endif
+            
+            var streamReader = new StreamReader(path);
             
             var reading = streamReader.ReadToEndAsync();
             await reading;

@@ -105,7 +105,11 @@ public class MusicManager : MonoBehaviour
     {
         if (item.IsCustomSong)
         {
+#if UNITY_ANDROID && !UNITY_EDITOR
             var path = $"file://{Application.persistentDataPath}/Resources/{item.FileLocation}/{item.SongInfo.SongFilename}";
+#elif UNITY_EDITOR
+            var path = $"{Application.dataPath}/Resources/{item.FileLocation}/{item.SongInfo.SongFilename}";
+#endif
             var uwr = UnityWebRequestMultimedia.GetAudioClip(path, AudioType.OGGVORBIS);
             await uwr.SendWebRequest();
             if (uwr.isDone && uwr.result == UnityWebRequest.Result.Success)
@@ -134,7 +138,7 @@ public class MusicManager : MonoBehaviour
             clip.name = item.SongName;
             SetNewMusic(clip);
         }
-        
+
         finishedLoadingSong?.Invoke();
     }
 
@@ -181,15 +185,15 @@ public class MusicManager : MonoBehaviour
     private async UniTask WaitForSongFinish()
     {
         await UniTask.WaitUntil(
-            () => Math.Abs(_musicAudioSource != null && _musicAudioSource.clip != null
-                ? _musicAudioSource.clip.length - _musicAudioSource.time
-                : 1) < .1f, cancellationToken: _cancellationToken);
+                                () => Math.Abs(_musicAudioSource != null && _musicAudioSource.clip != null
+                                                   ? _musicAudioSource.clip.length - _musicAudioSource.time
+                                                   : 1) < .1f, cancellationToken: _cancellationToken);
 
         if (_cancellationToken.IsCancellationRequested)
         {
             return;
         }
-        
+
         songFinishedPlaying?.Invoke();
     }
 }

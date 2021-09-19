@@ -51,7 +51,12 @@ public class SongInfoReader : MonoBehaviour
     {
         if (item.IsCustomSong)
         {
-            var streamReader = new StreamReader($"{Application.persistentDataPath}/Resources/{item.FileLocation}/Info.dat");
+#if UNITY_ANDROID && !UNITY_EDITOR
+            var path = $"{Application.persistentDataPath}/Resources/{item.FileLocation}/Info.dat";
+#elif UNITY_EDITOR
+            var path = $"{Application.dataPath}/Resources/{item.FileLocation}/Info.txt";
+#endif
+            var streamReader = new StreamReader(path);
             var reading = streamReader.ReadToEndAsync();
             await reading;
             if (reading.IsCompleted)
