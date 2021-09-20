@@ -53,12 +53,15 @@ public class ChoreographyReader : MonoBehaviour
 
     private async UniTaskVoid AsyncLoadJson(PlaylistItem item)
     {
+        var difficultySet = item.SongInfo.TryGetActiveDifficultySet(item.Difficulty);
+        
         if (item.IsCustomSong)
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
-            var path = $"{Application.persistentDataPath}/Resources/{item.FileLocation}/{item.Difficulty}.dat";
+            var path = $"{Application.persistentDataPath}/Resources/{item.FileLocation}/{difficultySet.FileName}";
 #elif UNITY_EDITOR
-            var path = $"{Application.dataPath}/Resources/{item.FileLocation}/{item.Difficulty}.txt";
+            var txtVersion = difficultySet.FileName.Replace(".dat", ".txt");
+            var path = $"{Application.dataPath}/Resources/{item.FileLocation}/{txtVersion}";
 #endif
             
             var streamReader = new StreamReader(path);
@@ -70,7 +73,8 @@ public class ChoreographyReader : MonoBehaviour
         }
         else
         {
-            var request = Resources.LoadAsync<TextAsset>($"{item.FileLocation}/{item.Difficulty}");
+            var txtVersion = difficultySet.FileName.Substring(0, difficultySet.FileName.LastIndexOf("."));
+            var request = Resources.LoadAsync<TextAsset>($"{item.FileLocation}/{txtVersion}");
             await request;
             var json = request.asset as TextAsset;
             if (json == null)

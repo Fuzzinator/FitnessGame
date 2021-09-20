@@ -32,6 +32,7 @@ public class FakeLogger : MonoBehaviour
                             //return;
                         }
                         Log(text);
+                        Log(stacktrace);
                         //Log(stacktrace);
                     };
         Application.logMessageReceived += _callback;

@@ -78,7 +78,7 @@ public class ChoreographySequencer : MonoBehaviour
     private float _delayEndTime;
 
 
-    private List<Tween> _activeTweens = new List<Tween>();
+    private List<Sequence> _activeSequences = new List<Sequence>();
 
     [SerializeField]
     private HitSideType _currentStance = HitSideType.Left;
@@ -199,6 +199,8 @@ public class ChoreographySequencer : MonoBehaviour
 
     private Sequence CreateSequence(ChoreographyFormation formation, int nextFormationIndex)
     {
+        var sequence = DOTween.Sequence();
+        
         var formationHolder = _formationHolderPool.GetNewPoolable() as FormationHolder;
         formationHolder.gameObject.SetActive(true);
         var formationTransform = formationHolder.transform;
@@ -215,15 +217,14 @@ public class ChoreographySequencer : MonoBehaviour
 
         TweenCallback onStart = () => SpawnFormationObjects(formationHolder, formation);
         onStart += () => TryCreateNextSequence(nextFormationIndex);
-        onStart += () => _activeTweens.Add(tween);
+        onStart += () => _activeSequences.Add(sequence);
 
         TweenCallback onComplete = () => ClearFormationObjects(formationHolder);
-        onComplete += () => _activeTweens.Remove(tween);
+        onComplete += () => _activeSequences.Remove(sequence);
         tween.OnStart(onStart);
 
         tween.OnComplete(onComplete);
 
-        var sequence = DOTween.Sequence();
         
         var beatsTime = 60/SongInfoReader.Instance.BeatsPerMinute;
         var time = (Time.time - (_songStartTime + _delayEndTime - _delayStartTime));
@@ -347,9 +348,9 @@ public class ChoreographySequencer : MonoBehaviour
 
     public void PauseChoreography()
     {
-        foreach (var tween in _activeTweens)
+        foreach (var sequence in _activeSequences)
         {
-            tween.Pause();
+            sequence.Pause();
         }
 
         _delayStartTime = Time.time;
@@ -358,9 +359,9 @@ public class ChoreographySequencer : MonoBehaviour
 
     public void ResumeChoreography()
     {
-        foreach (var tween in _activeTweens)
+        foreach (var sequence in _activeSequences)
         {
-            tween.Play();
+            sequence.Play();
         }
 
         _delayEndTime = Time.time;

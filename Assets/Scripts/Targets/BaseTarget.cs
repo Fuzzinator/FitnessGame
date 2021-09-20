@@ -90,11 +90,6 @@ public class BaseTarget : MonoBehaviour, IPoolable
         impactDotProd = Vector3.Dot(-handDirection, _optimalHitDirection);
         var collisionDirection = Vector3.Normalize(other.contacts[0].point - transform.position);
         dirDotProd = Vector3.Dot(collisionDirection, _optimalHitDirection);
-        if (impactDotProd <= _minMaxAllowance.x)
-        {
-            FakeLogger.Log("Hand Dir:"+handDirection);
-            FakeLogger.Log("Impact Prod: " +impactDotProd);
-        }
         return impactDotProd>_minMaxAllowance.x;// && dirDotProd > _minMaxAllowance.x;
     }
 

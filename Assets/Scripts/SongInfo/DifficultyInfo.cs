@@ -17,9 +17,9 @@ public struct DifficultyInfo
     public int DifficultyRank => _difficultyRank;
 
     [SerializeField]
-    private string _beatmapFileName;
+    private string _beatmapFilename;
 
-    public string FileName => _beatmapFileName;
+    public string FileName => _beatmapFilename;
 
     [SerializeField]
     private float _noteJumpMovementSpeed;
