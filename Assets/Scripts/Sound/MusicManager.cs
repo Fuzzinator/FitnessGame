@@ -21,6 +21,8 @@ public class MusicManager : MonoBehaviour
 
     private CancellationToken _cancellationToken;
 
+    private bool _awaitingSongEnd = false;
+
     private void OnValidate()
     {
         if (_musicAudioSource == null)
@@ -60,6 +62,9 @@ public class MusicManager : MonoBehaviour
                     case "Menu Button":
                         action.started += ToggleMusic;
                         break;
+                    case "Pause In Editor":
+                        action.started += ToggleMusic;
+                        break;
                 }
             }
         }
@@ -77,6 +82,9 @@ public class MusicManager : MonoBehaviour
                         action.started -= TempStart;
                         break;
                     case "Menu Button":
+                        action.started -= ToggleMusic;
+                        break;
+                    case "Pause In Editor":
                         action.started -= ToggleMusic;
                         break;
                 }
@@ -101,12 +109,13 @@ public class MusicManager : MonoBehaviour
 #pragma warning restore 4014
     }
 
-    private async UniTaskVoid AsyncLoadFromPlaylist(PlaylistItem item)
+    private async UniTask AsyncLoadFromPlaylist(PlaylistItem item)
     {
         if (item.IsCustomSong)
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
-            var path = $"file://{Application.persistentDataPath}/Resources/{item.FileLocation}/{item.SongInfo.SongFilename}";
+            var path =
+ $"file://{Application.persistentDataPath}/Resources/{item.FileLocation}/{item.SongInfo.SongFilename}";
 #elif UNITY_EDITOR
             var path = $"{Application.dataPath}/Resources/{item.FileLocation}/{item.SongInfo.SongFilename}";
 #endif
@@ -135,6 +144,7 @@ public class MusicManager : MonoBehaviour
                 Debug.LogError("Failed to load local resource file");
                 return;
             }
+
             clip.name = item.SongName;
             SetNewMusic(clip);
         }
@@ -155,9 +165,13 @@ public class MusicManager : MonoBehaviour
     public void PlayMusic()
     {
         _musicAudioSource.Play();
+        if (!_awaitingSongEnd)
+        {
 #pragma warning disable 4014
-        WaitForSongFinish();
+            WaitForSongFinish();
 #pragma warning restore 4014
+            _awaitingSongEnd = true;
+        }
     }
 
     public void PauseMusic()
@@ -185,9 +199,9 @@ public class MusicManager : MonoBehaviour
     private async UniTask WaitForSongFinish()
     {
         await UniTask.WaitUntil(
-                                () => Math.Abs(_musicAudioSource != null && _musicAudioSource.clip != null
-                                                   ? _musicAudioSource.clip.length - _musicAudioSource.time
-                                                   : 1) < .1f, cancellationToken: _cancellationToken);
+            () => Math.Abs(_musicAudioSource != null && _musicAudioSource.clip != null
+                ? _musicAudioSource.clip.length - _musicAudioSource.time
+                : 1) < .1f, cancellationToken: _cancellationToken);
 
         if (_cancellationToken.IsCancellationRequested)
         {
@@ -195,5 +209,7 @@ public class MusicManager : MonoBehaviour
         }
 
         songFinishedPlaying?.Invoke();
+
+        _awaitingSongEnd = false;
     }
 }

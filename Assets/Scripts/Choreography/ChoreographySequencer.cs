@@ -75,7 +75,7 @@ public class ChoreographySequencer : MonoBehaviour
     private float _optimalPointDistance;
     private float _songStartTime;
     private float _delayStartTime;
-    private float _delayEndTime;
+    private float _pauseOffset;
 
 
     private List<Sequence> _activeSequences = new List<Sequence>();
@@ -128,6 +128,9 @@ public class ChoreographySequencer : MonoBehaviour
                     case "Menu Button":
                         action.started += ToggleChoreography;
                         break;
+                    case "Pause In Editor":
+                        action.started += ToggleChoreography;
+                        break;
                 }
             }
         }
@@ -145,6 +148,9 @@ public class ChoreographySequencer : MonoBehaviour
                         action.started -= _selectAction;
                         break;
                     case "Menu Button":
+                        action.started -= ToggleChoreography;
+                        break;
+                    case "Pause In Editor":
                         action.started -= ToggleChoreography;
                         break;
                 }
@@ -188,19 +194,19 @@ public class ChoreographySequencer : MonoBehaviour
 
         _songStartTime = Time.time;
         _delayStartTime = 0;
-        _delayEndTime = 0;
+        _pauseOffset = 0;
         DOTween.Init(true, false);
         _sequence = DOTween.Sequence();
 
         var formationSequence = CreateSequence(formations[0], 1);
-
+        _activeSequences.Add(formationSequence);
         SequenceRunning = true;
     }
 
     private Sequence CreateSequence(ChoreographyFormation formation, int nextFormationIndex)
     {
         var sequence = DOTween.Sequence();
-        
+
         var formationHolder = _formationHolderPool.GetNewPoolable() as FormationHolder;
         formationHolder.gameObject.SetActive(true);
         var formationTransform = formationHolder.transform;
@@ -212,12 +218,12 @@ public class ChoreographySequencer : MonoBehaviour
         {
             formationTransform.position, _formationEnd.position
         }, tweenSpeed);
-        
+
         tween.SetEase(Ease.Linear);
 
         TweenCallback onStart = () => SpawnFormationObjects(formationHolder, formation);
         onStart += () => TryCreateNextSequence(nextFormationIndex);
-        onStart += () => _activeSequences.Add(sequence);
+        //onStart += () => _activeSequences.Add(sequence);
 
         TweenCallback onComplete = () => ClearFormationObjects(formationHolder);
         onComplete += () => _activeSequences.Remove(sequence);
@@ -225,11 +231,11 @@ public class ChoreographySequencer : MonoBehaviour
 
         tween.OnComplete(onComplete);
 
-        
-        var beatsTime = 60/SongInfoReader.Instance.BeatsPerMinute;
-        var time = (Time.time - (_songStartTime + _delayEndTime - _delayStartTime));
+
+        var beatsTime = 60 / SongInfoReader.Instance.BeatsPerMinute;
+        var time = (Time.time - (_songStartTime + _pauseOffset));
         var timeToPoint = _optimalPointDistance / SongInfoReader.Instance.NoteSpeed;
-        
+
         var delay = Mathf.Max(0, (formation.Time * beatsTime) - time - timeToPoint);
 
         sequence.Insert(delay, tween);
@@ -242,8 +248,9 @@ public class ChoreographySequencer : MonoBehaviour
         var formations = ChoreographyReader.Instance.GetOrderedFormations();
         if (nextFormationIndex < formations.Count)
         {
-            var tween = CreateSequence(formations[nextFormationIndex], ++nextFormationIndex);
+            var formationSequence = CreateSequence(formations[nextFormationIndex], ++nextFormationIndex);
 
+            _activeSequences.Add(formationSequence);
             //_sequence.Insert(formations[nextFormationIndex].Time, tween);
         }
     }
@@ -353,7 +360,9 @@ public class ChoreographySequencer : MonoBehaviour
             sequence.Pause();
         }
 
+
         _delayStartTime = Time.time;
+
         SequenceRunning = false;
     }
 
@@ -364,7 +373,7 @@ public class ChoreographySequencer : MonoBehaviour
             sequence.Play();
         }
 
-        _delayEndTime = Time.time;
+        _pauseOffset += Time.time - _delayStartTime;
         SequenceRunning = true;
     }
 
