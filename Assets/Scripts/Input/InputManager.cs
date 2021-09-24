@@ -43,7 +43,10 @@ public class InputManager : MonoBehaviour
         {
             foreach (var action in _mainInput.actionMaps)
             {
-                action.Enable();
+                if (action.name == "Temp")
+                {
+                    action.Enable();
+                }
             }
         }
     }
