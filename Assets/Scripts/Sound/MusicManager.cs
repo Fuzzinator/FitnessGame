@@ -23,6 +23,16 @@ public class MusicManager : MonoBehaviour
 
     private bool _awaitingSongEnd = false;
 
+    #region Const Strings
+
+    private const string SELECT = "Select";
+    private const string MENUBUTTON = "Menu Button";
+#if UNITY_EDITOR
+    private const string PAUSEINEDITOR = "Pause In Editor";
+#endif
+
+    #endregion
+
     private void OnValidate()
     {
         if (_musicAudioSource == null)
@@ -52,21 +62,12 @@ public class MusicManager : MonoBehaviour
     {
         if (InputManager.Instance != null && InputManager.Instance.MainInput != null)
         {
-            foreach (var action in InputManager.Instance.MainInput)
-            {
-                switch (action.name)
-                {
-                    case "Select":
-                        action.started += TempStart;
-                        break;
-                    case "Menu Button":
-                        action.started += ToggleMusic;
-                        break;
-                    case "Pause In Editor":
-                        action.started += ToggleMusic;
-                        break;
-                }
-            }
+            InputManager.Instance.MainInput[SELECT].performed += TempStart;
+            InputManager.Instance.MainInput[MENUBUTTON].performed += ToggleMusic;
+            FocusTracker.Instance.focusChanged.AddListener(ToggleMusic);
+#if UNITY_EDITOR
+            InputManager.Instance.MainInput[PAUSEINEDITOR].performed += ToggleMusic;
+#endif
         }
     }
 
@@ -74,21 +75,12 @@ public class MusicManager : MonoBehaviour
     {
         if (InputManager.Instance != null && InputManager.Instance.MainInput != null)
         {
-            foreach (var action in InputManager.Instance.MainInput)
-            {
-                switch (action.name)
-                {
-                    case "Select":
-                        action.started -= TempStart;
-                        break;
-                    case "Menu Button":
-                        action.started -= ToggleMusic;
-                        break;
-                    case "Pause In Editor":
-                        action.started -= ToggleMusic;
-                        break;
-                }
-            }
+            InputManager.Instance.MainInput[SELECT].performed -= TempStart;
+            InputManager.Instance.MainInput[MENUBUTTON].performed -= ToggleMusic;
+            FocusTracker.Instance.focusChanged.RemoveListener(ToggleMusic);
+#if UNITY_EDITOR
+            InputManager.Instance.MainInput[PAUSEINEDITOR].performed -= ToggleMusic;
+#endif
         }
     }
 
@@ -193,6 +185,18 @@ public class MusicManager : MonoBehaviour
         else
         {
             PlayMusic();
+        }
+    }
+
+    public void ToggleMusic(bool play)
+    {
+        if (play)
+        {
+            PlayMusic();
+        }
+        else
+        {
+            PauseMusic();
         }
     }
 

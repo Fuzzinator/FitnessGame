@@ -947,6 +947,14 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Press"
+                },
+                {
+                    "name": "Reset Headset",
+                    "type": "Button",
+                    "id": "09a63b70-675c-4a71-9aa2-1e075bc05004",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press"
                 }
             ],
             "bindings": [
@@ -965,7 +973,7 @@
                     "name": "",
                     "id": "060c1087-5b08-49b1-b065-7967f8b7e834",
                     "path": "*/{MenuButton}",
-                    "interactions": "",
+                    "interactions": "Press(behavior=2)",
                     "processors": "",
                     "groups": "",
                     "action": "Menu Button",
@@ -980,6 +988,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Pause In Editor",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "eafaaed6-05d5-46fc-a0c7-8e3a29c8ba4b",
+                    "path": "*/{MenuButton}",
+                    "interactions": "Hold",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Reset Headset",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

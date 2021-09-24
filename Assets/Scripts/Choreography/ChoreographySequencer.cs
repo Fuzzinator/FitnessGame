@@ -93,6 +93,15 @@ public class ChoreographySequencer : MonoBehaviour
 
     public bool SequenceRunning { get; private set; }
 
+    #region Const Strings
+    
+    private const string SELECT = "Select";
+    private const string MENUBUTTON = "Menu Button";
+#if UNITY_EDITOR
+    private const string PAUSEINEDITOR = "Pause In Editor";
+#endif
+    
+    #endregion
     // Start is called before the first frame update
     void Start()
     {
@@ -118,20 +127,14 @@ public class ChoreographySequencer : MonoBehaviour
     {
         if (InputManager.Instance != null && InputManager.Instance.MainInput != null)
         {
-            foreach (var action in InputManager.Instance.MainInput)
+            if (InputManager.Instance != null && InputManager.Instance.MainInput != null)
             {
-                switch (action.name)
-                {
-                    case "Select":
-                        action.started += _selectAction;
-                        break;
-                    case "Menu Button":
-                        action.started += ToggleChoreography;
-                        break;
-                    case "Pause In Editor":
-                        action.started += ToggleChoreography;
-                        break;
-                }
+                InputManager.Instance.MainInput[SELECT].performed += _selectAction;
+                InputManager.Instance.MainInput[MENUBUTTON].performed += ToggleChoreography;
+                FocusTracker.Instance.focusChanged.AddListener(ToggleChoreography);
+#if UNITY_EDITOR
+                InputManager.Instance.MainInput[PAUSEINEDITOR].performed += ToggleChoreography;
+#endif
             }
         }
     }
@@ -140,31 +143,15 @@ public class ChoreographySequencer : MonoBehaviour
     {
         if (InputManager.Instance != null && InputManager.Instance.MainInput != null)
         {
-            foreach (var action in InputManager.Instance.MainInput)
+            if (InputManager.Instance != null && InputManager.Instance.MainInput != null)
             {
-                switch (action.name)
-                {
-                    case "Select":
-                        action.started -= _selectAction;
-                        break;
-                    case "Menu Button":
-                        action.started -= ToggleChoreography;
-                        break;
-                    case "Pause In Editor":
-                        action.started -= ToggleChoreography;
-                        break;
-                }
+                InputManager.Instance.MainInput[SELECT].performed -= _selectAction;
+                InputManager.Instance.MainInput[MENUBUTTON].performed -= ToggleChoreography;
+                FocusTracker.Instance.focusChanged.RemoveListener(ToggleChoreography);
+#if UNITY_EDITOR
+                InputManager.Instance.MainInput[PAUSEINEDITOR].performed -= ToggleChoreography;
+#endif
             }
-        }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (test)
-        {
-            test = false;
-            TempStart();
         }
     }
 
@@ -350,6 +337,18 @@ public class ChoreographySequencer : MonoBehaviour
         else
         {
             ResumeChoreography();
+        }
+    }
+
+    private void ToggleChoreography(bool play)
+    {
+        if (play)
+        {
+            ResumeChoreography();
+        }
+        else
+        {
+            PauseChoreography();
         }
     }
 

@@ -1,0 +1,33 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class MatchPlayerHeight : MonoBehaviour
+{
+    [SerializeField]
+    private float _offset;
+
+    // Start is called before the first frame update
+    private void Start()
+    {
+        UpdatePosition(GlobalSettings.UserHeight);
+    }
+
+    private void OnEnable()
+    {
+        GlobalSettings.UserHeightChanged.AddListener(UpdatePosition);
+    }
+
+    private void OnDisable()
+    {
+        GlobalSettings.UserHeightChanged.RemoveListener(UpdatePosition);
+    }
+
+    private void UpdatePosition(float height)
+    {
+        var t = transform;
+        var currentPos = t.position;
+        t.position = new Vector3(currentPos.x, height + _offset, currentPos.z);
+    }
+}

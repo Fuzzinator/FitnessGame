@@ -21,7 +21,10 @@ public class LevelManager : MonoBehaviour
     private bool _songInfoLoaded = false;
     private bool _actualSongLoaded = false;
 
+    private UniTask _songCountdown;
     private CancellationToken _cancellationToken;
+
+    private bool _pausedOrLostFocus = false;
     public bool ChoreographyLoaded
     {
         get => _choreographyLoaded;
@@ -96,23 +99,29 @@ public class LevelManager : MonoBehaviour
         if (_choreographyLoaded && _songInfoLoaded && _actualSongLoaded)
         {
             finishedLevelLoad?.Invoke(_delayLength);
-            await DelaySongStart();
+            _songCountdown =  DelaySongStart(_delayLength);
+            _songCountdown.SuppressCancellationThrow();
+            await _songCountdown;
         }
     }
 
-    private async UniTask DelaySongStart()
+    private async UniTask DelaySongStart(float delayLength)
     {
-        await UniTask.Delay(TimeSpan.FromSeconds(_delayLength), cancellationToken: _cancellationToken);
+        await UniTask.Delay(TimeSpan.FromSeconds(delayLength), cancellationToken: _cancellationToken);
         if (_cancellationToken.IsCancellationRequested)
         {
             return;
         }
-
         PlayLevel();
     }
 
     private void PlayLevel()
     {
         playLevel?.Invoke();
+    }
+
+    private void PauseSongDelay()
+    {
+        //_cancellationToken.
     }
 }
