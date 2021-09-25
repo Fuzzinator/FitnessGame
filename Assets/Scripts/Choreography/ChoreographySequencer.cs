@@ -83,6 +83,18 @@ public class ChoreographySequencer : MonoBehaviour
     [SerializeField]
     private HitSideType _currentStance = HitSideType.Left;
 
+    public HitSideType CurrentStance
+    {
+        get => _currentStance;
+        set
+        {
+            _currentStance = value;
+            var temp = value;
+            temp++;
+            _stanceUpdated?.Invoke((int) temp);
+        }
+    }
+
     public bool test = false;
 
 
@@ -91,17 +103,21 @@ public class ChoreographySequencer : MonoBehaviour
     [SerializeField]
     private UnityEvent _sequenceStarted = new UnityEvent();
 
+    [SerializeField]
+    private UnityEvent<int> _stanceUpdated = new UnityEvent<int>();
+
     public bool SequenceRunning { get; private set; }
 
     #region Const Strings
-    
+
     private const string SELECT = "Select";
     private const string MENUBUTTON = "Menu Button";
 #if UNITY_EDITOR
     private const string PAUSEINEDITOR = "Pause In Editor";
 #endif
-    
+
     #endregion
+
     // Start is called before the first frame update
     void Start()
     {
@@ -383,6 +399,6 @@ public class ChoreographySequencer : MonoBehaviour
 
     public void SwitchFootPlacement()
     {
-        _currentStance = _currentStance == HitSideType.Left ? HitSideType.Right : HitSideType.Left;
+        CurrentStance = _currentStance == HitSideType.Left ? HitSideType.Right : HitSideType.Left;
     }
 }

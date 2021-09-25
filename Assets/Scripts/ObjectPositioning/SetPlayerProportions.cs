@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -12,10 +13,11 @@ public class SetPlayerProportions : MonoBehaviour
 
     private const string RESETHEADSET = "Reset Headset";
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        GlobalSettings.UserHeight = _head.position.y;
-        PlayerPrefs.Save();
+#pragma warning disable 4014
+        ResetHeadsetWithDelay();
+#pragma warning restore 4014
     }
 
     private void OnEnable()
@@ -28,6 +30,13 @@ public class SetPlayerProportions : MonoBehaviour
         InputManager.Instance.MainInput[RESETHEADSET].performed -= ResetHeadset;
     }
 
+    private async UniTaskVoid ResetHeadsetWithDelay()
+    {
+        await UniTask.Delay(TimeSpan.FromSeconds(1), cancellationToken: this.GetCancellationTokenOnDestroy(),
+            ignoreTimeScale: false);
+        ResetHeadset(new InputAction.CallbackContext());
+    }
+    
     private void ResetHeadset(InputAction.CallbackContext context)
     {
         GlobalSettings.UserHeight = _head.position.y;

@@ -16,7 +16,7 @@ public class LevelManager : MonoBehaviour
 
     [SerializeField]
     private int _delayLength = 5;
-    
+
     private bool _choreographyLoaded = false;
     private bool _songInfoLoaded = false;
     private bool _actualSongLoaded = false;
@@ -25,6 +25,8 @@ public class LevelManager : MonoBehaviour
     private CancellationToken _cancellationToken;
 
     private bool _pausedOrLostFocus = false;
+
+    public bool SongFullyLoaded => _choreographyLoaded && _songInfoLoaded && _actualSongLoaded;
     public bool ChoreographyLoaded
     {
         get => _choreographyLoaded;
@@ -34,6 +36,7 @@ public class LevelManager : MonoBehaviour
             CheckIfLoaded();
         }
     }
+
     public bool SongInfoLoaded
     {
         get => _songInfoLoaded;
@@ -43,6 +46,7 @@ public class LevelManager : MonoBehaviour
             CheckIfLoaded();
         }
     }
+
     public bool ActualSongLoaded
     {
         get => _actualSongLoaded;
@@ -99,7 +103,7 @@ public class LevelManager : MonoBehaviour
         if (_choreographyLoaded && _songInfoLoaded && _actualSongLoaded)
         {
             finishedLevelLoad?.Invoke(_delayLength);
-            _songCountdown =  DelaySongStart(_delayLength);
+            _songCountdown = DelaySongStart(_delayLength);
             _songCountdown.SuppressCancellationThrow();
             await _songCountdown;
         }
@@ -107,11 +111,13 @@ public class LevelManager : MonoBehaviour
 
     private async UniTask DelaySongStart(float delayLength)
     {
-        await UniTask.Delay(TimeSpan.FromSeconds(delayLength), cancellationToken: _cancellationToken);
+        await UniTask.Delay(TimeSpan.FromSeconds(delayLength), cancellationToken: _cancellationToken,
+            ignoreTimeScale: false);
         if (_cancellationToken.IsCancellationRequested)
         {
             return;
         }
+
         PlayLevel();
     }
 

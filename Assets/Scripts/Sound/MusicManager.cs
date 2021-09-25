@@ -22,6 +22,7 @@ public class MusicManager : MonoBehaviour
     private CancellationToken _cancellationToken;
 
     private bool _awaitingSongEnd = false;
+    private bool _musicPaused = false;
 
     #region Const Strings
 
@@ -157,6 +158,7 @@ public class MusicManager : MonoBehaviour
     public void PlayMusic()
     {
         _musicAudioSource.Play();
+        _musicPaused = false;
         if (!_awaitingSongEnd)
         {
 #pragma warning disable 4014
@@ -169,11 +171,13 @@ public class MusicManager : MonoBehaviour
     public void PauseMusic()
     {
         _musicAudioSource.Pause();
+        _musicPaused = true;
     }
 
     public void StopMusic()
     {
         _musicAudioSource.Stop();
+        _musicPaused = false;
     }
 
     public void ToggleMusic(InputAction.CallbackContext context)
@@ -182,7 +186,7 @@ public class MusicManager : MonoBehaviour
         {
             PauseMusic();
         }
-        else
+        else if (_musicPaused)
         {
             PlayMusic();
         }
@@ -190,11 +194,17 @@ public class MusicManager : MonoBehaviour
 
     public void ToggleMusic(bool play)
     {
-        if (play)
+        if (GameManager.Instance.GameIsPaused || LevelManager.Instance == null ||
+            !LevelManager.Instance.SongFullyLoaded)
+        {
+            return;
+        }
+
+        if (play && _musicPaused)
         {
             PlayMusic();
         }
-        else
+        else if (!_musicPaused)
         {
             PauseMusic();
         }
@@ -212,8 +222,7 @@ public class MusicManager : MonoBehaviour
             return;
         }
 
-        songFinishedPlaying?.Invoke();
-
         _awaitingSongEnd = false;
+        songFinishedPlaying?.Invoke();
     }
 }
