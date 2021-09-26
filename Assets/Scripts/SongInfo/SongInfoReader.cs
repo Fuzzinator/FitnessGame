@@ -23,6 +23,16 @@ public class SongInfoReader : MonoBehaviour
     public float NoteSpeed => _difficultyInfo.MovementSpeed;
     public float BeatsPerMinute => songInfo.BeatsPerMinute;
 
+    #region Const Strings
+
+#if UNITY_ANDROID  && !UNITY_EDITOR
+    private const string ANDROIDPATHSTART = "file://";
+#endif
+
+    private const string SONGSFOLDER = "/Resources/Songs/";
+    private const string PLAYLISTEXTENSION = ".txt";
+
+    #endregion
     private void Awake()
     {
         if (Instance == null)
@@ -37,7 +47,7 @@ public class SongInfoReader : MonoBehaviour
 
     private void Start()
     {
-        //UpdateSongInfo(info);
+        SubscribeToPlaylistUpdating();
     }
 
     public void LoadJson(PlaylistItem item)
@@ -52,9 +62,9 @@ public class SongInfoReader : MonoBehaviour
         if (item.IsCustomSong)
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
-            var path = $"{Application.persistentDataPath}/Resources/{item.FileLocation}/Info.dat";
+            var path = $"{ANDROIDPATHSTART}{Application.persistentDataPath}{SONGSFOLDER}{item.FileLocation}/Info.dat";
 #elif UNITY_EDITOR
-            var path = $"{Application.dataPath}/Resources/{item.FileLocation}/Info.txt";
+            var path = $"{Application.dataPath}{SONGSFOLDER}{item.FileLocation}/Info.txt";
 #endif
             var streamReader = new StreamReader(path);
             var reading = streamReader.ReadToEndAsync();
@@ -71,7 +81,7 @@ public class SongInfoReader : MonoBehaviour
         }
         else
         {
-            var request = Resources.LoadAsync<TextAsset>($"{item.FileLocation}/Info");
+            var request = Resources.LoadAsync<TextAsset>($"Songs/{item.FileLocation}/Info");
             await request;
             var json = request.asset as TextAsset;
             if (json == null)
@@ -95,5 +105,10 @@ public class SongInfoReader : MonoBehaviour
     public AudioClip GetCurrentSong()
     {
         return null;
+    }
+
+    private void SubscribeToPlaylistUpdating()
+    {
+        PlaylistManager.Instance.playlistItemUpdated.AddListener(LoadJson);
     }
 }

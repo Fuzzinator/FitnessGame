@@ -34,7 +34,7 @@ public class InputManager : MonoBehaviour
             Destroy(this);
         }
 
-        DontDestroyOnLoad(this);
+//        DontDestroyOnLoad(this);
     }
 
     private void OnEnable()

@@ -24,9 +24,8 @@ public class LevelManager : MonoBehaviour
     private UniTask _songCountdown;
     private CancellationToken _cancellationToken;
 
-    private bool _pausedOrLostFocus = false;
-
     public bool SongFullyLoaded => _choreographyLoaded && _songInfoLoaded && _actualSongLoaded;
+
     public bool ChoreographyLoaded
     {
         get => _choreographyLoaded;
@@ -71,6 +70,11 @@ public class LevelManager : MonoBehaviour
 
     private void Start()
     {
+        if (PlaylistManager.Instance != null)
+        {
+            startedLevelLoad.AddListener(PlaylistManager.Instance.SetFirstPlaylistItem);
+        }
+
         ResetForNextSong();
         startedLevelLoad?.Invoke();
         _cancellationToken = this.GetCancellationTokenOnDestroy();

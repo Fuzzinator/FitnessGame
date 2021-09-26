@@ -30,7 +30,17 @@ public class ChoreographyReader : MonoBehaviour
     private float _minObstacleSpace = .75f; //This should go into a difficulty setting
 
     public UnityEvent finishedLoadingSong = new UnityEvent();
+    
+    #region Const Strings
 
+#if UNITY_ANDROID  && !UNITY_EDITOR
+    private const string ANDROIDPATHSTART = "file://";
+#endif
+
+    private const string SONGSFOLDER = "/Resources/Songs/";
+    private const string PLAYLISTEXTENSION = ".txt";
+
+    #endregion
     private void Awake()
     {
         if (Instance == null)
@@ -58,10 +68,10 @@ public class ChoreographyReader : MonoBehaviour
         if (item.IsCustomSong)
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
-            var path = $"{Application.persistentDataPath}/Resources/{item.FileLocation}/{difficultySet.FileName}";
+            var path = $"{ANDROIDPATHSTART}{Application.persistentDataPath}{SONGSFOLDER}{item.FileLocation}/{difficultySet.FileName}";
 #elif UNITY_EDITOR
             var txtVersion = difficultySet.FileName.Replace(".dat", ".txt");
-            var path = $"{Application.dataPath}/Resources/{item.FileLocation}/{txtVersion}";
+            var path = $"{Application.dataPath}{SONGSFOLDER}{item.FileLocation}/{txtVersion}";
 #endif
             
             var streamReader = new StreamReader(path);
@@ -74,7 +84,7 @@ public class ChoreographyReader : MonoBehaviour
         else
         {
             var txtVersion = difficultySet.FileName.Substring(0, difficultySet.FileName.LastIndexOf("."));
-            var request = Resources.LoadAsync<TextAsset>($"{item.FileLocation}/{txtVersion}");
+            var request = Resources.LoadAsync<TextAsset>($"Songs/{item.FileLocation}/{txtVersion}");
             await request;
             var json = request.asset as TextAsset;
             if (json == null)

@@ -18,7 +18,7 @@ public class PlaylistManager : MonoBehaviour
             if (_currentItem != value)
             {
                 _currentItem = value;
-                _playlistItemUpdated?.Invoke(value);
+                playlistItemUpdated?.Invoke(value);
             }
         }
     }
@@ -26,8 +26,7 @@ public class PlaylistManager : MonoBehaviour
     [SerializeField]
     private Playlist _currentPlaylist;
     
-    [SerializeField]
-    private UnityEvent<PlaylistItem> _playlistItemUpdated = new UnityEvent<PlaylistItem>();
+    public UnityEvent<PlaylistItem> playlistItemUpdated = new UnityEvent<PlaylistItem>();
 
     private int _currentIndex = 0;
     
@@ -43,11 +42,15 @@ public class PlaylistManager : MonoBehaviour
         }
     }
 
+    public void SetActivePlaylist(Playlist playlist)
+    {
+        _currentPlaylist = playlist;
+    }
+    
     public void SetFirstPlaylistItem()
     {
         if (_currentPlaylist.Items == null || _currentPlaylist.Items.Length <= _currentIndex)
         {
-            Debug.LogError($"CurrentPlaylist is {_currentPlaylist.Items}");
             return;
         }
 
@@ -63,5 +66,4 @@ public class PlaylistManager : MonoBehaviour
         _currentIndex++;
         CurrentItem = _currentPlaylist.Items[_currentIndex];
     }
-    
 }

@@ -31,9 +31,15 @@ public class MusicManager : MonoBehaviour
 #if UNITY_EDITOR
     private const string PAUSEINEDITOR = "Pause In Editor";
 #endif
+    
+#if UNITY_ANDROID // && !UNITY_EDITOR
+    private const string ANDROIDPATHSTART = "file://";
+#endif
+
+    private const string SONGSFOLDER = "/Resources/Songs/";
+    private const string PLAYLISTEXTENSION = ".txt";
 
     #endregion
-
     private void OnValidate()
     {
         if (_musicAudioSource == null)
@@ -57,6 +63,11 @@ public class MusicManager : MonoBehaviour
     private void Start()
     {
         _cancellationToken = this.GetCancellationTokenOnDestroy();
+        
+        if (PlaylistManager.Instance != null)
+        {
+            songFinishedPlaying.AddListener(PlaylistManager.Instance.UpdateCurrentPlaylist);
+        }
     }
 
     private void OnEnable()
@@ -108,9 +119,9 @@ public class MusicManager : MonoBehaviour
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
             var path =
- $"file://{Application.persistentDataPath}/Resources/{item.FileLocation}/{item.SongInfo.SongFilename}";
+ $"{ANDROIDPATHSTART}{Application.persistentDataPath}{SONGSFOLDER}{item.FileLocation}/{item.SongInfo.SongFilename}";
 #elif UNITY_EDITOR
-            var path = $"{Application.dataPath}/Resources/{item.FileLocation}/{item.SongInfo.SongFilename}";
+            var path = $"{Application.dataPath}{SONGSFOLDER}{item.FileLocation}/{item.SongInfo.SongFilename}";
 #endif
             var uwr = UnityWebRequestMultimedia.GetAudioClip(path, AudioType.OGGVORBIS);
             await uwr.SendWebRequest();
@@ -129,7 +140,7 @@ public class MusicManager : MonoBehaviour
         else
         {
             var fileName = item.SongInfo.SongFilename.Substring(0, item.SongInfo.SongFilename.LastIndexOf('.'));
-            var request = Resources.LoadAsync<AudioClip>($"{item.FileLocation}/{fileName}");
+            var request = Resources.LoadAsync<AudioClip>($"Songs/{item.FileLocation}/{fileName}");
             await request;
             var clip = request.asset as AudioClip;
             if (clip == null)
