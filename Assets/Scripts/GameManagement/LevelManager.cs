@@ -17,8 +17,13 @@ public class LevelManager : MonoBehaviour
     [SerializeField]
     private int _delayLength = 5;
 
+    [SerializeField]
     private bool _choreographyLoaded = false;
+    
+    [SerializeField]
     private bool _songInfoLoaded = false;
+    
+    [SerializeField]
     private bool _actualSongLoaded = false;
 
     private UniTask _songCountdown;

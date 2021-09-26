@@ -11,6 +11,8 @@ public class ActiveSceneManager : MonoBehaviour
     public ActiveSceneManager Instance { get; private set; }
     public UnityEvent newSceneLoaded = new UnityEvent();
 
+    private const string BASELEVELNAME = "Base Level";
+
     private void Awake()
     {
         if (Instance == null)
@@ -28,6 +30,11 @@ public class ActiveSceneManager : MonoBehaviour
         
     }
 
+    public void LoadBaseLevel()
+    {
+        LoadSceneAsync(BASELEVELNAME);
+    }
+    
     private async UniTask LoadSceneAsync(string newSceneName, bool additive = false)
     {
         await SceneManager.LoadSceneAsync(newSceneName, additive ? LoadSceneMode.Additive : LoadSceneMode.Single);

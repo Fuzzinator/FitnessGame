@@ -25,9 +25,20 @@ public class PlaylistManager : MonoBehaviour
 
     [SerializeField]
     private Playlist _currentPlaylist;
+
+    public Playlist CurrentPlaylist
+    {
+        get =>_currentPlaylist;
+        set
+        {
+            _currentPlaylist = value;
+            currentPlaylistUpdated?.Invoke();
+        }
+    }
     
     public UnityEvent<PlaylistItem> playlistItemUpdated = new UnityEvent<PlaylistItem>();
-
+    public UnityEvent currentPlaylistUpdated = new UnityEvent();
+    
     private int _currentIndex = 0;
     
     private void Awake()
@@ -44,7 +55,7 @@ public class PlaylistManager : MonoBehaviour
 
     public void SetActivePlaylist(Playlist playlist)
     {
-        _currentPlaylist = playlist;
+        CurrentPlaylist = playlist;
     }
     
     public void SetFirstPlaylistItem()
