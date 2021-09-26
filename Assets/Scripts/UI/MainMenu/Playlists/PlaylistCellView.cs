@@ -22,5 +22,6 @@ public class PlaylistCellView : EnhancedScrollerCellView
     public void SetActivePlaylist()
     {
         PlaylistManager.Instance.SetActivePlaylist(_playlist);
+        DisplayPlaylistInfo.Instance.ShowInfo();
     }
 }

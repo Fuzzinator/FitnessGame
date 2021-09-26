@@ -15,8 +15,6 @@ public class PlaylistSongScrollerController : MonoBehaviour, IEnhancedScrollerDe
     [SerializeField]
     private float _cellViewSize = 100f;
 
-    [SerializeField]
-    private GameObject _playlistTitlecard;
     private void Start()
     {
         _scroller.Delegate = this;
@@ -25,7 +23,7 @@ public class PlaylistSongScrollerController : MonoBehaviour, IEnhancedScrollerDe
 
     public int GetNumberOfCells(EnhancedScroller scroller)
     {
-        return PlaylistFilesReader.Instance.availablePlaylists.Count;
+        return PlaylistManager.Instance.CurrentPlaylist.Items.Length;
     }
 
     public float GetCellViewSize(EnhancedScroller scroller, int dataIndex)
@@ -40,9 +38,8 @@ public class PlaylistSongScrollerController : MonoBehaviour, IEnhancedScrollerDe
         return cellView;
     }
 
-    public void ShowInfo()
+    public void ReloadScroller()
     {
-        _playlistTitlecard.SetActive(true);
         _scroller.ReloadData();
     }
 }
