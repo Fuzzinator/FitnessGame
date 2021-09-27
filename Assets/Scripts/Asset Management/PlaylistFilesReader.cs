@@ -44,15 +44,16 @@ public class PlaylistFilesReader : MonoBehaviour
     private async UniTaskVoid UpdateAvailablePlaylists()
     {
         availablePlaylists.Clear();
+        await GetBuiltInPlaylists();
         await GetCustomPlaylists();
         _playlistsUpdated?.Invoke();
         //availablePlaylists = GetCustomPlaylists();
     }
 
-    /*private List<Playlist> GetBuiltInPlaylists()
+    private async UniTask GetBuiltInPlaylists()
     {
-        
-    }*/
+        //This will use addressables
+    }
 
     private async UniTask GetCustomPlaylists()
     {
