@@ -48,6 +48,14 @@ public struct ChoreographyNote : ISequenceable
         SetLineIndex(_type == HitSideType.Left || _type == HitSideType.Block? 1:2);
     }
 
+    public void SetToBlock()
+    {
+        SetCutDirection(CutDirection.Jab);
+        SetLineLayer(LineLayerType.Middle);
+        SetLineIndex(1);
+        SetType(HitSideType.Block);
+    }
+
     public void SetCutDirection(CutDirection direction)
     {
         _cutDirection = direction;
@@ -63,6 +71,11 @@ public struct ChoreographyNote : ISequenceable
         _lineIndex = index;
     }
 
+    private void SetType(HitSideType type)
+    {
+        _type = type;
+    }
+    
     public enum CutDirection
     {
         Uppercut = 0,

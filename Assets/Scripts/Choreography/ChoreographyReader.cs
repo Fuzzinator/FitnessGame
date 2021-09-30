@@ -18,6 +18,8 @@ public class ChoreographyReader : MonoBehaviour
     [SerializeField]
     private Choreography _choreography;
 
+    private DifficultyInfo _difficultyInfo;
+
     private List<ChoreographyFormation> _formations;
     public ChoreographyNote[] Notes => _choreography.Notes;
     public ChoreographyEvent[] Events => _choreography.Events;
@@ -41,6 +43,7 @@ public class ChoreographyReader : MonoBehaviour
     private const string SONGSFOLDER = "Assets/Music/Songs/";
     private const string DAT = ".dat";
     private const string TXT = ".txt";
+    private const string EASY = "Easy";
 
     #endregion
 
@@ -66,15 +69,15 @@ public class ChoreographyReader : MonoBehaviour
 
     private async UniTaskVoid AsyncLoadJson(PlaylistItem item)
     {
-        var difficultySet = item.SongInfo.TryGetActiveDifficultySet(item.Difficulty);
-
+        _difficultyInfo = item.SongInfo.TryGetActiveDifficultySet(item.Difficulty);
+    
         if (item.IsCustomSong)
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
             var path =
  $"{ANDROIDPATHSTART}{Application.persistentDataPath}{SONGSFOLDER}{item.FileLocation}/{difficultySet.FileName}";
 #elif UNITY_EDITOR
-            var txtVersion = difficultySet.FileName.Replace(".dat", ".txt");
+            var txtVersion = _difficultyInfo.FileName.Replace(".dat", ".txt");
             var path = $"{Application.dataPath}{SONGSFOLDER}{item.FileLocation}/{txtVersion}";
 #endif
 
@@ -87,7 +90,7 @@ public class ChoreographyReader : MonoBehaviour
         }
         else
         {
-            var txtVersion = difficultySet.FileName;
+            var txtVersion = _difficultyInfo.FileName;
             if (txtVersion.EndsWith(DAT))
             {
                 txtVersion = txtVersion.Replace(DAT, TXT);
@@ -194,6 +197,10 @@ public class ChoreographyReader : MonoBehaviour
                             case HitSideType.Block:
                                 if (note.LineLayer != ChoreographyNote.LineLayerType.Low)
                                 {
+                                    if (thisTimeObstacle.HitSideType == HitSideType.Block)
+                                    {
+                                        note.SetLineLayer(ChoreographyNote.LineLayerType.Low);
+                                    }
                                     continue;
                                 }
 
@@ -231,6 +238,25 @@ public class ChoreographyReader : MonoBehaviour
                         {
                             note.SetToBasicJab();
                         }*/
+                    }
+
+                    if (note.CutDir == ChoreographyNote.CutDirection.JabDown ||
+                        note.CutDir == ChoreographyNote.CutDirection.HookLeftDown ||
+                        note.CutDir == ChoreographyNote.CutDirection.HookRightDown)
+                    {
+                        if (note.LineLayer == ChoreographyNote.LineLayerType.High)
+                        {
+                            note.SetToBlock();
+                        }
+                    }
+
+                    if (_difficultyInfo.DifficultyRank == 1)
+                    {
+                        if (note.LineLayer == ChoreographyNote.LineLayerType.High &&
+                            note.CutDir == ChoreographyNote.CutDirection.Jab)
+                        {
+                            note.SetToBlock();
+                        }
                     }
 
                     switch (note.HitSideType)
