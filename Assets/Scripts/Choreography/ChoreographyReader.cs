@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
@@ -30,17 +31,19 @@ public class ChoreographyReader : MonoBehaviour
     private float _minObstacleSpace = .75f; //This should go into a difficulty setting
 
     public UnityEvent finishedLoadingSong = new UnityEvent();
-    
+
     #region Const Strings
 
-#if UNITY_ANDROID  && !UNITY_EDITOR
+#if UNITY_ANDROID && !UNITY_EDITOR
     private const string ANDROIDPATHSTART = "file://";
 #endif
 
-    private const string SONGSFOLDER = "/Resources/Songs/";
-    private const string PLAYLISTEXTENSION = ".txt";
+    private const string SONGSFOLDER = "Assets/Music/Songs/";
+    private const string DAT = ".dat";
+    private const string TXT = ".txt";
 
     #endregion
+
     private void Awake()
     {
         if (Instance == null)
@@ -57,25 +60,26 @@ public class ChoreographyReader : MonoBehaviour
     {
 #pragma warning disable 4014
         AsyncLoadJson(item);
-        
+
 #pragma warning restore 4014
     }
 
     private async UniTaskVoid AsyncLoadJson(PlaylistItem item)
     {
         var difficultySet = item.SongInfo.TryGetActiveDifficultySet(item.Difficulty);
-        
+
         if (item.IsCustomSong)
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
-            var path = $"{ANDROIDPATHSTART}{Application.persistentDataPath}{SONGSFOLDER}{item.FileLocation}/{difficultySet.FileName}";
+            var path =
+ $"{ANDROIDPATHSTART}{Application.persistentDataPath}{SONGSFOLDER}{item.FileLocation}/{difficultySet.FileName}";
 #elif UNITY_EDITOR
             var txtVersion = difficultySet.FileName.Replace(".dat", ".txt");
             var path = $"{Application.dataPath}{SONGSFOLDER}{item.FileLocation}/{txtVersion}";
 #endif
-            
+
             var streamReader = new StreamReader(path);
-            
+
             var reading = streamReader.ReadToEndAsync();
             await reading;
             var json = reading.Result;
@@ -83,17 +87,24 @@ public class ChoreographyReader : MonoBehaviour
         }
         else
         {
-            var txtVersion = difficultySet.FileName.Substring(0, difficultySet.FileName.LastIndexOf("."));
-            var request = Resources.LoadAsync<TextAsset>($"Songs/{item.FileLocation}/{txtVersion}");
+            var txtVersion = difficultySet.FileName;
+            if (txtVersion.EndsWith(DAT))
+            {
+                txtVersion = txtVersion.Replace(DAT, TXT);
+            }
+
+            var request = Addressables.LoadAssetAsync<TextAsset>($"{SONGSFOLDER}{item.FileLocation}/{txtVersion}");
             await request;
-            var json = request.asset as TextAsset;
+            var json = request.Result;
             if (json == null)
             {
                 Debug.LogError("Failed to load local resource file");
                 return;
             }
-            _choreography = JsonUtility.FromJson<Choreography>(((TextAsset)json).text);
+
+            _choreography = JsonUtility.FromJson<Choreography>(((TextAsset) json).text);
         }
+
         finishedLoadingSong?.Invoke();
     }
 

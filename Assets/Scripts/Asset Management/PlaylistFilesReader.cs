@@ -1,8 +1,11 @@
 using System.Collections.Generic;
 using System.IO;
 using Cysharp.Threading.Tasks;
+using UnityEditor.VersionControl;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
+using UnityEngine.ResourceManagement.ResourceLocations;
 
 public class PlaylistFilesReader : MonoBehaviour
 {
@@ -11,17 +14,21 @@ public class PlaylistFilesReader : MonoBehaviour
     public List<Playlist> availablePlaylists = new List<Playlist>();
 
     [SerializeField]
+    private AssetLabelReference _labelReference;
+    [SerializeField]
     private UnityEvent _playlistsUpdated = new UnityEvent();
     
     #region Const Strings
 
-#if UNITY_ANDROID // && !UNITY_EDITOR
+#if UNITY_ANDROID  && !UNITY_EDITOR
     private const string ANDROIDPATHSTART = "file://";
+    #elif UNITY_EDITOR
+    private const string UNITYEDITORLOCATION = "E:\\Projects\\FitnessGame\\LocalCustomSongs\\Playlists";
 #endif
 
-    private const string PLAYLISTFOLDER = "/Resources/Playlists/";
+    private const string PLAYLISTSFOLDER = "/Resources/Songs/";
     private const string PLAYLISTEXTENSION = ".txt";
-
+    private const string PLAYLISTSKEY = "BuiltInSongs/Playlists";
     #endregion
 
     private void Awake()
@@ -52,15 +59,23 @@ public class PlaylistFilesReader : MonoBehaviour
 
     private async UniTask GetBuiltInPlaylists()
     {
-        //This will use addressables
+        await Addressables.LoadAssetsAsync<TextAsset>(_labelReference.labelString, asset =>
+        {
+            if (asset == null)
+            {
+                return;
+            }
+
+            availablePlaylists.Add(JsonUtility.FromJson<Playlist>(asset.text));
+        });
     }
 
     private async UniTask GetCustomPlaylists()
     {
 #if UNITY_ANDROID  && !UNITY_EDITOR
-        var path = $"{ANDROIDPATHSTART}{Application.persistentDataPath}{PLAYLISTFOLDER}";
+        var path = $"{ANDROIDPATHSTART}{Application.persistentDataPath}{PLAYLISTSFOLDER}";
         #elif UNITY_EDITOR
-        var path = "E:\\Projects\\FitnessGame\\Assets\\Resources\\Playlists";
+        var path = UNITYEDITORLOCATION;
 #endif
         var info = new DirectoryInfo(path);
         var files = info.GetFiles();

@@ -32,6 +32,9 @@ public class HitSpawnEffect : MonoBehaviour, IValidHit
         hitParticleTransform.position = thisTransform.position;
         
         hitParticle.SetParticleColor(_thisRenderer.sharedMaterial.color);
+        
+#pragma warning disable 4014
         hitParticle.PlayParticles();
+#pragma warning restore 4014
     }
 }

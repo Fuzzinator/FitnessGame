@@ -37,7 +37,9 @@ public class LevelManager : MonoBehaviour
         private set
         {
             _choreographyLoaded = value;
+#pragma warning disable 4014
             CheckIfLoaded();
+#pragma warning restore 4014
         }
     }
 
@@ -47,7 +49,10 @@ public class LevelManager : MonoBehaviour
         private set
         {
             _songInfoLoaded = value;
+            
+#pragma warning disable 4014
             CheckIfLoaded();
+#pragma warning restore 4014
         }
     }
 
@@ -57,7 +62,10 @@ public class LevelManager : MonoBehaviour
         private set
         {
             _actualSongLoaded = value;
+            
+#pragma warning disable 4014
             CheckIfLoaded();
+#pragma warning restore 4014
         }
     }
 

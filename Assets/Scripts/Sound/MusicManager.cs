@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.Networking;
@@ -31,15 +32,15 @@ public class MusicManager : MonoBehaviour
 #if UNITY_EDITOR
     private const string PAUSEINEDITOR = "Pause In Editor";
 #endif
-    
-#if UNITY_ANDROID // && !UNITY_EDITOR
+
+#if UNITY_ANDROID && !UNITY_EDITOR
     private const string ANDROIDPATHSTART = "file://";
 #endif
 
-    private const string SONGSFOLDER = "/Resources/Songs/";
-    private const string PLAYLISTEXTENSION = ".txt";
+    private const string SONGSFOLDER = "Assets/Music/Songs/";
 
     #endregion
+
     private void OnValidate()
     {
         if (_musicAudioSource == null)
@@ -63,7 +64,7 @@ public class MusicManager : MonoBehaviour
     private void Start()
     {
         _cancellationToken = this.GetCancellationTokenOnDestroy();
-        
+
         if (PlaylistManager.Instance != null)
         {
             songFinishedPlaying.AddListener(PlaylistManager.Instance.UpdateCurrentPlaylist);
@@ -139,10 +140,10 @@ public class MusicManager : MonoBehaviour
         }
         else
         {
-            var fileName = item.SongInfo.SongFilename.Substring(0, item.SongInfo.SongFilename.LastIndexOf('.'));
-            var request = Resources.LoadAsync<AudioClip>($"Songs/{item.FileLocation}/{fileName}");
+            var fileName = item.SongInfo.SongFilename;
+            var request = Addressables.LoadAssetAsync<AudioClip>($"{SONGSFOLDER}{item.FileLocation}/{fileName}");
             await request;
-            var clip = request.asset as AudioClip;
+            var clip = request.Result;
             if (clip == null)
             {
                 Debug.LogError("Failed to load local resource file");

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
 
 public class SongInfoReader : MonoBehaviour
@@ -25,14 +26,16 @@ public class SongInfoReader : MonoBehaviour
 
     #region Const Strings
 
-#if UNITY_ANDROID  && !UNITY_EDITOR
+#if UNITY_ANDROID && !UNITY_EDITOR
     private const string ANDROIDPATHSTART = "file://";
 #endif
 
-    private const string SONGSFOLDER = "/Resources/Songs/";
-    private const string PLAYLISTEXTENSION = ".txt";
+    private const string SONGSFOLDER = "Assets/Music/Songs/";
+    private const string INFO = "/Info";
+    private const string TXT = ".txt";
 
     #endregion
+
     private void Awake()
     {
         if (Instance == null)
@@ -62,9 +65,9 @@ public class SongInfoReader : MonoBehaviour
         if (item.IsCustomSong)
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
-            var path = $"{ANDROIDPATHSTART}{Application.persistentDataPath}{SONGSFOLDER}{item.FileLocation}/Info.dat";
+            var path = $"{ANDROIDPATHSTART}{Application.persistentDataPath}/{SONGSFOLDER}{item.FileLocation}{INFO}.dat";
 #elif UNITY_EDITOR
-            var path = $"{Application.dataPath}{SONGSFOLDER}{item.FileLocation}/Info.txt";
+            var path = $"{Application.dataPath}/{SONGSFOLDER}{item.FileLocation}{INFO}{TXT}";
 #endif
             var streamReader = new StreamReader(path);
             var reading = streamReader.ReadToEndAsync();
@@ -81,16 +84,18 @@ public class SongInfoReader : MonoBehaviour
         }
         else
         {
-            var request = Resources.LoadAsync<TextAsset>($"Songs/{item.FileLocation}/Info");
+            var request = Addressables.LoadAssetAsync<TextAsset>($"{SONGSFOLDER}{item.FileLocation}{INFO}{TXT}");
             await request;
-            var json = request.asset as TextAsset;
+            var json = request.Result;
             if (json == null)
             {
                 Debug.LogError("Failed to load local resource file");
                 return;
             }
+
             UpdateSongInfo(json.text, item);
         }
+
         item.SongInfo = songInfo;
         finishedLoadingSongInfo?.Invoke(item);
     }
