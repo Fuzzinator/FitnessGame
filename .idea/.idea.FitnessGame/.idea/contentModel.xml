@@ -216,6 +216,7 @@
           <e p="Asset Management" t="Include">
             <e p="CustomSongsManager.cs" t="Include" />
             <e p="PlaylistFilesReader.cs" t="Include" />
+            <e p="SongInfoFilesReader.cs" t="Include" />
           </e>
           <e p="Choreography" t="Include">
             <e p="Choreography.cs" t="Include" />
@@ -308,11 +309,17 @@
             <e p="MainMenu" t="Include">
               <e p="Playlists" t="Include">
                 <e p="DisplayPlaylistInfo.cs" t="Include" />
-                <e p="PlalistScrollerData.cs" t="Include" />
                 <e p="PlaylistCellView.cs" t="Include" />
+                <e p="PlaylistScrollerData.cs" t="Include" />
                 <e p="PlaylistSongCellView.cs" t="Include" />
                 <e p="PlaylistSongScrollerController.cs" t="Include" />
                 <e p="ScrollerController.cs" t="Include" />
+              </e>
+              <e p="Songs" t="Include">
+                <e p="DisplaySongInfo.cs" t="Include" />
+                <e p="SongDifficultyScrollerController.cs" t="Include" />
+                <e p="SongInfoCellView.cs" t="Include" />
+                <e p="SongInfoScrollerController.cs" t="Include" />
               </e>
             </e>
           </e>

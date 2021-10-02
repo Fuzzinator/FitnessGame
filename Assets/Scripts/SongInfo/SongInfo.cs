@@ -10,11 +10,15 @@ public class SongInfo
 
    public string SongName => _songName;
    public string SongFilename => _songFilename;
+
+   public string SongAuthorName => _songAuthorName;
+
+   public string LevelAuthorName => _levelAuthorName;
    
    [SerializeField]
-   private string _version;
-   [SerializeField]
    private string _songName;
+   [SerializeField]
+   private string _version;
    [SerializeField]
    private string _songSubName;
    [SerializeField]

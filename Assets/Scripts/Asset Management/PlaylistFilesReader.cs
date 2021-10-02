@@ -22,13 +22,12 @@ public class PlaylistFilesReader : MonoBehaviour
 
 #if UNITY_ANDROID  && !UNITY_EDITOR
     private const string ANDROIDPATHSTART = "file://";
+    private const string PLAYLISTSFOLDER = "/Resources/Playlists/";
     #elif UNITY_EDITOR
     private const string UNITYEDITORLOCATION = "E:\\Projects\\FitnessGame\\LocalCustomSongs\\Playlists";
 #endif
 
-    private const string PLAYLISTSFOLDER = "/Resources/Songs/";
     private const string PLAYLISTEXTENSION = ".txt";
-    private const string PLAYLISTSKEY = "BuiltInSongs/Playlists";
     #endregion
 
     private void Awake()
@@ -43,12 +42,17 @@ public class PlaylistFilesReader : MonoBehaviour
         }
     }
 
-    private void Start()
+    private void OnEnable()
     {
-        UpdateAvailablePlaylists();
+        UpdatePlaylists();
     }
 
-    private async UniTaskVoid UpdateAvailablePlaylists()
+    public async void UpdatePlaylists()
+    {
+        await UpdateAvailablePlaylists();
+    }
+
+    private async UniTask UpdateAvailablePlaylists()
     {
         availablePlaylists.Clear();
         await GetBuiltInPlaylists();
