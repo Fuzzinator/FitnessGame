@@ -84,6 +84,10 @@ public class SongInfoFilesReader : MonoBehaviour
     {
 #if UNITY_ANDROID && !UNITY_EDITOR
         var path = $"{ANDROIDPATHSTART}{Application.persistentDataPath}{PLAYLISTSFOLDER}";
+        if (!Permission.HasUserAuthorizedPermission(Permission.ExternalStorageRead))
+        {
+            Permission.RequestUserPermission(Permission.ExternalStorageRead);
+        }
 #elif UNITY_EDITOR
         var path = UNITYEDITORLOCATION;
 #endif

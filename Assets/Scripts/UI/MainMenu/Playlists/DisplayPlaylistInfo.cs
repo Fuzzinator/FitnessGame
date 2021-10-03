@@ -4,37 +4,42 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class DisplayPlaylistInfo : MonoBehaviour
+namespace UI.Scrollers.Playlists
 {
-    public static DisplayPlaylistInfo Instance { get; private set; }
-
-    [SerializeField]
-    private GameObject _playlistTitleCard;
-    [SerializeField]
-    private TextMeshProUGUI _playlistTitle;
-
-    [SerializeField]
-    private TextMeshProUGUI _playlistLength;
-
-    [SerializeField]
-    private PlaylistSongScrollerController _scrollerController;
-    private void Awake()
+    public class DisplayPlaylistInfo : MonoBehaviour
     {
-        if (Instance == null)
+        public static DisplayPlaylistInfo Instance { get; private set; }
+
+        [SerializeField]
+        private GameObject _playlistTitleCard;
+
+        [SerializeField]
+        private TextMeshProUGUI _playlistTitle;
+
+        [SerializeField]
+        private TextMeshProUGUI _playlistLength;
+
+        [SerializeField]
+        private PlaylistSongScrollerController _scrollerController;
+
+        private void Awake()
         {
-            Instance = this;
+            if (Instance == null)
+            {
+                Instance = this;
+            }
+            else
+            {
+                Destroy(this);
+            }
         }
-        else
+
+        public void ShowInfo()
         {
-            Destroy(this);
+            _playlistTitleCard.SetActive(true);
+            _playlistTitle.SetText(PlaylistManager.Instance.CurrentPlaylist.PlaylistName);
+            _playlistLength.SetText(PlaylistManager.Instance.CurrentPlaylist.ReadableLength.ToString());
+            _scrollerController.ReloadScroller();
         }
-    }
-    
-    public void ShowInfo()
-    {
-        _playlistTitleCard.SetActive(true);
-        _playlistTitle.SetText(PlaylistManager.Instance.CurrentPlaylist.PlaylistName);
-        _playlistLength.SetText(PlaylistManager.Instance.CurrentPlaylist.ReadableLength.ToString());
-        _scrollerController.ReloadScroller();
     }
 }

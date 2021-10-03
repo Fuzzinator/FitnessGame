@@ -1141,6 +1141,8 @@ namespace EnhancedUI.EnhancedScroller
         /// </summary>
         private bool _initialized = false;
 
+        public bool Initialized => _initialized;
+
         /// <summary>
         /// Set when the spacing is changed in the inspector. Since we cannot
         /// make changes during the OnValidate, we have to use this flag to

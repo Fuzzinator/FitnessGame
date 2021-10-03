@@ -27,4 +27,11 @@ public struct Playlist
     public PlaylistItem[] Items => _items;
 
     private const int MINUTE = 60;
+
+    public Playlist(List<PlaylistItem> items)
+    {
+        _playlistName = $"{DateTime.Now:yyyy-MM-dd} - {DateTime.Now.ToShortTimeString()}";
+        _length = 0; //TODO:Make a good way to do this
+        _items = items.ToArray();
+    }
 }

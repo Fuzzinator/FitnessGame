@@ -69,6 +69,10 @@ public class SongInfoReader : MonoBehaviour
 #elif UNITY_EDITOR
             var path = $"{Application.dataPath}/{SONGSFOLDER}{item.FileLocation}{INFO}{TXT}";
 #endif
+            if (!Directory.Exists(path))
+            {
+                return;
+            }
             var streamReader = new StreamReader(path);
             var reading = streamReader.ReadToEndAsync();
             await reading;

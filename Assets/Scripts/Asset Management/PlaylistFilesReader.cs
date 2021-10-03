@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Android;
 using UnityEngine.Events;
 using UnityEngine.ResourceManagement.ResourceLocations;
 
@@ -15,19 +16,21 @@ public class PlaylistFilesReader : MonoBehaviour
 
     [SerializeField]
     private AssetLabelReference _labelReference;
+
     [SerializeField]
     private UnityEvent _playlistsUpdated = new UnityEvent();
-    
+
     #region Const Strings
 
-#if UNITY_ANDROID  && !UNITY_EDITOR
+#if UNITY_ANDROID && !UNITY_EDITOR
     private const string ANDROIDPATHSTART = "file://";
     private const string PLAYLISTSFOLDER = "/Resources/Playlists/";
-    #elif UNITY_EDITOR
+#elif UNITY_EDITOR
     private const string UNITYEDITORLOCATION = "E:\\Projects\\FitnessGame\\LocalCustomSongs\\Playlists";
 #endif
 
     private const string PLAYLISTEXTENSION = ".txt";
+
     #endregion
 
     private void Awake()
@@ -76,14 +79,22 @@ public class PlaylistFilesReader : MonoBehaviour
 
     private async UniTask GetCustomPlaylists()
     {
-#if UNITY_ANDROID  && !UNITY_EDITOR
+#if UNITY_ANDROID && !UNITY_EDITOR
         var path = $"{ANDROIDPATHSTART}{Application.persistentDataPath}{PLAYLISTSFOLDER}";
-        #elif UNITY_EDITOR
+        if (!Permission.HasUserAuthorizedPermission(Permission.ExternalStorageRead))
+        {
+            Permission.RequestUserPermission(Permission.ExternalStorageRead);
+        }
+#elif UNITY_EDITOR
         var path = UNITYEDITORLOCATION;
 #endif
+        if (!Directory.Exists(path))
+        {
+            return;
+        }
         var info = new DirectoryInfo(path);
         var files = info.GetFiles();
-        
+
         foreach (var file in files)
         {
             if (file.Extension == PLAYLISTEXTENSION)
