@@ -17,7 +17,7 @@ public class SongInfoCellView : EnhancedScrollerCellView
     private Button _button;
 
     private SongInfo _songInfo;
-    private EnhancedScroller _scroller;
+    private SongInfoScrollerController _controller;
 
     private void OnValidate()
     {
@@ -27,17 +27,16 @@ public class SongInfoCellView : EnhancedScrollerCellView
         }
     }
 
-    public void SetData(SongInfo info, EnhancedScroller scroller)
+    public void SetData(SongInfo info, SongInfoScrollerController controller)
     {
         _songName.SetText(info.SongName);
         _songAuthor.SetText(info.SongAuthorName);
         _songInfo = info;
-        _scroller = scroller;
+        _controller = controller;
     }
 
     public void SetActiveSongInfo()
     {
-        var controller = _scroller.Delegate as SongInfoScrollerController;
-        controller.SetActiveInfo(_songInfo);
+        _controller.SetActiveInfo(_songInfo);
     }
 }

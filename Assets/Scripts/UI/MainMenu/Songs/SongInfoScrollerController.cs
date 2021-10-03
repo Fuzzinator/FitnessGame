@@ -36,12 +36,13 @@ public class SongInfoScrollerController : MonoBehaviour, IEnhancedScrollerDelega
     public EnhancedScrollerCellView GetCellView(EnhancedScroller scroller, int dataIndex, int cellIndex)
     {
         var cellView = scroller.GetCellView(_cellViewPrefab) as SongInfoCellView;
-        cellView.SetData(SongInfoFilesReader.Instance.availableSongs[dataIndex], scroller);
+        cellView.SetData(SongInfoFilesReader.Instance.availableSongs[dataIndex], this);
         return cellView;
     }
 
     public void SetActiveInfo(SongInfo info)
     {
         _displaySongInfo.UpdateDisplayedInfo(info);
+        PlaylistMaker.Instance.SetActiveItem(info);
     }
 }

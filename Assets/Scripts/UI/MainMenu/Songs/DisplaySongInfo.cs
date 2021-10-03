@@ -29,6 +29,6 @@ public class DisplaySongInfo : MonoBehaviour
         _songAuthor.SetText(info.SongAuthorName);
         _levelAuthor.SetText(info.LevelAuthorName);
         _beatsPerMinute.SetText(info.BeatsPerMinute.ToString("00"));
-        _difficultyScroller.UpdateDifficultyOptions(info);
+        _difficultyScroller.UpdateDifficultyOptions(info.DifficultySets[0]);
     }
 }

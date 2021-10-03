@@ -29,6 +29,7 @@ public class SongInfoFilesReader : MonoBehaviour
 #endif
 
     private const string SONGINFONAME = "Info.txt";
+    private const string SONGSFOLDER = "Assets/Music/Songs/";
 
     #endregion
 
@@ -71,16 +72,11 @@ public class SongInfoFilesReader : MonoBehaviour
                 return;
             }
 
-            try
-            {
-                availableSongs.Add((JsonUtility.FromJson<SongInfo>(asset.text)));
-            }
-            catch (Exception e)
-            {
-                Debug.Log(e);
-                Debug.Log(asset.text);
-                throw;
-            }
+            var item = JsonUtility.FromJson<SongInfo>(asset.text);
+            item.DifficultySets[0].RemoveExpertPlus();
+            item.isCustomSong = false;
+            
+            availableSongs.Add(item);
         });
     }
 
@@ -103,7 +99,11 @@ public class SongInfoFilesReader : MonoBehaviour
                     var streamReader = new StreamReader(file.FullName);
                     var reading = streamReader.ReadToEndAsync();
                     await reading;
-                    availableSongs.Add(JsonUtility.FromJson<SongInfo>(reading.Result));
+                    var item = JsonUtility.FromJson<SongInfo>(reading.Result);
+                    item.DifficultySets[0].RemoveExpertPlus();
+                    item.fileLocation = dir.Replace($"{path}\\", ""); 
+                    item.isCustomSong = true;
+                    availableSongs.Add(item);
                 }
             }
         }

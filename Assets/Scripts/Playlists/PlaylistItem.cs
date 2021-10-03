@@ -32,6 +32,15 @@ public struct PlaylistItem
         set => _songInfo = value;
     }
 
+    public PlaylistItem(string songName, string fileLocation, string difficulty, bool isCustomSong)
+    {
+        _songName = songName;
+        _fileLocation = fileLocation;
+        _difficulty = difficulty;
+        _isCustomSong = isCustomSong;
+        _songInfo = null;
+    }
+    
     public string Difficulty => _difficulty;
 
     private static bool StringMatches(string string1, string string2)
