@@ -30,7 +30,7 @@ public struct Playlist
 
     public Playlist(List<PlaylistItem> items)
     {
-        _playlistName = $"{DateTime.Now:yyyy-MM-dd} - {DateTime.Now.ToShortTimeString()}";
+        _playlistName = $"{DateTime.Now:yyyy-MM-dd} - {DateTime.Now:hh-mm}";
         _length = 0; //TODO:Make a good way to do this
         _items = items.ToArray();
     }

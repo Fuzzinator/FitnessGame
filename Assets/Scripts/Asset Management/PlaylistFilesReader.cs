@@ -107,4 +107,10 @@ public class PlaylistFilesReader : MonoBehaviour
             }
         }
     }
+
+    public void AddNewPlaylisy(Playlist playlist)
+    {
+        availablePlaylists.Add(playlist);
+        _playlistsUpdated?.Invoke();
+    }
 }

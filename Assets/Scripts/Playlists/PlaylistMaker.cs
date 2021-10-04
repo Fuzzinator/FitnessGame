@@ -27,7 +27,7 @@ public class PlaylistMaker : MonoBehaviour
     private const string ANDROIDPATHSTART = "file://";
     private const string PLAYLISTSFOLDER = "/Resources/Playlists/";
 #elif UNITY_EDITOR
-    private const string UNITYEDITORLOCATION = "E:\\Projects\\FitnessGame\\LocalCustomSongs\\Playlists";
+    private const string UNITYEDITORLOCATION = "E:\\Projects\\FitnessGame\\LocalCustomSongs\\Playlists\\";
 #endif
 
     private const string PLAYLISTEXTENSION = ".txt";
