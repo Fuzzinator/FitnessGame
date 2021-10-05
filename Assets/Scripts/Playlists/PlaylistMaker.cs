@@ -75,10 +75,7 @@ public class PlaylistMaker : MonoBehaviour
     public async void CreatePlaylist()
     {
 #if UNITY_ANDROID && !UNITY_EDITOR
-        var path = $"{ANDROIDPATHSTART}{Application.persistentDataPath}{PLAYLISTSFOLDER}";
-        
-        
-        
+        var path = $"{Application.persistentDataPath}{PLAYLISTSFOLDER}";
         if (!Permission.HasUserAuthorizedPermission(Permission.ExternalStorageWrite))
         {
             Permission.RequestUserPermission(Permission.ExternalStorageWrite);
