@@ -5,6 +5,9 @@ using System.IO;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+#if UNITY_ANDROID && !UNITY_EDITOR
+using UnityEngine.Android;
+#endif
 using UnityEngine.Events;
 
 public class SongInfoFilesReader : MonoBehaviour
@@ -29,7 +32,6 @@ public class SongInfoFilesReader : MonoBehaviour
 #endif
 
     private const string SONGINFONAME = "Info.txt";
-    private const string SONGSFOLDER = "Assets/Music/Songs/";
 
     #endregion
 
@@ -83,7 +85,7 @@ public class SongInfoFilesReader : MonoBehaviour
     private async UniTask GetCustomSongs()
     {
 #if UNITY_ANDROID && !UNITY_EDITOR
-        var path = $"{ANDROIDPATHSTART}{Application.persistentDataPath}{PLAYLISTSFOLDER}";
+        var path = $"{ANDROIDPATHSTART}{Application.persistentDataPath}{SONGSFOLDER}";
         if (!Permission.HasUserAuthorizedPermission(Permission.ExternalStorageRead))
         {
             Permission.RequestUserPermission(Permission.ExternalStorageRead);

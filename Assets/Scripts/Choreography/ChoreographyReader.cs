@@ -69,13 +69,13 @@ public class ChoreographyReader : MonoBehaviour
 
     private async UniTaskVoid AsyncLoadJson(PlaylistItem item)
     {
-        _difficultyInfo = item.SongInfo.TryGetActiveDifficultySet(item.Difficulty);
-    
+            _difficultyInfo = item.SongInfo.TryGetActiveDifficultySet(item.Difficulty);
+            
         if (item.IsCustomSong)
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
             var path =
- $"{ANDROIDPATHSTART}{Application.persistentDataPath}{SONGSFOLDER}{item.FileLocation}/{difficultySet.FileName}";
+ $"{ANDROIDPATHSTART}{Application.persistentDataPath}{SONGSFOLDER}{item.FileLocation}/{_difficultyInfo.FileName}";
 #elif UNITY_EDITOR
             var txtVersion = _difficultyInfo.FileName.Replace(".dat", ".txt");
             var path = $"{Application.dataPath}{SONGSFOLDER}{item.FileLocation}/{txtVersion}";
