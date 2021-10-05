@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+#if UNITY_ANDROID
 using UnityEngine.Android;
+#endif
 using UnityEngine.Events;
 
 public class PlaylistMaker : MonoBehaviour
@@ -74,6 +76,9 @@ public class PlaylistMaker : MonoBehaviour
     {
 #if UNITY_ANDROID && !UNITY_EDITOR
         var path = $"{ANDROIDPATHSTART}{Application.persistentDataPath}{PLAYLISTSFOLDER}";
+        
+        
+        
         if (!Permission.HasUserAuthorizedPermission(Permission.ExternalStorageWrite))
         {
             Permission.RequestUserPermission(Permission.ExternalStorageWrite);
@@ -91,5 +96,6 @@ public class PlaylistMaker : MonoBehaviour
         await streamWriter.WriteAsync(JsonUtility.ToJson(newPlaylist));
         
         _newPlaylistCreated?.Invoke(newPlaylist);
+        _playlistItems.Clear();
     }
 }

@@ -93,6 +93,10 @@ public class SongInfoFilesReader : MonoBehaviour
 #elif UNITY_EDITOR
         var path = UNITYEDITORLOCATION;
 #endif
+        if (!Directory.Exists(path))
+        {
+            return;
+        }
         var directories = Directory.GetDirectories(path);
         foreach (var dir in directories)
         {
