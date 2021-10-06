@@ -79,19 +79,21 @@ public class PlaylistFilesReader : MonoBehaviour
     private async UniTask GetCustomPlaylists()
     {
 #if UNITY_ANDROID && !UNITY_EDITOR
-        var path = $"{ANDROIDPATHSTART}{Application.persistentDataPath}{PLAYLISTSFOLDER}";
-        if (!Permission.HasUserAuthorizedPermission(Permission.ExternalStorageRead))
+        var path = $"{Application.persistentDataPath}{PLAYLISTSFOLDER}";
+        /*if (!Permission.HasUserAuthorizedPermission(Permission.ExternalStorageRead))
         {
             Permission.RequestUserPermission(Permission.ExternalStorageRead);
-        }
+        }*/
 #elif UNITY_EDITOR
         var path = UNITYEDITORLOCATION;
 #endif
         if (!Directory.Exists(path))
         {
-            return;
+            Directory.CreateDirectory(path);
+            Debug.Log($"Creating {path}");
         }
         var info = new DirectoryInfo(path);
+        Debug.LogError(info);
         var files = info.GetFiles();
 
         foreach (var file in files)
@@ -103,6 +105,7 @@ public class PlaylistFilesReader : MonoBehaviour
                 await reading;
                 var playlist = JsonUtility.FromJson<Playlist>(reading.Result);
                 availablePlaylists.Add(playlist);
+                streamReader.Close();
             }
         }
     }

@@ -90,8 +90,10 @@ public class PlaylistMaker : MonoBehaviour
         
         var newPlaylist = new Playlist(_playlistItems);
         var streamWriter = File.CreateText($"{path}{newPlaylist.PlaylistName}.txt");
-        await streamWriter.WriteAsync(JsonUtility.ToJson(newPlaylist));
-        
+        var json = JsonUtility.ToJson(newPlaylist);
+        Debug.LogError(json);
+        await streamWriter.WriteAsync(json);
+        streamWriter.Close();
         _newPlaylistCreated?.Invoke(newPlaylist);
         _playlistItems.Clear();
     }

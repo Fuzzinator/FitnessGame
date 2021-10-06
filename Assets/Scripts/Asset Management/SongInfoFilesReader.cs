@@ -32,6 +32,7 @@ public class SongInfoFilesReader : MonoBehaviour
 #endif
 
     private const string SONGINFONAME = "Info.txt";
+    private const string ALTSONGINFONAME = "Info.dat";
 
     #endregion
 
@@ -85,17 +86,18 @@ public class SongInfoFilesReader : MonoBehaviour
     private async UniTask GetCustomSongs()
     {
 #if UNITY_ANDROID && !UNITY_EDITOR
-        var path = $"{ANDROIDPATHSTART}{Application.persistentDataPath}{SONGSFOLDER}";
-        if (!Permission.HasUserAuthorizedPermission(Permission.ExternalStorageRead))
+        var path = $"{Application.persistentDataPath}{SONGSFOLDER}";
+       
+        /*if (!Permission.HasUserAuthorizedPermission(Permission.ExternalStorageRead))
         {
             Permission.RequestUserPermission(Permission.ExternalStorageRead);
-        }
+        }*/
 #elif UNITY_EDITOR
         var path = UNITYEDITORLOCATION;
 #endif
         if (!Directory.Exists(path))
         {
-            return;
+            Directory.CreateDirectory(path);
         }
         var directories = Directory.GetDirectories(path);
         foreach (var dir in directories)
@@ -104,7 +106,8 @@ public class SongInfoFilesReader : MonoBehaviour
             var files = info.GetFiles();
             foreach (var file in files)
             {
-                if (string.Equals(file.Name, SONGINFONAME, StringComparison.InvariantCultureIgnoreCase))
+                if (string.Equals(file.Name, SONGINFONAME, StringComparison.InvariantCultureIgnoreCase)
+                || string.Equals(file.Name, ALTSONGINFONAME, StringComparison.InvariantCultureIgnoreCase))
                 {
                     var streamReader = new StreamReader(file.FullName);
                     var reading = streamReader.ReadToEndAsync();
@@ -114,6 +117,7 @@ public class SongInfoFilesReader : MonoBehaviour
                     item.fileLocation = dir.Replace($"{path}\\", ""); 
                     item.isCustomSong = true;
                     availableSongs.Add(item);
+                    streamReader.Close();
                 }
             }
         }

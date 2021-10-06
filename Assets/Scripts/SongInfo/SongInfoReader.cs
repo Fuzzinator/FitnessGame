@@ -85,6 +85,7 @@ public class SongInfoReader : MonoBehaviour
                 Debug.LogError("Failed to read song info");
                 return;
             }
+            streamReader.Close();
         }
         else
         {
