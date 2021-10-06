@@ -106,6 +106,10 @@ public class SongInfoFilesReader : MonoBehaviour
             var files = info.GetFiles();
             foreach (var file in files)
             {
+                if (file == null)
+                {
+                    continue;
+                }
                 if (string.Equals(file.Name, SONGINFONAME, StringComparison.InvariantCultureIgnoreCase)
                 || string.Equals(file.Name, ALTSONGINFONAME, StringComparison.InvariantCultureIgnoreCase))
                 {
@@ -114,7 +118,10 @@ public class SongInfoFilesReader : MonoBehaviour
                     await reading;
                     var item = JsonUtility.FromJson<SongInfo>(reading.Result);
                     item.DifficultySets[0].RemoveExpertPlus();
-                    item.fileLocation = dir.Replace($"{path}\\", ""); 
+                    if (file.Directory != null)
+                    {
+                        item.fileLocation = file.Directory.Name;//dir.Replace($"{path}", ""); 
+                    }
                     item.isCustomSong = true;
                     availableSongs.Add(item);
                     streamReader.Close();

@@ -93,7 +93,6 @@ public class PlaylistFilesReader : MonoBehaviour
             Debug.Log($"Creating {path}");
         }
         var info = new DirectoryInfo(path);
-        Debug.LogError(info);
         var files = info.GetFiles();
 
         foreach (var file in files)
