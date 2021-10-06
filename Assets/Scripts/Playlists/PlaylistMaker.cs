@@ -76,10 +76,10 @@ public class PlaylistMaker : MonoBehaviour
     {
 #if UNITY_ANDROID && !UNITY_EDITOR
         var path = $"{Application.persistentDataPath}{PLAYLISTSFOLDER}";
-        if (!Permission.HasUserAuthorizedPermission(Permission.ExternalStorageWrite))
+        /*if (!Permission.HasUserAuthorizedPermission(Permission.ExternalStorageWrite))
         {
             Permission.RequestUserPermission(Permission.ExternalStorageWrite);
-        }
+        }*/
 #elif UNITY_EDITOR
         var path = UNITYEDITORLOCATION;
 #endif
@@ -91,7 +91,6 @@ public class PlaylistMaker : MonoBehaviour
         var newPlaylist = new Playlist(_playlistItems);
         var streamWriter = File.CreateText($"{path}{newPlaylist.PlaylistName}.txt");
         var json = JsonUtility.ToJson(newPlaylist);
-        Debug.LogError(json);
         await streamWriter.WriteAsync(json);
         streamWriter.Close();
         _newPlaylistCreated?.Invoke(newPlaylist);
