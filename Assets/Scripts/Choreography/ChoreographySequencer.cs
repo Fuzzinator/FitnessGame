@@ -106,6 +106,10 @@ public class ChoreographySequencer : MonoBehaviour
     [SerializeField]
     private UnityEvent<int> _stanceUpdated = new UnityEvent<int>();
 
+    
+    private Vector3[] _path;
+    private float _tweenSpeed;
+
     public bool SequenceRunning { get; private set; }
 
     #region Const Strings
@@ -137,6 +141,14 @@ public class ChoreographySequencer : MonoBehaviour
         _optimalPointDistance = Vector3.Distance(_formationStart.position, _optimalStrikePoint.position);
 
         _selectAction = (context) => TempStart();
+
+        _path = new[]
+                {
+                    _formationStart.position,
+                    _formationEnd.position
+                };
+        
+        _tweenSpeed = _meterDistance / SongInfoReader.Instance.NoteSpeed;
     }
 
     private void OnEnable()
@@ -216,11 +228,7 @@ public class ChoreographySequencer : MonoBehaviour
         formationTransform.SetParent(transform);
         formationTransform.position = _formationStart.position;
 
-        var tweenSpeed = _meterDistance / SongInfoReader.Instance.NoteSpeed;
-        var tween = formationHolder.transform.DOLocalPath(new[]
-        {
-            formationTransform.position, _formationEnd.position
-        }, tweenSpeed);
+        var tween = formationHolder.transform.DOLocalPath(_path, _tweenSpeed);
 
         tween.SetEase(Ease.Linear);
 
