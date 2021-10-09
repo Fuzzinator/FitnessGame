@@ -126,10 +126,6 @@ public class MusicManager : MonoBehaviour
 #elif UNITY_EDITOR
             var path = $"{Application.dataPath}{SONGSFOLDER}{item.FileLocation}/{item.SongInfo.SongFilename}";
 #endif
-            /*if (File.Exists($"{path}.egg"))
-            {
-                File.Move($"{path}.egg", $"{path}.ogg");
-            }*/
             var uwr = UnityWebRequestMultimedia.GetAudioClip(path, AudioType.OGGVORBIS);
             Debug.Log("Starting To Get Song");
             await uwr.SendWebRequest();
