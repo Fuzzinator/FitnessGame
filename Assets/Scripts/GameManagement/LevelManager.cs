@@ -93,6 +93,7 @@ public class LevelManager : MonoBehaviour
         }
 
         ResetForNextSong();
+        Debug.Log("Starting Level");
         startedLevelLoad?.Invoke();
         _cancellationToken = this.GetCancellationTokenOnDestroy();
     }

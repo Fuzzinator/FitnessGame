@@ -40,7 +40,8 @@ public class ChoreographyReader : MonoBehaviour
     private const string ANDROIDPATHSTART = "file://";
 #endif
 
-    private const string SONGSFOLDER = "Assets/Music/Songs/";
+    private const string SONGSFOLDER = "/Resources/Songs/";
+    private const string LOCALSONGSFOLDER = "Assets/Music/Songs";
     private const string DAT = ".dat";
     private const string TXT = ".txt";
     private const string EASY = "Easy";
@@ -75,7 +76,7 @@ public class ChoreographyReader : MonoBehaviour
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
             var path =
- $"{ANDROIDPATHSTART}{Application.persistentDataPath}{SONGSFOLDER}{item.FileLocation}/{_difficultyInfo.FileName}";
+ $"{Application.persistentDataPath}{SONGSFOLDER}{item.FileLocation}/{_difficultyInfo.FileName}";
 #elif UNITY_EDITOR
             var txtVersion = _difficultyInfo.FileName.Replace(".dat", ".txt");
             var path = $"{Application.dataPath}{SONGSFOLDER}{item.FileLocation}/{txtVersion}";
@@ -96,7 +97,7 @@ public class ChoreographyReader : MonoBehaviour
                 txtVersion = txtVersion.Replace(DAT, TXT);
             }
 
-            var request = Addressables.LoadAssetAsync<TextAsset>($"{SONGSFOLDER}{item.FileLocation}/{txtVersion}");
+            var request = Addressables.LoadAssetAsync<TextAsset>($"{LOCALSONGSFOLDER}{item.FileLocation}/{txtVersion}");
             await request;
             var json = request.Result;
             if (json == null)

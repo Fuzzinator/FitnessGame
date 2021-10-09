@@ -95,5 +95,6 @@ public class PlaylistMaker : MonoBehaviour
         streamWriter.Close();
         _newPlaylistCreated?.Invoke(newPlaylist);
         _playlistItems.Clear();
+        Debug.Log("Done writing playlist");
     }
 }

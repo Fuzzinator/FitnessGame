@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -37,7 +38,8 @@ public class MusicManager : MonoBehaviour
     private const string ANDROIDPATHSTART = "file://";
 #endif
 
-    private const string SONGSFOLDER = "Assets/Music/Songs/";
+    private const string SONGSFOLDER = "/Resources/Songs/";
+    private const string LOCALSONGSFOLDER = "Assets/Music/Songs";
 
     #endregion
 
@@ -124,10 +126,17 @@ public class MusicManager : MonoBehaviour
 #elif UNITY_EDITOR
             var path = $"{Application.dataPath}{SONGSFOLDER}{item.FileLocation}/{item.SongInfo.SongFilename}";
 #endif
+            /*if (File.Exists($"{path}.egg"))
+            {
+                File.Move($"{path}.egg", $"{path}.ogg");
+            }*/
             var uwr = UnityWebRequestMultimedia.GetAudioClip(path, AudioType.OGGVORBIS);
+            Debug.Log("Starting To Get Song");
             await uwr.SendWebRequest();
+            Debug.Log("Done trying to get song");
             if (uwr.isDone && uwr.result == UnityWebRequest.Result.Success)
             {
+                Debug.Log("Got song!");
                 var clip = DownloadHandlerAudioClip.GetContent(uwr);
                 clip.name = item.SongName;
                 SetNewMusic(clip);
@@ -141,7 +150,7 @@ public class MusicManager : MonoBehaviour
         else
         {
             var fileName = item.SongInfo.SongFilename;
-            var request = Addressables.LoadAssetAsync<AudioClip>($"{SONGSFOLDER}{item.FileLocation}/{fileName}");
+            var request = Addressables.LoadAssetAsync<AudioClip>($"{LOCALSONGSFOLDER}{item.FileLocation}/{fileName}");
             await request;
             var clip = request.Result;
             if (clip == null)

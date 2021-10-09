@@ -26,11 +26,12 @@ public class SongInfoReader : MonoBehaviour
 
     #region Const Strings
 
-#if UNITY_ANDROID && !UNITY_EDITOR
+#if UNITY_ANDROID //&& !UNITY_EDITOR
     private const string ANDROIDPATHSTART = "file://";
 #endif
 
-    private const string SONGSFOLDER = "Assets/Music/Songs/";
+    private const string SONGSFOLDER = "/Resources/Songs/";
+    private const string LOCALSONGSFOLDER = "Assets/Music/Songs";
     private const string INFO = "/Info";
     private const string TXT = ".txt";
 
@@ -65,14 +66,20 @@ public class SongInfoReader : MonoBehaviour
         if (item.IsCustomSong)
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
-            var path = $"{ANDROIDPATHSTART}{Application.persistentDataPath}/{SONGSFOLDER}{item.FileLocation}{INFO}.dat";
+            var path = $"{Application.persistentDataPath}{SONGSFOLDER}{item.FileLocation}/{INFO}.dat";
 #elif UNITY_EDITOR
             var path = $"{Application.dataPath}/{SONGSFOLDER}{item.FileLocation}{INFO}{TXT}";
 #endif
-            if (!Directory.Exists(path))
+            if (!File.Exists(path))
             {
+                Debug.Log(path + " Doesnt Exist?");
                 return;
             }
+            /*if (!Directory.Exists(path))
+            {
+                Debug.Log(path + " Doesnt Exist?");
+                return;
+            }*/
             var streamReader = new StreamReader(path);
             var reading = streamReader.ReadToEndAsync();
             await reading;
@@ -89,7 +96,7 @@ public class SongInfoReader : MonoBehaviour
         }
         else
         {
-            var request = Addressables.LoadAssetAsync<TextAsset>($"{SONGSFOLDER}{item.FileLocation}{INFO}{TXT}");
+            var request = Addressables.LoadAssetAsync<TextAsset>($"{LOCALSONGSFOLDER}{item.FileLocation}{INFO}{TXT}");
             await request;
             var json = request.Result;
             if (json == null)
@@ -119,6 +126,7 @@ public class SongInfoReader : MonoBehaviour
 
     private void SubscribeToPlaylistUpdating()
     {
+        Debug.Log("Subbing to playlistItem Updated");
         PlaylistManager.Instance.playlistItemUpdated.AddListener(LoadJson);
     }
 }

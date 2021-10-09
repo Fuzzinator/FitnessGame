@@ -12,13 +12,17 @@ public class PlaylistManager : MonoBehaviour
     public PlaylistItem CurrentItem
     {
         get => _currentItem;
-        
+
         set
         {
             if (_currentItem != value)
             {
-                _currentItem = value;
-                playlistItemUpdated?.Invoke(value);
+            _currentItem = value;
+            playlistItemUpdated?.Invoke(value);
+            }
+            else
+            {
+                Debug.Log("_currentItem already set?");
             }
         }
     }
@@ -28,19 +32,19 @@ public class PlaylistManager : MonoBehaviour
 
     public Playlist CurrentPlaylist
     {
-        get =>_currentPlaylist;
+        get => _currentPlaylist;
         set
         {
             _currentPlaylist = value;
             currentPlaylistUpdated?.Invoke();
         }
     }
-    
+
     public UnityEvent<PlaylistItem> playlistItemUpdated = new UnityEvent<PlaylistItem>();
     public UnityEvent currentPlaylistUpdated = new UnityEvent();
-    
+
     private int _currentIndex = 0;
-    
+
     private void Awake()
     {
         if (Instance == null)
@@ -57,20 +61,20 @@ public class PlaylistManager : MonoBehaviour
     {
         CurrentPlaylist = playlist;
     }
-    
+
     public void SetFirstPlaylistItem()
     {
         if (_currentPlaylist.Items == null || _currentPlaylist.Items.Length <= _currentIndex)
         {
+            Debug.LogError("Playlist has no items");
             return;
         }
-
         CurrentItem = _currentPlaylist.Items[_currentIndex];
     }
-    
+
     public void UpdateCurrentPlaylist()
     {
-        if (_currentPlaylist.Items == null || _currentPlaylist.Items.Length == 0 || _currentIndex >= _currentPlaylist.Items.Length-1)
+        if (_currentPlaylist.Items == null || _currentPlaylist.Items.Length == 0 || _currentIndex >= _currentPlaylist.Items.Length - 1)
         {
             return;
         }
