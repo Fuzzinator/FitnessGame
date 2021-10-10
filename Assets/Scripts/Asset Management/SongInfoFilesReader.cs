@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -19,6 +20,8 @@ public class SongInfoFilesReader : MonoBehaviour
     [SerializeField]
     private AssetLabelReference _labelReference;
 
+    [SerializeField]
+    private UnityEvent _startSongsUpdate = new UnityEvent();
     [SerializeField]
     private UnityEvent _songsUpdated = new UnityEvent();
 
@@ -55,6 +58,7 @@ public class SongInfoFilesReader : MonoBehaviour
 
     private async void UpdateSongs()
     {
+        _startSongsUpdate?.Invoke();
         await UpdateAvailableSongs();
     }
 
@@ -78,7 +82,7 @@ public class SongInfoFilesReader : MonoBehaviour
             var item = JsonUtility.FromJson<SongInfo>(asset.text);
             item.DifficultySets[0].RemoveExpertPlus();
             item.isCustomSong = false;
-            
+
             availableSongs.Add(item);
         });
     }
@@ -99,34 +103,88 @@ public class SongInfoFilesReader : MonoBehaviour
         {
             Directory.CreateDirectory(path);
         }
+
         var directories = Directory.GetDirectories(path);
+        SongLoader songLoader = null;
+        if (directories.Length > 0)
+        {
+            songLoader = new SongLoader();
+        }
+
+        //Parallel.ForEach(directories, dir => 
         foreach (var dir in directories)
         {
             var info = new DirectoryInfo(dir);
             var files = info.GetFiles();
+            //await UniTask.WaitWhile(() => !Parallel.ForEach(files, async file => //This is commented out until I learn more about Parallel.Foreach
             foreach (var file in files)
             {
+               
                 if (file == null)
                 {
-                    continue;
+                    return;
                 }
+
                 if (string.Equals(file.Name, SONGINFONAME, StringComparison.InvariantCultureIgnoreCase)
-                || string.Equals(file.Name, ALTSONGINFONAME, StringComparison.InvariantCultureIgnoreCase))
+                    || string.Equals(file.Name, ALTSONGINFONAME, StringComparison.InvariantCultureIgnoreCase))
                 {
                     var streamReader = new StreamReader(file.FullName);
                     var reading = streamReader.ReadToEndAsync();
                     await reading;
                     var item = JsonUtility.FromJson<SongInfo>(reading.Result);
+                    
+                    streamReader.Close();
+                    
                     item.DifficultySets[0].RemoveExpertPlus();
                     if (file.Directory != null)
                     {
-                        item.fileLocation = file.Directory.Name;//dir.Replace($"{path}", ""); 
+                        item.fileLocation = file.Directory.Name; //dir.Replace($"{path}", ""); 
                     }
+
                     item.isCustomSong = true;
+                    if (item.SongLength < 1)
+                    {
+                        var clipRequest = TryGetSongLength(item, songLoader);
+                        var task = clipRequest.AsTask();
+                        await task;
+                        item.SongLength = task.Result;
+                        using (var streamWriter = new StreamWriter(file.FullName))
+                        {
+                            Debug.Log($"Updating {item.SongName}");
+                            await streamWriter.WriteAsync(JsonUtility.ToJson(item));
+                        }
+                    }
+
                     availableSongs.Add(item);
-                    streamReader.Close();
-                }
+                } 
+            }//).IsCompleted);
+        }//);
+    }
+
+    public async UniTask<float> TryGetSongLength(SongInfo info, SongLoader songLoader,
+        bool customSong = true)
+    {
+        if (songLoader != null)
+        {
+            UniTask<AudioClip> clipRequest;
+            if (customSong)
+            {
+                clipRequest = songLoader.LoadCustomSong(info.fileLocation, info);
+            }
+            else
+            {
+                clipRequest = songLoader.LoadBuiltInSong(info);
+            }
+
+            var task = clipRequest.AsTask();
+            await task;
+            var audioClip = task.Result;
+            if (audioClip != null)
+            {
+                return audioClip.length;
             }
         }
+
+        return 0;
     }
 }

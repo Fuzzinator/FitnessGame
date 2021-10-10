@@ -15,6 +15,12 @@ public class SongInfo
 
     public string LevelAuthorName => _levelAuthorName;
 
+    public float SongLength
+    {
+        get { return _songLength; }
+        set { _songLength = value; }
+    }
+
     public DifficultySet[] DifficultySets => _difficultyBeatmapSets;
 
     [SerializeField]
@@ -47,6 +53,9 @@ public class SongInfo
     public bool isCustomSong;
 
     [SerializeField]
+    private float _songLength;
+
+    [SerializeField]
     private DifficultySet[] _difficultyBeatmapSets;
 
     public DifficultyInfo TryGetActiveDifficultySet(string difficulty)
@@ -66,7 +75,6 @@ public class SongInfo
 
         return new DifficultyInfo();
     }
-
 
     [Serializable]
     public struct DifficultySet

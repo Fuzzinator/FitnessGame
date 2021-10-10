@@ -26,6 +26,8 @@ public class MusicManager : MonoBehaviour
     private bool _awaitingSongEnd = false;
     private bool _musicPaused = false;
 
+    private SongLoader _songLoader;
+
     #region Const Strings
 
     private const string SELECT = "Select";
@@ -33,12 +35,6 @@ public class MusicManager : MonoBehaviour
 #if UNITY_EDITOR
     private const string PAUSEINEDITOR = "Pause In Editor";
 #endif
-
-#if UNITY_ANDROID && !UNITY_EDITOR
-    private const string ANDROIDPATHSTART = "file://";
-#endif
-
-    private const string SONGSFOLDER = "/Resources/Songs/";
     private const string LOCALSONGSFOLDER = "Assets/Music/Songs/";
 
     #endregion
@@ -71,6 +67,7 @@ public class MusicManager : MonoBehaviour
         {
             songFinishedPlaying.AddListener(PlaylistManager.Instance.UpdateCurrentPlaylist);
         }
+        _songLoader = new SongLoader();
     }
 
     private void OnEnable()
@@ -109,54 +106,36 @@ public class MusicManager : MonoBehaviour
         StartNewSequence();
     }
 
-    public void LoadFromPlaylist(PlaylistItem info)
+    public async void LoadFromPlaylist(PlaylistItem info)
     {
-#pragma warning disable 4014
-        AsyncLoadFromPlaylist(info);
-#pragma warning restore 4014
+        await AsyncLoadFromPlaylist(info);
     }
 
     private async UniTask AsyncLoadFromPlaylist(PlaylistItem item)
     {
         if (item.IsCustomSong)
         {
-#if UNITY_ANDROID && !UNITY_EDITOR
-            var path =
- $"{ANDROIDPATHSTART}{Application.persistentDataPath}{SONGSFOLDER}{item.FileLocation}/{item.SongInfo.SongFilename}";
-#elif UNITY_EDITOR
-            var path = $"{Application.dataPath}{SONGSFOLDER}{item.FileLocation}/{item.SongInfo.SongFilename}";
-#endif
-            var uwr = UnityWebRequestMultimedia.GetAudioClip(path, AudioType.OGGVORBIS);
-            Debug.Log("Starting To Get Song");
-            await uwr.SendWebRequest();
-            Debug.Log("Done trying to get song");
-            if (uwr.isDone && uwr.result == UnityWebRequest.Result.Success)
+            var clipRequest = _songLoader.LoadCustomSong(item.FileLocation, item.SongInfo);
+            var task = clipRequest.AsTask();
+            await task;
+            /*if (clipRequest.Status != UniTaskStatus.Succeeded)//This doesnt work?
             {
-                Debug.Log("Got song!");
-                var clip = DownloadHandlerAudioClip.GetContent(uwr);
-                clip.name = item.SongName;
-                SetNewMusic(clip);
-            }
-            else
-            {
-                Debug.LogError("failed to get audio clip");
+                Debug.LogError($"LoadCustomSong failed. Result: {clipRequest.Status}");
                 return;
-            }
+            }*/
+            SetNewMusic(task.Result);
         }
         else
         {
-            var fileName = item.SongInfo.SongFilename;
-            var request = Addressables.LoadAssetAsync<AudioClip>($"{LOCALSONGSFOLDER}{item.FileLocation}/{fileName}");
-            await request;
-            var clip = request.Result;
-            if (clip == null)
+            var clipRequest = _songLoader.LoadBuiltInSong(item.SongInfo);
+            var task = clipRequest.AsTask();
+            await task;
+            /*if (clipRequest.Status != UniTaskStatus.Succeeded)//This doesnt work?
             {
-                Debug.LogError("Failed to load local resource file");
+                Debug.LogError($"LoadBuiltInSong failed. Result: {clipRequest.Status}");
                 return;
-            }
-
-            clip.name = item.SongName;
-            SetNewMusic(clip);
+            }*/
+            SetNewMusic(task.Result);
         }
 
         finishedLoadingSong?.Invoke();

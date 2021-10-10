@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -92,9 +93,11 @@ public class PlaylistFilesReader : MonoBehaviour
             Directory.CreateDirectory(path);
             Debug.Log($"Creating {path}");
         }
+
         var info = new DirectoryInfo(path);
         var files = info.GetFiles();
 
+        //await UniTask.WaitWhile(() => !Parallel.ForEach(files, async file => //This is commented out because I dont know enough about adding to a list asynchronously
         foreach (var file in files)
         {
             if (file.Extension == PLAYLISTEXTENSION)
@@ -107,6 +110,8 @@ public class PlaylistFilesReader : MonoBehaviour
                 streamReader.Close();
             }
         }
+
+        ; //).IsCompleted);
     }
 
     public void AddNewPlaylisy(Playlist playlist)
