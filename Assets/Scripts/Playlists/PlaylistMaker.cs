@@ -2,13 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 #if UNITY_ANDROID
 using UnityEngine.Android;
 #endif
 using UnityEngine.Events;
 
-public class PlaylistMaker : MonoBehaviour
+public class PlaylistMaker : MonoBehaviour, IProgress<float>
 {
     public static PlaylistMaker Instance { get; private set; }
 
@@ -17,12 +18,13 @@ public class PlaylistMaker : MonoBehaviour
 
     [SerializeField]
     private UnityEvent _playlistItemsUpdated = new UnityEvent();
-    
+    [SerializeField]
+    private UnityEvent _startWritingPlaylist = new UnityEvent();
     [SerializeField]
     private UnityEvent<Playlist> _newPlaylistCreated = new UnityEvent<Playlist>();
 
     public List<PlaylistItem> PlaylistItems => _playlistItems;
-
+    
     #region Const Strings
 
 #if UNITY_ANDROID && !UNITY_EDITOR
@@ -91,10 +93,20 @@ public class PlaylistMaker : MonoBehaviour
         var newPlaylist = new Playlist(_playlistItems);
         var streamWriter = File.CreateText($"{path}{newPlaylist.PlaylistName}.txt");
         var json = JsonUtility.ToJson(newPlaylist);
-        await streamWriter.WriteAsync(json);
+        var writingTask = streamWriter.WriteAsync(json);
+        //writingTask.AsUniTask().ToCoroutine().ToUniTask(() => Progress.Create<float>(x => _playlistWritingProgress?.Invoke(x)))
+
+
+        _startWritingPlaylist?.Invoke();
+        await writingTask;
         streamWriter.Close();
         _newPlaylistCreated?.Invoke(newPlaylist);
         _playlistItems.Clear();
         Debug.Log("Done writing playlist");
+    }
+
+    public void Report(float value)
+    {
+        Debug.Log(value);
     }
 }

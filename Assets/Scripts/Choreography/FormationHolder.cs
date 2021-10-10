@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 [Serializable]
@@ -9,6 +10,7 @@ public class FormationHolder : MonoBehaviour, IPoolable
     private PoolManager _myPoolManager;
     public List<IPoolable> children;
     private bool _isPooled;
+    public Tween MyTween { get; set; }
 
     public PoolManager MyPoolManager
     {

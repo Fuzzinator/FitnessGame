@@ -31,8 +31,8 @@ public class BaseTarget : MonoBehaviour, IPoolable
     protected Vector2 _minMaxAllowance;
 
     protected bool _wasHit = false;
-
     public PoolManager MyPoolManager { get; set; }
+    public Vector3 OptimalHitPoint { get; private set; }
 
     public bool IsPooled { get; set; }
     protected virtual void OnCollisionEnter(Collision other)
@@ -48,7 +48,9 @@ public class BaseTarget : MonoBehaviour, IPoolable
         if (IsValidDirection(other, hand, out var impactDotProduct, out var dirDotProduct))
         {
             _wasHit = true;
-            _successfulHitEvent?.Invoke(new HitInfo(impactDotProduct,  dirDotProduct, hand, other));
+            var currentDistance = Vector3.Distance(transform.position, OptimalHitPoint);
+            var hitInfo = new HitInfo(impactDotProduct, dirDotProduct, hand, other, currentDistance);
+            _successfulHitEvent?.Invoke(hitInfo);
         }
     }
 
@@ -93,10 +95,11 @@ public class BaseTarget : MonoBehaviour, IPoolable
         return impactDotProd>_minMaxAllowance.x;// && dirDotProd > _minMaxAllowance.x;
     }
 
-    public virtual void SetUpTarget(HitSideType hitSideType)
+    public virtual void SetUpTarget(HitSideType hitSideType, Vector3 hitPoint)
     {
         _noteType = hitSideType;
         _wasHit = false;
         _targetCreated?.Invoke(_noteType);
+        OptimalHitPoint = hitPoint;
     }
 }

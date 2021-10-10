@@ -41,7 +41,7 @@ public class ChoreographyReader : MonoBehaviour
 #endif
 
     private const string SONGSFOLDER = "/Resources/Songs/";
-    private const string LOCALSONGSFOLDER = "Assets/Music/Songs";
+    private const string LOCALSONGSFOLDER = "Assets/Music/Songs/";
     private const string DAT = ".dat";
     private const string TXT = ".txt";
     private const string EASY = "Easy";

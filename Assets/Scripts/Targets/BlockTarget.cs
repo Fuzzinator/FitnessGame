@@ -8,6 +8,9 @@ public class BlockTarget : BaseTarget
     private bool _hitLeft = false;
     private bool _hitRight = false;
 
+    private Hand _leftHand;
+    private Hand _rightHand;
+
     protected override void OnCollisionEnter(Collision other)
     {
         if (!IsHit(other.collider, out var hand))
@@ -15,16 +18,18 @@ public class BlockTarget : BaseTarget
             _wasHit = false;
             return;
         }
-        
+
         _collidedEvent?.Invoke(other);
 
         switch (hand.AssignedHand)
         {
             case HitSideType.Left:
                 _hitLeft = true;
+                _leftHand = hand;
                 break;
             case HitSideType.Right:
                 _hitRight = true;
+                _rightHand = hand;
                 break;
             default:
                 Debug.LogWarning("Well that's weird. What hit?");
@@ -34,7 +39,11 @@ public class BlockTarget : BaseTarget
         if (_hitLeft && _hitRight)
         {
             _wasHit = true;
-            _successfulHitEvent?.Invoke(new HitInfo(1, 1, hand, other));
+            
+            var currentDistance = Vector3.Distance(transform.position, OptimalHitPoint);
+            var hitInfo = new HitInfo(1, 1, new[] {_leftHand, _rightHand}, other, currentDistance);
+            
+            _successfulHitEvent?.Invoke(hitInfo);
         }
     }
 
@@ -44,14 +53,16 @@ public class BlockTarget : BaseTarget
         {
             return;
         }
-        
+
         switch (hand.AssignedHand)
         {
             case HitSideType.Left:
                 _hitLeft = false;
+                _leftHand = null;
                 break;
             case HitSideType.Right:
                 _hitRight = false;
+                _rightHand = null;
                 break;
             default:
                 Debug.LogWarning("Well that's weird. What hit?");
@@ -59,10 +70,12 @@ public class BlockTarget : BaseTarget
         }
     }
 
-    public override void SetUpTarget(HitSideType hitSideType)
+    public override void SetUpTarget(HitSideType hitSideType, Vector3 hitPoint)
     {
         _hitLeft = false;
         _hitRight = false;
-        base.SetUpTarget(hitSideType);
+        _rightHand = null;
+        _leftHand = null;
+        base.SetUpTarget(hitSideType, hitPoint);
     }
 }

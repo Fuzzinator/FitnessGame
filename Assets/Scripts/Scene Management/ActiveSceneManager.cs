@@ -30,9 +30,9 @@ public class ActiveSceneManager : MonoBehaviour
         
     }
 
-    public void LoadBaseLevel()
+    public async void LoadBaseLevel()
     {
-        LoadSceneAsync(BASELEVELNAME);
+        await LoadSceneAsync(BASELEVELNAME);
     }
     
     private async UniTask LoadSceneAsync(string newSceneName, bool additive = false)

@@ -31,7 +31,7 @@ public class SongInfoReader : MonoBehaviour
 #endif
 
     private const string SONGSFOLDER = "/Resources/Songs/";
-    private const string LOCALSONGSFOLDER = "Assets/Music/Songs";
+    private const string LOCALSONGSFOLDER = "Assets/Music/Songs/";
     private const string INFO = "/Info";
     private const string TXT = ".txt";
 

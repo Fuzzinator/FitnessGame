@@ -34,7 +34,7 @@ public class BaseHitVFX : MonoBehaviour, IPoolable
         _particleSystem.Play(true);
         
         await UniTask.DelayFrame(FRAMEDELAY);
-        WaitForParticleFinish();
+        await WaitForParticleFinish();
     }
 
     private async UniTask WaitForParticleFinish()

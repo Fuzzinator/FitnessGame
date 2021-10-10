@@ -126,8 +126,7 @@ public class LevelManager : MonoBehaviour
         {
             finishedLevelLoad?.Invoke(_delayLength);
             _songCountdown = DelaySongStart(_delayLength);
-            _songCountdown.SuppressCancellationThrow();
-            await _songCountdown;
+            await _songCountdown.SuppressCancellationThrow();
         }
     }
 

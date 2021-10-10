@@ -106,10 +106,6 @@ public class ChoreographySequencer : MonoBehaviour
     [SerializeField]
     private UnityEvent<int> _stanceUpdated = new UnityEvent<int>();
 
-    
-    private Vector3[] _path;
-    private float _tweenSpeed;
-
     public bool SequenceRunning { get; private set; }
 
     #region Const Strings
@@ -141,14 +137,6 @@ public class ChoreographySequencer : MonoBehaviour
         _optimalPointDistance = Vector3.Distance(_formationStart.position, _optimalStrikePoint.position);
 
         _selectAction = (context) => TempStart();
-
-        _path = new[]
-                {
-                    _formationStart.position,
-                    _formationEnd.position
-                };
-        
-        _tweenSpeed = _meterDistance / SongInfoReader.Instance.NoteSpeed;
     }
 
     private void OnEnable()
@@ -227,8 +215,14 @@ public class ChoreographySequencer : MonoBehaviour
         var formationTransform = formationHolder.transform;
         formationTransform.SetParent(transform);
         formationTransform.position = _formationStart.position;
-
-        var tween = formationHolder.transform.DOLocalPath(_path, _tweenSpeed);
+        
+        var _path = new[]
+        {
+            _formationStart.position,
+            _formationEnd.position
+        };
+        var tweenSpeed = _meterDistance / SongInfoReader.Instance.NoteSpeed;
+        var tween = formationHolder.transform.DOLocalPath(_path, tweenSpeed);
 
         tween.SetEase(Ease.Linear);
 
@@ -238,10 +232,11 @@ public class ChoreographySequencer : MonoBehaviour
 
         TweenCallback onComplete = () => ClearFormationObjects(formationHolder);
         onComplete += () => _activeSequences.Remove(sequence);
+        
         tween.OnStart(onStart);
-
         tween.OnComplete(onComplete);
 
+        formationHolder.MyTween = tween;
 
         var beatsTime = 60 / SongInfoReader.Instance.BeatsPerMinute;
         var time = (Time.time - (_songStartTime + _pauseOffset));
@@ -286,7 +281,7 @@ public class ChoreographySequencer : MonoBehaviour
         if (formation.HasNote)
         {
             var target = GetTarget(formation.Note);
-            target.SetUpTarget(formation.Note.Type);
+            target.SetUpTarget(formation.Note.Type, _optimalStrikePoint.position);
             target.transform.SetParent(formationHolder.transform);
             target.transform.position = (GetTargetParent(formation.Note)).position;
             target.gameObject.SetActive(true);
@@ -343,6 +338,7 @@ public class ChoreographySequencer : MonoBehaviour
         switch (note.HitSideType)
         {
             case HitSideType.Block:
+                return _formationStart;
             case HitSideType.Left:
                 return _sequenceStartPoses[(1 + (int) note.LineLayer * 4)];
             case HitSideType.Right:
@@ -402,6 +398,10 @@ public class ChoreographySequencer : MonoBehaviour
 
     private void ClearFormationObjects(FormationHolder formationHolder)
     {
+        if (Vector3.Distance(formationHolder.transform.position, _formationEnd.position) > 1)
+        {
+            Debug.Log("Ended early?");
+        }
         formationHolder.ReturnRemainingChildren();
     }
 
