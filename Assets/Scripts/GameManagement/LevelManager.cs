@@ -38,7 +38,6 @@ public class LevelManager : MonoBehaviour
         {
             _choreographyLoaded = value;
             
-            Debug.Log("Choreography Loaded");
 #pragma warning disable 4014
             CheckIfLoaded();
 #pragma warning restore 4014
@@ -52,7 +51,6 @@ public class LevelManager : MonoBehaviour
         {
             _songInfoLoaded = value;
             
-            Debug.Log("SongInfo Loaded");
 #pragma warning disable 4014
             CheckIfLoaded();
 #pragma warning restore 4014
@@ -66,7 +64,6 @@ public class LevelManager : MonoBehaviour
         {
             _actualSongLoaded = value;
             
-            Debug.Log("Music Loaded");
 #pragma warning disable 4014
             CheckIfLoaded();
 #pragma warning restore 4014
@@ -93,7 +90,6 @@ public class LevelManager : MonoBehaviour
         }
 
         ResetForNextSong();
-        Debug.Log("Starting Level");
         startedLevelLoad?.Invoke();
         _cancellationToken = this.GetCancellationTokenOnDestroy();
     }

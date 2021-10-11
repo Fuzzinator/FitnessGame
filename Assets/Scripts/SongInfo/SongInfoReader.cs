@@ -126,7 +126,6 @@ public class SongInfoReader : MonoBehaviour
 
     private void SubscribeToPlaylistUpdating()
     {
-        Debug.Log("Subbing to playlistItem Updated");
         PlaylistManager.Instance.playlistItemUpdated.AddListener(LoadJson);
     }
 }

@@ -96,15 +96,15 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         var streamWriter = File.CreateText($"{path}{newPlaylist.PlaylistName}.txt");
         var json = JsonUtility.ToJson(newPlaylist);
         var writingTask = streamWriter.WriteAsync(json);
-        //writingTask.AsUniTask().ToCoroutine().ToUniTask(() => Progress.Create<float>(x => _playlistWritingProgress?.Invoke(x)))
-
 
         _startWritingPlaylist?.Invoke();
+
         await writingTask;
+
         streamWriter.Close();
+
         _newPlaylistCreated?.Invoke(newPlaylist);
         _playlistItems.Clear();
-        Debug.Log("Done writing playlist");
     }
 
     public void Report(float value)

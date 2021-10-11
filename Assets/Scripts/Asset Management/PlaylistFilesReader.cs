@@ -91,7 +91,6 @@ public class PlaylistFilesReader : MonoBehaviour
         if (!Directory.Exists(path))
         {
             Directory.CreateDirectory(path);
-            Debug.Log($"Creating {path}");
         }
 
         var info = new DirectoryInfo(path);

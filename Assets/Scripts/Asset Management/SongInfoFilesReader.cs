@@ -138,7 +138,7 @@ public class SongInfoFilesReader : MonoBehaviour
                     item.DifficultySets[0].RemoveExpertPlus();
                     if (file.Directory != null)
                     {
-                        item.fileLocation = file.Directory.Name; //dir.Replace($"{path}", ""); 
+                        item.fileLocation = file.Directory.Name;
                     }
 
                     item.isCustomSong = true;
@@ -150,7 +150,6 @@ public class SongInfoFilesReader : MonoBehaviour
                         item.SongLength = task.Result;
                         using (var streamWriter = new StreamWriter(file.FullName))
                         {
-                            Debug.Log($"Updating {item.SongName}");
                             await streamWriter.WriteAsync(JsonUtility.ToJson(item));
                         }
                     }
