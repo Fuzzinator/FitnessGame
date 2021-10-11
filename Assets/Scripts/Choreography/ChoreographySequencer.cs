@@ -400,7 +400,7 @@ public class ChoreographySequencer : MonoBehaviour
     {
         if (Vector3.Distance(formationHolder.transform.position, _formationEnd.position) > 1)
         {
-            Debug.Log("Ended early?");
+            Debug.LogError("Ended early?");
         }
         formationHolder.ReturnRemainingChildren();
     }
