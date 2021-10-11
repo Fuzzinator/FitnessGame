@@ -6,6 +6,9 @@ using UnityEngine;
 [Serializable]
 public class SongInfo
 {
+    #region Const Strings
+    private const int MINUTE = 60;
+    #endregion
     public float BeatsPerMinute => _beatsPerMinute;
 
     public string SongName => _songName;
@@ -20,6 +23,8 @@ public class SongInfo
         get { return _songLength; }
         set { _songLength = value; }
     }
+    
+    public string ReadableLength => (SongLength / MINUTE).ToString("0.00");
 
     public DifficultySet[] DifficultySets => _difficultyBeatmapSets;
 

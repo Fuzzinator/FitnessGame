@@ -38,7 +38,7 @@ namespace UI.Scrollers.Playlists
         {
             _playlistTitleCard.SetActive(true);
             _playlistTitle.SetText(PlaylistManager.Instance.CurrentPlaylist.PlaylistName);
-            _playlistLength.SetText(PlaylistManager.Instance.CurrentPlaylist.ReadableLength.ToString());
+            _playlistLength.SetText(PlaylistManager.Instance.CurrentPlaylist.ReadableLength);
             _scrollerController.ReloadScroller();
         }
     }

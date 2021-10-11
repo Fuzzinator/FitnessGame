@@ -11,13 +11,14 @@ public struct Playlist
     private string _playlistName;
 
     //workout length in seconds
+    [SerializeField]
     private float _length;
-    public float ReadableLength
+    public string ReadableLength
     {
         get
         {
             var minutes = _length / MINUTE;
-            return (float)Math.Round(minutes, 2);
+            return minutes.ToString("0.00");
         }
     }
     public string PlaylistName => _playlistName;
@@ -26,12 +27,20 @@ public struct Playlist
     private PlaylistItem[] _items;
     public PlaylistItem[] Items => _items;
 
+    [SerializeField]
+    private bool _isCustomPlaylist;
+
     private const int MINUTE = 60;
 
-    public Playlist(List<PlaylistItem> items)
+    public Playlist(List<PlaylistItem> items, bool isCustomPlaylist = true)
     {
         _playlistName = $"{DateTime.Now:yyyy-MM-dd} - {DateTime.Now:hh-mm}";
-        _length = 0; //TODO:Make a good way to do this
         _items = items.ToArray();
+        _isCustomPlaylist = isCustomPlaylist;
+        _length = 0;
+        foreach (var item in items)
+        {
+            _length += item.SongInfo.SongLength;
+        }
     }
 }

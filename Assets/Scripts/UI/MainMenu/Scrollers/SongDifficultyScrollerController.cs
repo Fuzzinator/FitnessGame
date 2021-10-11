@@ -7,11 +7,13 @@ namespace UI.Scrollers.Playlists
 {
     public class SongDifficultyScrollerController : ScrollerController
     {
+        private SongInfo _songInfo;
         private SongInfo.DifficultySet _difficultyInfo;
 
-        public void UpdateDifficultyOptions(SongInfo.DifficultySet info)
+        public void UpdateDifficultyOptions(SongInfo songInfo, SongInfo.DifficultySet difficultyInfo)
         {
-            _difficultyInfo = info;
+            _songInfo = songInfo;
+            _difficultyInfo = difficultyInfo;
             _scroller.ReloadData();
         }
 
@@ -27,11 +29,12 @@ namespace UI.Scrollers.Playlists
             return cellView;
         }
 
-        public void SetInfoSelected(string difficulty)
+        public void SetInfoSelected(DifficultyInfo difficulty)
         {
             if (PlaylistMaker.Instance != null)
             {
-                PlaylistMaker.Instance.AppendPlaylistItems(PlaylistMaker.Instance.GetPlaylistItem(difficulty));
+                var playlistItem = PlaylistMaker.GetPlaylistItem(_songInfo, difficulty.Difficulty);
+                PlaylistMaker.Instance.AppendPlaylistItems(playlistItem);
             }
         }
     }

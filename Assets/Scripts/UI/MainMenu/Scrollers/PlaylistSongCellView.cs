@@ -4,6 +4,7 @@ using System.Globalization;
 using EnhancedUI.EnhancedScroller;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace UI.Scrollers.Playlists
 {
@@ -15,14 +16,14 @@ namespace UI.Scrollers.Playlists
         [SerializeField]
         private TextMeshProUGUI _songDifficulty;
 
-        [SerializeField]
-        private TextMeshProUGUI _beatsPerMinute;
+        [FormerlySerializedAs("_beatsPerMinute")] [SerializeField]
+        private TextMeshProUGUI _songLength;
 
         public void SetData(PlaylistItem playlist)
         {
             _songName.SetText(playlist.SongName);
             _songDifficulty.SetText(playlist.Difficulty);
-            _beatsPerMinute.SetText(playlist.SongInfo.BeatsPerMinute.ToString(CultureInfo.InvariantCulture));
+            _songLength.SetText(playlist.SongInfo.ReadableLength);
         }
     }
 }

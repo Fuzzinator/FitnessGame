@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace UI.Scrollers.Playlists
 {
@@ -16,8 +17,8 @@ namespace UI.Scrollers.Playlists
         [SerializeField]
         private TextMeshProUGUI _levelAuthor;
 
-        [SerializeField]
-        private TextMeshProUGUI _beatsPerMinute;
+        [SerializeField] [FormerlySerializedAs("_beatsPerMinute")]
+        private TextMeshProUGUI _songLength;
 
         [SerializeField]
         private SongDifficultyScrollerController _difficultyScroller;
@@ -30,8 +31,8 @@ namespace UI.Scrollers.Playlists
             _songName.SetText(info.SongName);
             _songAuthor.SetText(info.SongAuthorName);
             _levelAuthor.SetText(info.LevelAuthorName);
-            _beatsPerMinute.SetText(info.BeatsPerMinute.ToString("00"));
-            _difficultyScroller.UpdateDifficultyOptions(info.DifficultySets[0]);
+            _songLength.SetText(info.ReadableLength);
+            _difficultyScroller.UpdateDifficultyOptions(info, info.DifficultySets[0]);
         }
     }
 }

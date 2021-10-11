@@ -3476,7 +3476,7 @@ MonoBehaviour:
   _songName: {fileID: 1228568430}
   _songAuthor: {fileID: 1500499229}
   _levelAuthor: {fileID: 1372038731}
-  _beatsPerMinute: {fileID: 427030430}
+  _songLength: {fileID: 427030430}
   _difficultyScroller: {fileID: 1716144659}
 --- !u!114 &317559083
 MonoBehaviour:
@@ -4995,7 +4995,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _currentPlaylist:
     _playlistName: 
+    _length: 0
     _items: []
+    _isCustomPlaylist: 0
   playlistItemUpdated:
     m_PersistentCalls:
       m_Calls: []
@@ -17726,7 +17728,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Beats Per Minute:'
+  m_text: 'Length In Minute:'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

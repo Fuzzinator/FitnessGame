@@ -12,16 +12,18 @@ namespace UI.Scrollers.Playlists
         private TextMeshProUGUI _difficultyName;
 
         private SongDifficultyScrollerController _controller;
+        private DifficultyInfo _info;
 
         public void SetData(DifficultyInfo info, SongDifficultyScrollerController scroller)
         {
+            _info = info;
             _difficultyName.SetText(info.Difficulty);
             _controller = scroller;
         }
 
         public void DifficultySelected()
         {
-            _controller.SetInfoSelected(_difficultyName.text);
+            _controller.SetInfoSelected(_info);
         }
     }
 }

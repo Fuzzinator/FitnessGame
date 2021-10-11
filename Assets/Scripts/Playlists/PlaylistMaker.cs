@@ -18,13 +18,15 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
 
     [SerializeField]
     private UnityEvent _playlistItemsUpdated = new UnityEvent();
+
     [SerializeField]
     private UnityEvent _startWritingPlaylist = new UnityEvent();
+
     [SerializeField]
     private UnityEvent<Playlist> _newPlaylistCreated = new UnityEvent<Playlist>();
 
     public List<PlaylistItem> PlaylistItems => _playlistItems;
-    
+
     #region Const Strings
 
 #if UNITY_ANDROID && !UNITY_EDITOR
@@ -55,9 +57,9 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         _activeItem = info;
     }
 
-    public PlaylistItem GetPlaylistItem(string difficulty)
+    public static PlaylistItem GetPlaylistItem(SongInfo songInfo, string difficulty)
     {
-        return new PlaylistItem(_activeItem.SongName, _activeItem.fileLocation, difficulty, _activeItem.isCustomSong);
+        return new PlaylistItem(songInfo.SongName, songInfo.fileLocation, difficulty, songInfo.isCustomSong, songInfo);
     }
 
     public void AppendPlaylistItems(PlaylistItem item)
@@ -89,7 +91,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         {
             Directory.CreateDirectory(path);
         }
-        
+
         var newPlaylist = new Playlist(_playlistItems);
         var streamWriter = File.CreateText($"{path}{newPlaylist.PlaylistName}.txt");
         var json = JsonUtility.ToJson(newPlaylist);

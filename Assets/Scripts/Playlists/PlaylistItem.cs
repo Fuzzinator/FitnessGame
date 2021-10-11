@@ -21,6 +21,7 @@ public struct PlaylistItem
 
     [SerializeField]
     private bool _isCustomSong;
+
     public bool IsCustomSong => _isCustomSong;
 
     [SerializeField]
@@ -32,15 +33,15 @@ public struct PlaylistItem
         set => _songInfo = value;
     }
 
-    public PlaylistItem(string songName, string fileLocation, string difficulty, bool isCustomSong)
+    public PlaylistItem(string songName, string fileLocation, string difficulty, bool isCustomSong, SongInfo info)
     {
         _songName = songName;
         _fileLocation = fileLocation;
         _difficulty = difficulty;
         _isCustomSong = isCustomSong;
-        _songInfo = null;
+        _songInfo = info;
     }
-    
+
     public string Difficulty => _difficulty;
 
     private static bool StringMatches(string string1, string string2)
@@ -60,8 +61,7 @@ public struct PlaylistItem
 
     public static bool operator ==(PlaylistItem item1, PlaylistItem item2)
     {
-        
-        return StringMatches(item1.SongName, item2.SongName) && 
+        return StringMatches(item1.SongName, item2.SongName) &&
                StringMatches(item1.FileLocation, item2.FileLocation) &&
                StringMatches(item1.Difficulty, item2.Difficulty);
     }
@@ -70,6 +70,7 @@ public struct PlaylistItem
     {
         return !(item1 == item2);
     }
+
     public bool Equals(PlaylistItem other)
     {
         return _songName == other._songName && _fileLocation == other._fileLocation && _difficulty == other._difficulty;
