@@ -31,6 +31,7 @@ public class BaseTarget : MonoBehaviour, IPoolable
     protected Vector2 _minMaxAllowance;
 
     protected bool _wasHit = false;
+    public bool WasHit => _wasHit;
     public PoolManager MyPoolManager { get; set; }
     public Vector3 OptimalHitPoint { get; private set; }
 

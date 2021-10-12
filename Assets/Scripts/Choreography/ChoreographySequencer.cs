@@ -137,6 +137,8 @@ public class ChoreographySequencer : MonoBehaviour
         _optimalPointDistance = Vector3.Distance(_formationStart.position, _optimalStrikePoint.position);
 
         _selectAction = (context) => TempStart();
+        
+        DOTween.SetTweensCapacity(100,100);
     }
 
     private void OnEnable()
