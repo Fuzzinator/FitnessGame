@@ -51,4 +51,19 @@ public class FormationHolder : MonoBehaviour, IPoolable
         ((IPoolable) this).MyPoolManager.ReturnToPool(this);
         IsPooled = true;
     }
+
+    public void Add(IPoolable poolable)
+    {
+        if (children != null)
+        {
+            children.Add(poolable);
+        }
+    }
+    public void Remove(IPoolable poolable)
+    {
+        if (children != null)
+        {
+            children.Remove(poolable);
+        }
+    }
 }

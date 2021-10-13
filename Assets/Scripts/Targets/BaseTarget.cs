@@ -34,6 +34,8 @@ public class BaseTarget : MonoBehaviour, IPoolable
     public bool WasHit => _wasHit;
     public PoolManager MyPoolManager { get; set; }
     public Vector3 OptimalHitPoint { get; private set; }
+    
+    public FormationHolder parentFormation { get; private set; }
 
     public bool IsPooled { get; set; }
     protected virtual void OnCollisionEnter(Collision other)
@@ -66,6 +68,7 @@ public class BaseTarget : MonoBehaviour, IPoolable
         transform.SetParent(MyPoolManager.poolParent);
         ActiveTargetManager.Instance.RemoveActiveTarget(this);
         MyPoolManager.ReturnToPool(this);
+        parentFormation.Remove(this);
     }
 
     protected bool IsHit(Collider col, out Hand hand)
@@ -96,11 +99,12 @@ public class BaseTarget : MonoBehaviour, IPoolable
         return impactDotProd>_minMaxAllowance.x;// && dirDotProd > _minMaxAllowance.x;
     }
 
-    public virtual void SetUpTarget(HitSideType hitSideType, Vector3 hitPoint)
+    public virtual void SetUpTarget(HitSideType hitSideType, Vector3 hitPoint, FormationHolder holder)
     {
         _noteType = hitSideType;
         _wasHit = false;
         _targetCreated?.Invoke(_noteType);
+        parentFormation = holder;
         OptimalHitPoint = hitPoint;
     }
 }

@@ -39,10 +39,10 @@ public class BlockTarget : BaseTarget
         if (_hitLeft && _hitRight)
         {
             _wasHit = true;
-            
+
             var currentDistance = Vector3.Distance(transform.position, OptimalHitPoint);
             var hitInfo = new HitInfo(1, 1, new[] {_leftHand, _rightHand}, other, currentDistance);
-            
+
             _successfulHitEvent?.Invoke(hitInfo);
         }
     }
@@ -70,12 +70,12 @@ public class BlockTarget : BaseTarget
         }
     }
 
-    public override void SetUpTarget(HitSideType hitSideType, Vector3 hitPoint)
+    public override void SetUpTarget(HitSideType hitSideType, Vector3 hitPoint, FormationHolder holder)
     {
         _hitLeft = false;
         _hitRight = false;
         _rightHand = null;
         _leftHand = null;
-        base.SetUpTarget(hitSideType, hitPoint);
+        base.SetUpTarget(hitSideType, hitPoint, holder);
     }
 }

@@ -277,13 +277,13 @@ public class ChoreographySequencer : MonoBehaviour
                 formationHolder.children = new List<IPoolable>();
             }
 
-            formationHolder.children.Add(obstacle);
+            formationHolder.Add(obstacle);
         }
 
         if (formation.HasNote)
         {
             var target = GetTarget(formation.Note);
-            target.SetUpTarget(formation.Note.Type, _optimalStrikePoint.position);
+            target.SetUpTarget(formation.Note.Type, _optimalStrikePoint.position, formationHolder);
             target.transform.SetParent(formationHolder.transform);
             target.transform.position = (GetTargetParent(formation.Note)).position;
             target.gameObject.SetActive(true);
@@ -293,7 +293,7 @@ public class ChoreographySequencer : MonoBehaviour
                 formationHolder.children = new List<IPoolable>();
             }
 
-            formationHolder.children.Add(target);
+            formationHolder.Add(target);
         }
     }
 
