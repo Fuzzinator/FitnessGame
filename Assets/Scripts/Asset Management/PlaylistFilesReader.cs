@@ -27,6 +27,7 @@ public class PlaylistFilesReader : MonoBehaviour
     private const string PLAYLISTSFOLDER = "/Resources/Playlists/";
 #elif UNITY_EDITOR
     private const string UNITYEDITORLOCATION = "E:\\Projects\\FitnessGame\\LocalCustomSongs\\Playlists";
+    private const string UNITYEDITORLOCATION2 = "C:\\Asus WebStorage\\fuzzinator12@gmail.com\\MySyncFolder\\FitnessGame\\LocalCustomSongs";
 #endif
 
     private const string PLAYLISTEXTENSION = ".txt";

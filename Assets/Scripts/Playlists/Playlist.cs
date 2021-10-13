@@ -29,6 +29,7 @@ public struct Playlist
 
     [SerializeField]
     private bool _isCustomPlaylist;
+    public bool IsCustomPlaylist => _isCustomPlaylist;
 
     private const int MINUTE = 60;
 

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace UI.Scrollers.Playlists
 {
@@ -18,6 +19,9 @@ namespace UI.Scrollers.Playlists
 
         [SerializeField]
         private TextMeshProUGUI _playlistLength;
+
+        [SerializeField]
+        private Button _deleteButton;
 
         [SerializeField]
         private PlaylistSongScrollerController _scrollerController;
@@ -39,6 +43,7 @@ namespace UI.Scrollers.Playlists
             _playlistTitleCard.SetActive(true);
             _playlistTitle.SetText(PlaylistManager.Instance.CurrentPlaylist.PlaylistName);
             _playlistLength.SetText(PlaylistManager.Instance.CurrentPlaylist.ReadableLength);
+            _deleteButton.gameObject.SetActive(PlaylistManager.Instance.CurrentPlaylist.IsCustomPlaylist);
             _scrollerController.ReloadScroller();
         }
     }
