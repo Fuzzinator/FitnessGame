@@ -230,16 +230,12 @@ public class ChoreographySequencer : MonoBehaviour
 
         TweenCallback onStart = () => SpawnFormationObjects(formationHolder, formation);
         onStart += () => TryCreateNextSequence(nextFormationIndex);
-        //onStart += () => _activeSequences.Add(sequence);
 
         TweenCallback onComplete = () => ClearFormationObjects(formationHolder);
         onComplete += () => _activeSequences.Remove(sequence);
 
-        void ONKill() => ClearFormationObjects(formationHolder);
-
         tween.OnStart(onStart);
         tween.OnComplete(onComplete);
-        tween.OnKill(ONKill);
 
         formationHolder.MyTween = tween;
 
