@@ -24,6 +24,11 @@ public class FormationHolder : MonoBehaviour, IPoolable
         set => _isPooled = value;
     }
 
+    /*private void OnDisable()
+    {
+        ReturnRemainingChildren();
+    }*/
+
     public void ReturnRemainingChildren()
     {
         if (children != null)
