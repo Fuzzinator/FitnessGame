@@ -35,7 +35,9 @@ public class SongLoader
         path = path.Substring(0, path.LastIndexOf('/'));
         path = $"{path}{EDITORCUSTOMSONGFOLDER}{parentDirectory}/{info.SongFilename}";
 #endif
+        
         var uwr = UnityWebRequestMultimedia.GetAudioClip(path, AudioType.OGGVORBIS);
+        ((DownloadHandlerAudioClip) uwr.downloadHandler).streamAudio = true;
         await uwr.SendWebRequest();
         if (uwr.isDone && uwr.result == UnityWebRequest.Result.Success)
         {
