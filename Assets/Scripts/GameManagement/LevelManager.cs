@@ -91,6 +91,7 @@ public class LevelManager : MonoBehaviour
 
         ResetForNextSong();
         startedLevelLoad?.Invoke();
+        InputManager.Instance.EnableActionMaps("In Game");
         _cancellationToken = this.GetCancellationTokenOnDestroy();
     }
 

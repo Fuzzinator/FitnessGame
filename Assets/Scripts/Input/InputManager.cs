@@ -39,15 +39,19 @@ public class InputManager : MonoBehaviour
 
     private void OnEnable()
     {
-        if (_mainInput != null)
+        EnableActionMaps("UI Left Hand");
+        EnableActionMaps("UI Right Hand");
+    }
+
+    public void EnableActionMaps(string actionName)
+    {
+        foreach (var action in _mainInput.actionMaps)
         {
-            foreach (var action in _mainInput.actionMaps)
+            if (string.Equals(action.name,actionName)) 
             {
-                if (action.name == "Temp")
-                {
-                    action.Enable();
-                }
+                action.Enable();
             }
         }
     }
+    
 }
