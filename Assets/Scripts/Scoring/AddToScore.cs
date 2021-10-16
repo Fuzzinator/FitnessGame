@@ -9,8 +9,10 @@ public class AddToScore : MonoBehaviour, IValidHit
 
     [SerializeField]
     private float _hitRange = 2f;
-    
+
+    private const int MINVALUE = 5;
     private const int OPTIMALHITMOD = 2;
+
 
     public void TriggerHitEffect(HitInfo info)
     {
@@ -20,20 +22,20 @@ public class AddToScore : MonoBehaviour, IValidHit
         var directionValue = Mathf.Clamp(info.DirectionDotProduct, 0, 1);
         var magnitudeBonusValue = magnitude * .25f * _maxValue;
 
-        var valueAsFloat = impactValue * directionValue * _maxValue + magnitudeBonusValue;
+        var valueAsFloat = (impactValue + directionValue) * _maxValue + magnitudeBonusValue;
 
-        var hitValue = Mathf.RoundToInt(valueAsFloat * GetOptimalHitModifier(info.DistanceFromOptimalHit));
-        
+        var hitValue = MINVALUE + Mathf.RoundToInt(valueAsFloat * GetOptimalHitModifier(info.DistanceFromOptimalHit));
+
         if (ScoringManager.Instance != null)
         {
             ScoringManager.Instance.AddToScore(hitValue);
         }
     }
-    
+
     private float GetOptimalHitModifier(float distance)
     {
         distance = Mathf.Clamp(distance, 0, _hitRange);
-        distance  /= _hitRange;
+        distance /= _hitRange;
         return OPTIMALHITMOD - distance;
     }
 }
