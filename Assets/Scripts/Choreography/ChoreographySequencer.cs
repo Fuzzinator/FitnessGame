@@ -95,11 +95,6 @@ public class ChoreographySequencer : MonoBehaviour
         }
     }
 
-    public bool test = false;
-
-
-    private Action<InputAction.CallbackContext> _selectAction;
-
     [SerializeField]
     private UnityEvent _sequenceStarted = new UnityEvent();
 
@@ -107,16 +102,10 @@ public class ChoreographySequencer : MonoBehaviour
     private UnityEvent<int> _stanceUpdated = new UnityEvent<int>();
 
     public bool SequenceRunning { get; private set; }
+    private bool _sequenceUnstartedOrFinished = true;
 
-    #region Const Strings
+  
 
-    private const string SELECT = "Select";
-    private const string MENUBUTTON = "Menu Button";
-#if UNITY_EDITOR
-    private const string PAUSEINEDITOR = "Pause In Editor";
-#endif
-
-    #endregion
 
     // Start is called before the first frame update
     void Start()
@@ -135,52 +124,39 @@ public class ChoreographySequencer : MonoBehaviour
 
         _meterDistance = Vector3.Distance(_formationStart.position, _formationEnd.position);
         _optimalPointDistance = Vector3.Distance(_formationStart.position, _optimalStrikePoint.position);
-
-        _selectAction = (context) => TempStart();
         
         DOTween.SetTweensCapacity(100,100);
+        _sequenceUnstartedOrFinished = true;
     }
 
     private void OnEnable()
     {
-        if (InputManager.Instance != null && InputManager.Instance.MainInput != null)
-        {
-            if (InputManager.Instance != null && InputManager.Instance.MainInput != null)
-            {
-                InputManager.Instance.MainInput[SELECT].performed += _selectAction;
-                InputManager.Instance.MainInput[MENUBUTTON].performed += ToggleChoreography;
-                FocusTracker.Instance.focusChanged.AddListener(ToggleChoreography);
-#if UNITY_EDITOR
-                InputManager.Instance.MainInput[PAUSEINEDITOR].performed += ToggleChoreography;
-#endif
-            }
-        }
+        GameStateManager.Instance.gameStateChanged.AddListener(GameStateListener);
     }
 
     private void OnDisable()
     {
-        if (InputManager.Instance != null && InputManager.Instance.MainInput != null)
-        {
-            if (InputManager.Instance != null && InputManager.Instance.MainInput != null)
-            {
-                InputManager.Instance.MainInput[SELECT].performed -= _selectAction;
-                InputManager.Instance.MainInput[MENUBUTTON].performed -= ToggleChoreography;
-                FocusTracker.Instance.focusChanged.RemoveListener(ToggleChoreography);
-#if UNITY_EDITOR
-                InputManager.Instance.MainInput[PAUSEINEDITOR].performed -= ToggleChoreography;
-#endif
-            }
-        }
+        GameStateManager.Instance.gameStateChanged.RemoveListener(GameStateListener);
     }
-
-    public void TempStart()
+    
+    private void GameStateListener(GameState oldState, GameState newState)
     {
-        if (SequenceRunning)
+        if ((oldState == GameState.Paused || oldState == GameState.InMainMenu) && newState == GameState.Playing)
         {
-            return;
+            if (SequenceRunning || _sequenceUnstartedOrFinished)
+            {
+                return;
+            }
+            ResumeChoreography();
         }
-
-        InitializeSequence();
+        else if (oldState == GameState.Playing && (newState == GameState.Paused || newState == GameState.Unfocused))
+        {
+            if (!SequenceRunning || _sequenceUnstartedOrFinished)
+            {
+                return;
+            }
+            PauseChoreography();
+        }
     }
 
     public void InitializeSequence()
@@ -206,6 +182,7 @@ public class ChoreographySequencer : MonoBehaviour
         var formationSequence = CreateSequence(formations[0], 1);
         _activeSequences.Add(formationSequence);
         SequenceRunning = true;
+        _sequenceUnstartedOrFinished = false;
     }
 
     private Sequence CreateSequence(ChoreographyFormation formation, int nextFormationIndex)
@@ -258,7 +235,10 @@ public class ChoreographySequencer : MonoBehaviour
             var formationSequence = CreateSequence(formations[nextFormationIndex], ++nextFormationIndex);
 
             _activeSequences.Add(formationSequence);
-            //_sequence.Insert(formations[nextFormationIndex].Time, tween);
+        }
+        else //Sequence is completed
+        {
+            _sequenceUnstartedOrFinished = true;
         }
     }
 
@@ -346,30 +326,6 @@ public class ChoreographySequencer : MonoBehaviour
                 return _sequenceStartPoses[(2 + (int) note.LineLayer * 4)];
             default:
                 return null;
-        }
-    }
-
-    public void ToggleChoreography(InputAction.CallbackContext context)
-    {
-        if (SequenceRunning)
-        {
-            PauseChoreography();
-        }
-        else
-        {
-            ResumeChoreography();
-        }
-    }
-
-    private void ToggleChoreography(bool play)
-    {
-        if (play)
-        {
-            ResumeChoreography();
-        }
-        else
-        {
-            PauseChoreography();
         }
     }
 

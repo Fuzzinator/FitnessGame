@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.599373, g: 0.599749, b: 0.5994864, a: 1}
+  m_IndirectSpecularColor: {r: 0.59937525, g: 0.5997512, b: 0.59948856, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2411,7 +2411,6 @@ MonoBehaviour:
   - {fileID: 951690944}
   _optimalStrikePoint: {fileID: 2001671568}
   _currentStance: 2
-  test: 0
   _sequenceStarted:
     m_PersistentCalls:
       m_Calls: []
@@ -26485,6 +26484,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1171833944}
   - component: {fileID: 1171833943}
+  - component: {fileID: 1171833945}
   m_Layer: 0
   m_Name: Level Manager
   m_TagString: Untagged
@@ -26591,6 +26591,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1171833945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1171833942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27145c97acc0c2f49943cb54ce728521, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _stateToSet: 2
 --- !u!43 &1173995406
 Mesh:
   m_ObjectHideFlags: 0

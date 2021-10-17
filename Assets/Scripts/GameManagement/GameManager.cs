@@ -37,21 +37,18 @@ public class GameManager : MonoBehaviour
 
     private void OnEnable()
     {
-        _inputManager.MainInput[MENUBUTTON].performed += ToggleGamePauseState;
-#if UNITY_EDITOR
-        _inputManager.MainInput[PAUSEINEDITOR].performed += ToggleGamePauseState;
-#endif
+        GameStateManager.Instance.gameStateChanged.AddListener(HandleGameStateChange);
     }
-
-    public void ToggleGamePauseState(InputAction.CallbackContext callbackContext)
+    
+    private void HandleGameStateChange(GameState oldState, GameState newState)
     {
-        if (GameIsPaused)
-        {
-            ResumeGame();
-        }
-        else
+        if ((newState == GameState.Paused || newState == GameState.Unfocused) && oldState != GameState.Paused)
         {
             PauseGame();
+        }
+        else if (newState == GameState.Playing && (oldState == GameState.Paused || oldState == GameState.Unfocused))
+        {
+            ResumeGame();
         }
     }
 

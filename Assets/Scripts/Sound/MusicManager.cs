@@ -69,41 +69,14 @@ public class MusicManager : MonoBehaviour
         }
         _songLoader = new SongLoader();
     }
-
     private void OnEnable()
     {
-        if (InputManager.Instance != null && InputManager.Instance.MainInput != null)
-        {
-            InputManager.Instance.MainInput[SELECT].performed += TempStart;
-            InputManager.Instance.MainInput[MENUBUTTON].performed += ToggleMusic;
-            FocusTracker.Instance.focusChanged.AddListener(ToggleMusic);
-#if UNITY_EDITOR
-            InputManager.Instance.MainInput[PAUSEINEDITOR].performed += ToggleMusic;
-#endif
-        }
+        GameStateManager.Instance.gameStateChanged.AddListener(GameStateListener);
     }
 
     private void OnDisable()
     {
-        if (InputManager.Instance != null && InputManager.Instance.MainInput != null)
-        {
-            InputManager.Instance.MainInput[SELECT].performed -= TempStart;
-            InputManager.Instance.MainInput[MENUBUTTON].performed -= ToggleMusic;
-            FocusTracker.Instance.focusChanged.RemoveListener(ToggleMusic);
-#if UNITY_EDITOR
-            InputManager.Instance.MainInput[PAUSEINEDITOR].performed -= ToggleMusic;
-#endif
-        }
-    }
-
-    private void TempStart(InputAction.CallbackContext context)
-    {
-        if (_musicAudioSource.isPlaying)
-        {
-            return;
-        }
-
-        StartNewSequence();
+        GameStateManager.Instance.gameStateChanged.RemoveListener(GameStateListener);
     }
 
     public async void LoadFromPlaylist(PlaylistItem info)
@@ -175,19 +148,18 @@ public class MusicManager : MonoBehaviour
         _musicAudioSource.Stop();
         _musicPaused = false;
     }
-
-    public void ToggleMusic(InputAction.CallbackContext context)
+    
+    private void GameStateListener(GameState oldState, GameState newState)
     {
-        if (_musicAudioSource.isPlaying)
+        if ((oldState == GameState.Paused || oldState == GameState.InMainMenu) && newState == GameState.Playing)
         {
-            PauseMusic();
+            ToggleMusic(true);
         }
-        else if (_musicPaused)
+        else if (oldState == GameState.Playing && (newState == GameState.Paused || newState == GameState.Unfocused))
         {
-            PlayMusic();
+            ToggleMusic(false);
         }
     }
-
     public void ToggleMusic(bool play)
     {
         if (GameManager.Instance.GameIsPaused || LevelManager.Instance == null ||
