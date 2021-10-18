@@ -39,14 +39,15 @@ public class GameManager : MonoBehaviour
     {
         GameStateManager.Instance.gameStateChanged.AddListener(HandleGameStateChange);
     }
-    
+
     private void HandleGameStateChange(GameState oldState, GameState newState)
     {
         if ((newState == GameState.Paused || newState == GameState.Unfocused) && oldState != GameState.Paused)
         {
             PauseGame();
         }
-        else if (newState == GameState.Playing && (oldState == GameState.Paused || oldState == GameState.Unfocused))
+        else if ((newState == GameState.Playing || newState == GameState.InMainMenu) &&
+                 (oldState == GameState.Paused || oldState == GameState.Unfocused))
         {
             ResumeGame();
         }

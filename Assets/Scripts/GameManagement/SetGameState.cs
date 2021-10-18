@@ -10,6 +10,6 @@ public class SetGameState : MonoBehaviour
 
     private void Start()
     {
-        GameStateManager.Instance.CurrentGameState = _stateToSet;
+        GameStateManager.Instance.SetState(_stateToSet);
     }
 }

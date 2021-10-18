@@ -15,15 +15,16 @@ public class PlaylistManager : MonoBehaviour
 
         set
         {
-            if (_currentItem != value)
-            {
+            //TODO:Make a better way for scene changing so this can be un-commented out
+            //if (_currentItem != value)
+            //{
             _currentItem = value;
             playlistItemUpdated?.Invoke(value);
-            }
-            else
-            {
-                Debug.Log("_currentItem already set?");
-            }
+            //}
+            //else
+            //{
+            //    Debug.Log("_currentItem already set?");
+            //}
         }
     }
 

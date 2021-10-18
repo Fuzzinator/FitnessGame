@@ -21,6 +21,9 @@ namespace UI.Scrollers.Playlists
         private TextMeshProUGUI _playlistLength;
 
         [SerializeField]
+        private Button _playButton;
+        
+        [SerializeField]
         private Button _deleteButton;
 
         [SerializeField]
@@ -36,6 +39,11 @@ namespace UI.Scrollers.Playlists
             {
                 Destroy(this);
             }
+        }
+
+        private void Start()
+        {
+            _playButton.onClick.AddListener(ActiveSceneManager.Instance.LoadBaseLevel);
         }
 
         public void ShowInfo()

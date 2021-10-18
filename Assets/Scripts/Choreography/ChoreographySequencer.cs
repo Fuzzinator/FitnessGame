@@ -141,7 +141,7 @@ public class ChoreographySequencer : MonoBehaviour
     
     private void GameStateListener(GameState oldState, GameState newState)
     {
-        if ((oldState == GameState.Paused || oldState == GameState.InMainMenu) && newState == GameState.Playing)
+        if (oldState == GameState.Paused && newState == GameState.Playing)
         {
             if (SequenceRunning || _sequenceUnstartedOrFinished)
             {

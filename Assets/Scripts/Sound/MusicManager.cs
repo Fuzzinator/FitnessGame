@@ -67,8 +67,10 @@ public class MusicManager : MonoBehaviour
         {
             songFinishedPlaying.AddListener(PlaylistManager.Instance.UpdateCurrentPlaylist);
         }
+
         _songLoader = new SongLoader();
     }
+
     private void OnEnable()
     {
         GameStateManager.Instance.gameStateChanged.AddListener(GameStateListener);
@@ -124,16 +126,14 @@ public class MusicManager : MonoBehaviour
         _musicAudioSource.clip = song;
     }
 
-    public void PlayMusic()
+    public async void PlayMusic()
     {
         _musicAudioSource.Play();
         _musicPaused = false;
         if (!_awaitingSongEnd)
         {
-#pragma warning disable 4014
-            WaitForSongFinish();
-#pragma warning restore 4014
             _awaitingSongEnd = true;
+            await WaitForSongFinish().SuppressCancellationThrow();
         }
     }
 
@@ -148,10 +148,10 @@ public class MusicManager : MonoBehaviour
         _musicAudioSource.Stop();
         _musicPaused = false;
     }
-    
+
     private void GameStateListener(GameState oldState, GameState newState)
     {
-        if ((oldState == GameState.Paused || oldState == GameState.InMainMenu) && newState == GameState.Playing)
+        if (oldState == GameState.Paused && newState == GameState.Playing)
         {
             ToggleMusic(true);
         }
@@ -160,10 +160,10 @@ public class MusicManager : MonoBehaviour
             ToggleMusic(false);
         }
     }
+
     public void ToggleMusic(bool play)
     {
-        if (GameManager.Instance.GameIsPaused || LevelManager.Instance == null ||
-            !LevelManager.Instance.SongFullyLoaded)
+        if (LevelManager.Instance == null || !LevelManager.Instance.SongFullyLoaded || !_awaitingSongEnd)
         {
             return;
         }
@@ -172,7 +172,7 @@ public class MusicManager : MonoBehaviour
         {
             PlayMusic();
         }
-        else if (!_musicPaused)
+        else if (!play && !_musicPaused)
         {
             PauseMusic();
         }

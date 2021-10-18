@@ -30,7 +30,6 @@ public class LevelManager : MonoBehaviour
     private CancellationToken _cancellationToken;
 
     public bool SongFullyLoaded => _choreographyLoaded && _songInfoLoaded && _actualSongLoaded;
-
     public bool ChoreographyLoaded
     {
         get => _choreographyLoaded;

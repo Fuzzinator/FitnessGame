@@ -8,9 +8,10 @@ using UnityEngine.SceneManagement;
 
 public class ActiveSceneManager : MonoBehaviour
 {
-    public ActiveSceneManager Instance { get; private set; }
+    public static ActiveSceneManager Instance { get; private set; }
     public UnityEvent newSceneLoaded = new UnityEvent();
 
+    private const string MAINMENUNAME = "Main Menu";
     private const string BASELEVELNAME = "Base Level";
 
     private void Awake()
@@ -25,11 +26,21 @@ public class ActiveSceneManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        LoadMainMenu();
+    }
+
     public void SetScene(string newSceneName, bool additive = false)
     {
         
     }
 
+    public async void LoadMainMenu()
+    {
+        await LoadSceneAsync(MAINMENUNAME);
+    }
+    
     public async void LoadBaseLevel()
     {
         await LoadSceneAsync(BASELEVELNAME);

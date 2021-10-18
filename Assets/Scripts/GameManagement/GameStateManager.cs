@@ -27,7 +27,7 @@ public class GameStateManager : MonoBehaviour
     public GameState CurrentGameState
     {
         get { return _gameState; }
-        set
+        private set
         {
             if (_gameState != value)
             {
@@ -104,6 +104,12 @@ public class GameStateManager : MonoBehaviour
         {
             CurrentGameState = GameState.Paused;
         }
+    }
+
+    public void SetState(GameState state)
+    {
+        
+        CurrentGameState = state;
     }
 }
 [Serializable]
