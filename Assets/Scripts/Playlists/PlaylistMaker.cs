@@ -107,6 +107,16 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         _playlistItems.Clear();
     }
 
+    public float GetLength()
+    {
+        var length = 0f;
+        foreach (var item in _playlistItems)
+        {
+            length += item.SongInfo.LengthInMinutes;
+        }
+        return length;
+    }
+
     public void Report(float value)
     {
         Debug.Log(value);

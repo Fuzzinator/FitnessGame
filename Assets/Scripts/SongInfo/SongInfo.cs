@@ -23,7 +23,8 @@ public class SongInfo
         get { return _songLength; }
         set { _songLength = value; }
     }
-    
+
+    public float LengthInMinutes => _songLength / MINUTE;
     public string ReadableLength => (SongLength / MINUTE).ToString("0.00");
 
     public DifficultySet[] DifficultySets => _difficultyBeatmapSets;
