@@ -7,8 +7,13 @@ using UnityEngine.Events;
 public class FocusTracker : MonoBehaviour
 {
     public static FocusTracker Instance { get; private set; }
-    
+
     public UnityEvent<bool> focusChanged = new UnityEvent<bool>();
+
+#if UNITY_EDITOR
+    [Header("Editor Only Properties"), SerializeField]
+    private bool _trackFocus = true;
+#endif
     private void Awake()
     {
         if (Instance == null)
@@ -24,6 +29,9 @@ public class FocusTracker : MonoBehaviour
 
     private void OnApplicationFocus(bool hasFocus)
     {
-        focusChanged?.Invoke(hasFocus);
+#if UNITY_EDITOR
+        if (_trackFocus)
+#endif
+            focusChanged?.Invoke(hasFocus);
     }
 }

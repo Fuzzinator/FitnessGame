@@ -9,6 +9,7 @@ public class PlaylistManager : MonoBehaviour
     public static PlaylistManager Instance { get; private set; }
 
     private PlaylistItem _currentItem;
+
     public PlaylistItem CurrentItem
     {
         get => _currentItem;
@@ -37,14 +38,18 @@ public class PlaylistManager : MonoBehaviour
         set
         {
             _currentPlaylist = value;
-            currentPlaylistUpdated?.Invoke();
+            currentPlaylistUpdated?.Invoke(_currentIndex);
         }
     }
 
     public UnityEvent<PlaylistItem> playlistItemUpdated = new UnityEvent<PlaylistItem>();
-    public UnityEvent currentPlaylistUpdated = new UnityEvent();
+    public UnityEvent<int> currentPlaylistUpdated = new UnityEvent<int>();
 
     private int _currentIndex = 0;
+
+    public int CurrentIndex => _currentIndex;
+
+    public int SongCount => _currentPlaylist.Items?.Length ?? 0;
 
     private void Awake()
     {
@@ -70,15 +75,18 @@ public class PlaylistManager : MonoBehaviour
             Debug.LogError("Playlist has no items");
             return;
         }
+
         CurrentItem = _currentPlaylist.Items[_currentIndex];
     }
 
     public void UpdateCurrentPlaylist()
     {
-        if (_currentPlaylist.Items == null || _currentPlaylist.Items.Length == 0 || _currentIndex >= _currentPlaylist.Items.Length - 1)
+        if (_currentPlaylist.Items == null || _currentPlaylist.Items.Length == 0 ||
+            _currentIndex >= _currentPlaylist.Items.Length - 1)
         {
             return;
         }
+
         _currentIndex++;
         CurrentItem = _currentPlaylist.Items[_currentIndex];
     }

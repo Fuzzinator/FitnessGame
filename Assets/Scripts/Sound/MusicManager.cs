@@ -27,7 +27,7 @@ public class MusicManager : MonoBehaviour
     private bool _musicPaused = false;
 
     private SongLoader _songLoader;
-
+    
     #region Const Strings
 
     private const string SELECT = "Select";
@@ -62,11 +62,6 @@ public class MusicManager : MonoBehaviour
     private void Start()
     {
         _cancellationToken = this.GetCancellationTokenOnDestroy();
-
-        if (PlaylistManager.Instance != null)
-        {
-            songFinishedPlaying.AddListener(PlaylistManager.Instance.UpdateCurrentPlaylist);
-        }
 
         _songLoader = new SongLoader();
     }
@@ -130,6 +125,7 @@ public class MusicManager : MonoBehaviour
     {
         _musicAudioSource.Play();
         _musicPaused = false;
+        LevelManager.Instance.SetActualSongCompleted(false);
         if (!_awaitingSongEnd)
         {
             _awaitingSongEnd = true;
@@ -191,6 +187,7 @@ public class MusicManager : MonoBehaviour
         }
 
         _awaitingSongEnd = false;
+        LevelManager.Instance.SetActualSongCompleted(true);
         songFinishedPlaying?.Invoke();
     }
 }

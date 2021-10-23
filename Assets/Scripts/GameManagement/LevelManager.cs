@@ -13,6 +13,8 @@ public class LevelManager : MonoBehaviour
     public UnityEvent startedLevelLoad = new UnityEvent();
     public UnityEvent<int> finishedLevelLoad = new UnityEvent<int>();
     public UnityEvent playLevel = new UnityEvent();
+    
+    public UnityEvent songCompleted = new UnityEvent();
 
     [SerializeField]
     private int _delayLength = 5;
@@ -26,10 +28,13 @@ public class LevelManager : MonoBehaviour
     [SerializeField]
     private bool _actualSongLoaded = false;
 
+    private bool _choreographyCompleted = false;
+    private bool _songCompleted = false;
+
     private UniTask _songCountdown;
     private CancellationToken _cancellationToken;
-
     public bool SongFullyLoaded => _choreographyLoaded && _songInfoLoaded && _actualSongLoaded;
+    
     public bool ChoreographyLoaded
     {
         get => _choreographyLoaded;
@@ -42,7 +47,7 @@ public class LevelManager : MonoBehaviour
 #pragma warning restore 4014
         }
     }
-
+    
     public bool SongInfoLoaded
     {
         get => _songInfoLoaded;
@@ -92,6 +97,11 @@ public class LevelManager : MonoBehaviour
         startedLevelLoad?.Invoke();
         InputManager.Instance.EnableActionMaps("In Game");
         _cancellationToken = this.GetCancellationTokenOnDestroy();
+        
+        if (PlaylistManager.Instance != null)
+        {
+            songCompleted.AddListener(PlaylistManager.Instance.UpdateCurrentPlaylist);
+        }
     }
 
     public void ResetForNextSong()
@@ -104,6 +114,7 @@ public class LevelManager : MonoBehaviour
     public void SetChoreographyLoaded(bool loaded)
     {
         ChoreographyLoaded = loaded;
+        _choreographyCompleted = false;
     }
 
     public void SetSongInfoLoaded(bool loaded)
@@ -114,6 +125,19 @@ public class LevelManager : MonoBehaviour
     public void SetActualSongLoaded(bool loaded)
     {
         ActualSongLoaded = loaded;
+        _songCompleted = false;
+    }
+
+    public void SetChoreographyCompleted(bool completed)
+    {
+        _choreographyCompleted = _choreographyLoaded;
+        CheckIfCompleted();
+    }
+
+    public void SetActualSongCompleted(bool completed)
+    {
+        _songCompleted = completed;
+        CheckIfCompleted();
     }
 
     private async UniTask CheckIfLoaded()
@@ -123,6 +147,14 @@ public class LevelManager : MonoBehaviour
             finishedLevelLoad?.Invoke(_delayLength);
             _songCountdown = DelaySongStart(_delayLength);
             await _songCountdown.SuppressCancellationThrow();
+        }
+    }
+
+    private void CheckIfCompleted()
+    {
+        if (_choreographyCompleted && _songCompleted)
+        {
+            songCompleted?.Invoke();
         }
     }
 

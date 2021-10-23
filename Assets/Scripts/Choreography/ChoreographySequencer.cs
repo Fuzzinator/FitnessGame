@@ -183,6 +183,7 @@ public class ChoreographySequencer : MonoBehaviour
         _activeSequences.Add(formationSequence);
         SequenceRunning = true;
         _sequenceUnstartedOrFinished = false;
+        LevelManager.Instance.SetChoreographyCompleted(false);
     }
 
     private Sequence CreateSequence(ChoreographyFormation formation, int nextFormationIndex)
@@ -239,6 +240,7 @@ public class ChoreographySequencer : MonoBehaviour
         else //Sequence is completed
         {
             _sequenceUnstartedOrFinished = true;
+            LevelManager.Instance.SetChoreographyCompleted(true);
         }
     }
 
