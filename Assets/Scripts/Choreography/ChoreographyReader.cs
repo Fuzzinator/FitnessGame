@@ -5,7 +5,6 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
-using UnityEngine.UI;
 
 public class ChoreographyReader : MonoBehaviour
 {
@@ -26,12 +25,11 @@ public class ChoreographyReader : MonoBehaviour
     public ChoreographyObstacle[] Obstacles => _choreography.Obstacles;
 
     [Header("Settings")]
-    [SerializeField]
-    private float _minTargetSpace = .25f; //This should go into a difficulty setting
+    //[SerializeField]
+    //private float _minTargetSpace = .25f; //This should go into a difficulty setting
 
-    [SerializeField]
-    private float _minObstacleSpace = .75f; //This should go into a difficulty setting
-
+    //[SerializeField]
+    //private float _minObstacleSpace = .75f; //This should go into a difficulty setting
     public UnityEvent finishedLoadingSong = new UnityEvent();
 
     #region Const Strings
@@ -70,8 +68,8 @@ public class ChoreographyReader : MonoBehaviour
 
     private async UniTaskVoid AsyncLoadJson(PlaylistItem item)
     {
-            _difficultyInfo = item.SongInfo.TryGetActiveDifficultySet(item.Difficulty);
-            
+        _difficultyInfo = item.SongInfo.TryGetActiveDifficultySet(item.Difficulty);
+
         if (item.IsCustomSong)
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
@@ -106,7 +104,7 @@ public class ChoreographyReader : MonoBehaviour
                 return;
             }
 
-            _choreography = JsonUtility.FromJson<Choreography>(((TextAsset) json).text);
+            _choreography = JsonUtility.FromJson<Choreography>((json).text);
         }
 
         finishedLoadingSong?.Invoke();
@@ -175,7 +173,7 @@ public class ChoreographyReader : MonoBehaviour
                 }
                 else
                 {
-                    var minGap = (lastSequenceable is ChoreographyNote ? _minTargetSpace : _minObstacleSpace);
+                    var minGap = (lastSequenceable is ChoreographyNote ? _difficultyInfo.MinTargetSpace : .1f);
                     if (lastTime + minGap < sequenceable.Time)
                     {
                         lastTime = sequenceable.Time;
@@ -198,11 +196,13 @@ public class ChoreographyReader : MonoBehaviour
                             case HitSideType.Block:
                                 if (note.LineLayer != ChoreographyNote.LineLayerType.Low)
                                 {
-                                    if (thisTimeObstacle.HitSideType == HitSideType.Block)
+                                    note.SetLineLayer(ChoreographyNote.LineLayerType.Low);
+                                    note.SetToBasicJab();
+                                    /*if (thisTimeObstacle.HitSideType == HitSideType.Block)
                                     {
                                         note.SetLineLayer(ChoreographyNote.LineLayerType.Low);
                                     }
-                                    continue;
+                                    continue;*/
                                 }
 
                                 break;
@@ -251,12 +251,20 @@ public class ChoreographyReader : MonoBehaviour
                         }
                     }
 
-                    if (_difficultyInfo.DifficultyRank == 1)
+                    if (_difficultyInfo.DifficultyRank < 5)
                     {
-                        if (note.LineLayer == ChoreographyNote.LineLayerType.High &&
-                            note.CutDir == ChoreographyNote.CutDirection.Jab)
+                        if (note.LineLayer == ChoreographyNote.LineLayerType.High)
                         {
-                            note.SetToBlock();
+                            if (_difficultyInfo.DifficultyRank == 1 && note.CutDir == ChoreographyNote.CutDirection.Jab)
+                            {
+                                note.SetToBlock();
+                            }
+                            else if (note.CutDir == ChoreographyNote.CutDirection.JabDown ||
+                                     note.CutDir == ChoreographyNote.CutDirection.HookLeftDown ||
+                                     note.CutDir == ChoreographyNote.CutDirection.HookRightDown)
+                            {
+                                note.SetToBasicJab();
+                            }
                         }
                     }
 

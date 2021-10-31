@@ -74,6 +74,10 @@ public class SongInfo
                 var info = difficulties.DifficultyInfos[j];
                 if (info.Difficulty == difficulty)
                 {
+                    if (info.MinTargetSpace == 0)
+                    {
+                        _difficultyBeatmapSets[i].DifficultyInfos[j].SetMinDistance();
+                    }
                     return info;
                 }
             }
