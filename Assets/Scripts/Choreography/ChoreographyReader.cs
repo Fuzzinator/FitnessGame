@@ -25,11 +25,6 @@ public class ChoreographyReader : MonoBehaviour
     public ChoreographyObstacle[] Obstacles => _choreography.Obstacles;
 
     [Header("Settings")]
-    //[SerializeField]
-    //private float _minTargetSpace = .25f; //This should go into a difficulty setting
-
-    //[SerializeField]
-    //private float _minObstacleSpace = .75f; //This should go into a difficulty setting
     public UnityEvent finishedLoadingSong = new UnityEvent();
 
     #region Const Strings
@@ -173,7 +168,7 @@ public class ChoreographyReader : MonoBehaviour
                 }
                 else
                 {
-                    var minGap = (lastSequenceable is ChoreographyNote ? _difficultyInfo.MinTargetSpace : .1f);
+                    var minGap = (lastSequenceable is ChoreographyNote ? _difficultyInfo.MinTargetSpace : .5f);
                     if (lastTime + minGap < sequenceable.Time)
                     {
                         lastTime = sequenceable.Time;
@@ -310,12 +305,12 @@ public class ChoreographyReader : MonoBehaviour
                             continue;
                         }
 
-                        if (obstacle.Type == ChoreographyObstacle.ObstacleType.Crouch &&
+                        /*if (obstacle.Type == ChoreographyObstacle.ObstacleType.Crouch &&
                             ((ChoreographyNote) thisTimeNote).LineLayer != ChoreographyNote.LineLayerType.Low)
                         {
                             continue;
-                        }
-
+                        }*/
+                        
                         switch (thisTimeNote.HitSideType)
                         {
                             case HitSideType.Block:
@@ -337,6 +332,8 @@ public class ChoreographyReader : MonoBehaviour
                             default:
                                 continue;
                         }
+                         ((ChoreographyNote)thisTimeNote).SetLineLayer(ChoreographyNote.LineLayerType.Low);
+                         ((ChoreographyNote)thisTimeNote).SetToBasicJab();
                     }
 
                     thisTimeObstacle = obstacle;

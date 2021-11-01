@@ -25,7 +25,7 @@ public class BaseObstacle : MonoBehaviour, IPoolable
 
     protected bool IsHit(Collider col)
     {
-        return col.gameObject.layer == LayerMask.NameToLayer("Hand");
+        return col.gameObject.layer == LayerMask.NameToLayer("Obstacle");
     }
     
     public void ReturnToPool()

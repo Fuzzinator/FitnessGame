@@ -27,6 +27,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0.06975647, w: 0.9975641}
   m_LocalPosition: {x: -0.738, y: 0.109, z: 0}
   m_LocalScale: {x: 0.85, y: 0.23186879, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1734003233999518602}
   m_RootOrder: 2
@@ -71,6 +72,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0.026, y: 0.161, z: 0}
   m_LocalScale: {x: 0.8, y: 0.23186879, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1734003233999518602}
   m_RootOrder: 0
@@ -115,6 +117,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0.07800969, w: 0.9969526}
   m_LocalPosition: {x: 0.787, y: 0.098, z: 0}
   m_LocalScale: {x: 0.85, y: 0.23186879, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1734003233999518602}
   m_RootOrder: 1
@@ -147,7 +150,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1734003233999518602
 Transform:
   m_ObjectHideFlags: 0
@@ -158,6 +161,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: -0.446393, w: 0.894837}
   m_LocalPosition: {x: 0.124, y: 0.09200001, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1760147514902725498}
   - {fileID: 6926486139298512800}
@@ -206,6 +210,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Faces.Array.size
       value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 6759691386852712697, guid: 157d7ad46ecc97f4185e04f3a2e827cf,
+        type: 3}
+      propertyPath: m_MeshFormatVersion
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6759691386852712697, guid: 157d7ad46ecc97f4185e04f3a2e827cf,
         type: 3}
@@ -3816,6 +3825,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Mesh
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8588755296414486339, guid: 157d7ad46ecc97f4185e04f3a2e827cf,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8588755296414486339, guid: 157d7ad46ecc97f4185e04f3a2e827cf,
+        type: 3}
+      propertyPath: m_Convex
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 157d7ad46ecc97f4185e04f3a2e827cf, type: 3}

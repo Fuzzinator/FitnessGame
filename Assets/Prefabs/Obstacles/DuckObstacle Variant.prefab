@@ -27,6 +27,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0.1721, z: 0}
   m_LocalScale: {x: 0.8, y: 0.23186879, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 573357249081912692}
   m_RootOrder: 0
@@ -71,6 +72,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0.0780067, w: 0.99695283}
   m_LocalPosition: {x: -0.7656, y: 0.1188, z: 0}
   m_LocalScale: {x: 0.75, y: 0.23186879, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 573357249081912692}
   m_RootOrder: 3
@@ -103,7 +105,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &573357249081912692
 Transform:
   m_ObjectHideFlags: 0
@@ -114,6 +116,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8344908555680827739}
   - {fileID: 1116295449485814420}
@@ -150,6 +153,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0.15850271, w: 0.98735857}
   m_LocalPosition: {x: -1.494, y: -0.064, z: 0}
   m_LocalScale: {x: 0.75, y: 0.23186879, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 573357249081912692}
   m_RootOrder: 4
@@ -194,6 +198,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0.15849842, w: 0.9873592}
   m_LocalPosition: {x: 1.494, y: -0.064, z: 0}
   m_LocalScale: {x: 0.75, y: 0.23186879, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 573357249081912692}
   m_RootOrder: 2
@@ -238,6 +243,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0.07800969, w: 0.9969526}
   m_LocalPosition: {x: 0.7656, y: 0.1188, z: 0}
   m_LocalScale: {x: 0.75, y: 0.23186879, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 573357249081912692}
   m_RootOrder: 1
@@ -326,6 +332,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Mesh
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6759691386852712697, guid: 157d7ad46ecc97f4185e04f3a2e827cf,
+        type: 3}
+      propertyPath: m_MeshFormatVersion
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7069002908276086883, guid: 157d7ad46ecc97f4185e04f3a2e827cf,
         type: 3}
