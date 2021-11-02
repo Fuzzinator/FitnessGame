@@ -42,8 +42,15 @@ public class PauseMenuUIController : BaseGameStateListener
         GameStateManager.Instance.SetState(_resumedState);
     }
 
+    public void Restart()
+    {
+        LevelManager.Instance.LoadLevel();
+        ResumeGame();
+    }
+
     public void ReturnToMainMenu()
     {
+        PlaylistManager.Instance.FullReset();
         ActiveSceneManager.Instance.LoadMainMenu();
     }
 }

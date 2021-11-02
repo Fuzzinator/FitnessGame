@@ -331,6 +331,15 @@ public class ChoreographySequencer : MonoBehaviour
         }
     }
 
+    public void ResetChoreography()
+    {
+        while (_activeSequences.Count>0)
+        {
+            var sequence = _activeSequences[0];
+            sequence.Complete();
+        }
+    }
+
     public void PauseChoreography()
     {
         foreach (var sequence in _activeSequences)

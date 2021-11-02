@@ -92,16 +92,20 @@ public class LevelManager : MonoBehaviour
         {
             startedLevelLoad.AddListener(PlaylistManager.Instance.SetFirstPlaylistItem);
         }
-
-        ResetForNextSong();
-        startedLevelLoad?.Invoke();
         InputManager.Instance.EnableActionMaps("In Game");
-        _cancellationToken = this.GetCancellationTokenOnDestroy();
         
         if (PlaylistManager.Instance != null)
         {
             songCompleted.AddListener(PlaylistManager.Instance.UpdateCurrentPlaylist);
         }
+        LoadLevel();
+    }
+
+    public void LoadLevel()
+    {
+        ResetForNextSong();
+        startedLevelLoad?.Invoke();
+        _cancellationToken = this.GetCancellationTokenOnDestroy();
     }
 
     public void ResetForNextSong()

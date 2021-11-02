@@ -70,6 +70,7 @@ public class PlaylistManager : MonoBehaviour
 
     public void SetFirstPlaylistItem()
     {
+        _currentIndex = 0;
         if (_currentPlaylist.Items == null || _currentPlaylist.Items.Length <= _currentIndex)
         {
             Debug.LogError("Playlist has no items");
@@ -89,5 +90,18 @@ public class PlaylistManager : MonoBehaviour
 
         _currentIndex++;
         CurrentItem = _currentPlaylist.Items[_currentIndex];
+    }
+
+    /*public void ResetCurrentPlaylist()
+    {
+        _currentIndex = 0;
+        SetFirstPlaylistItem();
+    }*/
+
+    public void FullReset()
+    {
+        _currentIndex = 0;
+        _currentItem = new PlaylistItem();
+        _currentPlaylist = new Playlist();
     }
 }
