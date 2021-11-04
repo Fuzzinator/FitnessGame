@@ -26,6 +26,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6208858478126486042}
   m_Father: {fileID: 4544052038337616394}
@@ -51,6 +52,7 @@ GameObject:
   - component: {fileID: 7808860882321832570}
   - component: {fileID: 3329512613624926614}
   - component: {fileID: -309534086680282040}
+  - component: {fileID: 3011756263484509852}
   m_Layer: 8
   m_Name: Base Target
   m_TagString: Untagged
@@ -68,6 +70,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.15, y: 1.15, z: 1.15}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6446151993767856581}
   m_Father: {fileID: 0}
@@ -85,7 +88,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8233d90336aea43098adf6dbabd606a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_MeshFormatVersion: 1
+  m_MeshFormatVersion: 2
   m_Faces:
   - m_Indexes: 000000000100000002000000
     m_SmoothingGroup: 0
@@ -2465,6 +2468,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
+  m_VersionIndex: 0
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -2480,6 +2484,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -2682,6 +2687,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _maxValue: 10
+  _hitRange: 2
 --- !u!114 &7808860882321832570
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2722,6 +2728,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _thisRenderer: {fileID: 4683659880547737927}
+--- !u!114 &3011756263484509852
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7070346352395033538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e47778f88b40c9742903a94178274c52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _baseTarget: {fileID: -8971507887394260220}
+  _renderer: {fileID: 2904331627907752747}
+  _effectRange: 2
+  _propertyName: _EffectOn
 --- !u!1 &9185772512914332026
 GameObject:
   m_ObjectHideFlags: 0
@@ -2733,7 +2755,6 @@ GameObject:
   - component: {fileID: 6208858478126486042}
   - component: {fileID: 9037583447576502557}
   - component: {fileID: 2904331627907752747}
-  - component: {fileID: 7855607511643363933}
   m_Layer: 8
   m_Name: Quad
   m_TagString: Untagged
@@ -2751,6 +2772,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.45, y: 0.45, z: 0.45}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6446151993767856581}
   m_RootOrder: 0
@@ -2774,6 +2796,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -2804,19 +2827,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &7855607511643363933
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9185772512914332026}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e47778f88b40c9742903a94178274c52, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _baseTarget: {fileID: -8971507887394260220}
-  _renderer: {fileID: 2904331627907752747}
-  _effectRange: 5
-  _propertyName: _EffectOn

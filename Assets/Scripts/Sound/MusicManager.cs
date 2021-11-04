@@ -10,7 +10,7 @@ using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.Networking;
 
-public class MusicManager : MonoBehaviour
+public class MusicManager : BaseGameStateListener
 {
     public static MusicManager Instance { get; private set; }
 
@@ -64,16 +64,6 @@ public class MusicManager : MonoBehaviour
         _cancellationToken = this.GetCancellationTokenOnDestroy();
 
         _songLoader = new SongLoader();
-    }
-
-    private void OnEnable()
-    {
-        GameStateManager.Instance.gameStateChanged.AddListener(GameStateListener);
-    }
-
-    private void OnDisable()
-    {
-        GameStateManager.Instance.gameStateChanged.RemoveListener(GameStateListener);
     }
 
     public async void LoadFromPlaylist(PlaylistItem info)
@@ -145,7 +135,7 @@ public class MusicManager : MonoBehaviour
         _musicPaused = false;
     }
 
-    private void GameStateListener(GameState oldState, GameState newState)
+    protected override void GameStateListener(GameState oldState, GameState newState)
     {
         if (oldState == GameState.Paused && newState == GameState.Playing)
         {

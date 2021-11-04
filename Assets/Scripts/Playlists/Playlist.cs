@@ -13,6 +13,8 @@ public struct Playlist
     //workout length in seconds
     [SerializeField]
     private float _length;
+
+    public float Length => _length;
     public string ReadableLength
     {
         get
