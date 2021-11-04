@@ -34,7 +34,11 @@ public class PlaylistCountdownClock : MonoBehaviour
     {
         _timeRemaining = PlaylistManager.Instance.CurrentPlaylist.Length;
         UpdateDisplay();
+        
+#pragma warning disable 4014
         UniTask.Run(RunClock);
+#pragma warning restore 4014
+        
         await RunDisplayUpdate().SuppressCancellationThrow();
     }
 

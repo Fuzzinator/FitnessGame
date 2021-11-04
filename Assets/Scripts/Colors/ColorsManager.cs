@@ -17,6 +17,9 @@ public class ColorsManager : MonoBehaviour
     [SerializeField]
     private Color _blockColor;
 
+    [SerializeField]
+    private Color _obstacleColor;
+
     [Space]
     [Header("Environment")]
     [SerializeField]
