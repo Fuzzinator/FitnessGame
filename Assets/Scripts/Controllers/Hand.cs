@@ -32,11 +32,11 @@ public class Hand : BaseGameStateListener
     private List<InputDevice> _devices = new List<InputDevice>();
     private bool _enabled;
     private bool _trackingPaused = false;
-    private void OnEnable()
+    private async void OnEnable()
     {
         _enabled = true;
         UpdateDevices();
-        UniTask.Run(TrackDirection);
+        await TrackDirection().SuppressCancellationThrow();
     }
 
     private void OnDisable()
@@ -89,7 +89,7 @@ public class Hand : BaseGameStateListener
         while (_enabled)
         {
             _previousPosition = transform.position;
-            await UniTask.DelayFrame(1);
+            await UniTask.DelayFrame(1, cancellationToken:this.GetCancellationTokenOnDestroy());
             
             if (_trackingPaused)
             {

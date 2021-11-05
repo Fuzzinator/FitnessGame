@@ -60,8 +60,10 @@ public class PlaylistCountdownClock : MonoBehaviour
 
     private void UpdateDisplay()
     {
-        var minutes = _timeRemaining/ MINUTE;
-        _text.SetText(minutes.ToString("0.00"));
+        var minutes = Mathf.Floor(_timeRemaining/ MINUTE);
+        var seconds = Mathf.Floor(_timeRemaining % MINUTE);
+        
+        _text.SetText($"{minutes}.{seconds:00}");
     }
 
     private async UniTask RunClock()
