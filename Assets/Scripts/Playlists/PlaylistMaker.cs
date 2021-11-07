@@ -78,6 +78,11 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
 
     public async void CreatePlaylist()
     {
+        if (_playlistItems == null || _playlistItems.Count == 0)
+        {
+            Debug.LogError("Cannot create empty playlist");
+            return;
+        }
 #if UNITY_ANDROID && !UNITY_EDITOR
         var path = $"{Application.persistentDataPath}{PLAYLISTSFOLDER}";
         /*if (!Permission.HasUserAuthorizedPermission(Permission.ExternalStorageWrite))

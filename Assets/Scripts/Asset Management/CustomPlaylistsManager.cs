@@ -14,7 +14,7 @@ public class CustomPlaylistsManager : MonoBehaviour
     private const string ANDROIDPATHSTART = "file://";
     private const string PLAYLISTSFOLDER = "/Resources/Playlists/";
 #elif UNITY_EDITOR
-    private const string UNITYEDITORLOCATION = "E:\\Projects\\FitnessGame\\LocalCustomSongs\\Playlists";
+    private const string UNITYEDITORLOCATION = "E:\\Projects\\FitnessGame\\LocalCustomSongs\\Playlists\\";
 #endif
 
     private const string PLAYLISTEXTENSION = ".txt";
@@ -55,16 +55,5 @@ public class CustomPlaylistsManager : MonoBehaviour
         }
 
         PlaylistFilesReader.Instance.UpdatePlaylists();
-    }
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
