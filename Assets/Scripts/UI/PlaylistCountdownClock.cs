@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
@@ -14,9 +15,11 @@ public class PlaylistCountdownClock : MonoBehaviour
     private float _timeRemaining = 0;
     private bool _clockRunning = false;
     private bool _clockEnabled = false;
+    private bool _clockPaused = false;
 
 
     private const int MINUTE = 60;
+    private CancellationTokenSource _source;
 
     private void OnEnable()
     {
@@ -29,81 +32,96 @@ public class PlaylistCountdownClock : MonoBehaviour
         _clockEnabled = false;
         GameStateManager.Instance.gameStateChanged.RemoveListener(GameStateListener);
     }
-    
+
+    private void Start()
+    {
+        InitializeClock();
+    }
+
     public async void InitializeClock()
     {
         _timeRemaining = PlaylistManager.Instance.CurrentPlaylist.Length;
         UpdateDisplay();
         
+        //_source = new CancellationTokenSource();
+        //_source = CancellationTokenSource.CreateLinkedTokenSource(_source.Token, this.GetCancellationTokenOnDestroy());
+        var token = this.GetCancellationTokenOnDestroy();
 #pragma warning disable 4014
-        UniTask.Run(RunClock);
+        UniTask.Run(() => RunClock(token), cancellationToken: token);//_source.Token));
 #pragma warning restore 4014
-        
-        await RunDisplayUpdate().SuppressCancellationThrow();
+
+        await RunDisplayUpdate(token).SuppressCancellationThrow();
     }
 
-    public void StartClock()
-    {
-        _clockRunning = true;
-    }
-
-    public void ToggleClock(bool on)
+    public void ToggleClockRunning(bool on)
     {
         _clockRunning = on;
     }
 
-    public void StopClock()
+    public void ToggleClockPaused(bool on)
     {
-        _timeRemaining = 0;
+        _clockPaused = on;
+    }
+
+    public void ResetClock()
+    {
+        _timeRemaining = PlaylistManager.Instance.CurrentPlaylist.Length;
+        UpdateDisplay();
         _clockRunning = false;
     }
 
     private void UpdateDisplay()
     {
-        var minutes = Mathf.Floor(_timeRemaining/ MINUTE);
+        var minutes = Mathf.Floor(_timeRemaining / MINUTE);
         var seconds = Mathf.Floor(_timeRemaining % MINUTE);
-        
+
         _text.SetText($"{minutes}.{seconds:00}");
     }
 
-    private async UniTask RunClock()
+    private async UniTask RunClock(CancellationToken token)
     {
         var time = new Stopwatch();
-        while (_clockEnabled && _timeRemaining > 0)
+        while (_clockEnabled)
         {
             time.Restart();
-            await UniTask.DelayFrame(1);
-            if (!_clockEnabled || _timeRemaining <= 0)
+            await UniTask.DelayFrame(1, cancellationToken: token);
+            if (token.IsCancellationRequested || !_clockEnabled)
             {
                 break;
             }
-            if (!_clockRunning)
+
+            if (!_clockRunning || _clockPaused || _timeRemaining <= 0)
             {
                 continue;
             }
 
-            time.Stop();// = DateTime.Now - time;
-            _timeRemaining -= (time.ElapsedMilliseconds*0.001f);
+            time.Stop(); // = DateTime.Now - time;
+            _timeRemaining -= (time.ElapsedMilliseconds * 0.001f);
         }
     }
 
-    private async UniTask RunDisplayUpdate()
+    private async UniTask RunDisplayUpdate(CancellationToken token)
     {
-        while (_clockEnabled && _timeRemaining > 0)
+        while (_clockEnabled)
         {
-            if (!_clockRunning)
+            if (!_clockRunning || _clockPaused || _timeRemaining <= 0)
             {
-                await UniTask.DelayFrame(1);
+                await UniTask.DelayFrame(1, cancellationToken:token);
+                if (token.IsCancellationRequested)
+                {
+                    return;
+                }
                 continue;
             }
 
-            await UniTask.Delay(TimeSpan.FromSeconds(.25f), cancellationToken: this.GetCancellationTokenOnDestroy())
+            await UniTask.Delay(TimeSpan.FromSeconds(.25f), cancellationToken: token)
                 .SuppressCancellationThrow();
             
-            if (!_clockEnabled || _timeRemaining <= 0)
+            if (token.IsCancellationRequested || !_clockEnabled)
             {
                 break;
             }
+
             UpdateDisplay();
         }
     }
@@ -113,11 +131,11 @@ public class PlaylistCountdownClock : MonoBehaviour
     {
         if (oldState == GameState.Paused && newState == GameState.Playing)
         {
-            ToggleClock(true);
+            ToggleClockPaused(false);
         }
         else if (oldState == GameState.Playing && (newState == GameState.Paused || newState == GameState.Unfocused))
         {
-            ToggleClock(false);
+            ToggleClockPaused(true);
         }
     }
 }

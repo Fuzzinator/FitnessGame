@@ -177,7 +177,7 @@ public class MusicManager : BaseGameStateListener
         }
 
         _awaitingSongEnd = false;
-        LevelManager.Instance.SetActualSongCompleted(true);
         songFinishedPlaying?.Invoke();
+        LevelManager.Instance.SetActualSongCompleted(true);
     }
 }
