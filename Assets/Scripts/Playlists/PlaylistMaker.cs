@@ -27,6 +27,9 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
 
     public List<PlaylistItem> PlaylistItems => _playlistItems;
 
+    private string _playlistName;
+    private const string NEWPLAYLISTNAME = "New Playlist";
+
     #region Const Strings
 
 #if UNITY_ANDROID && !UNITY_EDITOR
@@ -76,6 +79,11 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         _playlistItemsUpdated?.Invoke();
     }
 
+    public void SetPlaylistName(string newName)
+    {
+        _playlistName = newName;
+    }
+    
     public async void CreatePlaylist()
     {
         if (_playlistItems == null || _playlistItems.Count == 0)
@@ -98,7 +106,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         }
 
         var newPlaylist = new Playlist(_playlistItems);
-        var streamWriter = File.CreateText($"{path}{newPlaylist.PlaylistName}.txt");
+        var streamWriter = File.CreateText($"{path}{_playlistName}.txt");
         var json = JsonUtility.ToJson(newPlaylist);
         var writingTask = streamWriter.WriteAsync(json);
 
@@ -110,6 +118,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
 
         _newPlaylistCreated?.Invoke(newPlaylist);
         _playlistItems.Clear();
+        SetPlaylistName(NEWPLAYLISTNAME);
     }
 
     public float GetLength()
