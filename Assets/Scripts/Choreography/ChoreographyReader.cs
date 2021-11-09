@@ -186,61 +186,41 @@ public class ChoreographyReader : MonoBehaviour
                 {
                     if (thisTimeObstacle != null)
                     {
+                        note.SetLineLayer(ChoreographyNote.LineLayerType.Low);
+                        note.SetToBasicJab();
+                        
                         switch (thisTimeObstacle.HitSideType)
                         {
                             case HitSideType.Block:
-                                if (note.LineLayer != ChoreographyNote.LineLayerType.Low)
-                                {
-                                    note.SetLineLayer(ChoreographyNote.LineLayerType.Low);
-                                    note.SetToBasicJab();
-                                    /*if (thisTimeObstacle.HitSideType == HitSideType.Block)
-                                    {
-                                        note.SetLineLayer(ChoreographyNote.LineLayerType.Low);
-                                    }
-                                    continue;*/
-                                }
-
                                 break;
                             case HitSideType.Left:
-                                if (note.LineIndex < 2)
-                                {
-                                    continue;
-                                }
-
+                                note.SetLineIndex(2);
                                 break;
                             case HitSideType.Right:
-                                if (note.LineIndex > 1)
-                                {
-                                    continue;
-                                }
-
+                                note.SetLineIndex(1);
                                 break;
                             default:
                                 continue;
                         }
                     }
 
-                    if (note.CutDir == ChoreographyNote.CutDirection.Uppercut ||
-                        note.CutDir == ChoreographyNote.CutDirection.UppercutLeft ||
-                        note.CutDir == ChoreographyNote.CutDirection.UppercutRight)
+                    if (note.LineLayer == ChoreographyNote.LineLayerType.Low)
                     {
-                        if (note.LineLayer == ChoreographyNote.LineLayerType.Low)
+                        if (note.CutDir == ChoreographyNote.CutDirection.Uppercut)
                         {
                             note.SetToBasicJab();
                         }
-
-                        /*var randomValue = Random.Range(-1, 1);//We'll Test this later
-                        if (randomValue < 0)
+                        else if (note.CutDir == ChoreographyNote.CutDirection.UppercutLeft ||
+                                 note.CutDir == ChoreographyNote.CutDirection.UppercutRight)
                         {
-                            note.SetToBasicJab();
-                        }*/
+                            note.SetToBlock();
+                        }
                     }
-
-                    if (note.CutDir == ChoreographyNote.CutDirection.JabDown ||
-                        note.CutDir == ChoreographyNote.CutDirection.HookLeftDown ||
-                        note.CutDir == ChoreographyNote.CutDirection.HookRightDown)
+                    else if (note.LineLayer == ChoreographyNote.LineLayerType.High)
                     {
-                        if (note.LineLayer == ChoreographyNote.LineLayerType.High)
+                        if (note.CutDir == ChoreographyNote.CutDirection.JabDown ||
+                            note.CutDir == ChoreographyNote.CutDirection.HookLeftDown ||
+                            note.CutDir == ChoreographyNote.CutDirection.HookRightDown)
                         {
                             note.SetToBlock();
                         }
@@ -298,42 +278,33 @@ public class ChoreographyReader : MonoBehaviour
                 }
                 else if (sequenceable is ChoreographyObstacle obstacle && thisTimeObstacle == null)
                 {
-                    if (thisTimeNote != null)
+                    if (thisTimeNote != null && thisTimeNote is ChoreographyNote tempNote)
                     {
-                        if (((ChoreographyNote) thisTimeNote).LineLayer == ChoreographyNote.LineLayerType.High)
-                        {
-                            continue;
-                        }
-
-                        /*if (obstacle.Type == ChoreographyObstacle.ObstacleType.Crouch &&
-                            ((ChoreographyNote) thisTimeNote).LineLayer != ChoreographyNote.LineLayerType.Low)
-                        {
-                            continue;
-                        }*/
-                        
-                        switch (thisTimeNote.HitSideType)
+                        switch (tempNote.HitSideType)
                         {
                             case HitSideType.Block:
                                 break;
                             case HitSideType.Left:
                                 if (obstacle.LineIndex < 2)
                                 {
-                                    continue;
+                                    tempNote.SetLineIndex(2);
                                 }
 
                                 break;
                             case HitSideType.Right:
                                 if (obstacle.LineIndex > 1)
                                 {
-                                    continue;
+                                    tempNote.SetLineIndex(1);
                                 }
 
                                 break;
                             default:
                                 continue;
                         }
-                         ((ChoreographyNote)thisTimeNote).SetLineLayer(ChoreographyNote.LineLayerType.Low);
-                         ((ChoreographyNote)thisTimeNote).SetToBasicJab();
+
+                        tempNote.SetLineLayer(ChoreographyNote.LineLayerType.Low);
+                        tempNote.SetToBasicJab();
+                        thisTimeNote = tempNote;
                     }
 
                     thisTimeObstacle = obstacle;

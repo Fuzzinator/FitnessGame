@@ -23,28 +23,11 @@ namespace UI.Scrollers.Playlists
         [SerializeField]
         private Image _highlight;
 
-        private bool _initialized = false;
-        private bool _isHighlightNull = true;
-
-        private void Start()
-        {
-            _isHighlightNull = _highlight == null;
-            _initialized = true;
-        }
-
         public void SetData(PlaylistItem playlist)
         {
             _songName?.SetText(playlist.SongName);
             _songDifficulty?.SetText(playlist.Difficulty);
             _songLength?.SetText(playlist.SongInfo.ReadableLength);
-            if (!_initialized)
-            {
-                Start();
-            }
-            if (!_isHighlightNull)
-            {
-                SetHighlight(false);
-            }
         }
 
         public void SetHighlight(bool on)
