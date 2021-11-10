@@ -42,6 +42,18 @@ public class MainMenuUIController : BaseGameStateListener
         }
     }
 
+    public void SetActive(bool on)
+    {
+        if (on)
+        {
+            EnableUI();
+        }
+        else
+        {
+            DisableUI();
+        }
+    }
+
     private void SetActivePage(CanvasGroup targetGroup)
     {
         foreach (var group in _allGroups)
