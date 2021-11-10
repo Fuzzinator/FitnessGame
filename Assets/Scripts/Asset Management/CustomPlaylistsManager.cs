@@ -14,7 +14,7 @@ public class CustomPlaylistsManager : MonoBehaviour
     private const string ANDROIDPATHSTART = "file://";
     private const string PLAYLISTSFOLDER = "/Resources/Playlists/";
 #elif UNITY_EDITOR
-    private const string UNITYEDITORLOCATION = "E:\\Projects\\FitnessGame\\LocalCustomSongs\\Playlists\\";
+    private const string UNITYEDITORLOCATION = "/LocalCustomSongs/Playlists/";
 #endif
 
     private const string PLAYLISTEXTENSION = ".txt";
@@ -46,7 +46,8 @@ public class CustomPlaylistsManager : MonoBehaviour
 #if UNITY_ANDROID && !UNITY_EDITOR
         var path = $"{Application.persistentDataPath}{PLAYLISTSFOLDER}";
 #elif UNITY_EDITOR
-        var path = UNITYEDITORLOCATION;
+        var dataPath = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/'));
+        var path = $"{dataPath}/{UNITYEDITORLOCATION}";
 #endif
         path = $"{path}{playlistName}{PLAYLISTEXTENSION}";
         if (File.Exists(path))

@@ -31,6 +31,8 @@ public class ChoreographyReader : MonoBehaviour
 
 #if UNITY_ANDROID && !UNITY_EDITOR
     private const string ANDROIDPATHSTART = "file://";
+#elif UNITY_EDITOR
+    private const string UNITYEDITORLOCATION = "/LocalCustomSongs/Songs/";
 #endif
 
     private const string SONGSFOLDER = "/Resources/Songs/";
@@ -71,8 +73,9 @@ public class ChoreographyReader : MonoBehaviour
             var path =
  $"{Application.persistentDataPath}{SONGSFOLDER}{item.FileLocation}/{_difficultyInfo.FileName}";
 #elif UNITY_EDITOR
-            var txtVersion = _difficultyInfo.FileName.Replace(".dat", ".txt");
-            var path = $"{Application.dataPath}{SONGSFOLDER}{item.FileLocation}/{txtVersion}";
+            //var txtVersion = _difficultyInfo.FileName.Replace(".dat", ".txt");
+            var dataPath = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/'));
+            var path = $"{dataPath}{UNITYEDITORLOCATION}{item.FileLocation}/{_difficultyInfo.FileName}";
 #endif
 
             var streamReader = new StreamReader(path);
