@@ -50,7 +50,7 @@ public class PlaylistManager : MonoBehaviour
     public int CurrentIndex => _currentIndex;
 
     public int SongCount => _currentPlaylist.Items?.Length ?? 0;
-
+    
     private void Awake()
     {
         if (Instance == null)
@@ -69,6 +69,7 @@ public class PlaylistManager : MonoBehaviour
     }
 
     public void SetFirstPlaylistItem()
+    
     {
         _currentIndex = 0;
         if (_currentPlaylist.Items == null || _currentPlaylist.Items.Length <= _currentIndex)

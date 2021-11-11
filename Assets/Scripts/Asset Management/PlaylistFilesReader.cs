@@ -67,14 +67,20 @@ public class PlaylistFilesReader : MonoBehaviour
 
     private async UniTask GetBuiltInPlaylists()
     {
-        await Addressables.LoadAssetsAsync<TextAsset>(_labelReference.labelString, asset =>
+        await Addressables.LoadAssetsAsync<TextAsset>(_labelReference.labelString, async asset =>
         {
             if (asset == null)
             {
                 return;
             }
 
-            availablePlaylists.Add(JsonUtility.FromJson<Playlist>(asset.text));
+            var playlist = JsonUtility.FromJson<Playlist>(asset.text);
+            var isValid = PlaylistValidator.IsValid(playlist);//This is a temporary solution.
+            await isValid;
+            if (isValid.Result)
+            {
+                availablePlaylists.Add(playlist);
+            }
         });
     }
 
@@ -106,8 +112,15 @@ public class PlaylistFilesReader : MonoBehaviour
                 var reading = streamReader.ReadToEndAsync();
                 await reading;
                 var playlist = JsonUtility.FromJson<Playlist>(reading.Result);
-                availablePlaylists.Add(playlist);
+                
                 streamReader.Close();
+                
+                var isValid = PlaylistValidator.IsValid(playlist);
+                await isValid;
+                if (isValid.Result)
+                {
+                    availablePlaylists.Add(playlist);
+                }
             }
         }
 

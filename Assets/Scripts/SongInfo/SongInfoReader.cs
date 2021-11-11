@@ -88,6 +88,7 @@ public class SongInfoReader : MonoBehaviour
             var streamReader = new StreamReader(path);
             var reading = streamReader.ReadToEndAsync();
             await reading;
+            streamReader.Close();
             if (reading.IsCompleted)
             {
                 UpdateSongInfo(reading.Result, item);
@@ -97,7 +98,6 @@ public class SongInfoReader : MonoBehaviour
                 Debug.LogError("Failed to read song info");
                 return;
             }
-            streamReader.Close();
         }
         else
         {

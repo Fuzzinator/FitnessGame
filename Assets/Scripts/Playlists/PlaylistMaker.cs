@@ -106,6 +106,10 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         }
 
         var newPlaylist = new Playlist(_playlistItems);
+        if (string.IsNullOrWhiteSpace(_playlistName))
+        {
+            _playlistName = newPlaylist.PlaylistName;
+        }
         var streamWriter = File.CreateText($"{path}{_playlistName}.txt");
         var json = JsonUtility.ToJson(newPlaylist);
         var writingTask = streamWriter.WriteAsync(json);

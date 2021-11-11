@@ -33,6 +33,7 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Choreography/ChoreographyFormation.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.cysharp.unitask@69be818a46/Runtime/UniTask.Delay.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/SongInfo/SongInfoReader.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/UI/Clock.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.cysharp.unitask@69be818a46/Runtime/UniTaskScheduler.cs" root0="SKIP_HIGHLIGHTING" />
@@ -61,6 +62,7 @@
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Playlists/Playlist.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/GameManagement/GameStateManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/Scrollers/PlaylistSongScrollerController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Debug/FPSCounter.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/IL/AB2B2762-8AED-4FF5-93D8-DE182E8D52F1/8c/c360d2bd/02000165pdb.il" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/VFX/BaseOptimalHitIndicator.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Asset Management/SongInfoFilesReader.cs" root0="FORCE_HIGHLIGHTING" />
@@ -118,8 +120,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/Assets/Scripts/Asset Management/SongInfoFilesReader.cs" />
-        <option value="$PROJECT_DIR$/Assets/Scripts/Asset Management/SongLoader.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Scoring/AddToScore.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Input/InputManager.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/GameManagement/SetGameState.cs" />
@@ -135,7 +135,6 @@
         <option value="$PROJECT_DIR$/Assets/Scripts/SongInfo/DifficultyInfo.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/SongInfo/SongInfo.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/UI/Clock.cs" />
-        <option value="$PROJECT_DIR$/Assets/Scripts/Playlists/PlaylistManager.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/GameManagement/LevelManager.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Choreography/ChoreographySequencer.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/UI/PauseMenuUIController.cs" />
@@ -144,13 +143,11 @@
         <option value="$PROJECT_DIR$/Assets/Scripts/Controllers/Hand.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/UI/PlaylistCountdownClock.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Sound/MusicManager.cs" />
-        <option value="$PROJECT_DIR$/Assets/Scripts/Playlists/PlaylistMaker.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Obstacles/BaseObstacle.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/XR Rig/Head.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/Scrollers/PlaylistSongCellView.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/Scrollers/PlaylistSongScrollerController.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Asset Management/CustomPlaylistsManager.cs" />
-        <option value="$PROJECT_DIR$/Assets/Scripts/SongInfo/SongInfoReader.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Choreography/ChoreographyReader.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/Playlists/KeyboardTextField.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/MainMenuUIController.cs" />
@@ -158,6 +155,14 @@
         <option value="$PROJECT_DIR$/Assets/VRKB/Scripts/Behaviour/KeyboardBehaviour.cs" />
         <option value="$PROJECT_DIR$/Assets/VRKB/Editor/KeyboardBehaviourEditor.cs" />
         <option value="$PROJECT_DIR$/Assets/VRKB/Scripts/Behaviour/KeyBehaviour.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/SongInfo/SongInfoReader.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Asset Management/SongLoader.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Playlists/PlaylistManager.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Asset Management/SongInfoFilesReader.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Asset Management/PlaylistFilesReader.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Playlists/PlaylistMaker.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Playlists/PlaylistValidator.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Debug/FPSCounter.cs" />
       </list>
     </option>
   </component>
@@ -232,7 +237,7 @@
       <workItem from="1635847979513" duration="36317000" />
       <workItem from="1636222266618" duration="26718000" />
       <workItem from="1636432299481" duration="3463000" />
-      <workItem from="1636486256492" duration="7948000" />
+      <workItem from="1636486256492" duration="15897000" />
     </task>
     <servers />
   </component>
@@ -390,11 +395,11 @@
       <screen x="0" y="-1440" width="3440" height="1400" />
     </state>
     <state x="1221" y="-1095" key="SettingsEditor/0.0.3440.1400/3440.-831.1920.1160/0.-1440.3440.1400@0.-1440.3440.1400" timestamp="1635873760584" />
-    <state x="1383" y="315" width="672" height="678" key="search.everywhere.popup" timestamp="1636430256719">
+    <state x="1383" y="315" width="672" height="678" key="search.everywhere.popup" timestamp="1636606081830">
       <screen x="0" y="0" width="3440" height="1400" />
     </state>
     <state x="1383" y="315" width="672" height="678" key="search.everywhere.popup/0.-1440.3440.1400/0.0.3440.1400/3440.-831.1920.1160@0.0.3440.1400" timestamp="1634002648358" />
-    <state x="1383" y="315" width="672" height="678" key="search.everywhere.popup/0.0.3440.1400/3440.-831.1920.1160/0.-1440.3440.1400@0.0.3440.1400" timestamp="1636430256719" />
+    <state x="1383" y="315" width="672" height="678" key="search.everywhere.popup/0.0.3440.1400/3440.-831.1920.1160/0.-1440.3440.1400@0.0.3440.1400" timestamp="1636606081830" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
