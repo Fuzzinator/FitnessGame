@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.XR;
@@ -36,7 +37,7 @@ public class Hand : BaseGameStateListener
     {
         _enabled = true;
         UpdateDevices();
-        await TrackDirection().SuppressCancellationThrow();
+        await TrackDirection(this.GetCancellationTokenOnDestroy()).SuppressCancellationThrow();
     }
 
     private void OnDisable()
@@ -84,12 +85,12 @@ public class Hand : BaseGameStateListener
         }
     }
 
-    private async UniTask TrackDirection()
+    private async UniTask TrackDirection(CancellationToken token)
     {
         while (_enabled)
         {
             _previousPosition = transform.position;
-            await UniTask.DelayFrame(1, cancellationToken:this.GetCancellationTokenOnDestroy());
+            await UniTask.DelayFrame(1, cancellationToken:token);
             
             if (_trackingPaused)
             {

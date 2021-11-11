@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
@@ -37,15 +38,15 @@ public class BaseOptimalHitIndicator : MonoBehaviour
     {
         _destroyed = false;
         _renderer.material.SetFloat(_propertyHash, 0);
-        await UpdateIndicator();
+        await UpdateIndicator(this.GetCancellationTokenOnDestroy());
     }
 
-    public async UniTask UpdateIndicator()
+    public async UniTask UpdateIndicator(CancellationToken token)
     {
         var hitPoint = _baseTarget.OptimalHitPoint;
         while (enabled && gameObject.activeSelf)
         {
-            await UniTask.Yield(this.GetCancellationTokenOnDestroy()).SuppressCancellationThrow();
+            await UniTask.DelayFrame(1, cancellationToken: token).SuppressCancellationThrow();
             if (_destroyed)
             {
                 return;

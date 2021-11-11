@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
@@ -15,17 +16,17 @@ public class Clock : MonoBehaviour
 
     private async void Start()
     {
-        await RunClock().SuppressCancellationThrow();
+        await RunClock(this.GetCancellationTokenOnDestroy()).SuppressCancellationThrow();
     }
 
-    private async UniTask RunClock()
+    private async UniTask RunClock(CancellationToken token)
     {
         while (enabled)
         {
             var time = use24HourTime ? DateTime.Now.ToString("HH:mm") : DateTime.Now.ToShortTimeString();
             _text.SetText(time);
             await UniTask.Delay(TimeSpan.FromMinutes(.25), DelayType.Realtime,
-                cancellationToken: this.GetCancellationTokenOnDestroy());
+                cancellationToken: token);
         }
     }
 }

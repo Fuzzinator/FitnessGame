@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
@@ -18,22 +19,22 @@ public class FPSCounter : MonoBehaviour
     {
         _index = 0;
         _fps = new float[5];
-        await RunCounter();
+        await RunCounter(this.GetCancellationTokenOnDestroy());
     }
 
-    private async UniTask RunCounter()
+    private async UniTask RunCounter(CancellationToken token)
     {
         while (enabled)
         {
-            await UniTask.Delay(TimeSpan.FromSeconds(.1), cancellationToken: this.GetCancellationTokenOnDestroy())
+            await UniTask.Delay(TimeSpan.FromSeconds(.1), cancellationToken: token)
                 .SuppressCancellationThrow();
-            _fps[_index] = 1 / Time.deltaTime;
 
             if (gameObject == null)
             {
                 return;
             }
             
+            _fps[_index] = 1 / Time.deltaTime;
             if (_index + 1 < _fps.Length)
             {
                 _index++;
