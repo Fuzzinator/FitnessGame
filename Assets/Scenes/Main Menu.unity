@@ -193,6 +193,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _uiController: {fileID: 317559081}
   _keyboard: {fileID: 322211551}
+  _useMallets: 0
   _leftMallet: {fileID: 1815741121}
   _rightMallet: {fileID: 1443278204}
   _disableOnEnabled:
@@ -3915,11 +3916,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4579710496674238, guid: dad9a76513d6d2944aec5500facc1644, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.975
+      value: 0.75
       objectReference: {fileID: 0}
     - target: {fileID: 4579710496674238, guid: dad9a76513d6d2944aec5500facc1644, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.6429546
+      value: 0.75
       objectReference: {fileID: 0}
     - target: {fileID: 4579710496674238, guid: dad9a76513d6d2944aec5500facc1644, type: 3}
       propertyPath: m_LocalRotation.w
@@ -3964,11 +3965,6 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 114326458267979190, guid: dad9a76513d6d2944aec5500facc1644,
-        type: 3}
-      propertyPath: _inputField
-      value: 
-      objectReference: {fileID: 322211552}
     - target: {fileID: 114326458267979190, guid: dad9a76513d6d2944aec5500facc1644,
         type: 3}
       propertyPath: OnCancel.m_PersistentCalls.m_Calls.Array.size
@@ -4073,6 +4069,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_HorizontalAlignment
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 418418508608814732, guid: dad9a76513d6d2944aec5500facc1644,
+        type: 3}
+      propertyPath: _config.FontSizes.Array.data[0]
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 607003543138971478, guid: dad9a76513d6d2944aec5500facc1644,
         type: 3}
@@ -4179,6 +4180,11 @@ PrefabInstance:
       propertyPath: m_HorizontalAlignment
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 1908304480210858361, guid: dad9a76513d6d2944aec5500facc1644,
+        type: 3}
+      propertyPath: _config.FontSizes.Array.data[0]
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 1989183166007601779, guid: dad9a76513d6d2944aec5500facc1644,
         type: 3}
       propertyPath: m_Mesh
@@ -4269,6 +4275,11 @@ PrefabInstance:
       propertyPath: m_HorizontalAlignment
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 2192566913081850326, guid: dad9a76513d6d2944aec5500facc1644,
+        type: 3}
+      propertyPath: _config.FontSizes.Array.data[0]
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 2273430098618376924, guid: dad9a76513d6d2944aec5500facc1644,
         type: 3}
       propertyPath: m_Mesh
@@ -4299,6 +4310,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2411162889194565275, guid: dad9a76513d6d2944aec5500facc1644,
+        type: 3}
+      propertyPath: _config.FontSizes.Array.data[0]
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 2412196161026041399, guid: dad9a76513d6d2944aec5500facc1644,
         type: 3}
       propertyPath: m_textAlignment
@@ -4328,6 +4344,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_HorizontalAlignment
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2510798438649897559, guid: dad9a76513d6d2944aec5500facc1644,
+        type: 3}
+      propertyPath: _config.FontSizes.Array.data[0]
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 2537980767700648895, guid: dad9a76513d6d2944aec5500facc1644,
         type: 3}
@@ -4534,6 +4555,11 @@ PrefabInstance:
       propertyPath: m_HorizontalAlignment
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 4380986137214230158, guid: dad9a76513d6d2944aec5500facc1644,
+        type: 3}
+      propertyPath: _config.FontSizes.Array.data[0]
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 4389022464151996182, guid: dad9a76513d6d2944aec5500facc1644,
         type: 3}
       propertyPath: m_textAlignment
@@ -4719,6 +4745,11 @@ PrefabInstance:
       propertyPath: m_HorizontalAlignment
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 5034763806081321774, guid: dad9a76513d6d2944aec5500facc1644,
+        type: 3}
+      propertyPath: _config.FontSizes.Array.data[0]
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 5043682342060688850, guid: dad9a76513d6d2944aec5500facc1644,
         type: 3}
       propertyPath: m_Mesh
@@ -4759,6 +4790,11 @@ PrefabInstance:
       propertyPath: m_PresetInfoIsWorld
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5637149124586050211, guid: dad9a76513d6d2944aec5500facc1644,
+        type: 3}
+      propertyPath: _config.FontSizes.Array.data[0]
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 5637330918407829751, guid: dad9a76513d6d2944aec5500facc1644,
         type: 3}
       propertyPath: m_Enabled
@@ -4793,6 +4829,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5743930742729674485, guid: dad9a76513d6d2944aec5500facc1644,
+        type: 3}
+      propertyPath: _config.FontSizes.Array.data[0]
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5744753557120632409, guid: dad9a76513d6d2944aec5500facc1644,
         type: 3}
@@ -4903,6 +4944,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Mesh
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7687194151498849124, guid: dad9a76513d6d2944aec5500facc1644,
+        type: 3}
+      propertyPath: _config.FontSizes.Array.data[0]
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 7698286780977573607, guid: dad9a76513d6d2944aec5500facc1644,
         type: 3}
@@ -5080,18 +5126,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f8f96077d7a91c4d86d27d66e55d3f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &322211552 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5045288330147678346, guid: dad9a76513d6d2944aec5500facc1644,
-    type: 3}
-  m_PrefabInstance: {fileID: 322211549}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2da0c512f12947e489f739169773d7ca, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &322427509
 GameObject:
   m_ObjectHideFlags: 0
@@ -5199,7 +5233,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh58034
+  m_Name: pb_Mesh34928
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -6033,7 +6067,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh58530
+  m_Name: pb_Mesh35424
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -14743,7 +14777,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh51422
+  m_Name: pb_Mesh35094
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -15801,7 +15835,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh50958
+  m_Name: pb_Mesh34626
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -21997,6 +22031,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -57.155
+      objectReference: {fileID: 0}
+    - target: {fileID: 6940222843148010249, guid: cd5ab7f78e411bb48abfa7a064ad26be,
+        type: 3}
+      propertyPath: _skipUI
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6942267195493193756, guid: cd5ab7f78e411bb48abfa7a064ad26be,
         type: 3}

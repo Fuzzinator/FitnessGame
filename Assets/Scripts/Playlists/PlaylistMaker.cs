@@ -105,12 +105,28 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
             Directory.CreateDirectory(path);
         }
 
-        var newPlaylist = new Playlist(_playlistItems);
+        var newPlaylist = new Playlist(_playlistItems, _playlistName);
         if (string.IsNullOrWhiteSpace(_playlistName))
         {
             _playlistName = newPlaylist.PlaylistName;
         }
-        var streamWriter = File.CreateText($"{path}{_playlistName}.txt");
+
+        var filePath = $"{path}{_playlistName}.txt";
+        var index = 0; var name = _playlistName;
+        while (File.Exists(filePath))
+        {
+            index++;
+            filePath = $"{path}{_playlistName}{index:00}.txt";
+            await UniTask.DelayFrame(1);
+        }
+
+        if (index > 0)
+        {
+            _playlistName = $"{_playlistName}{index:00}";
+            newPlaylist.SetPlaylistName(_playlistName);
+        }
+
+        var streamWriter = File.CreateText(filePath);
         var json = JsonUtility.ToJson(newPlaylist);
         var writingTask = streamWriter.WriteAsync(json);
 

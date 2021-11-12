@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,8 +13,20 @@ public class PauseMenuUIController : BaseGameStateListener
     [SerializeField]
     private Canvas _pauseMenuCanvas;
 
-    protected override void GameStateListener(GameState oldState, GameState newState)
+    [SerializeField]
+    private bool _skipUI = false;
+    
+    protected override async void GameStateListener(GameState oldState, GameState newState)
     {
+        if (_skipUI)
+        {
+            if (oldState == GameState.Unfocused && newState == GameState.Paused)
+            {
+                await UniTask.DelayFrame(1);
+                ResumeGame();
+            }
+            return;
+        }
         switch (newState)
         {
             case GameState.Paused:

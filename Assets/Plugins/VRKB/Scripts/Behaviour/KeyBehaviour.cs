@@ -39,16 +39,12 @@ namespace VRKB
         protected Collider _collider;
         protected KeyboardBehaviour _keyboard;
         protected MeshRenderer _renderer;
-        protected Canvas _canvas;
-        protected Image _image;
 
         public void Start()
         {
             _collider = GetComponent<Collider>();
             _keyboard = GetComponentInParent<KeyboardBehaviour>();
             _renderer = GetComponentInParent<MeshRenderer>();
-            _canvas = GetComponentInChildren<Canvas>(true);
-            _image = _canvas.GetComponentInChildren<Image>(true);
 
             _renderer.sharedMaterial = _keyboard.UnpressedKeyMaterial;
 
@@ -73,6 +69,12 @@ namespace VRKB
                 _prevRepeatTime = Time.time;
                 _renderer.sharedMaterial = _keyboard.PressedKeyMaterial;
             }
+        }
+
+        public void PointerDown()
+        {
+            _keyboard.PressKey(this, null);
+            _keyboard.ReleaseKey(this, null);
         }
 
         public void OnTriggerStay(Collider other)
@@ -144,7 +146,7 @@ namespace VRKB
         {
             // update label texts and colors
 
-            VisitComponentsWithTagPrefix<TextMeshPro>("vrkb_label",
+            VisitComponentsWithTagPrefix<TextMeshProUGUI>("vrkb_label",
                 (label, index) => {
 
                     label.text = null;
@@ -183,15 +185,6 @@ namespace VRKB
                     }
                     
                 });
-            if (_canvas == null)
-            {
-                _canvas = GetComponentInChildren<Canvas>(true);
-                if (_image == null)
-                {
-                    _image = _canvas.GetComponentInChildren<Image>(true);
-                }
-            }
-            _canvas.gameObject.SetActive(_image.sprite != null);
         }
     }
 }

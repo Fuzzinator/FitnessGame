@@ -16,6 +16,9 @@ public class KeyboardManager : MonoBehaviour
     private KeyboardBehaviour _keyboard;
 
     [SerializeField]
+    private bool _useMallets = false;
+    
+    [SerializeField]
     private MalletBehaviour _leftMallet;
     
     [SerializeField]
@@ -40,7 +43,7 @@ public class KeyboardManager : MonoBehaviour
     public void ActivateKeyboard(TMP_InputField ugui, string defaultText)
     {
         _targetText = ugui;
-        _keyboard.Text = defaultText;
+        _keyboard.PlaceholderText = defaultText;
         SetObjectsActive(true);
     }
 
@@ -70,17 +73,27 @@ public class KeyboardManager : MonoBehaviour
     private void SetObjectsActive(bool on)
     {
         _keyboard.gameObject.SetActive(on);
-        _leftMallet.gameObject.SetActive(on);
-        _rightMallet.gameObject.SetActive(on);
-        _uiController.SetActive(!on);
-        
-        foreach (var obj in _disableOnEnabled)
+        if (_useMallets)
         {
-            if (obj == null)
+            _leftMallet.gameObject.SetActive(on);
+            _rightMallet.gameObject.SetActive(on);
+            foreach (var obj in _disableOnEnabled)
             {
-                continue;
+                if (obj == null)
+                {
+                    continue;
+                }
+                obj.SetActive(!on);
             }
-            obj.SetActive(!on);
+        }
+
+        if (on)
+        {
+            _uiController.RequestDisableUI(this);
+        }
+        else
+        {
+            _uiController.RequestEnableUI(this);
         }
     }
 }

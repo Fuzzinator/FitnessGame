@@ -19,6 +19,8 @@ public class MainMenuUIController : BaseGameStateListener
 
     private CanvasGroup[] _allGroups;
     
+    private List<MonoBehaviour> _requestSources = new List<MonoBehaviour>();
+    
     private void Start()
     {
         _activeCanvasGroup = _mainPage;
@@ -39,18 +41,6 @@ public class MainMenuUIController : BaseGameStateListener
             case 2:
                 SetActivePage(_createWorkoutPage);
                 break;
-        }
-    }
-
-    public void SetActive(bool on)
-    {
-        if (on)
-        {
-            EnableUI();
-        }
-        else
-        {
-            DisableUI();
         }
     }
 
@@ -76,12 +66,36 @@ public class MainMenuUIController : BaseGameStateListener
         {
             case GameState.Paused:
             case GameState.Unfocused:
-                DisableUI();
+                RequestDisableUI(this);
                 break;
             case GameState.Playing:
             case GameState.InMainMenu:
-                EnableUI();
+                RequestEnableUI(this);
                 break;
+        }
+    }
+
+    public void RequestDisableUI(MonoBehaviour behaviour)
+    {
+        if (_requestSources.Contains(behaviour))
+        {
+            return;
+        }
+        _requestSources.Add(behaviour);
+        DisableUI();
+    }
+
+    public void RequestEnableUI(MonoBehaviour behaviour)
+    {
+        if (!_requestSources.Contains(behaviour))
+        {
+            return;
+        }
+
+        _requestSources.Remove(behaviour);
+        if (_requestSources.Count == 0)
+        {
+            EnableUI();
         }
     }
     
