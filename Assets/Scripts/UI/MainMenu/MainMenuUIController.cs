@@ -7,46 +7,26 @@ using UnityEngine;
 public class MainMenuUIController : BaseGameStateListener
 {
     [SerializeField]
-    private CanvasGroup _mainPage;
-
-    [SerializeField]
-    private CanvasGroup _doWorkoutPage;
-
-    [SerializeField]
-    private CanvasGroup _createWorkoutPage;
-
+    private CanvasGroup[] _pages;
+    
     private CanvasGroup _activeCanvasGroup;
-
-    private CanvasGroup[] _allGroups;
     
     private List<MonoBehaviour> _requestSources = new List<MonoBehaviour>();
     
     private void Start()
     {
-        _activeCanvasGroup = _mainPage;
-        _allGroups = new[] {_mainPage, _doWorkoutPage, _createWorkoutPage};
+        _activeCanvasGroup = _pages[0];
         SetActivePage(0);
     }
 
     public void SetActivePage(int targetPage)
     {
-        switch (targetPage)
-        {
-            case 0:
-                SetActivePage(_mainPage);
-                break;
-            case 1:
-                SetActivePage(_doWorkoutPage);
-                break;
-            case 2:
-                SetActivePage(_createWorkoutPage);
-                break;
-        }
+        SetActivePage(_pages[targetPage]);
     }
 
     private void SetActivePage(CanvasGroup targetGroup)
     {
-        foreach (var group in _allGroups)
+        foreach (var group in _pages)
         {
             if (group != targetGroup)
             {
@@ -103,7 +83,7 @@ public class MainMenuUIController : BaseGameStateListener
     {
         if (_activeCanvasGroup == null)
         {
-            _activeCanvasGroup = _mainPage;
+            _activeCanvasGroup = _pages[0];
         }
         SetGroupState(_activeCanvasGroup, 1, true);
     }
@@ -112,7 +92,7 @@ public class MainMenuUIController : BaseGameStateListener
     {
         if (_activeCanvasGroup == null)
         {
-            _activeCanvasGroup = _mainPage;
+            _activeCanvasGroup = _pages[0];
         }
         SetGroupState(_activeCanvasGroup, .5f, false);
     }

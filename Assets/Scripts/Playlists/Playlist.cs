@@ -20,8 +20,9 @@ public struct Playlist
     {
         get
         {
-            var minutes = _length / MINUTE;
-            return minutes.ToString("0.00");
+            var minutes = Mathf.Floor(_length / MINUTE);
+            var seconds = Mathf.Floor(_length % MINUTE);
+            return $"{minutes}:{seconds:00}";
         }
     }
 

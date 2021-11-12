@@ -25,7 +25,15 @@ public class SongInfo
     }
 
     public float LengthInMinutes => _songLength / MINUTE;
-    public string ReadableLength => (SongLength / MINUTE).ToString("0.00");
+    public string ReadableLength
+    {
+        get
+        {
+            var minutes = Mathf.Floor(SongLength / MINUTE);
+            var seconds = Mathf.Floor(SongLength % MINUTE);
+            return ($"{minutes}:{seconds:00}");
+        }
+    }
 
     public DifficultySet[] DifficultySets => _difficultyBeatmapSets;
 

@@ -75,7 +75,7 @@ public class PlaylistCountdownClock : MonoBehaviour
         var minutes = Mathf.Floor(_timeRemaining / MINUTE);
         var seconds = Mathf.Floor(_timeRemaining % MINUTE);
 
-        _text.SetText($"{minutes}.{seconds:00}");
+        _text.SetText($"{minutes}:{seconds:00}");
     }
 
     private async UniTask RunClock(CancellationToken token)
@@ -95,8 +95,9 @@ public class PlaylistCountdownClock : MonoBehaviour
                 continue;
             }
 
-            time.Stop(); // = DateTime.Now - time;
-            _timeRemaining -= (time.ElapsedMilliseconds * 0.001f);
+            time.Stop();
+            var timeSpan = time.Elapsed;
+            _timeRemaining -= (float)timeSpan.TotalSeconds;
         }
     }
 
