@@ -14,13 +14,13 @@ public static class PlaylistValidator
     private const string ANDROIDPATHSTART = "file://";
 #elif UNITY_EDITOR
     private const string UNITYEDITORLOCATION = "/LocalCustomSongs/Songs/";
-    private const string DAT = ".dat";
 #endif
 
     private const string SONGSFOLDER = "/Resources/Songs/";
     private const string LOCALSONGSFOLDER = "Assets/Music/Songs/";
     private const string INFO = "/Info";
     private const string TXT = ".txt";
+    private const string DAT = ".dat";
 
     #endregion
 
