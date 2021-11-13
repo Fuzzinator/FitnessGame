@@ -43,8 +43,6 @@ public class PlaylistCountdownClock : MonoBehaviour
         _timeRemaining = PlaylistManager.Instance.CurrentPlaylist.Length;
         UpdateDisplay();
         
-        //_source = new CancellationTokenSource();
-        //_source = CancellationTokenSource.CreateLinkedTokenSource(_source.Token, this.GetCancellationTokenOnDestroy());
         var token = this.GetCancellationTokenOnDestroy();
 #pragma warning disable 4014
         UniTask.Run(() => RunClock(token), cancellationToken: token);//_source.Token));
@@ -84,7 +82,7 @@ public class PlaylistCountdownClock : MonoBehaviour
         while (_clockEnabled)
         {
             time.Restart();
-            await UniTask.DelayFrame(1, cancellationToken: token);
+            await UniTask.DelayFrame(1, cancellationToken: token).SuppressCancellationThrow();
             if (token.IsCancellationRequested || !_clockEnabled)
             {
                 break;

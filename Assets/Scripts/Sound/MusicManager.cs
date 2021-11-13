@@ -73,30 +73,16 @@ public class MusicManager : BaseGameStateListener
 
     private async UniTask AsyncLoadFromPlaylist(PlaylistItem item)
     {
+        AudioClip audioClip;
         if (item.IsCustomSong)
         {
-            var clipRequest = _songLoader.LoadCustomSong(item.FileLocation, item.SongInfo);
-            var task = clipRequest.AsTask();
-            await task;
-            /*if (clipRequest.Status != UniTaskStatus.Succeeded)//This doesnt work?
-            {
-                Debug.LogError($"LoadCustomSong failed. Result: {clipRequest.Status}");
-                return;
-            }*/
-            SetNewMusic(task.Result);
+            audioClip = await _songLoader.LoadCustomSong(item.FileLocation, item.SongInfo);
         }
         else
         {
-            var clipRequest = _songLoader.LoadBuiltInSong(item.SongInfo);
-            var task = clipRequest.AsTask();
-            await task;
-            /*if (clipRequest.Status != UniTaskStatus.Succeeded)//This doesnt work?
-            {
-                Debug.LogError($"LoadBuiltInSong failed. Result: {clipRequest.Status}");
-                return;
-            }*/
-            SetNewMusic(task.Result);
+            audioClip = await _songLoader.LoadBuiltInSong(item.SongInfo);
         }
+        SetNewMusic(audioClip);
 
         finishedLoadingSong?.Invoke();
     }

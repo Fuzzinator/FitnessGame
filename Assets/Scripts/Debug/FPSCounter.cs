@@ -26,15 +26,15 @@ public class FPSCounter : MonoBehaviour
     {
         while (enabled)
         {
-            await UniTask.Delay(TimeSpan.FromSeconds(.1), cancellationToken: token)
+            await UniTask.Delay(TimeSpan.FromSeconds(.05), cancellationToken: token)
                 .SuppressCancellationThrow();
 
-            if (gameObject == null)
+            if (this == null || gameObject == null)
             {
                 return;
             }
             
-            _fps[_index] = 1 / Time.deltaTime;
+            _fps[_index] = 1 / Time.unscaledDeltaTime;
             if (_index + 1 < _fps.Length)
             {
                 _index++;

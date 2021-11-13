@@ -140,10 +140,8 @@ public class SongInfoFilesReader : MonoBehaviour
                     item.isCustomSong = true;
                     if (item.SongLength < 1)
                     {
-                        var clipRequest = TryGetSongLength(item, songLoader);
-                        var task = clipRequest.AsTask();
-                        await task;
-                        item.SongLength = task.Result;
+                        var songLength = await TryGetSongLength(item, songLoader);
+                        item.SongLength = songLength;
                         using (var streamWriter = new StreamWriter(file.FullName))
                         {
                             await streamWriter.WriteAsync(JsonUtility.ToJson(item));
@@ -171,9 +169,7 @@ public class SongInfoFilesReader : MonoBehaviour
                 clipRequest = songLoader.LoadBuiltInSong(info);
             }
 
-            var task = clipRequest.AsTask();
-            await task;
-            var audioClip = task.Result;
+            var audioClip = await clipRequest;
             if (audioClip != null)
             {
                 return audioClip.length;

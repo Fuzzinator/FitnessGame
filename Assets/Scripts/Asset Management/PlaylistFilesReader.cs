@@ -75,9 +75,8 @@ public class PlaylistFilesReader : MonoBehaviour
             }
 
             var playlist = JsonUtility.FromJson<Playlist>(asset.text);
-            var isValid = PlaylistValidator.IsValid(playlist);//This is a temporary solution.
-            await isValid;
-            if (isValid.Result)
+            var isValid = await PlaylistValidator.IsValid(playlist);//This is a temporary solution.
+            if (isValid)
             {
                 availablePlaylists.Add(playlist);
             }
@@ -115,9 +114,8 @@ public class PlaylistFilesReader : MonoBehaviour
                 
                 streamReader.Close();
                 
-                var isValid = PlaylistValidator.IsValid(playlist);
-                await isValid;
-                if (isValid.Result)
+                var isValid = await PlaylistValidator.IsValid(playlist);
+                if (isValid)
                 {
                     availablePlaylists.Add(playlist);
                 }

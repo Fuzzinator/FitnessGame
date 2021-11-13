@@ -24,43 +24,39 @@ public static class PlaylistValidator
 
     #endregion
 
-    public static async Task<bool> IsValid(Playlist playlist)
+    public static async UniTask<bool> IsValid(Playlist playlist)
     {
         for (var i = 0; i < playlist.Items.Length; i++)
         {
             var item = playlist.Items[i];
-            var isValid = IsValid(item);
-            await isValid;
-            if (!isValid.Result)
+            var isValid = await IsValid(item);
+            if (!isValid)
             {
-                return isValid.Result;
+                return isValid;
             }
         }
 
         return true;
     }
     
-    public static async Task<bool> IsValid(PlaylistItem item)
+    public static async UniTask<bool> IsValid(PlaylistItem item)
     {
-        var songInfo = AsyncLoadSongInfo(item);
-        await songInfo;
-        if (songInfo.Result == null)
+        var songInfo = await AsyncLoadSongInfo(item);
+        if (songInfo == null)
         {
             return false;
         }
 
-        item.SongInfo = songInfo.Result;
+        item.SongInfo = songInfo;
 
-        var choreographyExists = AsyncCheckChoreography(item);
-        await choreographyExists;
-        if (!choreographyExists.Result)
+        var choreographyExists = await AsyncCheckChoreography(item);
+        if (!choreographyExists)
         {
             return false;
         }
 
-        var songFileExists = AsyncCheckSongFile(item);
-        await songFileExists;
-        if (!songFileExists.Result)
+        var songFileExists = await AsyncCheckSongFile(item);
+        if (!songFileExists)
         {
             return false;
         }
@@ -68,7 +64,7 @@ public static class PlaylistValidator
         return true;
     }
 
-    private static async Task<SongInfo> AsyncLoadSongInfo(PlaylistItem item)
+    private static async UniTask<SongInfo> AsyncLoadSongInfo(PlaylistItem item)
     {
         if (item.IsCustomSong)
         {
@@ -122,7 +118,7 @@ public static class PlaylistValidator
         return null;
     }
 
-    private static async Task<bool> AsyncCheckChoreography(PlaylistItem item)
+    private static async UniTask<bool> AsyncCheckChoreography(PlaylistItem item)
     {
         var difficultyInfo = item.SongInfo.TryGetActiveDifficultySet(item.Difficulty);
         if (item.IsCustomSong)
@@ -151,7 +147,7 @@ public static class PlaylistValidator
         }
     }
 
-    private static async Task<bool> AsyncCheckSongFile(PlaylistItem item)
+    private static async UniTask<bool> AsyncCheckSongFile(PlaylistItem item)
     {
         if (item.IsCustomSong)
         {
