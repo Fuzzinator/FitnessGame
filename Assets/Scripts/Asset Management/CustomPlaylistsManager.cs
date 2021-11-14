@@ -41,7 +41,7 @@ public class CustomPlaylistsManager : MonoBehaviour
         PlaylistManager.Instance.CurrentPlaylist = new Playlist();
     }
 
-    private void DeletePlaylist(string playlistName)
+    public void DeletePlaylist(string playlistName)
     {
 #if UNITY_ANDROID && !UNITY_EDITOR
         var path = $"{Application.persistentDataPath}{PLAYLISTSFOLDER}";

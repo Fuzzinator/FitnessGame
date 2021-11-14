@@ -40,11 +40,12 @@ public class KeyboardManager : MonoBehaviour
         }
     }
 
-    public void ActivateKeyboard(TMP_InputField ugui, string defaultText)
+    public KeyboardBehaviour ActivateKeyboard(TMP_InputField ugui, string defaultText)
     {
         _targetText = ugui;
         _keyboard.PlaceholderText = defaultText;
         SetObjectsActive(true);
+        return _keyboard;
     }
 
     public void UpdateTargetText(KeyBehaviour key, Collider col, bool autoRepeat)

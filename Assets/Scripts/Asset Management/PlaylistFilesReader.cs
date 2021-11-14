@@ -102,7 +102,6 @@ public class PlaylistFilesReader : MonoBehaviour
         var info = new DirectoryInfo(path);
         var files = info.GetFiles();
 
-        //await UniTask.WaitWhile(() => !Parallel.ForEach(files, async file => //This is commented out because I dont know enough about adding to a list asynchronously
         foreach (var file in files)
         {
             if (file.Extension == PLAYLISTEXTENSION)
@@ -121,13 +120,19 @@ public class PlaylistFilesReader : MonoBehaviour
                 }
             }
         }
-
-        ; //).IsCompleted);
     }
 
-    public void AddNewPlaylisy(Playlist playlist)
+    public void AddNewPlaylist(Playlist playlist)
     {
-        availablePlaylists.Add(playlist);
+        var existingPlaylist = availablePlaylists.Find((i) => i.PlaylistName == playlist.PlaylistName);
+        if (!string.IsNullOrWhiteSpace(existingPlaylist.PlaylistName))
+        {
+            availablePlaylists[availablePlaylists.IndexOf(existingPlaylist)] = playlist;
+        }
+        else
+        {
+            availablePlaylists.Add(playlist);
+        }
         _playlistsUpdated?.Invoke();
     }
 }

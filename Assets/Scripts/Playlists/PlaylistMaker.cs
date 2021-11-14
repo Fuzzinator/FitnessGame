@@ -27,8 +27,11 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
 
     public List<PlaylistItem> PlaylistItems => _playlistItems;
 
+    private bool _editMode = false;
+
+    public string PlaylistName => _playlistName;
     private string _playlistName;
-    private const string NEWPLAYLISTNAME = "New Playlist";
+    private string _originalName;
 
     #region Const Strings
 
@@ -36,9 +39,10 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     private const string ANDROIDPATHSTART = "file://";
     private const string PLAYLISTSFOLDER = "/Resources/Playlists/";
 #elif UNITY_EDITOR
-    private const string UNITYEDITORLOCATION = "E:\\Projects\\FitnessGame\\LocalCustomSongs\\Playlists\\";
+    private const string UNITYEDITORLOCATION = "/LocalCustomSongs/Playlists/";
 #endif
 
+    private const string NEWPLAYLISTNAME = "New Playlist";
     private const string PLAYLISTEXTENSION = ".txt";
 
     #endregion
@@ -83,7 +87,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     {
         _playlistName = newName;
     }
-    
+
     public async void CreatePlaylist()
     {
         if (_playlistItems == null || _playlistItems.Count == 0)
@@ -98,7 +102,8 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
             Permission.RequestUserPermission(Permission.ExternalStorageWrite);
         }*/
 #elif UNITY_EDITOR
-        var path = UNITYEDITORLOCATION;
+        var dataPath = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/'));
+        var path = $"{dataPath}/{UNITYEDITORLOCATION}";
 #endif
         if (!Directory.Exists(path))
         {
@@ -112,18 +117,29 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         }
 
         var filePath = $"{path}{_playlistName}.txt";
-        var index = 0; var name = _playlistName;
-        while (File.Exists(filePath))
+        if (_editMode)
         {
-            index++;
-            filePath = $"{path}{_playlistName}{index:00}.txt";
-            await UniTask.DelayFrame(1);
+            if (_originalName != _playlistName && File.Exists($"{path}{_originalName}.txt"))
+            {
+                CustomPlaylistsManager.Instance.DeletePlaylist(_originalName);
+            }
         }
-
-        if (index > 0)
+        
+        if(!_editMode || (_editMode && _originalName != _playlistName))
         {
-            _playlistName = $"{_playlistName}{index:00}";
-            newPlaylist.SetPlaylistName(_playlistName);
+            var index = 0;
+            while (File.Exists(filePath))
+            {
+                index++;
+                filePath = $"{path}{_playlistName}_{index:00}.txt";
+                await UniTask.DelayFrame(1);
+            }
+
+            if (index > 0)
+            {
+                _playlistName = $"{_playlistName}_{index:00}";
+                newPlaylist.SetPlaylistName(_playlistName);
+            }
         }
 
         var streamWriter = File.CreateText(filePath);
@@ -148,7 +164,34 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         {
             length += item.SongInfo.LengthInMinutes;
         }
+
         return length;
+    }
+
+    public void SetEditMode(bool editMode)
+    {
+        var playlist = PlaylistManager.Instance.CurrentPlaylist;
+
+        _editMode = editMode;
+        if (_editMode)
+        {
+            _originalName = playlist.PlaylistName;
+            _playlistName = playlist.PlaylistName;
+            _playlistItems.Clear();
+            
+            foreach (var item in playlist.Items)
+            {
+                _playlistItems.Add(item);
+            }
+            _playlistItemsUpdated?.Invoke();
+        }
+        else
+        {
+            _originalName = null;
+            _playlistName = string.Empty;
+            _playlistItems.Clear();
+            _playlistItemsUpdated?.Invoke();
+        }
     }
 
     public void Report(float value)

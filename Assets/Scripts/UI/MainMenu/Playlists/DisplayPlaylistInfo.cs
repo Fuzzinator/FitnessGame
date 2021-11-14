@@ -24,6 +24,9 @@ namespace UI.Scrollers.Playlists
         private Button _playButton;
         
         [SerializeField]
+        private Button _editButton;
+        
+        [SerializeField]
         private Button _deleteButton;
 
         [SerializeField]
@@ -51,6 +54,7 @@ namespace UI.Scrollers.Playlists
             _playlistTitleCard.SetActive(true);
             _playlistTitle.SetText(PlaylistManager.Instance.CurrentPlaylist.PlaylistName);
             _playlistLength.SetText(PlaylistManager.Instance.CurrentPlaylist.ReadableLength);
+            _editButton.gameObject.SetActive(PlaylistManager.Instance.CurrentPlaylist.IsCustomPlaylist);
             _deleteButton.gameObject.SetActive(PlaylistManager.Instance.CurrentPlaylist.IsCustomPlaylist);
             _scrollerController.ReloadScroller();
         }
