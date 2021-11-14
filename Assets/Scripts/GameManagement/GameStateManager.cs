@@ -19,9 +19,6 @@ public class GameStateManager : MonoBehaviour
     
     #region Const Strings
     private const string MENUBUTTON = "Menu Button";
-#if UNITY_EDITOR
-    private const string PAUSEINEDITOR = "Pause In Editor";
-#endif
     #endregion
     
     public GameState CurrentGameState
@@ -58,9 +55,6 @@ public class GameStateManager : MonoBehaviour
             {   
                 InputManager.Instance.MainInput[MENUBUTTON].performed += TryTogglePlayPauseState;
                 FocusTracker.Instance.focusChanged.AddListener(ManageFocusState);
-#if UNITY_EDITOR
-                InputManager.Instance.MainInput[PAUSEINEDITOR].performed += TryTogglePlayPauseState;
-#endif
             }
         }
     }
@@ -72,9 +66,6 @@ public class GameStateManager : MonoBehaviour
             {   
                 InputManager.Instance.MainInput[MENUBUTTON].performed -= TryTogglePlayPauseState;
                 FocusTracker.Instance.focusChanged.RemoveListener(ManageFocusState);
-#if UNITY_EDITOR
-                InputManager.Instance.MainInput[PAUSEINEDITOR].performed -= TryTogglePlayPauseState;
-#endif
             }
         }
     }

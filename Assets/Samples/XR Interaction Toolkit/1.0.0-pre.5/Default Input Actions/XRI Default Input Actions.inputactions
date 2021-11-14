@@ -971,15 +971,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Pause In Editor",
-                    "type": "Button",
-                    "id": "d8594bc6-2fed-48f7-b205-5ec618d13424",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "Press",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Reset Headset",
                     "type": "Button",
                     "id": "09a63b70-675c-4a71-9aa2-1e075bc05004",
@@ -1014,20 +1005,9 @@
                 },
                 {
                     "name": "",
-                    "id": "7d3047d9-dacc-459c-b77e-8354053f55ed",
-                    "path": "<Keyboard>/space",
-                    "interactions": "Tap",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Pause In Editor",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "eafaaed6-05d5-46fc-a0c7-8e3a29c8ba4b",
-                    "path": "*/{MenuButton}",
-                    "interactions": "Hold",
+                    "path": "<XRController>{LeftHand}/joystickClicked",
+                    "interactions": "",
                     "processors": "",
                     "groups": "Generic XR Controller",
                     "action": "Reset Headset",
@@ -1037,11 +1017,22 @@
                 {
                     "name": "",
                     "id": "c64bfb06-8541-4fe0-a455-9f3f56d0a09e",
-                    "path": "<Keyboard>/space",
-                    "interactions": "Hold",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Reset Headset",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7d3047d9-dacc-459c-b77e-8354053f55ed",
+                    "path": "<Keyboard>/space",
+                    "interactions": "Tap",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Menu Button",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
