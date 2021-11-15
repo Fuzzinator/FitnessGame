@@ -26,8 +26,25 @@ public class Hand : BaseGameStateListener
         }
     }
 
+    public float MovementSpeed
+    {
+        get
+        {
+            var speed = 0f;
+            foreach (var previousSpeed in _previousSpeeds)
+            {
+                speed += previousSpeed;
+            }
+
+            return speed / _previousSpeeds.Length;
+        }
+    }
+
     private Vector3 _previousPosition;
+    
     private Vector3[] _previousDirections = new Vector3[3];
+    private float[] _previousSpeeds = new float[3];
+    
     private int _index = 0;
 
     private List<InputDevice> _devices = new List<InputDevice>();
@@ -37,7 +54,7 @@ public class Hand : BaseGameStateListener
     {
         _enabled = true;
         UpdateDevices();
-        await TrackDirection(this.GetCancellationTokenOnDestroy()).SuppressCancellationThrow();
+        await TrackDirAndSpeed(this.GetCancellationTokenOnDestroy()).SuppressCancellationThrow();
     }
 
     private void OnDisable()
@@ -85,7 +102,7 @@ public class Hand : BaseGameStateListener
         }
     }
 
-    private async UniTask TrackDirection(CancellationToken token)
+    private async UniTask TrackDirAndSpeed(CancellationToken token)
     {
         while (_enabled)
         {
@@ -96,8 +113,11 @@ public class Hand : BaseGameStateListener
             {
                 continue;
             }
+
+            var position = transform.position;
             
-            _previousDirections[_index] = transform.position - _previousPosition;
+            _previousDirections[_index] = position - _previousPosition;
+            _previousSpeeds[_index] = Vector3.Distance(position, _previousPosition)/Time.unscaledDeltaTime;
             
             if (_index + 1 < _previousDirections.Length)
             {

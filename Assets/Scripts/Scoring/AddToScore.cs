@@ -16,7 +16,7 @@ public class AddToScore : MonoBehaviour, IValidHit
 
     public void TriggerHitEffect(HitInfo info)
     {
-        var magnitude = info.CollisionData.rigidbody.velocity.magnitude;
+        var magnitude = info.HitSpeed;//CollisionData.rigidbody.velocity.magnitude;
 
         var impactValue = Mathf.Clamp(info.ImpactDotProduct, 0, 1);
         var directionValue = Mathf.Clamp(info.DirectionDotProduct, 0, 1);

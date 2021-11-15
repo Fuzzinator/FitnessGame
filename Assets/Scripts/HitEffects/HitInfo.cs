@@ -12,15 +12,20 @@ public struct HitInfo
     public Collision CollisionData { get; private set; }
     public float DistanceFromOptimalHit { get; private set; }
 
-    public HitInfo(float impact, float direction, Hand hand,Collision collision, float distance)
+    public float HitSpeed { get; private set; }
+
+    public HitInfo(float impact, float direction, Hand hand, Collision collision, float distance, float speed)
     {
         ImpactDotProduct = impact;
         DirectionDotProduct = direction;
-        Hands = new []{hand};
+        Hands = new[] {hand};
         CollisionData = collision;
         DistanceFromOptimalHit = distance;
+        HitSpeed = speed;
     }
-    public HitInfo(float impact, float direction, IReadOnlyList<Hand> hands,Collision collision, float distance)
+
+    public HitInfo(float impact, float direction, IReadOnlyList<Hand> hands, Collision collision, float distance,
+        float speed)
     {
         ImpactDotProduct = impact;
         DirectionDotProduct = direction;
@@ -29,7 +34,9 @@ public struct HitInfo
         {
             Hands[i] = hands[i];
         }
+
         CollisionData = collision;
         DistanceFromOptimalHit = distance;
+        HitSpeed = speed;
     }
 }
