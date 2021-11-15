@@ -7,7 +7,7 @@ public class ScoringManager : MonoBehaviour
 {
     public static ScoringManager Instance { get; private set; }
 
-    public int CurrentScore
+    public ulong CurrentScore
     {
         get => _currentScore;
         private set
@@ -22,9 +22,9 @@ public class ScoringManager : MonoBehaviour
     }
 
     [SerializeField]
-    private int _currentScore;
+    private ulong _currentScore;
     
-    public UnityEvent<int> currentScoreUpdated = new UnityEvent<int>();
+    public UnityEvent<ulong> currentScoreUpdated = new UnityEvent<ulong>();
 
     private void Awake()
     {
@@ -50,6 +50,6 @@ public class ScoringManager : MonoBehaviour
     
     public void AddToScore(int valueToAdd)
     {
-        CurrentScore += valueToAdd;
+        CurrentScore += (ulong)valueToAdd;
     }
 }

@@ -20,7 +20,7 @@ public class AddToScore : MonoBehaviour, IValidHit
 
         var impactValue = Mathf.Clamp(info.ImpactDotProduct, 0, 1);
         var directionValue = Mathf.Clamp(info.DirectionDotProduct, 0, 1);
-        var magnitudeBonusValue = magnitude * .25f * _maxValue;
+        var magnitudeBonusValue = magnitude * .25f;
 
         var valueAsFloat = (impactValue + directionValue) * _maxValue + magnitudeBonusValue;
 
