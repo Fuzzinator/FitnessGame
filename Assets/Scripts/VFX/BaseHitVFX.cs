@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -8,6 +9,8 @@ public class BaseHitVFX : MonoBehaviour, IPoolable
 {
     [SerializeField]
     private ParticleSystem _particleSystem;
+
+    private CancellationToken token;
 
     private const int FRAMEDELAY = 5;
     
@@ -22,6 +25,11 @@ public class BaseHitVFX : MonoBehaviour, IPoolable
         }
     }
 
+    private void Start()
+    {
+        token = this.GetCancellationTokenOnDestroy();
+    }
+
     public void SetParticleColor(Color color)
     {
         var main = _particleSystem.main;
@@ -32,14 +40,17 @@ public class BaseHitVFX : MonoBehaviour, IPoolable
     public async UniTask PlayParticles()
     {
         _particleSystem.Play(true);
-        
-        await UniTask.DelayFrame(FRAMEDELAY);
+        await UniTask.DelayFrame(FRAMEDELAY, cancellationToken: token);
         await WaitForParticleFinish();
     }
 
     private async UniTask WaitForParticleFinish()
     {
-        await UniTask.WaitWhile(()=>_particleSystem.IsAlive(true));
+        await UniTask.WaitWhile(()=>_particleSystem.IsAlive(true), cancellationToken:token);
+        if (this == null)
+        {
+            return;
+        }
         Destroy(gameObject);
     }
     

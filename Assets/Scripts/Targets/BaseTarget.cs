@@ -41,7 +41,7 @@ public class BaseTarget : MonoBehaviour, IPoolable
     public FormationHolder parentFormation { get; private set; }
 
     public bool IsPooled { get; set; }
-
+    
     protected virtual void OnCollisionEnter(Collision other)
     {
         if (!IsHit(other.collider, out var hand))
@@ -102,7 +102,12 @@ public class BaseTarget : MonoBehaviour, IPoolable
         impactDotProd = Vector3.Dot(-handDirection, _optimalHitDirection);
         var collisionDirection = Vector3.Normalize(other.contacts[0].point - transform.position);
         dirDotProd = Vector3.Dot(collisionDirection, _optimalHitDirection);
+        
+#if UNITY_EDITOR
+        return true;
+#else
         return impactDotProd > _minMaxAllowance.x && hand.MovementSpeed>_minHitSpeed; // && dirDotProd > _minMaxAllowance.x;
+#endif
     }
 
     public virtual void SetUpTarget(HitSideType hitSideType, Vector3 hitPoint, FormationHolder holder)

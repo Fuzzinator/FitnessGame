@@ -12,7 +12,11 @@ public class TMProDisplayUpdator : MonoBehaviour
     {
         _targetText.SetText(newText);
     }
-
+    public void UpdateText(ulong value)
+    {
+        _targetText.SetText(value.ToString());
+    }
+    
     public void UpdateText(int value)
     {
         _targetText.SetText(value.ToString());
