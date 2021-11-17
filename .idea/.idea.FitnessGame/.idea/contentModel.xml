@@ -86,6 +86,47 @@
           <e p="Android" t="Include">
             <e p="AndroidManifest.xml" t="Include" />
           </e>
+          <e p="BeatSaverSharp" t="Include">
+            <e p="BeatSaver.cs" t="Include" />
+            <e p="BeatSaverObject.cs" t="Include" />
+            <e p="BeatSaverOptions.cs" t="Include" />
+            <e p="Exceptions" t="Include">
+              <e p="BeatSaverClientDisposedException.cs" t="Include" />
+              <e p="BeatSaverClientNullException.cs" t="Include" />
+            </e>
+            <e p="Http" t="Include">
+              <e p="HttpClientResponse.cs" t="Include" />
+              <e p="HttpClientService.cs" t="Include" />
+              <e p="IHttpResponse.cs" t="Include" />
+              <e p="IHttpService.cs" t="Include" />
+              <e p="UnityWebRequestHttpResponse.cs" t="Include" />
+              <e p="UnityWebRequestService.cs" t="Include" />
+            </e>
+            <e p="Models" t="Include">
+              <e p="Beatmap.cs" t="Include" />
+              <e p="BeatmapDifficulty.cs" t="Include" />
+              <e p="BeatmapMetadata.cs" t="Include" />
+              <e p="BeatmapParitySummary.cs" t="Include" />
+              <e p="BeatmapStats.cs" t="Include" />
+              <e p="BeatmapTestplay.cs" t="Include" />
+              <e p="BeatmapVersion.cs" t="Include" />
+              <e p="Pages" t="Include">
+                <e p="Page.cs" t="Include" />
+                <e p="SearchPage.cs" t="Include" />
+                <e p="SerializableSearch.cs" t="Include" />
+                <e p="UploadedPage.cs" t="Include" />
+                <e p="UploaderPage.cs" t="Include" />
+              </e>
+              <e p="User.cs" t="Include" />
+              <e p="UserDifficultyStats.cs" t="Include" />
+              <e p="UserStats.cs" t="Include" />
+              <e p="Vote.cs" t="Include" />
+              <e p="VoteResponse.cs" t="Include" />
+            </e>
+            <e p="SearchTextFilterOption.cs" t="Include" />
+            <e p="SortingOptions.cs" t="Include" />
+            <e p="UploadedFilterOptions.cs" t="Include" />
+          </e>
           <e p="Demigiant" t="Include">
             <e p="DOTween" t="Include">
               <e p="Modules" t="Include">
@@ -419,6 +460,9 @@
             <e p="BaseHitVFX.cs" t="Include" />
             <e p="BaseOptimalHitIndicator.cs" t="Include" />
             <e p="VFXManager.cs" t="Include" />
+          </e>
+          <e p="WebRequests" t="Include">
+            <e p="WebSongRetriever.cs" t="Include" />
           </e>
           <e p="XR Rig" t="Include">
             <e p="Head.cs" t="Include" />
