@@ -19,7 +19,7 @@ public class FakeLogger : MonoBehaviour
         }
         else
         {
-            Destroy(Instance);
+            Destroy(this);
         }
     }
 

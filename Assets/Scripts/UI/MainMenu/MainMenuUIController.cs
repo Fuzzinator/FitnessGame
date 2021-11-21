@@ -1,18 +1,30 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
 
 public class MainMenuUIController : BaseGameStateListener
 {
+    public static MainMenuUIController Instance { get; private set; }
     [SerializeField]
     private CanvasGroup[] _pages;
     
     private CanvasGroup _activeCanvasGroup;
     
     private List<MonoBehaviour> _requestSources = new List<MonoBehaviour>();
-    
+
+    private void Awake()
+    {
+        if (Instance == null || Instance.gameObject == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
+    }
+
     private void Start()
     {
         _activeCanvasGroup = _pages[0];
@@ -81,6 +93,11 @@ public class MainMenuUIController : BaseGameStateListener
     
     private void EnableUI()
     {
+        if (gameObject == null)
+        {
+            return;
+        }
+        
         if (_activeCanvasGroup == null)
         {
             _activeCanvasGroup = _pages[0];
@@ -90,6 +107,11 @@ public class MainMenuUIController : BaseGameStateListener
     
     private void DisableUI()
     {
+        if (gameObject == null)
+        {
+            return;
+        }
+        
         if (_activeCanvasGroup == null)
         {
             _activeCanvasGroup = _pages[0];

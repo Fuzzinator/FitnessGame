@@ -33,12 +33,19 @@ public class FootPlacement : MonoBehaviour
 
     public void UpdateFootPlacement(int placement)
     {
+        SetAnimatorState(true);
         _animator.SetInteger(_footPositionHash, placement);
     }
 
     public void ScaleAndUpdatePlacement(int placement)
     {
+        SetAnimatorState(true);
         _animator.SetInteger(_footPositionHash, placement);
         _animator.SetTrigger(_scaleHash);
+    }
+    
+    private void SetAnimatorState(bool on)
+    {
+        _animator.enabled = on;
     }
 }

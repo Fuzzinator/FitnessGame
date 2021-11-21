@@ -40,6 +40,7 @@ public class NotificationManager : MonoBehaviour
             return null;
         }
         obj.SetUpObject(visuals, button1Pressed, button2Pressed, button3Pressed);
+        
         return obj;
     }
 }

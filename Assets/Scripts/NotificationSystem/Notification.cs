@@ -5,6 +5,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Notification : MonoBehaviour, IPoolable
 {
@@ -12,9 +13,20 @@ public class Notification : MonoBehaviour, IPoolable
     private TextMeshProUGUI _message;
 
     [SerializeField]
+    private Button _button1;
+
+    [SerializeField]
+    private Button _button2;
+
+    [SerializeField]
+    private Button _button3;
+
+    [SerializeField]
     private TextMeshProUGUI _button1Txt;
+
     [SerializeField]
     private TextMeshProUGUI _button2Txt;
+
     [SerializeField]
     private TextMeshProUGUI _button3Txt;
 
@@ -23,11 +35,15 @@ public class Notification : MonoBehaviour, IPoolable
     private Action _button3Pressed;
 
     private float _autoTimeOutTime;
-    
+    private bool _disableUI;
+
     private PoolManager _myPoolManager;
     private bool _isPooled;
 
     private CancellationToken _cancellationToken;
+    
+    private const string HEADERSTART = "<size=100><uppercase><b>";
+    private const string HEADEREND = "</uppercase></size></b>\n";
 
     public PoolManager MyPoolManager
     {
@@ -45,13 +61,41 @@ public class Notification : MonoBehaviour, IPoolable
     {
         _cancellationToken = this.GetCancellationTokenOnDestroy();
     }
-
-    public async void SetUpObject(NotificationVisuals visuals, Action button1Pressed = null, Action button2Pressed = null, Action button3Pressed = null)
+    
+    public async void SetUpObject(NotificationVisuals visuals, Action button1Pressed = null,
+        Action button2Pressed = null, Action button3Pressed = null)
     {
-        _message.SetText(visuals.message);
-        _button1Txt.SetText(visuals.button1Txt);
-        _button2Txt.SetText(visuals.button2Txt);
-        _button3Txt.SetText(visuals.button3Txt);
+        string fullMessage;
+        if (!string.IsNullOrWhiteSpace(visuals.header))
+        {
+            fullMessage = $"{HEADERSTART}{visuals.header}{HEADEREND}{visuals.message}";
+        }
+        else
+        {
+            fullMessage = visuals.message;
+        }
+        
+        _message.SetText(fullMessage);
+        
+        if (!string.IsNullOrWhiteSpace(visuals.button1Txt))
+        {
+            _button1Txt.SetText(visuals.button1Txt);
+            _button1.gameObject.SetActive(true);
+        }
+        
+        if (!string.IsNullOrWhiteSpace(visuals.button2Txt))
+        {
+            _button2Txt.SetText(visuals.button2Txt);
+            _button2.gameObject.SetActive(true);
+        }
+        
+        if (!string.IsNullOrWhiteSpace(visuals.button3Txt))
+        {
+            _button3Txt.SetText(visuals.button3Txt);
+            _button3.gameObject.SetActive(true);
+        }
+
+        _disableUI = visuals.disableUI;
         _autoTimeOutTime = visuals.autoTimeOutTime;
         _button1Pressed = button1Pressed;
         _button2Pressed = button2Pressed;
@@ -59,52 +103,87 @@ public class Notification : MonoBehaviour, IPoolable
 
         gameObject.SetActive(true);
 
-        if (!(_autoTimeOutTime > 0))
+        if (_disableUI)
+        {
+            MainMenuUIController.Instance.RequestDisableUI(this);
+        }
+        
+        if (_autoTimeOutTime <= 0)
         {
             return;
         }
-        
+
         await UniTask.Delay(TimeSpan.FromSeconds(_autoTimeOutTime), cancellationToken: _cancellationToken);
         ReturnToPool();
     }
-    
+
     public void ReturnToPool()
     {
         _message.SetText(string.Empty);
         _button1Txt.SetText(string.Empty);
         _button2Txt.SetText(string.Empty);
         _button3Txt.SetText(string.Empty);
+        
+        _button1.gameObject.SetActive(false);
+        _button2.gameObject.SetActive(false);
+        _button3.gameObject.SetActive(false);
+        
         _autoTimeOutTime = 0;
 
         _button1Pressed = null;
         _button2Pressed = null;
         _button3Pressed = null;
         
+        if (_disableUI)
+        {
+            MainMenuUIController.Instance.RequestEnableUI(this);
+        }
+
+        _disableUI = true;
+
         gameObject.SetActive(false);
-        
+
         MyPoolManager.ReturnToPool(this);
     }
 
     public void Button1Pressed()
     {
         _button1Pressed?.Invoke();
+        ReturnToPool();
     }
-    
+
     public void Button2Pressed()
     {
         _button2Pressed?.Invoke();
+        ReturnToPool();
     }
+
     public void Button3Pressed()
     {
         _button3Pressed?.Invoke();
+        ReturnToPool();
     }
 
     public struct NotificationVisuals
     {
+        public string header;
         public string message;
         public string button1Txt;
         public string button2Txt;
         public string button3Txt;
+        public bool disableUI;
         public float autoTimeOutTime;
+
+        public NotificationVisuals(string message, string header = "", string button1Txt = "", string button2Txt = "",
+            string button3Txt = "", bool disableUI = true, float autoTimeOutTime = 0f)
+        {
+            this.header = header;
+            this.message = message;
+            this.button1Txt = button1Txt;
+            this.button2Txt = button2Txt;
+            this.button3Txt = button3Txt;
+            this.disableUI = disableUI;
+            this.autoTimeOutTime = autoTimeOutTime;
+        }
     }
 }
