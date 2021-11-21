@@ -128,7 +128,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/Playlists/KeyboardTextField.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Input/KeyboardManager.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Playlists/PlaylistMaker.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/Playlists/DisplayNewPlaylistInfo.cs" />
@@ -136,7 +135,6 @@
         <option value="$PROJECT_DIR$/Assets/Scripts/Controllers/Hand.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/HitEffects/HitInfo.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Targets/BlockTarget.cs" />
-        <option value="$PROJECT_DIR$/Assets/Scripts/Scoring/TMProDisplayUpdator.cs" />
         <option value="$PROJECT_DIR$/Assets/Plugins/BeatSaverSharp/Types/Page.cs" />
         <option value="$PROJECT_DIR$/Assets/Plugins/BeatSaverSharp/Types/TypeEnums.cs" />
         <option value="$PROJECT_DIR$/Assets/Plugins/BeatSaverSharp/Types/Beatmap.cs" />
@@ -162,10 +160,8 @@
         <option value="$PROJECT_DIR$/Assets/Scripts/NotificationSystem/NotificationManager.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/GameManagement/LevelManager.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/UI/DisplayLevelStats.cs" />
-        <option value="$PROJECT_DIR$/Assets/Scripts/Scoring/ScoringManager.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/HitEffects/UpdateHitStreak.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/HitEffects/UpdateHitStats.cs" />
-        <option value="$PROJECT_DIR$/Assets/Scripts/Scoring/AddToScore.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/UI/LevelNotificationRequester.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/NotificationSystem/Notification.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/GameManagement/GameManager.cs" />
@@ -178,6 +174,10 @@
         <option value="$PROJECT_DIR$/Assets/Scripts/VFX/BaseHitVFX.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Sound/MusicManager.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/UI/InGame/FootPlacement.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Scoring/ScoringManager.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Scoring/AddToScore.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Scoring/TMProDisplayUpdator.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Scoring/StreakManager.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/UI/InGame/UpdateScoreDisplay.cs" />
       </list>
     </option>
@@ -208,10 +208,10 @@
       </option>
       <method v="2" />
     </configuration>
-    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost">
+    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" ignored-value-for-modified-check="3128">
       <option name="allowRunningInParallel" value="false" />
       <option name="listenPortForConnections" value="false" />
-      <option name="pid" />
+      <option name="pid" value="3128" />
       <option name="selectedOptions">
         <set />
       </option>
@@ -256,7 +256,7 @@
       <workItem from="1636486256492" duration="15897000" />
       <workItem from="1636655563378" duration="10814000" />
       <workItem from="1636788810661" duration="49762000" />
-      <workItem from="1637376915747" duration="21608000" />
+      <workItem from="1637376915747" duration="24914000" />
     </task>
     <servers />
   </component>
@@ -283,37 +283,37 @@
     </state>
     <state width="406" height="464" key="DebuggerActiveHint/0.-1440.3440.1400/0.0.3440.1400/3440.-831.1920.1160@0.0.3440.1400" timestamp="1634526845700" />
     <state width="456" height="464" key="DebuggerActiveHint/0.0.3440.1400/3440.-831.1920.1160/0.-1440.3440.1400@0.0.3440.1400" timestamp="1637118649069" />
-    <state width="3397" height="274" key="GridCell.Tab.0.bottom" timestamp="1637119229134">
+    <state width="3397" height="274" key="GridCell.Tab.0.bottom" timestamp="1637526339050">
       <screen x="0" y="0" width="3440" height="1400" />
     </state>
     <state width="3397" height="337" key="GridCell.Tab.0.bottom/0.-1440.3440.1400/0.0.3440.1400/3440.-831.1920.1160@0.0.3440.1400" timestamp="1635806747307" />
     <state width="1877" height="337" key="GridCell.Tab.0.bottom/0.-1440.3440.1400/0.0.3440.1400/3440.-831.1920.1160@3440.-831.1920.1160" timestamp="1635712822655" />
     <state width="3397" height="337" key="GridCell.Tab.0.bottom/0.0.3440.1400/3440.-831.1920.1160/0.-1440.3440.1400@0.-1440.3440.1400" timestamp="1636222363705" />
-    <state width="3397" height="274" key="GridCell.Tab.0.bottom/0.0.3440.1400/3440.-831.1920.1160/0.-1440.3440.1400@0.0.3440.1400" timestamp="1637119229134" />
+    <state width="3397" height="274" key="GridCell.Tab.0.bottom/0.0.3440.1400/3440.-831.1920.1160/0.-1440.3440.1400@0.0.3440.1400" timestamp="1637526339050" />
     <state width="1877" height="274" key="GridCell.Tab.0.bottom/0.0.3440.1400/3440.-831.1920.1160/0.-1440.3440.1400@3440.-831.1920.1160" timestamp="1636421738201" />
-    <state width="3397" height="274" key="GridCell.Tab.0.center" timestamp="1637119229134">
+    <state width="3397" height="274" key="GridCell.Tab.0.center" timestamp="1637526339049">
       <screen x="0" y="0" width="3440" height="1400" />
     </state>
     <state width="3397" height="337" key="GridCell.Tab.0.center/0.-1440.3440.1400/0.0.3440.1400/3440.-831.1920.1160@0.0.3440.1400" timestamp="1635806747306" />
     <state width="1877" height="337" key="GridCell.Tab.0.center/0.-1440.3440.1400/0.0.3440.1400/3440.-831.1920.1160@3440.-831.1920.1160" timestamp="1635712822655" />
     <state width="3397" height="337" key="GridCell.Tab.0.center/0.0.3440.1400/3440.-831.1920.1160/0.-1440.3440.1400@0.-1440.3440.1400" timestamp="1636222363704" />
-    <state width="3397" height="274" key="GridCell.Tab.0.center/0.0.3440.1400/3440.-831.1920.1160/0.-1440.3440.1400@0.0.3440.1400" timestamp="1637119229134" />
+    <state width="3397" height="274" key="GridCell.Tab.0.center/0.0.3440.1400/3440.-831.1920.1160/0.-1440.3440.1400@0.0.3440.1400" timestamp="1637526339049" />
     <state width="1877" height="274" key="GridCell.Tab.0.center/0.0.3440.1400/3440.-831.1920.1160/0.-1440.3440.1400@3440.-831.1920.1160" timestamp="1636421738200" />
-    <state width="3397" height="274" key="GridCell.Tab.0.left" timestamp="1637119229134">
+    <state width="3397" height="274" key="GridCell.Tab.0.left" timestamp="1637526339049">
       <screen x="0" y="0" width="3440" height="1400" />
     </state>
     <state width="3397" height="337" key="GridCell.Tab.0.left/0.-1440.3440.1400/0.0.3440.1400/3440.-831.1920.1160@0.0.3440.1400" timestamp="1635806747306" />
     <state width="1877" height="337" key="GridCell.Tab.0.left/0.-1440.3440.1400/0.0.3440.1400/3440.-831.1920.1160@3440.-831.1920.1160" timestamp="1635712822655" />
     <state width="3397" height="337" key="GridCell.Tab.0.left/0.0.3440.1400/3440.-831.1920.1160/0.-1440.3440.1400@0.-1440.3440.1400" timestamp="1636222363704" />
-    <state width="3397" height="274" key="GridCell.Tab.0.left/0.0.3440.1400/3440.-831.1920.1160/0.-1440.3440.1400@0.0.3440.1400" timestamp="1637119229134" />
+    <state width="3397" height="274" key="GridCell.Tab.0.left/0.0.3440.1400/3440.-831.1920.1160/0.-1440.3440.1400@0.0.3440.1400" timestamp="1637526339049" />
     <state width="1877" height="274" key="GridCell.Tab.0.left/0.0.3440.1400/3440.-831.1920.1160/0.-1440.3440.1400@3440.-831.1920.1160" timestamp="1636421738200" />
-    <state width="3397" height="274" key="GridCell.Tab.0.right" timestamp="1637119229134">
+    <state width="3397" height="274" key="GridCell.Tab.0.right" timestamp="1637526339049">
       <screen x="0" y="0" width="3440" height="1400" />
     </state>
     <state width="3397" height="337" key="GridCell.Tab.0.right/0.-1440.3440.1400/0.0.3440.1400/3440.-831.1920.1160@0.0.3440.1400" timestamp="1635806747307" />
     <state width="1877" height="337" key="GridCell.Tab.0.right/0.-1440.3440.1400/0.0.3440.1400/3440.-831.1920.1160@3440.-831.1920.1160" timestamp="1635712822655" />
     <state width="3397" height="337" key="GridCell.Tab.0.right/0.0.3440.1400/3440.-831.1920.1160/0.-1440.3440.1400@0.-1440.3440.1400" timestamp="1636222363705" />
-    <state width="3397" height="274" key="GridCell.Tab.0.right/0.0.3440.1400/3440.-831.1920.1160/0.-1440.3440.1400@0.0.3440.1400" timestamp="1637119229134" />
+    <state width="3397" height="274" key="GridCell.Tab.0.right/0.0.3440.1400/3440.-831.1920.1160/0.-1440.3440.1400@0.0.3440.1400" timestamp="1637526339049" />
     <state width="1877" height="274" key="GridCell.Tab.0.right/0.0.3440.1400/3440.-831.1920.1160/0.-1440.3440.1400@3440.-831.1920.1160" timestamp="1636421738200" />
     <state width="3397" height="274" key="GridCell.Tab.1.bottom" timestamp="1637119229134">
       <screen x="0" y="0" width="3440" height="1400" />
@@ -534,6 +534,19 @@
             </endOffsets>
           </properties>
           <option name="timeStamp" value="218" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Assets/Scripts/Scoring/StreakManager.cs</url>
+          <line>90</line>
+          <properties documentPath="E:\Projects\FitnessGame\Assets\Scripts\Scoring\StreakManager.cs" initialLine="90">
+            <startOffsets>
+              <option value="2027" />
+            </startOffsets>
+            <endOffsets>
+              <option value="2028" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="220" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

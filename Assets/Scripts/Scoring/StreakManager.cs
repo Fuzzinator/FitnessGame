@@ -14,11 +14,18 @@ public class StreakManager : MonoBehaviour
     [SerializeField]
     private int _recordStreak = 0;
 
+    private int _recordModifier = 1;
+
     [SerializeField]
     private UnityEvent<int> _currentStreakChanged = new UnityEvent<int>();
 
     [SerializeField]
     private UnityEvent<int> _recordStreakChanged = new UnityEvent<int>();
+    
+    [SerializeField]
+    private UnityEvent<int> _streakModifierChanged = new UnityEvent<int>();
+
+    private const int MULTIPLIERBASE = 2;
 
     public int CurrentStreak
     {
@@ -69,5 +76,23 @@ public class StreakManager : MonoBehaviour
     public void ResetStreak()
     {
         CurrentStreak = 0;
+    }
+
+    public static int GetStreakScoreMod()
+    {
+        var multiplier = 1;
+        
+        while (Instance.CurrentStreak >= MULTIPLIERBASE * multiplier)
+        {
+            multiplier *= MULTIPLIERBASE;
+        }
+
+        if (multiplier != Instance._recordModifier)
+        {
+            Instance._recordModifier = multiplier;
+            Instance._streakModifierChanged?.Invoke(multiplier);
+        }
+        
+        return Instance._recordModifier;
     }
 }

@@ -37,7 +37,7 @@ public class UpdateScoreDisplay : MonoBehaviour
             _currentScore.SetText((ScoringManager.Instance.CurrentScore-increaseAmount).ToString());
         }
 
-        await UniTask.Delay(TimeSpan.FromSeconds(_delayLength), cancellationToken: _token);
+        await UniTask.Delay(TimeSpan.FromSeconds(_delayLength), cancellationToken: _token).SuppressCancellationThrow();
         if (_increaseAmount == increaseAmount)
         {
             _currentScore.SetText((ScoringManager.Instance.CurrentScore).ToString());

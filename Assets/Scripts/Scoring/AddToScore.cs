@@ -28,7 +28,7 @@ public class AddToScore : MonoBehaviour, IValidHit
 
         if (ScoringManager.Instance != null)
         {
-            ScoringManager.Instance.AddToScore(Mathf.RoundToInt(hitValue));
+            ScoringManager.Instance.AddToScore(Mathf.RoundToInt(hitValue*StreakManager.GetStreakScoreMod()));
         }
     }
 
