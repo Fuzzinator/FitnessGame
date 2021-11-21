@@ -16,7 +16,7 @@ public class ScoringManager : MonoBehaviour
             _currentScore = value;
             if (oldScore != _currentScore)
             {
-                currentScoreUpdated?.Invoke(_currentScore);
+                currentScoreUpdated?.Invoke((uint)(_currentScore-oldScore));
             }
         }
     }
@@ -32,7 +32,7 @@ public class ScoringManager : MonoBehaviour
     private uint _missedTargets;
     private uint _hitObstacles;
     
-    public UnityEvent<ulong> currentScoreUpdated = new UnityEvent<ulong>();
+    public UnityEvent<uint> currentScoreUpdated = new UnityEvent<uint>();
 
     private void Awake()
     {
