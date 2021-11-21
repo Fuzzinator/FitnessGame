@@ -81,10 +81,12 @@ public class StreakManager : MonoBehaviour
     public static int GetStreakScoreMod()
     {
         var multiplier = 1;
+        var powerOf = 1;
         
-        while (Instance.CurrentStreak >= MULTIPLIERBASE * multiplier)
+        while (Instance.CurrentStreak >= MULTIPLIERBASE * powerOf)
         {
-            multiplier *= MULTIPLIERBASE;
+            powerOf *= MULTIPLIERBASE;
+            multiplier++;
         }
 
         if (multiplier != Instance._recordModifier)
