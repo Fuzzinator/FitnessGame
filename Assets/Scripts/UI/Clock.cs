@@ -21,12 +21,19 @@ public class Clock : MonoBehaviour
 
     private async UniTask RunClock(CancellationToken token)
     {
+        var delayLength = TimeSpan.FromMinutes(.25);
+        var prevTime = DateTime.Now;
+        await UniTask.Delay(delayLength, DelayType.Realtime, cancellationToken: token);
         while (enabled)
         {
-            var time = use24HourTime ? DateTime.Now.ToString("HH:mm") : DateTime.Now.ToShortTimeString();
-            _text.SetText(time);
-            await UniTask.Delay(TimeSpan.FromMinutes(.25), DelayType.Realtime,
-                cancellationToken: token);
+            if (prevTime.Minute != DateTime.Now.Minute || prevTime.Second != DateTime.Now.Second)
+            {
+                var time = use24HourTime ? DateTime.Now.ToString("HH:mm") : DateTime.Now.ToShortTimeString();
+                _text.SetText(time);
+                prevTime = DateTime.Now;
+            }
+
+            await UniTask.Delay(delayLength, DelayType.Realtime, cancellationToken: token);
         }
     }
 }

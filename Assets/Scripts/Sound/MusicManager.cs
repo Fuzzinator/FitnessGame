@@ -152,10 +152,14 @@ public class MusicManager : BaseGameStateListener
 
     private async UniTask WaitForSongFinish()
     {
-        await UniTask.WaitUntil(
-            () => Math.Abs(_musicAudioSource != null && _musicAudioSource.clip != null
-                ? _musicAudioSource.clip.length - _musicAudioSource.time
-                : 1) < .1f, cancellationToken: _cancellationToken);
+        if (_musicAudioSource != null && _musicAudioSource.clip != null)
+        {
+            var timeSpan = TimeSpan.FromSeconds(.05f);
+            while (_musicAudioSource.clip.length - _musicAudioSource.time >= .05f)
+            {
+                await UniTask.Delay(timeSpan, cancellationToken: _cancellationToken);
+            }
+        }
 
         if (_cancellationToken.IsCancellationRequested)
         {

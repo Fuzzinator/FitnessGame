@@ -46,7 +46,12 @@ public class BaseHitVFX : MonoBehaviour, IPoolable
 
     private async UniTask WaitForParticleFinish()
     {
-        await UniTask.WaitWhile(()=>_particleSystem.IsAlive(true), cancellationToken:token);
+        var timeSpan = TimeSpan.FromSeconds(.25f);
+        while (_particleSystem.IsAlive(true))
+        {
+            await UniTask.Delay(timeSpan, cancellationToken: token);
+        }
+        
         if (this == null)
         {
             return;

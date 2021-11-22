@@ -24,9 +24,10 @@ public class FPSCounter : MonoBehaviour
 
     private async UniTask RunCounter(CancellationToken token)
     {
+        var delayLength = TimeSpan.FromSeconds(.05);
         while (enabled)
         {
-            await UniTask.Delay(TimeSpan.FromSeconds(.05), cancellationToken: token)
+            await UniTask.Delay(delayLength, cancellationToken: token)
                 .SuppressCancellationThrow();
 
             if (this == null || gameObject == null)

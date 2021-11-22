@@ -45,9 +45,9 @@ public class PlaylistCountdownClock : MonoBehaviour
         
         var token = this.GetCancellationTokenOnDestroy();
 #pragma warning disable 4014
-        UniTask.Run(() => RunClock(token), cancellationToken: token);//_source.Token));
+        RunClock(token);
+        //UniTask.Run(() => RunClock(token), cancellationToken: token);//_source.Token));
 #pragma warning restore 4014
-
         await RunDisplayUpdate(token).SuppressCancellationThrow();
     }
 
@@ -101,6 +101,7 @@ public class PlaylistCountdownClock : MonoBehaviour
 
     private async UniTask RunDisplayUpdate(CancellationToken token)
     {
+        var delayTime = TimeSpan.FromSeconds(.25f);
         while (_clockEnabled)
         {
             if (!_clockRunning || _clockPaused || _timeRemaining <= 0)
@@ -113,7 +114,7 @@ public class PlaylistCountdownClock : MonoBehaviour
                 continue;
             }
 
-            await UniTask.Delay(TimeSpan.FromSeconds(.25f), cancellationToken: token)
+            await UniTask.Delay(delayTime, cancellationToken: token)
                 .SuppressCancellationThrow();
             
             if (token.IsCancellationRequested || !_clockEnabled)

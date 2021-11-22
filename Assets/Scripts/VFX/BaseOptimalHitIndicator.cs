@@ -44,6 +44,7 @@ public class BaseOptimalHitIndicator : MonoBehaviour
     public async UniTask UpdateIndicator(CancellationToken token)
     {
         var hitPoint = _baseTarget.OptimalHitPoint;
+        var previousStrength = GetIndicatorStrength();
         while (enabled && gameObject.activeSelf)
         {
             await UniTask.DelayFrame(1, cancellationToken: token).SuppressCancellationThrow();
@@ -52,6 +53,11 @@ public class BaseOptimalHitIndicator : MonoBehaviour
                 return;
             }
 
+            var newStrength = GetIndicatorStrength();
+            if (Math.Abs(previousStrength - newStrength) < .001f)
+            {
+                continue;
+            }
             _renderer.material.SetFloat(_propertyHash, GetIndicatorStrength());
         }
     }

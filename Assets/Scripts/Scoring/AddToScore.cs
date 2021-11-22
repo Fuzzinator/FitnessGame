@@ -5,30 +5,30 @@ using UnityEngine;
 public class AddToScore : MonoBehaviour, IValidHit
 {
     [SerializeField]
-    private int _maxValue = 10;
+    private int _minValue = 5;
+
+    [SerializeField]
+    private int _maxValue = 25;
 
     [SerializeField]
     private float _hitRange = 2f;
 
-    private const int MINVALUE = 5;
     private const int OPTIMALHITMOD = 2;
 
 
     public void TriggerHitEffect(HitInfo info)
     {
-        var magnitude = info.HitSpeed;//CollisionData.rigidbody.velocity.magnitude;
-
         var impactValue = Mathf.Clamp(info.ImpactDotProduct, 0, 1);
         var directionValue = Mathf.Clamp(info.DirectionDotProduct, 0, 1);
-        var magnitudeBonusValue = magnitude * .25f;
+        var magnitudeBonusValue = info.HitSpeed * .25f;
 
-        var valueAsFloat = (impactValue + directionValue) * _maxValue + magnitudeBonusValue;
+        var valueAsFloat = (impactValue + directionValue) * _minValue + magnitudeBonusValue;
 
-        var hitValue = MINVALUE + Mathf.RoundToInt(valueAsFloat * GetOptimalHitModifier(info.DistanceFromOptimalHit));
+        var hitValue = Mathf.Clamp(valueAsFloat * GetOptimalHitModifier(info.DistanceFromOptimalHit), _minValue, _maxValue);
 
         if (ScoringManager.Instance != null)
         {
-            ScoringManager.Instance.AddToScore(hitValue);
+            ScoringManager.Instance.AddToScore(Mathf.RoundToInt(hitValue*StreakManager.GetStreakScoreMod()));
         }
     }
 
