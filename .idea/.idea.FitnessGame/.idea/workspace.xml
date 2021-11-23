@@ -128,7 +128,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/Assets/Scripts/Input/KeyboardManager.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Playlists/PlaylistMaker.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/Playlists/DisplayNewPlaylistInfo.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/GameManagement/GameStateManager.cs" />
@@ -157,18 +156,14 @@
         <option value="$PROJECT_DIR$/Assets/Scripts/Pooling/IPoolable.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Pooling/PoolManager.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Targets/BaseTarget.cs" />
-        <option value="$PROJECT_DIR$/Assets/Scripts/NotificationSystem/NotificationManager.cs" />
-        <option value="$PROJECT_DIR$/Assets/Scripts/GameManagement/LevelManager.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/UI/DisplayLevelStats.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/HitEffects/UpdateHitStreak.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/HitEffects/UpdateHitStats.cs" />
-        <option value="$PROJECT_DIR$/Assets/Scripts/UI/LevelNotificationRequester.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/NotificationSystem/Notification.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/GameManagement/GameManager.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Testing/FakeLogger.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/MainMenuUIController.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Debug/FPSCounter.cs" />
-        <option value="$PROJECT_DIR$/Assets/Scripts/UI/Clock.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/UI/PlaylistCountdownClock.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/VFX/BaseOptimalHitIndicator.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/VFX/BaseHitVFX.cs" />
@@ -178,7 +173,12 @@
         <option value="$PROJECT_DIR$/Assets/Scripts/Scoring/AddToScore.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Scoring/TMProDisplayUpdator.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/UI/InGame/UpdateScoreDisplay.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/UI/Clock.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Scoring/StreakManager.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/GameManagement/LevelManager.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/NotificationSystem/NotificationManager.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/UI/GameAndUIStateListener.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/UI/LevelNotificationRequester.cs" />
       </list>
     </option>
   </component>
@@ -208,10 +208,10 @@
       </option>
       <method v="2" />
     </configuration>
-    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" ignored-value-for-modified-check="3128">
+    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost">
       <option name="allowRunningInParallel" value="false" />
       <option name="listenPortForConnections" value="false" />
-      <option name="pid" value="3128" />
+      <option name="pid" />
       <option name="selectedOptions">
         <set />
       </option>
@@ -524,13 +524,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/Assets/Scripts/Scoring/StreakManager.cs</url>
-          <line>92</line>
+          <line>90</line>
           <properties documentPath="E:\Projects\FitnessGame\Assets\Scripts\Scoring\StreakManager.cs" initialLine="90">
             <startOffsets>
-              <option value="2072" />
+              <option value="2021" />
             </startOffsets>
             <endOffsets>
-              <option value="2073" />
+              <option value="2022" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="220" />

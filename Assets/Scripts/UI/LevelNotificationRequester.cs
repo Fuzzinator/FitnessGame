@@ -9,6 +9,7 @@ public class LevelNotificationRequester : MonoBehaviour
     private readonly Action _mainMenuAction;
     
     private const string WORKOUTCOMPLETE = "Workout Complete";
+    private const string SONGCOMPLETE = "Song Complete";
     private const string FINISHBUTTON = "Finish";
     private const string TOTALSCORE = "Total Score: ";
     private const string GOODHITS = "Good Hits: ";
@@ -20,8 +21,26 @@ public class LevelNotificationRequester : MonoBehaviour
         _mainMenuAction = () => { ActiveSceneManager.Instance.LoadMainMenu();};
     }
 
+    public void CheckLevelStateAndDisplay()
+    {
+        if (PlaylistManager.Instance.CurrentIndex == PlaylistManager.Instance.CurrentPlaylist.Items.Length - 1)
+        {
+            DisplayEndLevelStats();
+        }
+        else if(PlaylistManager.Instance.CurrentIndex < PlaylistManager.Instance.CurrentPlaylist.Items.Length - 1)
+        {
+            DisplayEndSongStats();
+        }
+    }
+    
     public void DisplayEndSongStats()
     {
+        var goodHits = ScoringManager.Instance.GoodHits;
+        var missedHits = ScoringManager.Instance.MissedTargets;
+        var hitObstacles = ScoringManager.Instance.HitObstacles;
+        var message = $"{GOODHITS}{goodHits}\n{MISSEDHITS}{missedHits}\n{HITOBSTACLES}{hitObstacles}";
+        var visuals = new Notification.NotificationVisuals(message, SONGCOMPLETE, disableUI:false, autoTimeOutTime:1f);
+        NotificationManager.RequestNotification(visuals,  _mainMenuAction);
     }
 
     public void DisplayEndLevelStats()
