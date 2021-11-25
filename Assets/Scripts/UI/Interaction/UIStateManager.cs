@@ -6,13 +6,13 @@ public class UIStateManager : MonoBehaviour
 {
     public static UIStateManager Instance { get; private set; }
 
-    private List<Canvas> _activeUI = new();
+    private List<Canvas> _activeUI = new ();
 
     private UIInteractionRegister _leftHand;
     private UIInteractionRegister _rightHand;
-    
+
     public static bool InteractionEnabled { get; private set; }
-    
+
     private void Awake()
     {
         if (Instance == null)
@@ -33,6 +33,7 @@ public class UIStateManager : MonoBehaviour
             {
                 DeRegisterController(_rightHand, true);
             }
+
             _rightHand = hand;
         }
         else
@@ -41,8 +42,10 @@ public class UIStateManager : MonoBehaviour
             {
                 DeRegisterController(_leftHand, false);
             }
+
             _leftHand = hand;
         }
+
         hand.SetInteractionState(InteractionEnabled);
     }
 
@@ -50,11 +53,21 @@ public class UIStateManager : MonoBehaviour
     {
         if (rightHand && _rightHand == hand)
         {
+            if (_rightHand == null)
+            {
+                return;
+            }
+
             hand.SetInteractionState(false);
             _rightHand = null;
         }
-        else if(_leftHand == hand)
+        else if (_leftHand == hand)
         {
+            if (_leftHand == null)
+            {
+                return;
+            }
+
             hand.SetInteractionState(false);
             _leftHand = null;
         }
@@ -79,6 +92,7 @@ public class UIStateManager : MonoBehaviour
         {
             _activeUI.Remove(canvas);
         }
+
         if (_activeUI.Count == 0)
         {
             SetInteractionState(false);
@@ -91,10 +105,12 @@ public class UIStateManager : MonoBehaviour
         {
             _leftHand.SetInteractionState(on);
         }
+
         if (_rightHand != null)
         {
             _rightHand.SetInteractionState(on);
         }
+
         InteractionEnabled = on;
     }
 }

@@ -6,6 +6,9 @@ using UnityEngine;
 public class MainMenuUIController : BaseGameStateListener
 {
     public static MainMenuUIController Instance { get; private set; }
+
+    [SerializeField]
+    private Canvas _canvas;
     [SerializeField]
     private CanvasGroup[] _pages;
     
@@ -29,6 +32,16 @@ public class MainMenuUIController : BaseGameStateListener
     {
         _activeCanvasGroup = _pages[0];
         SetActivePage(0);
+    }
+    
+    private void OnEnable()
+    {
+        UIStateManager.Instance.RequestEnableInteraction(_canvas);
+    }
+
+    private void OnDisable()
+    {
+        UIStateManager.Instance.RequestDisableInteraction(_canvas);
     }
 
     public void SetActivePage(int targetPage)
