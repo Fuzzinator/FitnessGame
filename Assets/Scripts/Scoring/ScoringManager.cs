@@ -25,12 +25,22 @@ public class ScoringManager : MonoBehaviour
     public uint MissedTargets => _missedTargets;
     public uint HitObstacles => _hitObstacles;
 
+    public ulong ScoreThisSong => _scoreThisSong;
+    public uint GoodHitsThisSong => _goodHitsThisSong;
+    public uint MissedTargetsThisSong  => _missedTargetsThisSong;
+    public uint HitObstaclesThisSong  => _hitObstaclesThisSong;
+    
     [SerializeField]
     private ulong _currentScore;
 
     private uint _goodHits;
     private uint _missedTargets;
     private uint _hitObstacles;
+
+    private ulong _scoreThisSong;
+    private uint _goodHitsThisSong;
+    private uint _missedTargetsThisSong;
+    private uint _hitObstaclesThisSong;
     
     public UnityEvent<uint> currentScoreUpdated = new UnityEvent<uint>();
 
@@ -55,6 +65,7 @@ public class ScoringManager : MonoBehaviour
     {
         ResetScore();
         ResetHitsAndMisses();
+        NewSongStarted();
     }
     
     private void ResetScore()
@@ -72,11 +83,13 @@ public class ScoringManager : MonoBehaviour
     public void AddToScore(int valueToAdd)
     {
         CurrentScore += (ulong)valueToAdd;
+        _scoreThisSong += (ulong)valueToAdd;
     }
 
     public void RegisterHit()
     {
         _goodHits++;
+        _goodHitsThisSong++;
     }
 
     public void RegisterMiss(bool wasTarget = true)
@@ -84,10 +97,20 @@ public class ScoringManager : MonoBehaviour
         if (wasTarget)
         {
             _missedTargets++;
+            _missedTargetsThisSong++;
         }
         else
         {
             _hitObstacles++;
+            _hitObstaclesThisSong++;
         }
+    }
+
+    public void NewSongStarted()
+    {
+        _scoreThisSong = 0;
+        _goodHitsThisSong = 0;
+        _missedTargetsThisSong = 0;
+        _hitObstaclesThisSong = 0;
     }
 }

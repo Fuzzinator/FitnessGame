@@ -12,6 +12,7 @@ public class LevelNotificationRequester : MonoBehaviour
     private const string SONGCOMPLETE = "Song Complete";
     private const string FINISHBUTTON = "Finish";
     private const string TOTALSCORE = "Total Score: ";
+    private const string SONGSCORE = "Song Score: ";
     private const string GOODHITS = "Good Hits: ";
     private const string MISSEDHITS = "Missed Hits: ";
     private const string HITOBSTACLES = "Hit Obstacles: ";
@@ -35,10 +36,11 @@ public class LevelNotificationRequester : MonoBehaviour
     
     public void DisplayEndSongStats()
     {
-        var goodHits = ScoringManager.Instance.GoodHits;
-        var missedHits = ScoringManager.Instance.MissedTargets;
-        var hitObstacles = ScoringManager.Instance.HitObstacles;
-        var message = $"{GOODHITS}{goodHits}\n{MISSEDHITS}{missedHits}\n{HITOBSTACLES}{hitObstacles}";
+        var score = ScoringManager.Instance.ScoreThisSong;
+        var goodHits = ScoringManager.Instance.GoodHitsThisSong;
+        var missedHits = ScoringManager.Instance.MissedTargetsThisSong;
+        var hitObstacles = ScoringManager.Instance.HitObstaclesThisSong;
+        var message = $"{SONGSCORE}{score}\n{GOODHITS}{goodHits}\n{MISSEDHITS}{missedHits}\n{HITOBSTACLES}{hitObstacles}";
         var visuals = new Notification.NotificationVisuals(message, SONGCOMPLETE, disableUI:false, autoTimeOutTime:1f);
         NotificationManager.RequestNotification(visuals,  _mainMenuAction);
     }
