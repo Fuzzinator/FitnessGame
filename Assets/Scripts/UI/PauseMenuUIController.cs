@@ -43,11 +43,13 @@ public class PauseMenuUIController : BaseGameStateListener
     private void EnableUI()
     {
         _pauseMenuCanvas.gameObject.SetActive(true);
+        UIStateManager.Instance.RequestEnableInteraction(_pauseMenuCanvas);
     }
 
     private void DisableUI()
     {
         _pauseMenuCanvas.gameObject.SetActive(false);
+        UIStateManager.Instance.RequestDisableInteraction(_pauseMenuCanvas);
     }
 
     public void ResumeGame()
@@ -63,6 +65,7 @@ public class PauseMenuUIController : BaseGameStateListener
 
     public void ReturnToMainMenu()
     {
+        ResumeGame();
         PlaylistManager.Instance.FullReset();
         ActiveSceneManager.Instance.LoadMainMenu();
     }

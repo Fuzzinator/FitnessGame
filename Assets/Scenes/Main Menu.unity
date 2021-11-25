@@ -136,6 +136,7 @@ GameObject:
   - component: {fileID: 19305199}
   - component: {fileID: 19305198}
   - component: {fileID: 19305200}
+  - component: {fileID: 19305201}
   m_Layer: 0
   m_Name: XR Rig
   m_TagString: Untagged
@@ -199,6 +200,18 @@ MonoBehaviour:
   _disableOnEnabled:
   - {fileID: 759509194}
   - {fileID: 1976264129}
+--- !u!114 &19305201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 19305197}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be197586e27a8d74aa1616a2de52728c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &24603189
 GameObject:
   m_ObjectHideFlags: 0
@@ -5247,7 +5260,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh76098
+  m_Name: pb_Mesh29576
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -6081,7 +6094,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh76594
+  m_Name: pb_Mesh30072
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -21398,6 +21411,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e10e95dd18e23f24fa06bf7034993e08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _prefix: 
+  _suffix: 
   _targetText: {fileID: 1692356546}
 --- !u!114 &2065833219
 MonoBehaviour:

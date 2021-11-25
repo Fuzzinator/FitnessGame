@@ -285,7 +285,6 @@ GameObject:
   - component: {fileID: 19305199}
   - component: {fileID: 19305198}
   - component: {fileID: 19305200}
-  - component: {fileID: 19305201}
   m_Layer: 0
   m_Name: XR Rig
   m_TagString: Untagged
@@ -341,25 +340,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _head: {fileID: 963194228}
---- !u!114 &19305201
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 19305197}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ecf685827e9808b43a1b1169279b1fd0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _rightHanded: 1
-  _rightInteractor: {fileID: 983265262}
-  _leftInteractor: {fileID: 1993093611}
-  _rightLineRenderer: {fileID: 983265261}
-  _leftLineRenderer: {fileID: 1993093610}
-  _rightLineVisual: {fileID: 983265260}
-  _leftLineVisual: {fileID: 1993093609}
 --- !u!1 &24603189
 GameObject:
   m_ObjectHideFlags: 0
@@ -4252,7 +4232,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh50764
+  m_Name: pb_Mesh44304
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -7394,7 +7374,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh51226
+  m_Name: pb_Mesh44784
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -11774,6 +11754,7 @@ GameObject:
   - component: {fileID: 983265260}
   - component: {fileID: 983265259}
   - component: {fileID: 983265258}
+  - component: {fileID: 983265264}
   m_Layer: 7
   m_Name: RightHand Controller
   m_TagString: Untagged
@@ -12168,6 +12149,22 @@ MonoBehaviour:
   m_MoveObjectIn: 14
   m_MoveObjectOut: 15
   m_PoseProvider: {fileID: 0}
+--- !u!114 &983265264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 983265255}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be197586e27a8d74aa1616a2de52728c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _isRightHand: 0
+  _rayInteractor: {fileID: 983265262}
+  _lineRenderer: {fileID: 983265261}
+  _interactorLineVisual: {fileID: 983265260}
 --- !u!1 &1037454723
 GameObject:
   m_ObjectHideFlags: 0
@@ -23418,6 +23415,7 @@ GameObject:
   - component: {fileID: 1993093609}
   - component: {fileID: 1993093608}
   - component: {fileID: 1993093607}
+  - component: {fileID: 1993093613}
   m_Layer: 7
   m_Name: LeftHand Controller
   m_TagString: Untagged
@@ -23812,6 +23810,22 @@ MonoBehaviour:
   m_MoveObjectIn: 14
   m_MoveObjectOut: 15
   m_PoseProvider: {fileID: 0}
+--- !u!114 &1993093613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1993093605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be197586e27a8d74aa1616a2de52728c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _isRightHand: 0
+  _rayInteractor: {fileID: 1993093611}
+  _lineRenderer: {fileID: 1993093610}
+  _interactorLineVisual: {fileID: 1993093609}
 --- !u!1 &2001671567
 GameObject:
   m_ObjectHideFlags: 0

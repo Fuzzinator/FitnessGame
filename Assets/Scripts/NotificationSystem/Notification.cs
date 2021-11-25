@@ -41,6 +41,8 @@ public class Notification : MonoBehaviour, IPoolable
     private bool _isPooled;
 
     private CancellationToken _cancellationToken;
+
+    public Canvas _canvas;
     
     private const string HEADERSTART = "<size=100><uppercase><b>";
     private const string HEADEREND = "</uppercase></size></b>\n";
@@ -60,10 +62,35 @@ public class Notification : MonoBehaviour, IPoolable
     private void Start()
     {
         _cancellationToken = this.GetCancellationTokenOnDestroy();
+        if (_canvas == null)
+        {
+            TryGetComponent(out _canvas);
+        }
     }
-    
+
+    private void OnEnable()
+    {
+
+        if (string.IsNullOrWhiteSpace(_button1Txt.text) && string.IsNullOrWhiteSpace(_button1Txt.text) && string.IsNullOrWhiteSpace(_button1Txt.text))
+        {
+            return;
+        }
+        
+        if (_canvas == null)
+        {
+            TryGetComponent(out _canvas);
+        }
+        
+        UIStateManager.Instance.RequestEnableInteraction(_canvas);
+    }
+
+    private void OnDisable()
+    {
+        UIStateManager.Instance.RequestDisableInteraction(_canvas);
+    }
+
     public async void SetUpObject(NotificationVisuals visuals, Action button1Pressed = null,
-        Action button2Pressed = null, Action button3Pressed = null)
+                                  Action button2Pressed = null, Action button3Pressed = null)
     {
         string fullMessage;
         if (!string.IsNullOrWhiteSpace(visuals.header))

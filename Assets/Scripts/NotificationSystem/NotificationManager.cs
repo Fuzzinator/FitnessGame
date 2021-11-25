@@ -42,6 +42,7 @@ public class NotificationManager : MonoBehaviour
         obj.SetUpObject(visuals, button1Pressed, button2Pressed, button3Pressed);
         
         obj.transform.SetParent(Instance.transform);
+        
         return obj;
     }
 }
