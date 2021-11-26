@@ -46,6 +46,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 7653389770807280826}
+        m_TargetAssemblyTypeName: UpdateHitStats, Assembly-CSharp
+        m_MethodName: RegisterMiss
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   _successfulHitEvent:
     m_PersistentCalls:
       m_Calls:
@@ -101,6 +113,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: HitSpawnEffect, Assembly-CSharp
         m_MethodName: TriggerHitEffect
         m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7653389770807280826}
+        m_TargetAssemblyTypeName: UpdateHitStats, Assembly-CSharp
+        m_MethodName: RegisterHit
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -9230,5 +9254,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9e1b67eaefb5b1b45b290ffc8efd67a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7653389770807280826 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8778464567127622631, guid: 587d90671ab6a2f41bd6f3e162d52355,
+    type: 3}
+  m_PrefabInstance: {fileID: 1433572333136463709}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8213432111371213983}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2a32cc8cffd23e4c899d6210418c0d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
