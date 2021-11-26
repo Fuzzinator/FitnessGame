@@ -42,10 +42,13 @@ public class Notification : MonoBehaviour, IPoolable
 
     private CancellationToken _cancellationToken;
 
-    public Canvas _canvas;
-    
+    [SerializeField]
+    private Canvas _canvas;
+
     private const string HEADERSTART = "<size=100><uppercase><b>";
     private const string HEADEREND = "</uppercase></size></b>\n";
+    private const float BASEHEIGHT = 720;
+    private const float NOBUTTONHEIGHT = 550;
 
     public PoolManager MyPoolManager
     {
@@ -70,17 +73,24 @@ public class Notification : MonoBehaviour, IPoolable
 
     private void OnEnable()
     {
+        if (string.IsNullOrWhiteSpace(_button1Txt.text) && string.IsNullOrWhiteSpace(_button1Txt.text) &&
+            string.IsNullOrWhiteSpace(_button1Txt.text))
+        {
+            return;
+        }
 
-        if (string.IsNullOrWhiteSpace(_button1Txt.text) && string.IsNullOrWhiteSpace(_button1Txt.text) && string.IsNullOrWhiteSpace(_button1Txt.text))
+        var hasCanvas = _canvas != null;
+        if (!hasCanvas)
+        {
+            hasCanvas = TryGetComponent(out _canvas);
+        }
+
+        if (!hasCanvas)
         {
             return;
         }
         
-        if (_canvas == null)
-        {
-            TryGetComponent(out _canvas);
-        }
-        
+        _canvas.worldCamera = Head.Instance.HeadCamera;
         UIStateManager.Instance.RequestEnableInteraction(_canvas);
     }
 
@@ -90,7 +100,7 @@ public class Notification : MonoBehaviour, IPoolable
     }
 
     public async void SetUpObject(NotificationVisuals visuals, Action button1Pressed = null,
-                                  Action button2Pressed = null, Action button3Pressed = null)
+        Action button2Pressed = null, Action button3Pressed = null)
     {
         string fullMessage;
         if (!string.IsNullOrWhiteSpace(visuals.header))
@@ -101,25 +111,39 @@ public class Notification : MonoBehaviour, IPoolable
         {
             fullMessage = visuals.message;
         }
-        
+
         _message.SetText(fullMessage);
-        
-        if (!string.IsNullOrWhiteSpace(visuals.button1Txt))
+        var hasBttn1 = !string.IsNullOrWhiteSpace(visuals.button1Txt);
+        if (hasBttn1)
         {
             _button1Txt.SetText(visuals.button1Txt);
             _button1.gameObject.SetActive(true);
         }
-        
-        if (!string.IsNullOrWhiteSpace(visuals.button2Txt))
+
+        var hasBttn2 = !string.IsNullOrWhiteSpace(visuals.button2Txt);
+        if (hasBttn2)
         {
             _button2Txt.SetText(visuals.button2Txt);
             _button2.gameObject.SetActive(true);
         }
-        
-        if (!string.IsNullOrWhiteSpace(visuals.button3Txt))
+
+        var hasBttn3 = !string.IsNullOrWhiteSpace(visuals.button3Txt);
+        if (hasBttn3)
         {
             _button3Txt.SetText(visuals.button3Txt);
             _button3.gameObject.SetActive(true);
+        }
+
+        if (transform is RectTransform rectTransform)
+        {
+            if (!hasBttn1 && !hasBttn2 && !hasBttn3)
+            {
+                rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, NOBUTTONHEIGHT);
+            }
+            else
+            {
+                rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, BASEHEIGHT);
+            }
         }
 
         _disableUI = visuals.disableUI;
@@ -134,7 +158,7 @@ public class Notification : MonoBehaviour, IPoolable
         {
             MainMenuUIController.Instance.RequestDisableUI(this);
         }
-        
+
         if (_autoTimeOutTime <= 0)
         {
             return;
@@ -150,17 +174,17 @@ public class Notification : MonoBehaviour, IPoolable
         _button1Txt.SetText(string.Empty);
         _button2Txt.SetText(string.Empty);
         _button3Txt.SetText(string.Empty);
-        
+
         _button1.gameObject.SetActive(false);
         _button2.gameObject.SetActive(false);
         _button3.gameObject.SetActive(false);
-        
+
         _autoTimeOutTime = 0;
 
         _button1Pressed = null;
         _button2Pressed = null;
         _button3Pressed = null;
-        
+
         if (_disableUI)
         {
             MainMenuUIController.Instance.RequestEnableUI(this);
@@ -200,9 +224,10 @@ public class Notification : MonoBehaviour, IPoolable
         public string button3Txt;
         public bool disableUI;
         public float autoTimeOutTime;
+        public bool popUp;
 
         public NotificationVisuals(string message, string header = "", string button1Txt = "", string button2Txt = "",
-            string button3Txt = "", bool disableUI = true, float autoTimeOutTime = 0f)
+            string button3Txt = "", bool disableUI = true, float autoTimeOutTime = 0f, bool popUp = false)
         {
             this.header = header;
             this.message = message;
@@ -211,6 +236,7 @@ public class Notification : MonoBehaviour, IPoolable
             this.button3Txt = button3Txt;
             this.disableUI = disableUI;
             this.autoTimeOutTime = autoTimeOutTime;
+            this.popUp = popUp;
         }
     }
 }

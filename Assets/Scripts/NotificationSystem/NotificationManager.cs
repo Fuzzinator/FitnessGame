@@ -10,6 +10,12 @@ public class NotificationManager : MonoBehaviour
     [SerializeField]
     private Notification _notificationPrefab;
 
+    [Header("Positions")]
+    [SerializeField]
+    private Transform _basePosition;
+
+    [SerializeField]
+    private Transform _popUpPosition;
 
     private PoolManager _notificationPoolManager;
     
@@ -42,6 +48,18 @@ public class NotificationManager : MonoBehaviour
         obj.SetUpObject(visuals, button1Pressed, button2Pressed, button3Pressed);
         
         obj.transform.SetParent(Instance.transform);
+        if (visuals.popUp)
+        {
+            var transform1 = obj.transform;
+            transform1.position = Instance._popUpPosition.position;
+            transform1.rotation = Instance._popUpPosition.rotation;
+        }
+        else
+        {
+            var transform1 = obj.transform;
+            transform1.position = Instance._basePosition.position;
+            transform1.rotation = Instance._basePosition.rotation;
+        }
         
         return obj;
     }
