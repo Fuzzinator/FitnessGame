@@ -41,7 +41,7 @@ public class LevelNotificationRequester : MonoBehaviour
         var missedHits = ScoringManager.Instance.MissedTargetsThisSong;
         var hitObstacles = ScoringManager.Instance.HitObstaclesThisSong;
         var message = $"{SONGSCORE}{score}\n{GOODHITS}{goodHits}\n{MISSEDHITS}{missedHits}\n{HITOBSTACLES}{hitObstacles}";
-        var visuals = new Notification.NotificationVisuals(message, SONGCOMPLETE, disableUI:false, autoTimeOutTime:1f);
+        var visuals = new Notification.NotificationVisuals(message, SONGCOMPLETE, disableUI:false, autoTimeOutTime:4f, popUp:true);
         NotificationManager.RequestNotification(visuals,  _mainMenuAction);
     }
 

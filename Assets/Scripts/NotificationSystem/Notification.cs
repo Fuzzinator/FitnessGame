@@ -48,7 +48,7 @@ public class Notification : MonoBehaviour, IPoolable
     private const string HEADERSTART = "<size=100><uppercase><b>";
     private const string HEADEREND = "</uppercase></size></b>\n";
     private const float BASEHEIGHT = 720;
-    private const float NOBUTTONHEIGHT = 550;
+    private const float NOBUTTONHEIGHT = 525;
 
     public PoolManager MyPoolManager
     {
@@ -89,7 +89,7 @@ public class Notification : MonoBehaviour, IPoolable
         {
             return;
         }
-        
+
         _canvas.worldCamera = Head.Instance.HeadCamera;
         UIStateManager.Instance.RequestEnableInteraction(_canvas);
     }
@@ -164,7 +164,8 @@ public class Notification : MonoBehaviour, IPoolable
             return;
         }
 
-        await UniTask.Delay(TimeSpan.FromSeconds(_autoTimeOutTime), cancellationToken: _cancellationToken);
+        await UniTask.Delay(TimeSpan.FromSeconds(_autoTimeOutTime), cancellationToken: _cancellationToken)
+            .SuppressCancellationThrow();
         ReturnToPool();
     }
 
