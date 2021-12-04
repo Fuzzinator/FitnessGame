@@ -47,18 +47,26 @@ public class BaseOptimalHitIndicator : MonoBehaviour
         var previousStrength = GetIndicatorStrength();
         while (enabled && gameObject.activeSelf)
         {
-            await UniTask.DelayFrame(1, cancellationToken: token).SuppressCancellationThrow();
-            if (_destroyed)
+            try
             {
-                return;
-            }
+                await UniTask.DelayFrame(1, cancellationToken: token);
+                if (_destroyed)
+                {
+                    return;
+                }
 
-            var newStrength = GetIndicatorStrength();
-            if (Math.Abs(previousStrength - newStrength) < .001f)
-            {
-                continue;
+                var newStrength = GetIndicatorStrength();
+                if (Math.Abs(previousStrength - newStrength) < .001f)
+                {
+                    continue;
+                }
+
+                _renderer.material.SetFloat(_propertyHash, GetIndicatorStrength());
             }
-            _renderer.material.SetFloat(_propertyHash, GetIndicatorStrength());
+            catch (Exception e) when (e is OperationCanceledException)
+            {
+                break;
+            }
         }
     }
 
@@ -68,6 +76,7 @@ public class BaseOptimalHitIndicator : MonoBehaviour
         {
             return;
         }
+
         _renderer.material.SetFloat(_propertyHash, 0);
     }
 
@@ -87,7 +96,7 @@ public class BaseOptimalHitIndicator : MonoBehaviour
     {
         var currentDistance = Vector3.Distance(transform.position, _baseTarget.OptimalHitPoint);
         currentDistance = Mathf.Clamp(currentDistance, 0, _effectRange);
-        currentDistance  /= _effectRange;
+        currentDistance /= _effectRange;
         return 1 - currentDistance;
     }
 }

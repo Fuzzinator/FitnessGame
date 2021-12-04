@@ -42,7 +42,7 @@ public class PlaylistCountdownClock : MonoBehaviour
     {
         _timeRemaining = PlaylistManager.Instance.CurrentPlaylist.Length;
         UpdateDisplay();
-        
+
         var token = this.GetCancellationTokenOnDestroy();
 #pragma warning disable 4014
         RunClock(token);
@@ -81,21 +81,28 @@ public class PlaylistCountdownClock : MonoBehaviour
         var time = new Stopwatch();
         while (_clockEnabled)
         {
-            time.Restart();
-            await UniTask.DelayFrame(1, cancellationToken: token).SuppressCancellationThrow();
-            if (token.IsCancellationRequested || !_clockEnabled)
+            try
+            {
+                time.Restart();
+                await UniTask.DelayFrame(1, cancellationToken: token);
+                if (token.IsCancellationRequested || !_clockEnabled)
+                {
+                    break;
+                }
+
+                if (!_clockRunning || _clockPaused || _timeRemaining <= 0)
+                {
+                    continue;
+                }
+
+                time.Stop();
+                var timeSpan = time.Elapsed;
+                _timeRemaining -= (float) timeSpan.TotalSeconds;
+            }
+            catch (Exception e) when (e is OperationCanceledException)
             {
                 break;
             }
-
-            if (!_clockRunning || _clockPaused || _timeRemaining <= 0)
-            {
-                continue;
-            }
-
-            time.Stop();
-            var timeSpan = time.Elapsed;
-            _timeRemaining -= (float)timeSpan.TotalSeconds;
         }
     }
 
@@ -104,25 +111,32 @@ public class PlaylistCountdownClock : MonoBehaviour
         var delayTime = TimeSpan.FromSeconds(.25f);
         while (_clockEnabled)
         {
-            if (!_clockRunning || _clockPaused || _timeRemaining <= 0)
+            try
             {
-                await UniTask.DelayFrame(1, cancellationToken:token);
-                if (token.IsCancellationRequested)
+                if (!_clockRunning || _clockPaused || _timeRemaining <= 0)
                 {
-                    return;
-                }
-                continue;
-            }
+                    await UniTask.DelayFrame(1, cancellationToken: token);
+                    if (token.IsCancellationRequested)
+                    {
+                        return;
+                    }
 
-            await UniTask.Delay(delayTime, cancellationToken: token)
-                .SuppressCancellationThrow();
-            
-            if (token.IsCancellationRequested || !_clockEnabled)
+                    continue;
+                }
+
+                await UniTask.Delay(delayTime, cancellationToken: token);
+
+                if (token.IsCancellationRequested || !_clockEnabled)
+                {
+                    break;
+                }
+
+                UpdateDisplay();
+            }
+            catch (Exception e) when (e is OperationCanceledException)
             {
                 break;
             }
-
-            UpdateDisplay();
         }
     }
 

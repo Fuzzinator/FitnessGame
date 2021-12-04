@@ -124,15 +124,23 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
                 CustomPlaylistsManager.Instance.DeletePlaylist(_originalName);
             }
         }
-        
-        if(!_editMode || (_editMode && _originalName != _playlistName))
+
+        if (!_editMode || (_editMode && _originalName != _playlistName))
         {
             var index = 0;
+            var cancallationToken = this.GetCancellationTokenOnDestroy();
             while (File.Exists(filePath))
             {
                 index++;
                 filePath = $"{path}{_playlistName}_{index:00}.txt";
-                await UniTask.DelayFrame(1);
+                try
+                {
+                    await UniTask.DelayFrame(1, cancellationToken:cancallationToken);
+                }
+                catch (Exception e) when (e is OperationCanceledException)
+                {
+                    break;
+                }
             }
 
             if (index > 0)
@@ -178,11 +186,12 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
             _originalName = playlist.PlaylistName;
             _playlistName = playlist.PlaylistName;
             _playlistItems.Clear();
-            
+
             foreach (var item in playlist.Items)
             {
                 _playlistItems.Add(item);
             }
+
             _playlistItemsUpdated?.Invoke();
         }
         else

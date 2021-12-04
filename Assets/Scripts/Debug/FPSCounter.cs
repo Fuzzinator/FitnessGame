@@ -27,33 +27,39 @@ public class FPSCounter : MonoBehaviour
         var delayLength = TimeSpan.FromSeconds(.05);
         while (enabled)
         {
-            await UniTask.Delay(delayLength, cancellationToken: token)
-                .SuppressCancellationThrow();
+            try
+            {
 
-            if (this == null || gameObject == null)
-            {
-                return;
-            }
-            
-            _fps[_index] = 1 / Time.unscaledDeltaTime;
-            if (_index + 1 < _fps.Length)
-            {
-                _index++;
-            }
-            else
-            {
-                _index = 0;
-                
-                var total = 0f;
-                foreach (var frame in _fps)
+                await UniTask.Delay(delayLength, cancellationToken: token);
+
+                if (this == null || gameObject == null)
                 {
-                    total += frame;
+                    return;
                 }
 
-                total /= _fps.Length;
-                _text.SetText(Mathf.Round(total).ToString(CultureInfo.InvariantCulture));
-            }
+                _fps[_index] = 1 / Time.unscaledDeltaTime;
+                if (_index + 1 < _fps.Length)
+                {
+                    _index++;
+                }
+                else
+                {
+                    _index = 0;
 
+                    var total = 0f;
+                    foreach (var frame in _fps)
+                    {
+                        total += frame;
+                    }
+
+                    total /= _fps.Length;
+                    _text.SetText(Mathf.Round(total).ToString(CultureInfo.InvariantCulture));
+                }
+            }
+            catch (Exception e) when (e is OperationCanceledException)
+            {
+                break;
+            }
         }
     }
 }
