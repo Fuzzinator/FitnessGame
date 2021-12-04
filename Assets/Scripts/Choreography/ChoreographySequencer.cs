@@ -381,9 +381,9 @@ public class ChoreographySequencer : MonoBehaviour
 
     private void ClearFormationObjects(FormationHolder formationHolder)
     {
-        if (Vector3.Distance(formationHolder.transform.position, _formationEnd.position) > 1)
+        if (this == null)
         {
-            Debug.LogError("Ended early?");
+            return;
         }
         formationHolder.ReturnRemainingChildren();
     }
