@@ -58,4 +58,13 @@ public struct Playlist
     {
         _playlistName = name;
     }
+    
+    public enum SortingMethod
+    {
+        None = 0,
+        PlaylistName = 1,
+        InversePlaylistName = 2,
+        PlaylistLength = 5,
+        InversePlaylistLength = 6
+    }
 }

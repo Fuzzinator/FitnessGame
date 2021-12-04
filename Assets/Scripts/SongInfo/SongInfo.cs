@@ -119,4 +119,16 @@ public class SongInfo
             }
         }
     }
+    
+    
+    public enum SortingMethod
+    {
+        None = 0,
+        SongName = 1,
+        InverseSongName = 2,
+        AuthorName = 3,
+        InverseAuthorName = 4,
+        SongLength = 5,
+        InverseSongLength = 6
+    }
 }

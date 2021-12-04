@@ -16,6 +16,7 @@ namespace UI.Scrollers.Playlists
 
         [SerializeField]
         private float _cellViewSize = 100f;
+        
 
         private void Start()
         {

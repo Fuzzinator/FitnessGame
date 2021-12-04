@@ -10,7 +10,7 @@ namespace UI.Scrollers.Playlists
     {
         [SerializeField]
         private DisplaySongInfo _displaySongInfo;
-
+        
         public override int GetNumberOfCells(EnhancedScroller scroller)
         {
             return SongInfoFilesReader.Instance.availableSongs.Count;

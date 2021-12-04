@@ -122,8 +122,9 @@ public class ChoreographySequencer : MonoBehaviour
         _leftObstaclePool = new PoolManager(_leftObstacle, thisTransform);
         _rightObstaclePool = new PoolManager(_rightObstacle, thisTransform);
 
-        _meterDistance = Vector3.Distance(_formationStart.position, _formationEnd.position);
-        _optimalPointDistance = Vector3.Distance(_formationStart.position, _optimalStrikePoint.position);
+        var position = _formationStart.position;
+        _meterDistance = Vector3.Distance(position, _formationEnd.position);
+        _optimalPointDistance = Vector3.Distance(position, _optimalStrikePoint.position);
         
         DOTween.SetTweensCapacity(100,100);
         _sequenceUnstartedOrFinished = true;
@@ -138,7 +139,17 @@ public class ChoreographySequencer : MonoBehaviour
     {
         GameStateManager.Instance.gameStateChanged.RemoveListener(GameStateListener);
     }
-    
+
+    private void OnDestroy()
+    {
+        while (_activeSequences.Count > 0)
+        {
+            var sequence = _activeSequences[0];
+            _activeSequences.Remove(sequence);
+            sequence.Complete();
+        }
+    }
+
     private void GameStateListener(GameState oldState, GameState newState)
     {
         if (oldState == GameState.Paused && newState == GameState.Playing)
@@ -246,6 +257,10 @@ public class ChoreographySequencer : MonoBehaviour
 
     private void SpawnFormationObjects(FormationHolder formationHolder, ChoreographyFormation formation)
     {
+        if (this == null)
+        {
+            return;
+        }
         if (formation.HasObstacle)
         {
             var obstacle = GetObstacle(formation.Obstacle);
