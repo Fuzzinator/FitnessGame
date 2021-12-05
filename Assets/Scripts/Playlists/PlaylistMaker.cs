@@ -83,6 +83,11 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         _playlistItemsUpdated?.Invoke();
     }
 
+    public void ShufflePlaylistItems()
+    {
+        _playlistItems.Shuffle();
+    }
+
     public void SetPlaylistName(string newName)
     {
         _playlistName = newName;

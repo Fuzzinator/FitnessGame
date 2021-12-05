@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Random = System.Random;
 
 [Serializable]
 public struct Playlist
@@ -57,6 +58,11 @@ public struct Playlist
     public void SetPlaylistName(string name)
     {
         _playlistName = name;
+    }
+
+    public void ShuffleItems()
+    {
+        _items.Shuffle();
     }
     
     public enum SortingMethod
