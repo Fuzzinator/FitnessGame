@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.Android;
 using UnityEngine.Events;
 using UnityEngine.ResourceManagement.ResourceLocations;
 using Random = UnityEngine.Random;
@@ -25,6 +24,7 @@ public class PlaylistFilesReader : MonoBehaviour
     [SerializeField]
     private UnityEvent _playlistsUpdated = new UnityEvent();
 
+    public Playlist.SortingMethod CurrentSortingMethod => _sortingMethod;
     #region Const Strings
 
 #if UNITY_ANDROID && !UNITY_EDITOR

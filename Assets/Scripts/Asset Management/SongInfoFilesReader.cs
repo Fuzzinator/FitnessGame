@@ -30,6 +30,7 @@ public class SongInfoFilesReader : MonoBehaviour
     [SerializeField]
     private UnityEvent _songsUpdated = new UnityEvent();
 
+    public SongInfo.SortingMethod CurrentSortingMethod => _sortingMethod;
     #region Const Strings
 
 #if UNITY_ANDROID && !UNITY_EDITOR
