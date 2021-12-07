@@ -10,10 +10,14 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.Android;
 #endif
 using UnityEngine.Events;
+using Random = UnityEngine.Random;
 
 public class SongInfoFilesReader : MonoBehaviour
 {
     public static SongInfoFilesReader Instance { get; private set; }
+
+    [SerializeField]
+    private SongInfo.SortingMethod _sortingMethod = SongInfo.SortingMethod.SongName;
 
     public List<SongInfo> availableSongs = new List<SongInfo>();
 
@@ -22,9 +26,11 @@ public class SongInfoFilesReader : MonoBehaviour
 
     [SerializeField]
     private UnityEvent _startSongsUpdate = new UnityEvent();
+
     [SerializeField]
     private UnityEvent _songsUpdated = new UnityEvent();
 
+    public SongInfo.SortingMethod CurrentSortingMethod => _sortingMethod;
     #region Const Strings
 
 #if UNITY_ANDROID && !UNITY_EDITOR
@@ -32,7 +38,8 @@ public class SongInfoFilesReader : MonoBehaviour
     private const string SONGSFOLDER = "/Resources/Songs/";
 #elif UNITY_EDITOR
     private const string UNITYEDITORLOCATION = "E:\\Projects\\FitnessGame\\LocalCustomSongs\\Songs";
-    private const string UNITYEDITORLOCATION2 = "C:\\Asus WebStorage\\fuzzinator12@gmail.com\\MySyncFolder\\FitnessGame\\LocalCustomSongs";
+    private const string UNITYEDITORLOCATION2 =
+        "C:\\Asus WebStorage\\fuzzinator12@gmail.com\\MySyncFolder\\FitnessGame\\LocalCustomSongs";
 #endif
 
     private const string SONGINFONAME = "Info.txt";
@@ -68,6 +75,7 @@ public class SongInfoFilesReader : MonoBehaviour
         availableSongs.Clear();
         await GetBuiltInSongs();
         await GetCustomSongs();
+        SortSongs();
         _songsUpdated?.Invoke();
     }
 
@@ -115,7 +123,6 @@ public class SongInfoFilesReader : MonoBehaviour
             //await UniTask.WaitWhile(() => !Parallel.ForEach(files, async file => //This is commented out until I learn more about Parallel.Foreach
             foreach (var file in files)
             {
-               
                 if (file == null)
                 {
                     return;
@@ -128,9 +135,9 @@ public class SongInfoFilesReader : MonoBehaviour
                     var reading = streamReader.ReadToEndAsync();
                     await reading;
                     var item = JsonUtility.FromJson<SongInfo>(reading.Result);
-                    
+
                     streamReader.Close();
-                    
+
                     item.DifficultySets[0].RemoveExpertPlus();
                     if (file.Directory != null)
                     {
@@ -149,9 +156,9 @@ public class SongInfoFilesReader : MonoBehaviour
                     }
 
                     availableSongs.Add(item);
-                } 
-            }//).IsCompleted);
-        }//);
+                }
+            } //).IsCompleted);
+        } //);
     }
 
     public async UniTask<float> TryGetSongLength(SongInfo info, SongLoader songLoader,
@@ -177,5 +184,46 @@ public class SongInfoFilesReader : MonoBehaviour
         }
 
         return 0;
+    }
+
+    public void SetSortMethod(SongInfo.SortingMethod method)
+    {
+        if (_sortingMethod != method)
+        {
+            _sortingMethod = method;
+            SortSongs();
+        }
+    }
+
+    private void SortSongs()
+    {
+        switch (_sortingMethod)
+        {
+            case SongInfo.SortingMethod.None:
+                availableSongs.Sort((x,y) => Random.Range(-1,1));
+                return;
+            case SongInfo.SortingMethod.SongName:
+                availableSongs.Sort((x, y) => 
+                    string.Compare(x.SongName, y.SongName, StringComparison.Ordinal));
+                break;
+            case SongInfo.SortingMethod.InverseSongName:
+                availableSongs.Sort((x, y) => 
+                    string.Compare(y.SongName, x.SongName, StringComparison.Ordinal));
+                break;
+            case SongInfo.SortingMethod.AuthorName:
+                availableSongs.Sort((x, y) =>
+                    string.Compare(x.SongAuthorName, y.SongAuthorName, StringComparison.Ordinal));
+                break;
+            case SongInfo.SortingMethod.InverseAuthorName:
+                availableSongs.Sort((x, y) =>
+                    string.Compare(y.SongAuthorName, x.SongAuthorName, StringComparison.Ordinal));
+                break;
+            case SongInfo.SortingMethod.SongLength:
+                availableSongs.Sort((x, y) => x.SongLength.CompareTo(y.SongLength));
+                break;
+            case SongInfo.SortingMethod.InverseSongLength:
+                availableSongs.Sort((x, y) => y.SongLength.CompareTo(x.SongLength));
+                break;
+        }
     }
 }

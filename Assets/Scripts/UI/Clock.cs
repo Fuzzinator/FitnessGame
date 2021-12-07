@@ -23,17 +23,23 @@ public class Clock : MonoBehaviour
     {
         var delayLength = TimeSpan.FromMinutes(.25);
         var prevTime = DateTime.Now;
+        SetClock(out prevTime);
         await UniTask.Delay(delayLength, DelayType.Realtime, cancellationToken: token);
         while (enabled)
         {
             if (prevTime.Minute != DateTime.Now.Minute || prevTime.Second != DateTime.Now.Second)
             {
-                var time = use24HourTime ? DateTime.Now.ToString("HH:mm") : DateTime.Now.ToShortTimeString();
-                _text.SetText(time);
-                prevTime = DateTime.Now;
+                SetClock(out prevTime);
             }
 
             await UniTask.Delay(delayLength, DelayType.Realtime, cancellationToken: token);
         }
+    }
+
+    private void SetClock(out DateTime prevTime)
+    {
+        var time = use24HourTime ? DateTime.Now.ToString("HH:mm") : DateTime.Now.ToShortTimeString();
+        _text.SetText(time);
+        prevTime = DateTime.Now;
     }
 }

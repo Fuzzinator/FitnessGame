@@ -28,7 +28,7 @@ public class XRRig_UIInteraction : BaseGameStateListener
         {
             case GameState.Paused:
             case GameState.Unfocused:
-                SetInteractionState(true);
+                //SetInteractionState(true);
                 break;
             case GameState.Playing:
             case GameState.InMainMenu:

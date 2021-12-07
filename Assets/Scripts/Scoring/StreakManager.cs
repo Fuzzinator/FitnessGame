@@ -81,11 +81,9 @@ public class StreakManager : MonoBehaviour
     public static int GetStreakScoreMod()
     {
         var multiplier = 1;
-        var powerOf = 1;
         
-        while (Instance.CurrentStreak >= MULTIPLIERBASE * powerOf)
+        while (Instance.CurrentStreak >= Mathf.Pow(MULTIPLIERBASE, multiplier))
         {
-            powerOf *= MULTIPLIERBASE;
             multiplier++;
         }
 
