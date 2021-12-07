@@ -16,7 +16,8 @@ namespace UI.Scrollers.Playlists
 
         [SerializeField]
         private float _cellViewSize = 100f;
-        
+
+        protected string _searchKey = string.Empty;
 
         private void Start()
         {
@@ -40,12 +41,31 @@ namespace UI.Scrollers.Playlists
             return cellView;
         }
 
+
+        public virtual void SetData()
+        {
+            _searchKey = string.Empty;
+            SetDataFromFilter();
+        }
+        
+        public virtual void SetSearchKey(string searchKey)
+        {
+            _searchKey = searchKey;
+            Refresh();
+        }
+
         public virtual void Refresh()
         {
             if (_scroller.Initialized)
             {
+                SetDataFromFilter();
                 _scroller.ReloadData();
             }
+        }
+
+        protected virtual void SetDataFromFilter()
+        {
+            
         }
     }
 }
