@@ -17,7 +17,7 @@ public class HitSpawnEffect : MonoBehaviour, IValidHit
         }
     }
 
-    public void TriggerHitEffect(HitInfo info)
+    public async void TriggerHitEffect(HitInfo info)
     {
         if (VFXManager.Instance == null)
         {
@@ -27,14 +27,12 @@ public class HitSpawnEffect : MonoBehaviour, IValidHit
         var hitParticle = VFXManager.GetBaseHitVFX;
         var hitParticleTransform = hitParticle.transform;
         var thisTransform = transform;
-        
+
         hitParticleTransform.rotation = thisTransform.rotation;
         hitParticleTransform.position = thisTransform.position;
-        
+
         hitParticle.SetParticleColor(_thisRenderer.sharedMaterial.color);
-        
-#pragma warning disable 4014
-        hitParticle.PlayParticles();
-#pragma warning restore 4014
+
+        await hitParticle.PlayParticles();
     }
 }

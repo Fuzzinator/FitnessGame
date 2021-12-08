@@ -95,6 +95,11 @@ namespace VRKB
 
         [SerializeField]
         protected TMP_InputField _inputField;
+
+        [SerializeField]
+        protected Canvas _canvas;
+
+        public Canvas MyCanvas => _canvas;
         protected TextMeshProUGUI _placeholder;
         protected KeyboardConfig _config;
         protected string _layer;

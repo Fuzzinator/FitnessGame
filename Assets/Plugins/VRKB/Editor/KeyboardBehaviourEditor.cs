@@ -29,6 +29,7 @@ namespace VRKB
 
             
             EditorGUILayout.PropertyField(serializedObject.FindProperty("_inputField"));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("_canvas"));
             EventsFoldoutOpen = EditorGUILayout.Foldout(EventsFoldoutOpen, "Event Callbacks");
             if (EventsFoldoutOpen)
             {

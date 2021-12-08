@@ -71,7 +71,10 @@ public class BaseTarget : MonoBehaviour, IPoolable
         }
 
         gameObject.SetActive(false);
-        transform.SetParent(MyPoolManager.poolParent);
+        if (MyPoolManager.poolParent != null)
+        {
+            transform.SetParent(MyPoolManager.poolParent);
+        }
         ActiveTargetManager.Instance.RemoveActiveTarget(this);
         MyPoolManager.ReturnToPool(this);
         parentFormation.Remove(this);

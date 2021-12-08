@@ -257,7 +257,7 @@ public class ChoreographySequencer : MonoBehaviour
 
     private void SpawnFormationObjects(FormationHolder formationHolder, ChoreographyFormation formation)
     {
-        if (this == null)
+        if (this?.gameObject == null)
         {
             return;
         }

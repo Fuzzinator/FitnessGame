@@ -45,6 +45,7 @@ public class KeyboardManager : MonoBehaviour
         _targetText = ugui;
         _keyboard.PlaceholderText = defaultText;
         SetObjectsActive(true);
+        UIStateManager.Instance?.RequestEnableInteraction(_keyboard.MyCanvas);
         return _keyboard;
     }
 
@@ -69,6 +70,7 @@ public class KeyboardManager : MonoBehaviour
         _targetText = null;
         _keyboard.ClearText();
         SetObjectsActive(false);
+        UIStateManager.Instance?.RequestDisableInteraction(_keyboard.MyCanvas);
     }
     
     private void SetObjectsActive(bool on)
