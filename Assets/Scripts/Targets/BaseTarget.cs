@@ -71,7 +71,7 @@ public class BaseTarget : MonoBehaviour, IPoolable
         }
 
         gameObject.SetActive(false);
-        if (MyPoolManager.poolParent != null)
+        if(MyPoolManager.poolParent.gameObject.activeSelf)
         {
             transform.SetParent(MyPoolManager.poolParent);
         }

@@ -33,6 +33,13 @@ public class HitSpawnEffect : MonoBehaviour, IValidHit
 
         hitParticle.SetParticleColor(_thisRenderer.sharedMaterial.color);
 
-        await hitParticle.PlayParticles();
+        try
+        {
+            await hitParticle.PlayParticles();
+        }
+        catch (Exception e) when (e is OperationCanceledException)
+        {
+            return;
+        }
     }
 }
