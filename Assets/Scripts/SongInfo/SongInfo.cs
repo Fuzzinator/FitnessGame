@@ -24,6 +24,8 @@ public class SongInfo
         set { _songLength = value; }
     }
 
+    public float SongStartDelay => _songTimeOffset;
+
     public float LengthInMinutes => _songLength / MINUTE;
     public string ReadableLength
     {

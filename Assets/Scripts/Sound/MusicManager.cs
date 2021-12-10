@@ -110,6 +110,33 @@ public class MusicManager : BaseGameStateListener
         }
     }
 
+    public async void WaitThenPlayMusic()
+    {
+        try
+        {
+            if (SongInfoReader.Instance.songInfo.SongStartDelay > 0)
+            {
+                await UniTask.Delay(TimeSpan.FromSeconds(SongInfoReader.Instance.songInfo.SongStartDelay),
+                    cancellationToken: _cancellationToken);
+            }
+
+            _musicAudioSource.Play();
+            _musicPaused = false;
+            LevelManager.Instance.SetActualSongCompleted(false);
+            if (_awaitingSongEnd)
+            {
+                return;
+            }
+            
+            _awaitingSongEnd = true;
+            await WaitForSongFinish().SuppressCancellationThrow();
+        }
+        catch (Exception e) when (e is OperationCanceledException)
+        {
+            return;
+        }
+    }
+
     public void PauseMusic()
     {
         _musicAudioSource.Pause();
