@@ -24,7 +24,23 @@ public struct DifficultyInfo
     [SerializeField]
     private float _noteJumpMovementSpeed;
 
-    public float MovementSpeed => _noteJumpMovementSpeed;
+    public float MovementSpeed
+    {
+        get
+        {
+            return true switch
+            {
+                true when _difficultyRank <= 1 => Mathf.Clamp(_noteJumpMovementSpeed, MINEASYSPEED, MAXEASYSPEED),
+                true when _difficultyRank > 1 && _difficultyRank <= 3 => Mathf.Clamp(_noteJumpMovementSpeed,
+                    MINNORMALSPEED, MAXNORMALSPEED),
+                true when _difficultyRank > 3 && _difficultyRank <= 5 => Mathf.Clamp(_noteJumpMovementSpeed,
+                    MINHARDSPEED, MAXHARDSPEED),
+                true when _difficultyRank > 5 && _difficultyRank <= 7 => Mathf.Clamp(_noteJumpMovementSpeed,
+                    MINEXPERTSPEED, MAXEXPERTSPEED),
+                _ => _noteJumpMovementSpeed
+            };
+        }
+    }
 
     [SerializeField]
     private float _noteJumpStartBeatOffset;
@@ -61,4 +77,13 @@ public struct DifficultyInfo
             _ => _minTargetSpace
         };
     }
+
+    private const float MINEASYSPEED = 9;
+    private const float MAXEASYSPEED = 10;
+    private const float MINNORMALSPEED = 11;
+    private const float MAXNORMALSPEED = 12;
+    private const float MINHARDSPEED = 13;
+    private const float MAXHARDSPEED = 14;
+    private const float MINEXPERTSPEED = 15;
+    private const float MAXEXPERTSPEED = 16;
 }

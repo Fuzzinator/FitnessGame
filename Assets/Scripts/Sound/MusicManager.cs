@@ -27,7 +27,7 @@ public class MusicManager : BaseGameStateListener
     private bool _musicPaused = false;
 
     private SongLoader _songLoader;
-    
+
     #region Const Strings
 
     private const string SELECT = "Select";
@@ -82,6 +82,7 @@ public class MusicManager : BaseGameStateListener
         {
             audioClip = await _songLoader.LoadBuiltInSong(item.SongInfo);
         }
+
         SetNewMusic(audioClip);
 
         finishedLoadingSong?.Invoke();
@@ -135,7 +136,8 @@ public class MusicManager : BaseGameStateListener
 
     public void ToggleMusic(bool play)
     {
-        if (LevelManager.Instance == null || !LevelManager.Instance.SongFullyLoaded || !_awaitingSongEnd)
+        if (LevelManager.Instance == null || !LevelManager.Instance.SongFullyLoaded || !_awaitingSongEnd ||
+            LevelManager.Instance.SongCompleted)
         {
             return;
         }

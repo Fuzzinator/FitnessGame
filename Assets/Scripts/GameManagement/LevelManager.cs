@@ -34,7 +34,9 @@ public class LevelManager : MonoBehaviour
     private UniTask _songCountdown;
     private CancellationToken _cancellationToken;
     public bool SongFullyLoaded => _choreographyLoaded && _songInfoLoaded && _actualSongLoaded;
-    
+
+    public bool SongCompleted => _songCompleted;
+
     public bool ChoreographyLoaded
     {
         get => _choreographyLoaded;

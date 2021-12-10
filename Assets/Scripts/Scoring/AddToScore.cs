@@ -22,7 +22,6 @@ public class AddToScore : MonoBehaviour, IValidHit
         var impactValue = Mathf.Clamp(info.ImpactDotProduct, 0, 1);
         var directionValue = Mathf.Clamp(info.DirectionDotProduct, 0, 1);
         var magnitudeBonusValue = Mathf.Clamp(info.HitSpeed, 1,MAXPUNCHSPEED) * .25f;
-
         var valueAsFloat = (impactValue + directionValue) * _minValue + magnitudeBonusValue;
 
         var hitValue = Mathf.Clamp(valueAsFloat * GetOptimalHitModifier(info.DistanceFromOptimalHit), _minValue, _maxValue);
