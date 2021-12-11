@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -78,12 +79,25 @@ public class ChoreographyReader : MonoBehaviour
             var path = $"{dataPath}{UNITYEDITORLOCATION}{item.FileLocation}/{_difficultyInfo.FileName}";
 #endif
 
-            var streamReader = new StreamReader(path);
+            try
+            {
+                var streamReader = new StreamReader(path);
 
-            var reading = streamReader.ReadToEndAsync();
-            await reading;
-            var json = reading.Result;
-            _choreography = JsonUtility.FromJson<Choreography>(json);
+                var reading = streamReader.ReadToEndAsync();
+                await reading;
+                var json = reading.Result;
+                if (string.IsNullOrWhiteSpace(json))
+                {
+                    ReportFailedToLoad();
+                    return;
+                }
+
+                _choreography = JsonUtility.FromJson<Choreography>(json);
+            }
+            catch (Exception e)when (e is OperationCanceledException)
+            {
+                return;
+            }
         }
         else
         {
@@ -93,7 +107,8 @@ public class ChoreographyReader : MonoBehaviour
                 txtVersion = txtVersion.Replace(DAT, TXT);
             }
 
-            var request = Addressables.LoadAssetAsync<TextAsset>($"{LOCALSONGSFOLDER}{item.FileLocation}/{txtVersion}");
+            var request =
+                Addressables.LoadAssetAsync<TextAsset>($"{LOCALSONGSFOLDER}{item.FileLocation}/{txtVersion}");
             await request;
             var json = request.Result;
             if (json == null)
@@ -189,9 +204,9 @@ public class ChoreographyReader : MonoBehaviour
                 {
                     if (thisTimeObstacle != null)
                     {
+                        note.SetCutDirection(ChoreographyNote.CutDirection.Jab);
                         note.SetLineLayer(ChoreographyNote.LineLayerType.Low);
-                        note.SetToBasicJab();
-                        
+
                         switch (thisTimeObstacle.HitSideType)
                         {
                             case HitSideType.Block:
@@ -305,8 +320,8 @@ public class ChoreographyReader : MonoBehaviour
                                 continue;
                         }
 
+                        tempNote.SetCutDirection(ChoreographyNote.CutDirection.Jab);
                         tempNote.SetLineLayer(ChoreographyNote.LineLayerType.Low);
-                        tempNote.SetToBasicJab();
                         thisTimeNote = tempNote;
                     }
 
@@ -327,5 +342,15 @@ public class ChoreographyReader : MonoBehaviour
                 thisTimeEvent = null;
             }
         }
+    }
+
+    private static void ReportFailedToLoad()
+    {
+        var visuals = new Notification.NotificationVisuals(
+            "Choreography Failed to load.",
+            "Failed to load.",
+            "Main Menu");
+
+        NotificationManager.RequestNotification(visuals, () => { ActiveSceneManager.Instance.LoadMainMenu(); });
     }
 }

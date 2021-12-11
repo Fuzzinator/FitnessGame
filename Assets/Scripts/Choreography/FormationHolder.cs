@@ -10,6 +10,12 @@ public class FormationHolder : MonoBehaviour, IPoolable
     private PoolManager _myPoolManager;
     public List<IPoolable> children;
     private bool _isPooled;
+
+    [SerializeField]
+    private bool hasNote;
+    [SerializeField]
+    private bool hasObstacle;
+    
     public Tween MyTween { get; set; }
 
     public PoolManager MyPoolManager
@@ -23,12 +29,7 @@ public class FormationHolder : MonoBehaviour, IPoolable
         get => _isPooled;
         set => _isPooled = value;
     }
-
-    /*private void OnDisable()
-    {
-        ReturnRemainingChildren();
-    }*/
-
+    
     public void ReturnRemainingChildren()
     {
         if (children != null)
@@ -54,6 +55,8 @@ public class FormationHolder : MonoBehaviour, IPoolable
         gameObject.SetActive(false);
         transform.SetParent(MyPoolManager.poolParent);
         ((IPoolable) this).MyPoolManager.ReturnToPool(this);
+        hasNote = false;
+        hasObstacle = false;
         IsPooled = true;
     }
 
@@ -62,6 +65,16 @@ public class FormationHolder : MonoBehaviour, IPoolable
         if (children != null)
         {
             children.Add(poolable);
+            
+            switch (poolable)
+            {
+                case BaseTarget note:
+                    hasNote = true;
+                    break;
+                case BaseObstacle obstacle:
+                    hasObstacle = true;
+                    break;
+            }
         }
     }
     public void Remove(IPoolable poolable)

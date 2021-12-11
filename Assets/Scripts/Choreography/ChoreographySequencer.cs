@@ -280,6 +280,7 @@ public class ChoreographySequencer : MonoBehaviour
         {
             var target = GetTarget(formation.Note);
             target.SetUpTarget(formation.Note.Type, _optimalStrikePoint.position, formationHolder);
+            target.layer = formation.Note.LineLayer;
             target.transform.SetParent(formationHolder.transform);
             target.transform.position = (GetTargetParent(formation.Note)).position;
             target.gameObject.SetActive(true);

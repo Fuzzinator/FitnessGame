@@ -7,6 +7,8 @@ using UnityEngine.Events;
 public class BaseTarget : MonoBehaviour, IPoolable
 {
     [SerializeField]
+    public ChoreographyNote.LineLayerType layer;
+    [SerializeField]
     protected HitSideType _noteType;
 
     [SerializeField]
