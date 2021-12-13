@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -20,6 +22,8 @@ public class SongInfoReader : MonoBehaviour
     private DifficultyInfo _difficultyInfo;
 
     public UnityEvent<PlaylistItem> finishedLoadingSongInfo = new UnityEvent<PlaylistItem>();
+
+    private CancellationTokenSource _cancellationSource;
 
     public float NoteSpeed => _difficultyInfo.MovementSpeed;
     public float BeatsPerMinute => songInfo.BeatsPerMinute;
@@ -55,6 +59,7 @@ public class SongInfoReader : MonoBehaviour
     private void Start()
     {
         SubscribeToPlaylistUpdating();
+        _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
     }
 
     public void LoadJson(PlaylistItem item)
@@ -64,57 +69,82 @@ public class SongInfoReader : MonoBehaviour
 #pragma warning restore 4014
     }
 
+
+    public void CancelLoad()
+    {
+        _cancellationSource?.Cancel();
+    }
+
     private async UniTaskVoid AsyncLoadJson(PlaylistItem item)
     {
-        if (item.IsCustomSong)
+        if (_cancellationSource.IsCancellationRequested)
         {
+            _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
+        }
+
+        try
+        {
+            if (item.IsCustomSong)
+            {
 #if UNITY_ANDROID && !UNITY_EDITOR
             var path = $"{Application.persistentDataPath}{SONGSFOLDER}{item.FileLocation}/{INFO}.dat";
 #elif UNITY_EDITOR
-            
-            var dataPath = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/'));
-            var path = $"{dataPath}{UNITYEDITORLOCATION}{item.FileLocation}{INFO}{DAT}";
+
+                var dataPath = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/'));
+                var path = $"{dataPath}{UNITYEDITORLOCATION}{item.FileLocation}{INFO}{DAT}";
 #endif
-            if (!File.Exists(path))
-            {
-                Debug.Log(path + " Doesnt Exist?");
-                return;
-            }
-            /*if (!Directory.Exists(path))
-            {
-                Debug.Log(path + " Doesnt Exist?");
-                return;
-            }*/
-            var streamReader = new StreamReader(path);
-            var reading = streamReader.ReadToEndAsync();
-            await reading;
-            streamReader.Close();
-            if (reading.IsCompleted)
-            {
-                UpdateSongInfo(reading.Result, item);
+                if (!File.Exists(path))
+                {
+                    NotificationManager.ReportFailedToLoadInGame($"{item.SongName} does not exist on your device.");
+                    Debug.Log(path + " Doesnt Exist?");
+                    return;
+                }
+
+                var streamReader = new StreamReader(path);
+                var reading = streamReader.ReadToEndAsync().AsUniTask()
+                    .AttachExternalCancellation(_cancellationSource.Token);
+                var result = await reading;
+                streamReader.Close();
+                if (string.IsNullOrWhiteSpace(result))
+                {
+                    LevelManager.Instance.LoadFailed();
+                    NotificationManager.ReportFailedToLoadInGame($"{item.SongName}'s info failed to load.");
+                    return;
+                }
+                else
+                {
+                    UpdateSongInfo(result, item);
+                }
             }
             else
             {
-                Debug.LogError("Failed to read song info");
-                return;
+                var request =
+                    Addressables.LoadAssetAsync<TextAsset>($"{LOCALSONGSFOLDER}{item.FileLocation}{INFO}{TXT}")
+                        .ToUniTask().AttachExternalCancellation(_cancellationSource.Token);
+                var json = await request;
+                if (json == null)
+                {
+                    LevelManager.Instance.LoadFailed();
+                    NotificationManager.ReportFailedToLoadInGame($"{item.SongName}'s info failed to load.");
+                    return;
+                }
+
+                UpdateSongInfo(json.text, item);
             }
+
+            item.SongInfo = songInfo;
+            finishedLoadingSongInfo?.Invoke(item);
         }
-        else
+        catch (Exception e)when (e is OperationCanceledException)
         {
-            var request = Addressables.LoadAssetAsync<TextAsset>($"{LOCALSONGSFOLDER}{item.FileLocation}{INFO}{TXT}");
-            await request;
-            var json = request.Result;
-            if (json == null)
+            if (_cancellationSource.IsCancellationRequested && this?.gameObject != null)
             {
-                Debug.LogError("Failed to load local resource file");
-                return;
+                _cancellationSource =
+                    CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
             }
 
-            UpdateSongInfo(json.text, item);
+            return;
         }
-
-        item.SongInfo = songInfo;
-        finishedLoadingSongInfo?.Invoke(item);
     }
 
     public void UpdateSongInfo(string json, PlaylistItem item)

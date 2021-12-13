@@ -154,7 +154,7 @@ public class Notification : MonoBehaviour, IPoolable
 
         gameObject.SetActive(true);
 
-        if (_disableUI)
+        if (_disableUI && MainMenuUIController.Instance)
         {
             MainMenuUIController.Instance.RequestDisableUI(this);
         }

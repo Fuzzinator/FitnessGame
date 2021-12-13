@@ -21,6 +21,7 @@ public class MusicManager : BaseGameStateListener
 
     public UnityEvent songFinishedPlaying = new UnityEvent();
 
+    private CancellationTokenSource _cancellationSource;
     private CancellationToken _cancellationToken;
 
     private bool _awaitingSongEnd = false;
@@ -61,6 +62,7 @@ public class MusicManager : BaseGameStateListener
 
     private void Start()
     {
+        _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
         _cancellationToken = this.GetCancellationTokenOnDestroy();
 
         _songLoader = new SongLoader();
@@ -71,18 +73,40 @@ public class MusicManager : BaseGameStateListener
         await AsyncLoadFromPlaylist(info);
     }
 
+    public void CancelLoad()
+    {
+        _cancellationSource?.Cancel();
+    }
+    
     private async UniTask AsyncLoadFromPlaylist(PlaylistItem item)
     {
         AudioClip audioClip;
+        if (_cancellationSource.IsCancellationRequested)
+        {
+            _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
+        }
+        
         if (item.IsCustomSong)
         {
-            audioClip = await _songLoader.LoadCustomSong(item.FileLocation, item.SongInfo);
+            audioClip = await _songLoader.LoadCustomSong(item.FileLocation, item.SongInfo, _cancellationSource.Token);
         }
         else
         {
-            audioClip = await _songLoader.LoadBuiltInSong(item.SongInfo);
+            audioClip = await _songLoader.LoadBuiltInSong(item.SongInfo, _cancellationSource.Token);
         }
-
+        
+        
+        if (audioClip == null)
+        {
+            LevelManager.Instance.LoadFailed();
+            NotificationManager.ReportFailedToLoadInGame($"{item.SongName}'s music failed to load.");
+            if (_cancellationSource.IsCancellationRequested)
+            {
+                _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
+            }
+            return;
+        }
+        
         SetNewMusic(audioClip);
 
         finishedLoadingSong?.Invoke();

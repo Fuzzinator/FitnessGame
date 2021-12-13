@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -25,46 +27,63 @@ public class SongLoader
 
     #endregion
     
-    public async UniTask<AudioClip> LoadCustomSong(string parentDirectory, SongInfo info)//PlaylistItem item)
+    public async UniTask<AudioClip> LoadCustomSong(string parentDirectory, SongInfo info, CancellationToken cancellationToken)
     {
+        try
+        {
 #if UNITY_ANDROID && !UNITY_EDITOR
             var path =
  $"{ANDROIDPATHSTART}{Application.persistentDataPath}{SONGSFOLDER}{parentDirectory}/{info.SongFilename}";
 #elif UNITY_EDITOR
-        var path = Application.dataPath;
-        path = path.Substring(0, path.LastIndexOf('/'));
-        path = $"{path}{EDITORCUSTOMSONGFOLDER}{parentDirectory}/{info.SongFilename}";
+            var path = Application.dataPath;
+            path = path.Substring(0, path.LastIndexOf('/'));
+            path = $"{path}{EDITORCUSTOMSONGFOLDER}{parentDirectory}/{info.SongFilename}";
 #endif
-        
-        var uwr = UnityWebRequestMultimedia.GetAudioClip(path, AudioType.OGGVORBIS);
-        ((DownloadHandlerAudioClip) uwr.downloadHandler).streamAudio = true;
-        await uwr.SendWebRequest();
-        if (uwr.isDone && uwr.result == UnityWebRequest.Result.Success)
-        {
-            var clip = DownloadHandlerAudioClip.GetContent(uwr);
-            clip.name = info.SongName;
-            return clip;
+
+            var uwr = UnityWebRequestMultimedia.GetAudioClip(path, AudioType.OGGVORBIS);
+            ((DownloadHandlerAudioClip) uwr.downloadHandler).streamAudio = true;
+            var request = uwr.SendWebRequest();
+            await request.ToUniTask(cancellationToken: cancellationToken);
+            
+            if (uwr.isDone && uwr.result == UnityWebRequest.Result.Success)
+            {
+                var clip = DownloadHandlerAudioClip.GetContent(uwr);
+                clip.name = info.SongName;
+                return clip;
+            }
+            else
+            {
+                Debug.LogError("failed to get audio clip");
+                return null;
+            }
         }
-        else
+        catch (Exception e) when (e is OperationCanceledException)
         {
-            Debug.LogError("failed to get audio clip");
             return null;
         }
     }
 
-    public async UniTask<AudioClip> LoadBuiltInSong(SongInfo item)
+    public async UniTask<AudioClip> LoadBuiltInSong(SongInfo item, CancellationToken cancellationToken)
     {
-        var fileName = item.SongFilename;
-        var request = Addressables.LoadAssetAsync<AudioClip>($"{LOCALSONGSFOLDER}{item.fileLocation}/{fileName}");
-        await request;
-        var clip = request.Result;
-        if (clip == null)
+        try
         {
-            Debug.LogError("Failed to load local resource file");
+            var fileName = item.SongFilename;
+            var request = Addressables.LoadAssetAsync<AudioClip>($"{LOCALSONGSFOLDER}{item.fileLocation}/{fileName}");
+            await request.ToUniTask(cancellationToken: cancellationToken);
+            
+            var clip = request.Result;
+            if (clip == null)
+            {
+                Debug.LogError("Failed to load local resource file");
+                return null;
+            }
+
+            clip.name = item.SongName;
+            return clip;
+        }
+        catch (Exception e) when (e is OperationCanceledException)
+        {
             return null;
         }
-
-        clip.name = item.SongName;
-        return clip;
     }
 }
