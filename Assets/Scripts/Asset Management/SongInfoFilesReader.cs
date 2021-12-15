@@ -69,6 +69,14 @@ public class SongInfoFilesReader : MonoBehaviour
         _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
         _destructionCancellationToken = this.GetCancellationTokenOnDestroy();
     }
+    
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
 
     private void OnEnable()
     {

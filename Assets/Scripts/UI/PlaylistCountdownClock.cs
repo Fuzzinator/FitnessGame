@@ -76,6 +76,12 @@ public class PlaylistCountdownClock : MonoBehaviour
         _text.SetText($"{minutes}:{seconds:00}");
     }
 
+    public void SongFailedToLoad()
+    {
+        _timeRemaining-= PlaylistManager.Instance.CurrentItem.SongInfo.SongLength;
+        UpdateDisplay();
+    }
+
     private async UniTask RunClock(CancellationToken token)
     {
         var time = new Stopwatch();

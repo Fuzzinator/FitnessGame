@@ -43,6 +43,14 @@ public class MainMenuUIController : BaseGameStateListener
     {
         UIStateManager.Instance.RequestDisableInteraction(_canvas);
     }
+    
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
 
     public void SetActivePage(int targetPage)
     {

@@ -103,6 +103,14 @@ public class LevelManager : MonoBehaviour
         }
         LoadLevel();
     }
+    
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
 
     public void LoadLevel()
     {

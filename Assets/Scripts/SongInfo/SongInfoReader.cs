@@ -61,6 +61,14 @@ public class SongInfoReader : MonoBehaviour
         SubscribeToPlaylistUpdating();
         _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
     }
+    
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
 
     public void LoadJson(PlaylistItem item)
     {

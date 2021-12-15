@@ -34,6 +34,14 @@ public class InputManager : MonoBehaviour
             Destroy(this);
         }
     }
+    
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
 
     private void OnEnable()
     {

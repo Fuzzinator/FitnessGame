@@ -29,6 +29,14 @@ public class VFXManager : MonoBehaviour
         _normalHitPool = new PoolManager(_normalHitPrefab, transform);
     }
 
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
+
     public static BaseHitVFX GetBaseHitVFX
     {
         get

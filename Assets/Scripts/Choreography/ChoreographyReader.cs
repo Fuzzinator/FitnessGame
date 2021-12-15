@@ -60,6 +60,14 @@ public class ChoreographyReader : MonoBehaviour
     {
         _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
     }
+    
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
 
     public void LoadJson(PlaylistItem item)
     {

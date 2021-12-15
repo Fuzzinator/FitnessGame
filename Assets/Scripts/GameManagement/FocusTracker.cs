@@ -26,6 +26,14 @@ public class FocusTracker : MonoBehaviour
             Destroy(this);
         }
     }
+    
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
 
     private void OnApplicationFocus(bool hasFocus)
     {

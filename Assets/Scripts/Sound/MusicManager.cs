@@ -67,6 +67,14 @@ public class MusicManager : BaseGameStateListener
 
         _songLoader = new SongLoader();
     }
+    
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
 
     public async void LoadFromPlaylist(PlaylistItem info)
     {
