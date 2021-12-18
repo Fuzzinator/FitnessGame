@@ -76,6 +76,7 @@ public class StreakManager : MonoBehaviour
     public void ResetStreak()
     {
         CurrentStreak = 0;
+        GetStreakScoreMod();
     }
 
     public static int GetStreakScoreMod()

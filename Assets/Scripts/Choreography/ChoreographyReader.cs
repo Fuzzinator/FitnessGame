@@ -112,7 +112,7 @@ public class ChoreographyReader : MonoBehaviour
                     _choreography = JsonUtility.FromJson<Choreography>(json);
                 }
 
-                if (_choreography == null)
+                if (_choreography == null || _choreography.Notes == null)
                 {
                     LevelManager.Instance.LoadFailed();
                     NotificationManager.ReportFailedToLoadInGame($"{item.SongName}'s choreography failed to load.");

@@ -161,7 +161,7 @@ public class MusicManager : BaseGameStateListener
             }
             
             _awaitingSongEnd = true;
-            await WaitForSongFinish().SuppressCancellationThrow();
+            await WaitForSongFinish();
         }
         catch (Exception e) when (e is OperationCanceledException)
         {
@@ -216,7 +216,7 @@ public class MusicManager : BaseGameStateListener
         if (_musicAudioSource != null && _musicAudioSource.clip != null)
         {
             var timeSpan = TimeSpan.FromSeconds(.05f);
-            while (_musicAudioSource.clip.length - _musicAudioSource.time >= .05f)
+            while (_musicAudioSource.clip.length - _musicAudioSource.time >= .0525f && (_musicAudioSource.isPlaying || _musicPaused))
             {
                 await UniTask.Delay(timeSpan, cancellationToken: _cancellationToken);
             }
