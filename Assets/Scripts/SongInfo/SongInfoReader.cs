@@ -25,6 +25,8 @@ public class SongInfoReader : MonoBehaviour
 
     private CancellationTokenSource _cancellationSource;
 
+    public int Difficulty => _difficultyInfo.DifficultyRank;
+    
     public float NoteSpeed => _difficultyInfo.MovementSpeed;
     public float BeatsPerMinute => songInfo.BeatsPerMinute;
 

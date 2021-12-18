@@ -16,6 +16,11 @@ public class AddToScore : MonoBehaviour, IValidHit
     private const int OPTIMALHITMOD = 2;
     private const int MAXPUNCHSPEED = 30;
 
+    private const float EASYMODIFIER = .5f;
+    private const float NORMALMODIFIER = 1f;
+    private const float HARDMODIFIER = 1.5f;
+    private const float EXPERTMODIFER = 2f;
+
 
     public void TriggerHitEffect(HitInfo info)
     {
@@ -28,6 +33,7 @@ public class AddToScore : MonoBehaviour, IValidHit
 
         if (ScoringManager.Instance != null)
         {
+            hitValue *= GetDifficultyModifier();
             ScoringManager.Instance.AddToScore(Mathf.RoundToInt(hitValue*StreakManager.GetStreakScoreMod()));
         }
     }
@@ -37,5 +43,18 @@ public class AddToScore : MonoBehaviour, IValidHit
         distance = Mathf.Clamp(distance, 0, _hitRange);
         distance /= _hitRange;
         return OPTIMALHITMOD - distance;
+    }
+
+    private static float GetDifficultyModifier()
+    {
+        var difficulty = SongInfoReader.Instance.Difficulty;
+        return true switch
+        {
+            true when difficulty <= DifficultyInfo.EASY => EASYMODIFIER,
+            true when difficulty <= DifficultyInfo.NORMAL => NORMALMODIFIER,
+            true when difficulty <= DifficultyInfo.HARD => HARDMODIFIER,
+            true when difficulty <= DifficultyInfo.EXPERT => EXPERTMODIFER,
+            _ => NORMALMODIFIER
+        };
     }
 }

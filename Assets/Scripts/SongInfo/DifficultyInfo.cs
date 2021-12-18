@@ -30,12 +30,12 @@ public struct DifficultyInfo
         {
             return true switch
             {
-                true when _difficultyRank <= 1 => Mathf.Clamp(_noteJumpMovementSpeed, MINEASYSPEED, MAXEASYSPEED),
-                true when _difficultyRank > 1 && _difficultyRank <= 3 => Mathf.Clamp(_noteJumpMovementSpeed,
+                true when _difficultyRank <= EASY => Mathf.Clamp(_noteJumpMovementSpeed, MINEASYSPEED, MAXEASYSPEED),
+                true when _difficultyRank > EASY && _difficultyRank <= NORMAL => Mathf.Clamp(_noteJumpMovementSpeed,
                     MINNORMALSPEED, MAXNORMALSPEED),
-                true when _difficultyRank > 3 && _difficultyRank <= 5 => Mathf.Clamp(_noteJumpMovementSpeed,
+                true when _difficultyRank > NORMAL && _difficultyRank <= HARD => Mathf.Clamp(_noteJumpMovementSpeed,
                     MINHARDSPEED, MAXHARDSPEED),
-                true when _difficultyRank > 5 && _difficultyRank <= 7 => Mathf.Clamp(_noteJumpMovementSpeed,
+                true when _difficultyRank > HARD && _difficultyRank <= EXPERT => Mathf.Clamp(_noteJumpMovementSpeed,
                     MINEXPERTSPEED, MAXEXPERTSPEED),
                 _ => _noteJumpMovementSpeed
             };
@@ -59,25 +59,6 @@ public struct DifficultyInfo
     private const float HARDDISTANCE = .25f;
     private const float EXPERTDISTANCE = 15f;
 
-    private const string EASY = "Easy";
-    private const string NORMAL = "Normal";
-    private const string HARD = "Hard";
-    private const string EXPERT = "Expert";
-
-    #endregion
-
-    public void SetMinDistance()
-    {
-        _minTargetSpace = _difficulty switch
-        {
-            EASY => EASYDISTANCE,
-            NORMAL => NORMALDISTANCE,
-            HARD => HARDDISTANCE,
-            EXPERT => EXPERTDISTANCE,
-            _ => _minTargetSpace
-        };
-    }
-
     private const float MINEASYSPEED = 9;
     private const float MAXEASYSPEED = 10;
     private const float MINNORMALSPEED = 11;
@@ -86,4 +67,23 @@ public struct DifficultyInfo
     private const float MAXHARDSPEED = 14;
     private const float MINEXPERTSPEED = 15;
     private const float MAXEXPERTSPEED = 16;
+
+    public const int EASY = 1;
+    public const int NORMAL = 3;
+    public const int HARD = 5;
+    public const int EXPERT = 7;
+
+    #endregion
+
+    public void SetMinDistance()
+    {
+        _minTargetSpace = true switch
+        {
+            true when _difficultyRank <= EASY => EASYDISTANCE,
+            true when _difficultyRank <= NORMAL => NORMALDISTANCE,
+            true when _difficultyRank <= HARD => HARDDISTANCE,
+            true when _difficultyRank <= EXPERT => EXPERTDISTANCE,
+            _ => _minTargetSpace
+        };
+    }
 }
