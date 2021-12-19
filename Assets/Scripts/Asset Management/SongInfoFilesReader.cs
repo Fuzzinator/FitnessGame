@@ -156,6 +156,7 @@ public class SongInfoFilesReader : MonoBehaviour
 
                     streamReader.Close();
 
+                    item.TryCreateMissingDifficulties();
                     item.DifficultySets[0].RemoveExpertPlus();
                     if (file.Directory != null)
                     {

@@ -106,6 +106,35 @@ public class SongInfo
 
         public DifficultyInfo[] DifficultyInfos => _difficultyBeatmaps;
 
+        public void TryCreateMissingDifficulties()
+        {
+            DifficultyInfo hardestSet = new DifficultyInfo();
+            var hasEasy = false;
+            var hasNormal = false;
+            var harHard = false;
+            var hasExpert = false;
+            
+            foreach (var difficulty in _difficultyBeatmaps)
+            {
+                switch (true)
+                {
+                    case var easy when difficulty.DifficultyRank<=1:
+                        hasEasy = true;
+                        break;
+                    
+                    case var easy when difficulty.DifficultyRank<=3:
+                        hasEasy = true;
+                        break;
+                }
+                if (difficulty.DifficultyRank > hardestSet.DifficultyRank)
+                {
+                    hardestSet = difficulty;
+                }
+            }
+            
+            
+        }
+        
         public void RemoveExpertPlus()
         {
             if (_difficultyBeatmaps.Length - 1 > -1 &&
