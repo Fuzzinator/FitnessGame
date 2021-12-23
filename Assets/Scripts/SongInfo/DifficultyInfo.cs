@@ -86,4 +86,10 @@ public struct DifficultyInfo
             _ => _minTargetSpace
         };
     }
+
+    public void SetDifficulty(string difficultyName, int difficultyRank)
+    {
+        _difficulty = difficultyName;
+        _difficultyRank = difficultyRank;
+    }
 }
