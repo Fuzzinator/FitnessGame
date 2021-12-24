@@ -54,12 +54,12 @@ public struct DifficultyInfo
 
     #region Consts
 
-    private const float EASYDISTANCE = .75f;
-    private const float NORMALDISTANCE = .5f;
-    private const float HARDDISTANCE = .25f;
+    private const float EASYDISTANCE = 1f;
+    private const float NORMALDISTANCE = .6f;
+    private const float HARDDISTANCE = .35f;
     private const float EXPERTDISTANCE = 15f;
 
-    private const float MINEASYSPEED = 9;
+    private const float MINEASYSPEED = 8;
     private const float MAXEASYSPEED = 10;
     private const float MINNORMALSPEED = 11;
     private const float MAXNORMALSPEED = 12;
@@ -87,9 +87,17 @@ public struct DifficultyInfo
         };
     }
 
-    public void SetDifficulty(string difficultyName, int difficultyRank)
+    public void SetDifficulty(string difficultyName, int difficultyRank, bool downScale)
     {
         _difficulty = difficultyName;
         _difficultyRank = difficultyRank;
+        _noteJumpMovementSpeed = true switch
+        {
+            true when _difficultyRank <= EASY => downScale ? MINEASYSPEED : MAXEASYSPEED,
+            true when _difficultyRank <= NORMAL => downScale ? MINNORMALSPEED : MAXNORMALSPEED,
+            true when _difficultyRank <= HARD => downScale ? MINHARDSPEED : MAXHARDSPEED,
+            true when _difficultyRank <= EXPERT => downScale ? MINEXPERTSPEED : MAXEXPERTSPEED,
+            _ => _minTargetSpace
+        };
     }
 }

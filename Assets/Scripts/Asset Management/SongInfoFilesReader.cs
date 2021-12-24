@@ -42,7 +42,7 @@ public class SongInfoFilesReader : MonoBehaviour
     private const string ANDROIDPATHSTART = "file://";
     private const string SONGSFOLDER = "/Resources/Songs/";
 #elif UNITY_EDITOR
-    private const string UNITYEDITORLOCATION = "E:\\Projects\\FitnessGame\\LocalCustomSongs\\Songs";
+    private const string UNITYEDITORLOCATION =  "/LocalCustomSongs/Songs/";
     private const string UNITYEDITORLOCATION2 =
         "C:\\Asus WebStorage\\fuzzinator12@gmail.com\\MySyncFolder\\FitnessGame\\LocalCustomSongs";
 #endif
@@ -120,7 +120,8 @@ public class SongInfoFilesReader : MonoBehaviour
 #if UNITY_ANDROID && !UNITY_EDITOR
         var path = $"{Application.persistentDataPath}{SONGSFOLDER}";
 #elif UNITY_EDITOR
-        var path = UNITYEDITORLOCATION;
+        var dataPath = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/'));
+        var path = $"{dataPath}{UNITYEDITORLOCATION}";
 #endif
         if (!Directory.Exists(path))
         {

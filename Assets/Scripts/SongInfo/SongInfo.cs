@@ -152,34 +152,38 @@ public class SongInfo
             {
                 return;
             }
-            
+
             var allDifficulties = new List<DifficultyInfo>(_difficultyBeatmaps);
 
             if (!hasEasy)
             {
                 var easy = hardestSet;
-                easy.SetDifficulty($"{AUTONAME}{EASY}", DifficultyInfo.EASY);
+                easy.SetDifficulty($"{AUTONAME}{EASY}", DifficultyInfo.EASY,
+                    hardestSet.DifficultyRank > DifficultyInfo.EASY);
                 allDifficulties.Add(easy);
             }
 
             if (!hasNormal)
             {
                 var normal = hardestSet;
-                normal.SetDifficulty($"{AUTONAME}{NORMAL}", DifficultyInfo.NORMAL);
+                normal.SetDifficulty($"{AUTONAME}{NORMAL}", DifficultyInfo.NORMAL,
+                    hardestSet.DifficultyRank > DifficultyInfo.NORMAL);
                 allDifficulties.Add(normal);
             }
 
             if (!hasHard)
             {
                 var hard = hardestSet;
-                hard.SetDifficulty($"{AUTONAME}{HARD}", DifficultyInfo.HARD);
+                hard.SetDifficulty($"{AUTONAME}{HARD}", DifficultyInfo.HARD,
+                    hardestSet.DifficultyRank > DifficultyInfo.HARD);
                 allDifficulties.Add(hard);
             }
 
             if (!hasExpert)
             {
                 var expert = hardestSet;
-                expert.SetDifficulty($"{AUTONAME}{EXPERT}", DifficultyInfo.EXPERT);
+                expert.SetDifficulty($"{AUTONAME}{EXPERT}", DifficultyInfo.EXPERT,
+                    hardestSet.DifficultyRank > DifficultyInfo.EXPERT);
                 allDifficulties.Add(expert);
             }
 
