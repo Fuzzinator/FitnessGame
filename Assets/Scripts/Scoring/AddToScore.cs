@@ -34,7 +34,7 @@ public class AddToScore : MonoBehaviour, IValidHit
         if (ScoringManager.Instance != null)
         {
             hitValue *= GetDifficultyModifier();
-            ScoringManager.Instance.AddToScore(Mathf.RoundToInt(hitValue*StreakManager.GetStreakScoreMod()));
+            ScoringManager.Instance.AddToScore(hitValue);
         }
     }
 
