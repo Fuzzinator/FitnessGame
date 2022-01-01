@@ -27,6 +27,11 @@ public class SetPlayerProportions : MonoBehaviour
 
     private void OnDisable()
     {
+        if (InputManager.Instance == null)
+        {
+            return;
+        }
+        
         InputManager.Instance.MainInput[RESETHEADSET].performed -= ResetHeadset;
     }
 

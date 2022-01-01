@@ -22,6 +22,7 @@ public class BaseOptimalHitIndicator : MonoBehaviour
 
     private int _propertyHash;
     private bool _destroyed = false;
+    private CancellationToken _cancellationToken;
 
     private void Start()
     {
@@ -32,13 +33,14 @@ public class BaseOptimalHitIndicator : MonoBehaviour
 
         _propertyHash = Shader.PropertyToID(_propertyName);
         _renderer.material.SetFloat(_propertyHash, 0);
+        _cancellationToken = this.GetCancellationTokenOnDestroy();
     }
 
     private async void OnEnable()
     {
         _destroyed = false;
         _renderer.material.SetFloat(_propertyHash, 0);
-        await UpdateIndicator(this.GetCancellationTokenOnDestroy());
+        await UpdateIndicator(_cancellationToken);
     }
 
     public async UniTask UpdateIndicator(CancellationToken token)
