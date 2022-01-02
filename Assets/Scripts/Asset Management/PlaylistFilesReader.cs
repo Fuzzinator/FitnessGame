@@ -80,11 +80,11 @@ public class PlaylistFilesReader : MonoBehaviour
             }
 
             var playlist = JsonUtility.FromJson<Playlist>(asset.text);
-            var isValid = await PlaylistValidator.IsValid(playlist);//This is a temporary solution.
-            if (isValid)
-            {
+            playlist.isValid = await PlaylistValidator.IsValid(playlist);//This is a temporary solution.
+            //if (isValid)
+            //{
                 availablePlaylists.Add(playlist);
-            }
+            //}
         });
     }
 
@@ -119,11 +119,11 @@ public class PlaylistFilesReader : MonoBehaviour
                 
                 streamReader.Close();
                 
-                var isValid = await PlaylistValidator.IsValid(playlist);
-                if (isValid)
-                {
+                playlist.isValid = await PlaylistValidator.IsValid(playlist);
+                //if (playlist.isValid)
+                //{
                     availablePlaylists.Add(playlist);
-                }
+                //}
             }
         }
     }

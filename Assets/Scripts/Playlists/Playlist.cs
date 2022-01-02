@@ -37,6 +37,9 @@ public struct Playlist
     [SerializeField]
     private bool _isCustomPlaylist;
 
+    [NonSerialized]
+    public bool isValid;
+    
     public bool IsCustomPlaylist => _isCustomPlaylist;
 
     private const int MINUTE = 60;
@@ -53,6 +56,8 @@ public struct Playlist
         {
             _length += item.SongInfo.SongLength;
         }
+
+        isValid = true;
     }
 
     public void SetPlaylistName(string name)
