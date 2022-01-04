@@ -22,12 +22,15 @@ namespace UI.Scrollers.Playlists
 
         [SerializeField]
         private Image _highlight;
+        [SerializeField]
+        private Image _invalidIndicator;
 
-        public void SetData(PlaylistItem playlist)
+        public async void SetData(PlaylistItem playlist)
         {
             _songName?.SetText(playlist.SongName);
             _songDifficulty?.SetText(playlist.Difficulty);
             _songLength?.SetText(playlist.SongInfo.ReadableLength);
+            _invalidIndicator.enabled = !await PlaylistValidator.IsValid(playlist);
         }
 
         public void SetHighlight(bool on)

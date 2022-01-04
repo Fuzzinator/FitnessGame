@@ -46,7 +46,7 @@ namespace UI.Scrollers.Playlists
 
         private void Start()
         {
-            _playButton.onClick.AddListener(ActiveSceneManager.Instance.LoadBaseLevel);
+            _playButton.onClick.AddListener(TryLoadBaseLevel);
         }
 
         public void ShowInfo()
@@ -57,6 +57,24 @@ namespace UI.Scrollers.Playlists
             _editButton.gameObject.SetActive(PlaylistManager.Instance.CurrentPlaylist.IsCustomPlaylist);
             _deleteButton.gameObject.SetActive(PlaylistManager.Instance.CurrentPlaylist.IsCustomPlaylist);
             _scrollerController.ReloadScroller();
+        }
+
+        private void TryLoadBaseLevel()
+        {
+            var playlist = PlaylistManager.Instance.CurrentPlaylist;
+            if (!playlist.isValid)
+            {
+                NotificationManager.RequestNotification(
+                    new Notification.NotificationVisuals(
+                        $"A song in {playlist.PlaylistName} is missing from this device. Cannot play {playlist.PlaylistName}. Please remove the missing song from the playlist or add it to this device.",
+                        "Playlist Invalid",
+                        autoTimeOutTime:1.5f,
+                        popUp:true));
+            }
+            else
+            {
+                ActiveSceneManager.Instance.LoadBaseLevel();
+            }
         }
     }
 }

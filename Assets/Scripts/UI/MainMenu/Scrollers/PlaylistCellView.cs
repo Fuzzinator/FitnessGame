@@ -26,16 +26,6 @@ namespace UI.Scrollers.Playlists
 
         public void SetActivePlaylist()
         {
-            if (!_playlist.isValid)
-            {
-                NotificationManager.RequestNotification(
-                    new Notification.NotificationVisuals(
-                        $"A song is missing from this device. Cannot play {_playlist.PlaylistName}",
-                        "Playlist Invalid",
-                        autoTimeOutTime:1.5f,
-                        popUp:true));
-                return;
-            }
             PlaylistManager.Instance.SetActivePlaylist(_playlist);
             DisplayPlaylistInfo.Instance.ShowInfo();
         }
