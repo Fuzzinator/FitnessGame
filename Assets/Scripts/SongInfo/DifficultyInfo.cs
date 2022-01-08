@@ -47,26 +47,40 @@ public struct DifficultyInfo
 
     public float BeatOffset => _noteJumpStartBeatOffset;
 
-    [SerializeField]
-    private float _minTargetSpace;
+    //[SerializeField]
+    //private float _minTargetSpace;
 
-    public float MinTargetSpace => _minTargetSpace;
+    public float MinTargetSpace
+    {
+        get
+        { 
+            return true switch
+            {
+                true when _difficultyRank <= EASY => EASYDISTANCE,
+                true when _difficultyRank <= NORMAL => NORMALDISTANCE,
+                true when _difficultyRank <= HARD => HARDDISTANCE,
+                true when _difficultyRank <= EXPERT => EXPERTDISTANCE,
+                _ => NORMALDISTANCE
+            };
+        }
+    }
+    //_minTargetSpace;
 
     #region Consts
 
     private const float EASYDISTANCE = 1f;
-    private const float NORMALDISTANCE = .6f;
-    private const float HARDDISTANCE = .35f;
-    private const float EXPERTDISTANCE = 15f;
+    private const float NORMALDISTANCE = .75f;
+    private const float HARDDISTANCE = .5f;
+    private const float EXPERTDISTANCE = .25f;
 
-    private const float MINEASYSPEED = 8;
-    private const float MAXEASYSPEED = 10;
-    private const float MINNORMALSPEED = 11;
-    private const float MAXNORMALSPEED = 12;
-    private const float MINHARDSPEED = 13;
-    private const float MAXHARDSPEED = 14;
-    private const float MINEXPERTSPEED = 15;
-    private const float MAXEXPERTSPEED = 16;
+    private const float MINEASYSPEED = 7;
+    private const float MAXEASYSPEED = 9;
+    private const float MINNORMALSPEED = 10;
+    private const float MAXNORMALSPEED = 11;
+    private const float MINHARDSPEED = 12;
+    private const float MAXHARDSPEED = 13;
+    private const float MINEXPERTSPEED = 14;
+    private const float MAXEXPERTSPEED = 15;
 
     public const int EASY = 1;
     public const int NORMAL = 3;
@@ -74,18 +88,6 @@ public struct DifficultyInfo
     public const int EXPERT = 7;
 
     #endregion
-
-    public void SetMinDistance()
-    {
-        _minTargetSpace = true switch
-        {
-            true when _difficultyRank <= EASY => EASYDISTANCE,
-            true when _difficultyRank <= NORMAL => NORMALDISTANCE,
-            true when _difficultyRank <= HARD => HARDDISTANCE,
-            true when _difficultyRank <= EXPERT => EXPERTDISTANCE,
-            _ => _minTargetSpace
-        };
-    }
 
     public void SetDifficulty(string difficultyName, int difficultyRank, bool downScale)
     {
@@ -97,7 +99,7 @@ public struct DifficultyInfo
             true when _difficultyRank <= NORMAL => downScale ? MINNORMALSPEED : MAXNORMALSPEED,
             true when _difficultyRank <= HARD => downScale ? MINHARDSPEED : MAXHARDSPEED,
             true when _difficultyRank <= EXPERT => downScale ? MINEXPERTSPEED : MAXEXPERTSPEED,
-            _ => _minTargetSpace
+            _ => MINNORMALSPEED
         };
     }
 }

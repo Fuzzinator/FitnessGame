@@ -13,8 +13,7 @@ public class ChoreographyReader : MonoBehaviour
     public static ChoreographyReader Instance { get; private set; }
 
 
-    [SerializeField]
-    private Choreography _choreography;
+    [SerializeField] private Choreography _choreography;
 
     private DifficultyInfo _difficultyInfo;
 
@@ -23,8 +22,7 @@ public class ChoreographyReader : MonoBehaviour
     public ChoreographyEvent[] Events => _choreography.Events;
     public ChoreographyObstacle[] Obstacles => _choreography.Obstacles;
 
-    [Header("Settings")]
-    public UnityEvent finishedLoadingSong = new UnityEvent();
+    [Header("Settings")] public UnityEvent finishedLoadingSong = new UnityEvent();
 
     private CancellationTokenSource _cancellationSource;
 
@@ -59,7 +57,7 @@ public class ChoreographyReader : MonoBehaviour
     {
         _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
     }
-    
+
     private void OnDestroy()
     {
         if (Instance == this)
@@ -80,6 +78,7 @@ public class ChoreographyReader : MonoBehaviour
     {
         _cancellationSource?.Cancel();
     }
+
     private async UniTaskVoid AsyncLoadJson(PlaylistItem item)
     {
         _difficultyInfo = item.SongInfo.TryGetActiveDifficultySet(item.Difficulty);
@@ -88,7 +87,7 @@ public class ChoreographyReader : MonoBehaviour
         {
             _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
         }
-        
+
         if (item.IsCustomSong)
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
@@ -231,6 +230,7 @@ public class ChoreographyReader : MonoBehaviour
         ISequenceable thisTimeEvent = null;
 
         ISequenceable lastSequenceable = null;
+        var minTargetDistance = _difficultyInfo.MinTargetSpace;
         for (var i = 0; i < target.Count; i++)
         {
             var sequenceable = target[i];
@@ -242,7 +242,7 @@ public class ChoreographyReader : MonoBehaviour
                 }
                 else
                 {
-                    var minGap = (lastSequenceable is ChoreographyNote ? _difficultyInfo.MinTargetSpace : .5f);
+                    var minGap = (lastSequenceable is ChoreographyNote ? minTargetDistance : minTargetDistance * 1.5f);
                     if (lastTime + minGap < sequenceable.Time)
                     {
                         lastTime = sequenceable.Time;
@@ -328,7 +328,8 @@ public class ChoreographyReader : MonoBehaviour
                             {
                                 note.SetLineIndex(1);
                             }
-                            else if (note.CutDir == ChoreographyNote.CutDirection.HookLeft)
+                            
+                            if (note.CutDir == ChoreographyNote.CutDirection.HookLeft)
                             {
                                 note.SetToBasicJab();
                             }
@@ -340,7 +341,8 @@ public class ChoreographyReader : MonoBehaviour
                             {
                                 note.SetLineIndex(2);
                             }
-                            else if (note.CutDir == ChoreographyNote.CutDirection.HookRight)
+
+                            if (note.CutDir == ChoreographyNote.CutDirection.HookRight)
                             {
                                 note.SetToBasicJab();
                             }
@@ -352,7 +354,7 @@ public class ChoreographyReader : MonoBehaviour
                 }
                 else if (sequenceable is ChoreographyObstacle obstacle && thisTimeObstacle == null)
                 {
-                    if (thisTimeNote != null && thisTimeNote is ChoreographyNote tempNote)
+                    if (thisTimeNote is ChoreographyNote tempNote)
                     {
                         switch (tempNote.HitSideType)
                         {
