@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -30,14 +31,18 @@ public class SongInfoFilesReader : MonoBehaviour
     [SerializeField]
     private UnityEvent _songsUpdated = new UnityEvent();
 
+    private CancellationTokenSource _cancellationSource;
+    private CancellationToken _destructionCancellationToken;
+
     public SongInfo.SortingMethod CurrentSortingMethod => _sortingMethod;
+
     #region Const Strings
 
 #if UNITY_ANDROID && !UNITY_EDITOR
     private const string ANDROIDPATHSTART = "file://";
     private const string SONGSFOLDER = "/Resources/Songs/";
 #elif UNITY_EDITOR
-    private const string UNITYEDITORLOCATION = "E:\\Projects\\FitnessGame\\LocalCustomSongs\\Songs";
+    private const string UNITYEDITORLOCATION =  "/LocalCustomSongs/Songs/";
     private const string UNITYEDITORLOCATION2 =
         "C:\\Asus WebStorage\\fuzzinator12@gmail.com\\MySyncFolder\\FitnessGame\\LocalCustomSongs";
 #endif
@@ -56,6 +61,20 @@ public class SongInfoFilesReader : MonoBehaviour
         else
         {
             Destroy(this);
+        }
+    }
+
+    private void Start()
+    {
+        _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
+        _destructionCancellationToken = this.GetCancellationTokenOnDestroy();
+    }
+    
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
         }
     }
 
@@ -101,7 +120,8 @@ public class SongInfoFilesReader : MonoBehaviour
 #if UNITY_ANDROID && !UNITY_EDITOR
         var path = $"{Application.persistentDataPath}{SONGSFOLDER}";
 #elif UNITY_EDITOR
-        var path = UNITYEDITORLOCATION;
+        var dataPath = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/'));
+        var path = $"{dataPath}{UNITYEDITORLOCATION}";
 #endif
         if (!Directory.Exists(path))
         {
@@ -115,12 +135,10 @@ public class SongInfoFilesReader : MonoBehaviour
             songLoader = new SongLoader();
         }
 
-        //Parallel.ForEach(directories, dir => 
         foreach (var dir in directories)
         {
             var info = new DirectoryInfo(dir);
             var files = info.GetFiles();
-            //await UniTask.WaitWhile(() => !Parallel.ForEach(files, async file => //This is commented out until I learn more about Parallel.Foreach
             foreach (var file in files)
             {
                 if (file == null)
@@ -132,12 +150,14 @@ public class SongInfoFilesReader : MonoBehaviour
                     || string.Equals(file.Name, ALTSONGINFONAME, StringComparison.InvariantCultureIgnoreCase))
                 {
                     var streamReader = new StreamReader(file.FullName);
-                    var reading = streamReader.ReadToEndAsync();
-                    await reading;
-                    var item = JsonUtility.FromJson<SongInfo>(reading.Result);
+                    var result = await streamReader.ReadToEndAsync().AsUniTask()
+                        .AttachExternalCancellation(_destructionCancellationToken);
+                    
+                    var item = JsonUtility.FromJson<SongInfo>(result);
 
                     streamReader.Close();
 
+                    item.DifficultySets[0].TryCreateMissingDifficulties();
                     item.DifficultySets[0].RemoveExpertPlus();
                     if (file.Directory != null)
                     {
@@ -157,8 +177,8 @@ public class SongInfoFilesReader : MonoBehaviour
 
                     availableSongs.Add(item);
                 }
-            } //).IsCompleted);
-        } //);
+            }
+        }
     }
 
     public async UniTask<float> TryGetSongLength(SongInfo info, SongLoader songLoader,
@@ -169,18 +189,30 @@ public class SongInfoFilesReader : MonoBehaviour
             UniTask<AudioClip> clipRequest;
             if (customSong)
             {
-                clipRequest = songLoader.LoadCustomSong(info.fileLocation, info);
+                clipRequest = songLoader.LoadCustomSong(info.fileLocation, info, _cancellationSource.Token);
             }
             else
             {
-                clipRequest = songLoader.LoadBuiltInSong(info);
+                clipRequest = songLoader.LoadBuiltInSong(info, _cancellationSource.Token);
             }
 
             var audioClip = await clipRequest;
-            if (audioClip != null)
+            if (audioClip == null)
             {
-                return audioClip.length;
+                if (_cancellationSource.IsCancellationRequested)
+                {
+                    _cancellationSource =
+                        CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
+                }
+                else
+                {
+                    Debug.LogError($"Failed to load {info.SongName}");
+                }
+
+                return 0;
             }
+
+            return audioClip.length;
         }
 
         return 0;
@@ -200,14 +232,14 @@ public class SongInfoFilesReader : MonoBehaviour
         switch (_sortingMethod)
         {
             case SongInfo.SortingMethod.None:
-                availableSongs.Sort((x,y) => Random.Range(-1,1));
+                availableSongs.Sort((x, y) => Random.Range(-1, 1));
                 return;
             case SongInfo.SortingMethod.SongName:
-                availableSongs.Sort((x, y) => 
+                availableSongs.Sort((x, y) =>
                     string.Compare(x.SongName, y.SongName, StringComparison.Ordinal));
                 break;
             case SongInfo.SortingMethod.InverseSongName:
-                availableSongs.Sort((x, y) => 
+                availableSongs.Sort((x, y) =>
                     string.Compare(y.SongName, x.SongName, StringComparison.Ordinal));
                 break;
             case SongInfo.SortingMethod.AuthorName:

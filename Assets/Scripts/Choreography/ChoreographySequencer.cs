@@ -200,7 +200,7 @@ public class ChoreographySequencer : MonoBehaviour
     private Sequence CreateSequence(ChoreographyFormation formation, int nextFormationIndex)
     {
         var sequence = DOTween.Sequence();
-
+    
         var formationHolder = _formationHolderPool.GetNewPoolable() as FormationHolder;
         formationHolder.gameObject.SetActive(true);
         var formationTransform = formationHolder.transform;
@@ -217,14 +217,10 @@ public class ChoreographySequencer : MonoBehaviour
 
         tween.SetEase(Ease.Linear);
 
-        TweenCallback onStart = () => SpawnFormationObjects(formationHolder, formation);
-        onStart += () => TryCreateNextSequence(nextFormationIndex);
-
-        TweenCallback onComplete = () => ClearFormationObjects(formationHolder);
-        onComplete += () => _activeSequences.Remove(sequence);
-
-        tween.OnStart(onStart);
-        tween.OnComplete(onComplete);
+        formationHolder.SetUp(this, formation, nextFormationIndex, sequence);
+        
+        tween.OnStart(formationHolder.OnStartCallback);
+        tween.OnComplete(formationHolder.OnCompleteCallback);
 
         formationHolder.MyTween = tween;
 
@@ -239,7 +235,7 @@ public class ChoreographySequencer : MonoBehaviour
         return sequence;
     }
 
-    private void TryCreateNextSequence(int nextFormationIndex)
+    public void TryCreateNextSequence(int nextFormationIndex)
     {
         var formations = ChoreographyReader.Instance.GetOrderedFormations();
         if (nextFormationIndex < formations.Count)
@@ -255,9 +251,9 @@ public class ChoreographySequencer : MonoBehaviour
         }
     }
 
-    private void SpawnFormationObjects(FormationHolder formationHolder, ChoreographyFormation formation)
+    public void SpawnFormationObjects(FormationHolder formationHolder, ChoreographyFormation formation)
     {
-        if (this == null)
+        if (this?.gameObject == null)
         {
             return;
         }
@@ -280,6 +276,7 @@ public class ChoreographySequencer : MonoBehaviour
         {
             var target = GetTarget(formation.Note);
             target.SetUpTarget(formation.Note.Type, _optimalStrikePoint.position, formationHolder);
+            target.layer = formation.Note.LineLayer;
             target.transform.SetParent(formationHolder.transform);
             target.transform.position = (GetTargetParent(formation.Note)).position;
             target.gameObject.SetActive(true);
@@ -346,6 +343,11 @@ public class ChoreographySequencer : MonoBehaviour
         }
     }
 
+    public void RemoveSequence(Sequence sequence)
+    {
+        _activeSequences.Remove(sequence);
+    }
+
     public void ResetChoreography()
     {
         while (_activeSequences.Count>0)
@@ -377,15 +379,6 @@ public class ChoreographySequencer : MonoBehaviour
 
         _pauseOffset += Time.time - _delayStartTime;
         SequenceRunning = true;
-    }
-
-    private void ClearFormationObjects(FormationHolder formationHolder)
-    {
-        if (this == null)
-        {
-            return;
-        }
-        formationHolder.ReturnRemainingChildren();
     }
 
     public void SwitchFootPlacement()

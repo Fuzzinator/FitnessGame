@@ -15,6 +15,7 @@ public class LevelManager : MonoBehaviour
     public UnityEvent playLevel = new UnityEvent();
     
     public UnityEvent songCompleted = new UnityEvent();
+    public UnityEvent levelLoadFailed = new UnityEvent();
 
     [SerializeField]
     private int _delayLength = 5;
@@ -34,7 +35,9 @@ public class LevelManager : MonoBehaviour
     private UniTask _songCountdown;
     private CancellationToken _cancellationToken;
     public bool SongFullyLoaded => _choreographyLoaded && _songInfoLoaded && _actualSongLoaded;
-    
+
+    public bool SongCompleted => _songCompleted;
+
     public bool ChoreographyLoaded
     {
         get => _choreographyLoaded;
@@ -100,12 +103,33 @@ public class LevelManager : MonoBehaviour
         }
         LoadLevel();
     }
+    
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
 
     public void LoadLevel()
     {
         ResetForNextSong();
         startedLevelLoad?.Invoke();
         _cancellationToken = this.GetCancellationTokenOnDestroy();
+    }
+
+    public void LoadFailed()
+    {
+        levelLoadFailed?.Invoke();
+        ResetForNextSong();
+    }
+
+    public void LoadNextSong()
+    {
+        LoadFailed();
+        
+        PlaylistManager.Instance.UpdateCurrentPlaylist();
     }
 
     public void ResetForNextSong()

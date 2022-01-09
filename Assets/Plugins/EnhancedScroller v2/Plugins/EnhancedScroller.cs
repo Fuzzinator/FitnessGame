@@ -67,7 +67,7 @@ namespace EnhancedUI.EnhancedScroller
     /// that using only a handful of views, you can display thousands of rows. This will save memory and processing
     /// power in your application.
     /// </summary>
-    [RequireComponent(typeof(ScrollRect))]
+    //[RequireComponent(typeof(ScrollRect))]
     public class EnhancedScroller : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     {
         #region Public
@@ -649,12 +649,11 @@ namespace EnhancedUI.EnhancedScroller
             {
                 // no recyleable cell found, so we create a new view
                 // and attach it to our container
-                var go = Instantiate(cellPrefab.gameObject);
-                cellView = go.GetComponent<EnhancedScrollerCellView>();
+                cellView = Instantiate(cellPrefab);
                 cellView.transform.SetParent(_container);
                 cellView.transform.localPosition = Vector3.zero;
                 cellView.transform.localRotation = Quaternion.identity;
-
+                
                 // call the instantiated callback
                 if (cellViewInstantiated != null)
                 {
@@ -1399,9 +1398,9 @@ namespace EnhancedUI.EnhancedScroller
 
             // set the size of the active cell view container based on the number of cell views there are and each of their sizes
             if (scrollDirection == ScrollDirectionEnum.Vertical)
-                _container.sizeDelta = new Vector2(_container.sizeDelta.x, _cellViewOffsetArray.Last() + padding.top + padding.bottom);
+                _container.sizeDelta = new Vector2(0, _cellViewOffsetArray.Last() + padding.top + padding.bottom);
             else
-                _container.sizeDelta = new Vector2(_cellViewOffsetArray.Last() + padding.left + padding.right, _container.sizeDelta.y);
+                _container.sizeDelta = new Vector2(_cellViewOffsetArray.Last() + padding.left + padding.right, 0);
 
             // if looping, set up the loop positions and triggers
             if (loop)
@@ -1832,12 +1831,14 @@ namespace EnhancedUI.EnhancedScroller
                 _container.anchorMin = new Vector2(0, 1);
                 _container.anchorMax = Vector2.one;
                 _container.pivot = new Vector2(0.5f, 1f);
+                _container.sizeDelta = new Vector2(0, _container.sizeDelta.y);
             }
             else
             {
                 _container.anchorMin = Vector2.zero;
                 _container.anchorMax = new Vector2(0, 1f);
                 _container.pivot = new Vector2(0, 0.5f);
+                _container.sizeDelta = new Vector2(_container.sizeDelta.x,0);
             }
             _container.offsetMax = Vector2.zero;
             _container.offsetMin = Vector2.zero;

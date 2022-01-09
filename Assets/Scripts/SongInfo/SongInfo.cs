@@ -7,8 +7,11 @@ using UnityEngine;
 public class SongInfo
 {
     #region Const Strings
+
     private const int MINUTE = 60;
+
     #endregion
+
     public float BeatsPerMinute => _beatsPerMinute;
 
     public string SongName => _songName;
@@ -24,7 +27,10 @@ public class SongInfo
         set { _songLength = value; }
     }
 
+    public float SongStartDelay => _songTimeOffset;
+
     public float LengthInMinutes => _songLength / MINUTE;
+
     public string ReadableLength
     {
         get
@@ -82,10 +88,6 @@ public class SongInfo
                 var info = difficulties.DifficultyInfos[j];
                 if (info.Difficulty == difficulty)
                 {
-                    if (info.MinTargetSpace == 0)
-                    {
-                        _difficultyBeatmapSets[i].DifficultyInfos[j].SetMinDistance();
-                    }
                     return info;
                 }
             }
@@ -97,12 +99,92 @@ public class SongInfo
     [Serializable]
     public struct DifficultySet
     {
+        private const string AUTONAME = "Auto-";
+        private const string EASY = "Easy";
+        private const string NORMAL = "Normal";
+        private const string HARD = "Hard";
+        private const string EXPERT = "Expert";
         private const string EXPERTPLUS = "ExpertPlus";
-        
+
         [SerializeField]
         private DifficultyInfo[] _difficultyBeatmaps;
 
         public DifficultyInfo[] DifficultyInfos => _difficultyBeatmaps;
+
+        public void TryCreateMissingDifficulties()
+        {
+            var hardestSet = new DifficultyInfo();
+            var hasEasy = false;
+            var hasNormal = false;
+            var hasHard = false;
+            var hasExpert = false;
+
+            foreach (var difficulty in _difficultyBeatmaps)
+            {
+                switch (true) // determine which difficulties this set has
+                {
+                    case var b when difficulty.DifficultyRank <= DifficultyInfo.EASY:
+                        hasEasy = true;
+                        break;
+                    case var b when difficulty.DifficultyRank <= DifficultyInfo.NORMAL:
+                        hasNormal = true;
+                        break;
+                    case var b when difficulty.DifficultyRank <= DifficultyInfo.HARD:
+                        hasHard = true;
+                        break;
+                    case var b when difficulty.DifficultyRank <= DifficultyInfo.EXPERT:
+                        hasExpert = true;
+                        break;
+                }
+
+                if (difficulty.DifficultyRank > hardestSet.DifficultyRank)
+                {
+                    hardestSet = difficulty;
+                }
+            }
+
+            if (hasEasy && hasNormal && hasHard && hasExpert)
+            {
+                return;
+            }
+
+            var allDifficulties = new List<DifficultyInfo>(_difficultyBeatmaps);
+
+            if (!hasEasy)
+            {
+                var easy = hardestSet;
+                easy.SetDifficulty($"{AUTONAME}{EASY}", DifficultyInfo.EASY,
+                    hardestSet.DifficultyRank > DifficultyInfo.EASY);
+                allDifficulties.Add(easy);
+            }
+
+            if (!hasNormal)
+            {
+                var normal = hardestSet;
+                normal.SetDifficulty($"{AUTONAME}{NORMAL}", DifficultyInfo.NORMAL,
+                    hardestSet.DifficultyRank > DifficultyInfo.NORMAL);
+                allDifficulties.Add(normal);
+            }
+
+            if (!hasHard)
+            {
+                var hard = hardestSet;
+                hard.SetDifficulty($"{AUTONAME}{HARD}", DifficultyInfo.HARD,
+                    hardestSet.DifficultyRank > DifficultyInfo.HARD);
+                allDifficulties.Add(hard);
+            }
+
+            if (!hasExpert)
+            {
+                var expert = hardestSet;
+                expert.SetDifficulty($"{AUTONAME}{EXPERT}", DifficultyInfo.EXPERT,
+                    hardestSet.DifficultyRank > DifficultyInfo.EXPERT);
+                allDifficulties.Add(expert);
+            }
+
+            allDifficulties.Sort((x, y) => x.DifficultyRank.CompareTo(y.DifficultyRank));
+            _difficultyBeatmaps = allDifficulties.ToArray();
+        }
 
         public void RemoveExpertPlus()
         {
@@ -119,8 +201,8 @@ public class SongInfo
             }
         }
     }
-    
-    
+
+
     public enum SortingMethod
     {
         None = 0,

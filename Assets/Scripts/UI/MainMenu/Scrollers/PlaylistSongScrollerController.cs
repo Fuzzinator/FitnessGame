@@ -28,7 +28,11 @@ namespace UI.Scrollers.Playlists
 
         public override int GetNumberOfCells(EnhancedScroller scroller)
         {
-            return PlaylistManager.Instance?.CurrentPlaylist.Items.Length ?? 0;
+            if (PlaylistManager.Instance != null)
+            {
+                return PlaylistManager.Instance.CurrentPlaylist.Items?.Length ?? 0;
+            }
+            return 0;
         }
 
         public override EnhancedScrollerCellView GetCellView(EnhancedScroller scroller, int dataIndex, int cellIndex)

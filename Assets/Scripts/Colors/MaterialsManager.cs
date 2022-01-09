@@ -44,6 +44,16 @@ public class MaterialsManager : MonoBehaviour
     {
         UpdateMaterialColors();
     }
+    
+    
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
+    
 
     public void UpdateMaterialColors()
     {

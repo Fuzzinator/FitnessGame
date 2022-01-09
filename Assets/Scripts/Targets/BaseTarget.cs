@@ -7,6 +7,8 @@ using UnityEngine.Events;
 public class BaseTarget : MonoBehaviour, IPoolable
 {
     [SerializeField]
+    public ChoreographyNote.LineLayerType layer;
+    [SerializeField]
     protected HitSideType _noteType;
 
     [SerializeField]
@@ -71,7 +73,10 @@ public class BaseTarget : MonoBehaviour, IPoolable
         }
 
         gameObject.SetActive(false);
-        transform.SetParent(MyPoolManager.poolParent);
+        if(MyPoolManager.poolParent.gameObject.activeSelf)
+        {
+            transform.SetParent(MyPoolManager.poolParent);
+        }
         ActiveTargetManager.Instance.RemoveActiveTarget(this);
         MyPoolManager.ReturnToPool(this);
         parentFormation.Remove(this);

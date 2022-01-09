@@ -80,10 +80,10 @@ public class ScoringManager : MonoBehaviour
         _hitObstacles = 0;
     }
     
-    public void AddToScore(int valueToAdd)
+    public void AddToScore(float valueToAdd)
     {
-        CurrentScore += (ulong)valueToAdd;
-        _scoreThisSong += (ulong)valueToAdd;
+        CurrentScore += (ulong)(valueToAdd*StreakManager.GetStreakScoreMod());
+        _scoreThisSong += (ulong)(valueToAdd*StreakManager.GetCurrentSongScoreMod());
     }
 
     public void RegisterHit()

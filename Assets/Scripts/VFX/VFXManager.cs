@@ -29,5 +29,21 @@ public class VFXManager : MonoBehaviour
         _normalHitPool = new PoolManager(_normalHitPrefab, transform);
     }
 
-    public static BaseHitVFX GetBaseHitVFX =>Instance._normalHitPool.GetNewPoolable() as BaseHitVFX;
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
+
+    public static BaseHitVFX GetBaseHitVFX
+    {
+        get
+        {
+            var vfx = Instance._normalHitPool.GetNewPoolable() as BaseHitVFX;
+            vfx.MyPoolManager = Instance._normalHitPool;
+            return vfx;
+        }
+    }
 }

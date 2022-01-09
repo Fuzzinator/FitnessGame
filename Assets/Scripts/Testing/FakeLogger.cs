@@ -29,11 +29,11 @@ public class FakeLogger : MonoBehaviour
                     {
                         if (logType != LogType.Error)
                         {
-                            //return;
+                            Log(text);
+                            return;
                         }
                         Log(text);
                         Log(stacktrace);
-                        //Log(stacktrace);
                     };
         Application.logMessageReceived += _callback;
     }

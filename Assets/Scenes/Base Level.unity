@@ -7374,7 +7374,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh44784
+  m_Name: pb_Mesh37504
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -12162,7 +12162,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be197586e27a8d74aa1616a2de52728c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isRightHand: 0
+  _isRightHand: 1
   _rayInteractor: {fileID: 983265262}
   _lineRenderer: {fileID: 983265261}
   _interactorLineVisual: {fileID: 983265260}
@@ -13154,7 +13154,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 2024104557}
         m_TargetAssemblyTypeName: MusicManager, Assembly-CSharp
-        m_MethodName: PlayMusic
+        m_MethodName: WaitThenPlayMusic
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -13203,9 +13203,84 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1037454726}
+        m_TargetAssemblyTypeName: StreakManager, Assembly-CSharp
+        m_MethodName: ResetCurrentSong
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 1037454724}
         m_TargetAssemblyTypeName: ScoringManager, Assembly-CSharp
         m_MethodName: NewSongStarted
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  levelLoadFailed:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2026559207}
+        m_TargetAssemblyTypeName: SongInfoReader, Assembly-CSharp
+        m_MethodName: CancelLoad
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 26562285}
+        m_TargetAssemblyTypeName: ChoreographyReader, Assembly-CSharp
+        m_MethodName: CancelLoad
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2024104557}
+        m_TargetAssemblyTypeName: MusicManager, Assembly-CSharp
+        m_MethodName: CancelLoad
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1731415499}
+        m_TargetAssemblyTypeName: PlaylistCountdownClock, Assembly-CSharp
+        m_MethodName: ToggleClockRunning
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1731415499}
+        m_TargetAssemblyTypeName: PlaylistCountdownClock, Assembly-CSharp
+        m_MethodName: SongFailedToLoad
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -9,26 +9,21 @@ using UnityEngine.UI;
 
 public class Notification : MonoBehaviour, IPoolable
 {
-    [SerializeField]
-    private TextMeshProUGUI _message;
+    [SerializeField] private TextMeshProUGUI _message;
 
-    [SerializeField]
-    private Button _button1;
+    [SerializeField] private Button _button1;
 
-    [SerializeField]
-    private Button _button2;
+    [SerializeField] private Button _button2;
 
-    [SerializeField]
-    private Button _button3;
+    [SerializeField] private Button _button3;
 
-    [SerializeField]
-    private TextMeshProUGUI _button1Txt;
+    [SerializeField] private TextMeshProUGUI _button1Txt;
 
-    [SerializeField]
-    private TextMeshProUGUI _button2Txt;
+    [SerializeField] private TextMeshProUGUI _button2Txt;
 
-    [SerializeField]
-    private TextMeshProUGUI _button3Txt;
+    [SerializeField] private TextMeshProUGUI _button3Txt;
+
+    [SerializeField] private GameObject _buttonsParent;
 
     private Action _button1Pressed;
     private Action _button2Pressed;
@@ -42,13 +37,12 @@ public class Notification : MonoBehaviour, IPoolable
 
     private CancellationToken _cancellationToken;
 
-    [SerializeField]
-    private Canvas _canvas;
+    [SerializeField] private Canvas _canvas;
 
     private const string HEADERSTART = "<size=100><uppercase><b>";
     private const string HEADEREND = "</uppercase></size></b>\n";
     private const float BASEHEIGHT = 720;
-    private const float NOBUTTONHEIGHT = 525;
+    private const float NOBUTTONHEIGHT = 530;
 
     public PoolManager MyPoolManager
     {
@@ -134,6 +128,8 @@ public class Notification : MonoBehaviour, IPoolable
             _button3.gameObject.SetActive(true);
         }
 
+        _buttonsParent.SetActive(hasBttn1 || hasBttn2 || hasBttn3);
+
         if (transform is RectTransform rectTransform)
         {
             if (!hasBttn1 && !hasBttn2 && !hasBttn3)
@@ -154,7 +150,7 @@ public class Notification : MonoBehaviour, IPoolable
 
         gameObject.SetActive(true);
 
-        if (_disableUI)
+        if (_disableUI && MainMenuUIController.Instance)
         {
             MainMenuUIController.Instance.RequestDisableUI(this);
         }

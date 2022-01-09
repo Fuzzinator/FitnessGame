@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -10,12 +12,8 @@ public class ChoreographyReader : MonoBehaviour
 {
     public static ChoreographyReader Instance { get; private set; }
 
-    /*
-    [TextArea]
-    public string json;*/
 
-    [SerializeField]
-    private Choreography _choreography;
+    [SerializeField] private Choreography _choreography;
 
     private DifficultyInfo _difficultyInfo;
 
@@ -24,8 +22,9 @@ public class ChoreographyReader : MonoBehaviour
     public ChoreographyEvent[] Events => _choreography.Events;
     public ChoreographyObstacle[] Obstacles => _choreography.Obstacles;
 
-    [Header("Settings")]
-    public UnityEvent finishedLoadingSong = new UnityEvent();
+    [Header("Settings")] public UnityEvent finishedLoadingSong = new UnityEvent();
+
+    private CancellationTokenSource _cancellationSource;
 
     #region Const Strings
 
@@ -39,7 +38,6 @@ public class ChoreographyReader : MonoBehaviour
     private const string LOCALSONGSFOLDER = "Assets/Music/Songs/";
     private const string DAT = ".dat";
     private const string TXT = ".txt";
-    private const string EASY = "Easy";
 
     #endregion
 
@@ -55,6 +53,19 @@ public class ChoreographyReader : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
+
     public void LoadJson(PlaylistItem item)
     {
 #pragma warning disable 4014
@@ -63,9 +74,19 @@ public class ChoreographyReader : MonoBehaviour
 #pragma warning restore 4014
     }
 
+    public void CancelLoad()
+    {
+        _cancellationSource?.Cancel();
+    }
+
     private async UniTaskVoid AsyncLoadJson(PlaylistItem item)
     {
         _difficultyInfo = item.SongInfo.TryGetActiveDifficultySet(item.Difficulty);
+
+        if (_cancellationSource.IsCancellationRequested)
+        {
+            _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
+        }
 
         if (item.IsCustomSong)
         {
@@ -73,36 +94,85 @@ public class ChoreographyReader : MonoBehaviour
             var path =
  $"{Application.persistentDataPath}{SONGSFOLDER}{item.FileLocation}/{_difficultyInfo.FileName}";
 #elif UNITY_EDITOR
-            //var txtVersion = _difficultyInfo.FileName.Replace(".dat", ".txt");
             var dataPath = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/'));
             var path = $"{dataPath}{UNITYEDITORLOCATION}{item.FileLocation}/{_difficultyInfo.FileName}";
 #endif
 
-            var streamReader = new StreamReader(path);
+            try
+            {
+                var streamReader = new StreamReader(path);
 
-            var reading = streamReader.ReadToEndAsync();
-            await reading;
-            var json = reading.Result;
-            _choreography = JsonUtility.FromJson<Choreography>(json);
+                var json = await streamReader.ReadToEndAsync().AsUniTask()
+                    .AttachExternalCancellation(_cancellationSource.Token);
+                _choreography = null;
+                if (!string.IsNullOrWhiteSpace(json))
+                {
+                    _choreography = JsonUtility.FromJson<Choreography>(json);
+                }
+
+                if (_choreography == null || _choreography.Notes == null)
+                {
+                    LevelManager.Instance.LoadFailed();
+                    NotificationManager.ReportFailedToLoadInGame($"{item.SongName}'s choreography failed to load.");
+                    if (_cancellationSource.IsCancellationRequested && this?.gameObject != null)
+                    {
+                        _cancellationSource =
+                            CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
+                    }
+
+                    return;
+                }
+            }
+            catch (Exception e)when (e is OperationCanceledException)
+            {
+                if (_cancellationSource.IsCancellationRequested && this?.gameObject != null)
+                {
+                    _cancellationSource =
+                        CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
+                }
+
+                return;
+            }
         }
         else
         {
-            var txtVersion = _difficultyInfo.FileName;
-            if (txtVersion.EndsWith(DAT))
+            try
             {
-                txtVersion = txtVersion.Replace(DAT, TXT);
-            }
+                var txtVersion = _difficultyInfo.FileName;
+                if (txtVersion.EndsWith(DAT))
+                {
+                    txtVersion = txtVersion.Replace(DAT, TXT);
+                }
 
-            var request = Addressables.LoadAssetAsync<TextAsset>($"{LOCALSONGSFOLDER}{item.FileLocation}/{txtVersion}");
-            await request;
-            var json = request.Result;
-            if (json == null)
+                var request =
+                    Addressables.LoadAssetAsync<TextAsset>($"{LOCALSONGSFOLDER}{item.FileLocation}/{txtVersion}")
+                        .WithCancellation(_cancellationSource.Token);
+
+                var json = await request;
+                if (json == null)
+                {
+                    NotificationManager.ReportFailedToLoadInGame($"{item.SongName}'s choreography failed to load.");
+                    if (_cancellationSource.IsCancellationRequested && this?.gameObject != null)
+                    {
+                        _cancellationSource =
+                            CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
+                    }
+
+                    return;
+                }
+
+                _choreography = JsonUtility.FromJson<Choreography>((json).text);
+            }
+            catch (Exception e)when (e is OperationCanceledException)
             {
-                Debug.LogError("Failed to load local resource file");
+                if (_cancellationSource.IsCancellationRequested && this?.gameObject != null)
+                {
+                    _cancellationSource =
+                        CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
+                }
+
                 return;
             }
-
-            _choreography = JsonUtility.FromJson<Choreography>((json).text);
         }
 
         finishedLoadingSong?.Invoke();
@@ -160,6 +230,7 @@ public class ChoreographyReader : MonoBehaviour
         ISequenceable thisTimeEvent = null;
 
         ISequenceable lastSequenceable = null;
+        var minTargetDistance = _difficultyInfo.MinTargetSpace;
         for (var i = 0; i < target.Count; i++)
         {
             var sequenceable = target[i];
@@ -171,7 +242,7 @@ public class ChoreographyReader : MonoBehaviour
                 }
                 else
                 {
-                    var minGap = (lastSequenceable is ChoreographyNote ? _difficultyInfo.MinTargetSpace : .5f);
+                    var minGap = (lastSequenceable is ChoreographyNote ? minTargetDistance : minTargetDistance * 1.5f);
                     if (lastTime + minGap < sequenceable.Time)
                     {
                         lastTime = sequenceable.Time;
@@ -189,9 +260,9 @@ public class ChoreographyReader : MonoBehaviour
                 {
                     if (thisTimeObstacle != null)
                     {
+                        note.SetCutDirection(ChoreographyNote.CutDirection.Jab);
                         note.SetLineLayer(ChoreographyNote.LineLayerType.Low);
-                        note.SetToBasicJab();
-                        
+
                         switch (thisTimeObstacle.HitSideType)
                         {
                             case HitSideType.Block:
@@ -257,7 +328,8 @@ public class ChoreographyReader : MonoBehaviour
                             {
                                 note.SetLineIndex(1);
                             }
-                            else if (note.CutDir == ChoreographyNote.CutDirection.HookLeft)
+                            
+                            if (note.CutDir == ChoreographyNote.CutDirection.HookLeft)
                             {
                                 note.SetToBasicJab();
                             }
@@ -269,7 +341,8 @@ public class ChoreographyReader : MonoBehaviour
                             {
                                 note.SetLineIndex(2);
                             }
-                            else if (note.CutDir == ChoreographyNote.CutDirection.HookRight)
+
+                            if (note.CutDir == ChoreographyNote.CutDirection.HookRight)
                             {
                                 note.SetToBasicJab();
                             }
@@ -281,7 +354,7 @@ public class ChoreographyReader : MonoBehaviour
                 }
                 else if (sequenceable is ChoreographyObstacle obstacle && thisTimeObstacle == null)
                 {
-                    if (thisTimeNote != null && thisTimeNote is ChoreographyNote tempNote)
+                    if (thisTimeNote is ChoreographyNote tempNote)
                     {
                         switch (tempNote.HitSideType)
                         {
@@ -305,8 +378,8 @@ public class ChoreographyReader : MonoBehaviour
                                 continue;
                         }
 
+                        tempNote.SetCutDirection(ChoreographyNote.CutDirection.Jab);
                         tempNote.SetLineLayer(ChoreographyNote.LineLayerType.Low);
-                        tempNote.SetToBasicJab();
                         thisTimeNote = tempNote;
                     }
 

@@ -42,6 +42,7 @@ public class BaseHitVFX : MonoBehaviour, IPoolable
         _particleSystem.Play(true);
         await UniTask.DelayFrame(FRAMEDELAY, cancellationToken: token);
         await WaitForParticleFinish();
+        ReturnToPool();
     }
 
     private async UniTask WaitForParticleFinish()
@@ -51,12 +52,6 @@ public class BaseHitVFX : MonoBehaviour, IPoolable
         {
             await UniTask.Delay(timeSpan, cancellationToken: token);
         }
-        
-        if (this == null)
-        {
-            return;
-        }
-        Destroy(gameObject);
     }
     
     public void ReturnToPool()

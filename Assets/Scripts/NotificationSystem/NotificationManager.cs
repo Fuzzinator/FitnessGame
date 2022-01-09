@@ -18,7 +18,7 @@ public class NotificationManager : MonoBehaviour
     private Transform _popUpPosition;
 
     private PoolManager _notificationPoolManager;
-    
+
     private void Awake()
     {
         if (Instance == null)
@@ -45,8 +45,9 @@ public class NotificationManager : MonoBehaviour
             Debug.LogError("Notification was null");
             return null;
         }
+
         obj.SetUpObject(visuals, button1Pressed, button2Pressed, button3Pressed);
-        
+
         obj.transform.SetParent(Instance.transform);
         if (visuals.popUp)
         {
@@ -60,7 +61,28 @@ public class NotificationManager : MonoBehaviour
             transform1.position = Instance._basePosition.position;
             transform1.rotation = Instance._basePosition.rotation;
         }
-        
+
         return obj;
+    }
+
+    public static void ReportFailedToLoadInMenus(string message)
+    {
+        var visuals = new Notification.NotificationVisuals(message,
+            "Failed to load.", autoTimeOutTime: 4, popUp: true);
+
+        RequestNotification(visuals);
+    }
+
+    public static void ReportFailedToLoadInGame(string message)
+    {
+        var visuals = new Notification.NotificationVisuals(message,
+            "Failed to load.",
+            "Play Next",
+            "Main Menu");
+
+        RequestNotification(visuals,
+            () => { LevelManager.Instance.LoadNextSong(); },
+            () => { ActiveSceneManager.Instance.LoadMainMenu(); }
+        );
     }
 }

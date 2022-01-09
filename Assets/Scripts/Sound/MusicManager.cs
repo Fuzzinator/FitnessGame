@@ -21,13 +21,14 @@ public class MusicManager : BaseGameStateListener
 
     public UnityEvent songFinishedPlaying = new UnityEvent();
 
+    private CancellationTokenSource _cancellationSource;
     private CancellationToken _cancellationToken;
 
     private bool _awaitingSongEnd = false;
     private bool _musicPaused = false;
 
     private SongLoader _songLoader;
-    
+
     #region Const Strings
 
     private const string SELECT = "Select";
@@ -61,9 +62,18 @@ public class MusicManager : BaseGameStateListener
 
     private void Start()
     {
+        _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
         _cancellationToken = this.GetCancellationTokenOnDestroy();
 
         _songLoader = new SongLoader();
+    }
+    
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
     }
 
     public async void LoadFromPlaylist(PlaylistItem info)
@@ -71,17 +81,40 @@ public class MusicManager : BaseGameStateListener
         await AsyncLoadFromPlaylist(info);
     }
 
+    public void CancelLoad()
+    {
+        _cancellationSource?.Cancel();
+    }
+    
     private async UniTask AsyncLoadFromPlaylist(PlaylistItem item)
     {
         AudioClip audioClip;
+        if (_cancellationSource.IsCancellationRequested)
+        {
+            _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
+        }
+        
         if (item.IsCustomSong)
         {
-            audioClip = await _songLoader.LoadCustomSong(item.FileLocation, item.SongInfo);
+            audioClip = await _songLoader.LoadCustomSong(item.FileLocation, item.SongInfo, _cancellationSource.Token);
         }
         else
         {
-            audioClip = await _songLoader.LoadBuiltInSong(item.SongInfo);
+            audioClip = await _songLoader.LoadBuiltInSong(item.SongInfo, _cancellationSource.Token);
         }
+        
+        
+        if (audioClip == null)
+        {
+            LevelManager.Instance.LoadFailed();
+            NotificationManager.ReportFailedToLoadInGame($"{item.SongName}'s music failed to load.");
+            if (_cancellationSource.IsCancellationRequested)
+            {
+                _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
+            }
+            return;
+        }
+        
         SetNewMusic(audioClip);
 
         finishedLoadingSong?.Invoke();
@@ -106,6 +139,33 @@ public class MusicManager : BaseGameStateListener
         {
             _awaitingSongEnd = true;
             await WaitForSongFinish().SuppressCancellationThrow();
+        }
+    }
+
+    public async void WaitThenPlayMusic()
+    {
+        try
+        {
+            if (SongInfoReader.Instance.songInfo.SongStartDelay > 0)
+            {
+                await UniTask.Delay(TimeSpan.FromSeconds(SongInfoReader.Instance.songInfo.SongStartDelay),
+                    cancellationToken: _cancellationToken);
+            }
+
+            _musicAudioSource.Play();
+            _musicPaused = false;
+            LevelManager.Instance.SetActualSongCompleted(false);
+            if (_awaitingSongEnd)
+            {
+                return;
+            }
+            
+            _awaitingSongEnd = true;
+            await WaitForSongFinish();
+        }
+        catch (Exception e) when (e is OperationCanceledException)
+        {
+            return;
         }
     }
 
@@ -135,7 +195,8 @@ public class MusicManager : BaseGameStateListener
 
     public void ToggleMusic(bool play)
     {
-        if (LevelManager.Instance == null || !LevelManager.Instance.SongFullyLoaded || !_awaitingSongEnd)
+        if (LevelManager.Instance == null || !LevelManager.Instance.SongFullyLoaded || !_awaitingSongEnd ||
+            LevelManager.Instance.SongCompleted)
         {
             return;
         }
@@ -155,7 +216,7 @@ public class MusicManager : BaseGameStateListener
         if (_musicAudioSource != null && _musicAudioSource.clip != null)
         {
             var timeSpan = TimeSpan.FromSeconds(.05f);
-            while (_musicAudioSource.clip.length - _musicAudioSource.time >= .05f)
+            while (_musicAudioSource.clip.length - _musicAudioSource.time >= .0525f && (_musicAudioSource.isPlaying || _musicPaused))
             {
                 await UniTask.Delay(timeSpan, cancellationToken: _cancellationToken);
             }

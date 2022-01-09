@@ -6,7 +6,7 @@ public class UIStateManager : MonoBehaviour
 {
     public static UIStateManager Instance { get; private set; }
 
-    private List<Canvas> _activeUI = new ();
+    private List<Canvas> _activeUI = new List<Canvas>();
 
     private UIInteractionRegister _leftHand;
     private UIInteractionRegister _rightHand;
