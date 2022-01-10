@@ -28,9 +28,7 @@ public class ChoreographyReader : MonoBehaviour
 
     #region Const Strings
 
-#if UNITY_ANDROID && !UNITY_EDITOR
-    private const string ANDROIDPATHSTART = "file://";
-#elif UNITY_EDITOR
+#if UNITY_EDITOR
     private const string UNITYEDITORLOCATION = "/LocalCustomSongs/Songs/";
 #endif
 
