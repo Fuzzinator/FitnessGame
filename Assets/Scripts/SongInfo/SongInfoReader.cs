@@ -164,6 +164,11 @@ public class SongInfoReader : MonoBehaviour
         _difficultyInfo = songInfo.TryGetActiveDifficultySet(item.Difficulty);
     }
 
+    public string GetSongFullName()
+    {
+        return $"{songInfo.SongName}:{songInfo.fileLocation}:{songInfo.SongLength}";
+    }
+    
     public AudioClip GetCurrentSong()
     {
         return null;

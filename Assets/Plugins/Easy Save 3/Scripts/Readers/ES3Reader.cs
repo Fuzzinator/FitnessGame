@@ -190,7 +190,7 @@ public abstract class ES3Reader : System.IDisposable
 	public virtual T Read<T>(string key)
 	{
 		if(!Goto(key))
-			throw new KeyNotFoundException("Key \"" + key + "\" was not found in file \""+settings.FullPath+"\". Use Load<T>(key, defaultValue) if you want to return a default value if the key does not exist.");
+			throw new KeyNotFoundException("Key \"" + key + "\" was not found in file \""+settings.FullPath()+"\". Use Load<T>(key, defaultValue) if you want to return a default value if the key does not exist.");
 
 		Type type = ReadTypeFromHeader<T>();
 
@@ -221,7 +221,7 @@ public abstract class ES3Reader : System.IDisposable
 	public virtual void ReadInto<T>(string key, T obj) where T : class
 	{
 		if(!Goto(key))
-			throw new KeyNotFoundException("Key \"" + key + "\" was not found in file \""+settings.FullPath+"\"");
+			throw new KeyNotFoundException("Key \"" + key + "\" was not found in file \""+settings.FullPath()+"\"");
 
 		Type type = ReadTypeFromHeader<T>();
 

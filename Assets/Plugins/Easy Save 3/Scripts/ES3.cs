@@ -10,7 +10,7 @@ using UnityEngine.Networking;
 public static class ES3
 {
 	public enum Location 		{ File, PlayerPrefs, InternalMS, Resources, Cache };
-	public enum Directory		{ PersistentDataPath, DataPath }
+	public enum Directory		{ PersistentDataPath, DataPath, DirectFileLocation }
 	public enum EncryptionType 	{ None, AES };
     public enum CompressionType { None, Gzip};
     public enum Format 			{ JSON };
@@ -97,11 +97,9 @@ public static class ES3
             return;
         }
 
-        using (var writer = ES3Writer.Create(settings))
-        {
-            writer.Write<T>(key, value);
-            writer.Save();
-        }
+        using var writer = ES3Writer.Create(settings);
+        writer.Write<T>(key, value);
+        writer.Save();
     }
 
     /// <summary>Creates or overwrites a file with the specified raw bytes.</summary>
@@ -387,7 +385,7 @@ public static class ES3
         using (var reader = ES3Reader.Create(settings))
         {
             if (reader == null)
-                throw new System.IO.FileNotFoundException("File \"" + settings.FullPath + "\" could not be found.");
+                throw new System.IO.FileNotFoundException("File \"" + settings.FullPath() + "\" could not be found.");
             return reader.Read<T>(key);
         }
     }
@@ -528,7 +526,7 @@ public static class ES3
         using (var reader = ES3Reader.Create(settings))
         {
             if (reader == null)
-                throw new System.IO.FileNotFoundException("File \"" + settings.FullPath + "\" could not be found.");
+                throw new System.IO.FileNotFoundException("File \"" + settings.FullPath() + "\" could not be found.");
             reader.ReadInto<T>(key, obj);
         }
     }
@@ -726,7 +724,7 @@ public static class ES3
         var newSettings = new ES3Settings(audioFilePath, settings);
 
 #if UNITY_2018_3_OR_NEWER
-        using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip("file://" + newSettings.FullPath, audioType))
+        using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip("file://" + newSettings.FullPath(), audioType))
         {
             www.SendWebRequest();
 
@@ -883,9 +881,9 @@ public static class ES3
     public static void DeleteFile(ES3Settings settings)
     {
         if (settings.location == Location.File)
-            ES3IO.DeleteFile(settings.FullPath);
+            ES3IO.DeleteFile(settings.FullPath());
         else if (settings.location == Location.PlayerPrefs)
-            PlayerPrefs.DeleteKey(settings.FullPath);
+            PlayerPrefs.DeleteKey(settings.FullPath());
         else if (settings.location == Location.Cache)
             ES3File.RemoveCachedFile(settings);
         else if (settings.location == Location.Resources)
@@ -920,15 +918,15 @@ public static class ES3
 
         if (oldSettings.location == Location.File)
         {
-            if (ES3IO.FileExists(oldSettings.FullPath))
+            if (ES3IO.FileExists(oldSettings.FullPath()))
             {
-                ES3IO.DeleteFile(newSettings.FullPath);
-                ES3IO.CopyFile(oldSettings.FullPath, newSettings.FullPath);
+                ES3IO.DeleteFile(newSettings.FullPath());
+                ES3IO.CopyFile(oldSettings.FullPath(), newSettings.FullPath());
             }
         }
         else if (oldSettings.location == Location.PlayerPrefs)
         {
-            PlayerPrefs.SetString(newSettings.FullPath, PlayerPrefs.GetString(oldSettings.FullPath));
+            PlayerPrefs.SetString(newSettings.FullPath(), PlayerPrefs.GetString(oldSettings.FullPath()));
         }
         else if (oldSettings.location == Location.Cache)
         {
@@ -966,16 +964,16 @@ public static class ES3
 
         if (oldSettings.location == Location.File)
         {
-            if (ES3IO.FileExists(oldSettings.FullPath))
+            if (ES3IO.FileExists(oldSettings.FullPath()))
             {
-                ES3IO.DeleteFile(newSettings.FullPath);
-                ES3IO.MoveFile(oldSettings.FullPath, newSettings.FullPath);
+                ES3IO.DeleteFile(newSettings.FullPath());
+                ES3IO.MoveFile(oldSettings.FullPath(), newSettings.FullPath());
             }
         }
         else if (oldSettings.location == Location.PlayerPrefs)
         {
-            PlayerPrefs.SetString(newSettings.FullPath, PlayerPrefs.GetString(oldSettings.FullPath));
-            PlayerPrefs.DeleteKey(oldSettings.FullPath);
+            PlayerPrefs.SetString(newSettings.FullPath(), PlayerPrefs.GetString(oldSettings.FullPath()));
+            PlayerPrefs.DeleteKey(oldSettings.FullPath());
         }
         else if (oldSettings.location == Location.Cache)
         {
@@ -1013,10 +1011,10 @@ public static class ES3
             throw new InvalidOperationException("ES3.CopyDirectory can only be used when the save location is 'File'");
 
         if (!DirectoryExists(oldSettings))
-            throw new System.IO.DirectoryNotFoundException("Directory " + oldSettings.FullPath + " not found");
+            throw new System.IO.DirectoryNotFoundException("Directory " + oldSettings.FullPath() + " not found");
 
         if (!DirectoryExists(newSettings))
-            ES3IO.CreateDirectory(newSettings.FullPath);
+            ES3IO.CreateDirectory(newSettings.FullPath());
 
         foreach (var fileName in ES3.GetFiles(oldSettings))
             CopyFile(ES3IO.CombinePathAndFilename(oldSettings.path, fileName),
@@ -1052,10 +1050,10 @@ public static class ES3
     {
         if (oldSettings.location == Location.File)
         {
-            if (ES3IO.DirectoryExists(oldSettings.FullPath))
+            if (ES3IO.DirectoryExists(oldSettings.FullPath()))
             {
-                ES3IO.DeleteDirectory(newSettings.FullPath);
-                ES3IO.MoveDirectory(oldSettings.FullPath, newSettings.FullPath);
+                ES3IO.DeleteDirectory(newSettings.FullPath());
+                ES3IO.MoveDirectory(oldSettings.FullPath(), newSettings.FullPath());
             }
         }
         else if (oldSettings.location == Location.PlayerPrefs || oldSettings.location == Location.Cache)
@@ -1084,7 +1082,7 @@ public static class ES3
     public static void DeleteDirectory(ES3Settings settings)
     {
         if (settings.location == Location.File)
-            ES3IO.DeleteDirectory(settings.FullPath);
+            ES3IO.DeleteDirectory(settings.FullPath());
         else if (settings.location == Location.PlayerPrefs || settings.location == Location.Cache)
             throw new System.NotSupportedException("Deleting Directories using Cache or PlayerPrefs is not supported.");
         else if (settings.location == Location.Resources)
@@ -1206,13 +1204,13 @@ public static class ES3
     public static bool FileExists(ES3Settings settings)
     {
         if (settings.location == Location.File)
-            return ES3IO.FileExists(settings.FullPath);
+            return ES3IO.FileExists(settings.FullPath());
         else if (settings.location == Location.PlayerPrefs)
-            return PlayerPrefs.HasKey(settings.FullPath);
+            return PlayerPrefs.HasKey(settings.FullPath());
         else if (settings.location == Location.Cache)
             return ES3File.FileExists(settings);
         else if (settings.location == Location.Resources)
-            return Resources.Load(settings.FullPath) != null;
+            return Resources.Load(settings.FullPath()) != null;
         return false;
     }
 
@@ -1240,7 +1238,7 @@ public static class ES3
     public static bool DirectoryExists(ES3Settings settings)
     {
         if (settings.location == Location.File)
-            return ES3IO.DirectoryExists(settings.FullPath);
+            return ES3IO.DirectoryExists(settings.FullPath());
         else if (settings.location == Location.PlayerPrefs || settings.location == Location.Cache)
             throw new System.NotSupportedException("Directories are not supported for the Cache and PlayerPrefs location.");
         else if (settings.location == Location.Resources)
@@ -1326,7 +1324,7 @@ public static class ES3
             return ES3File.GetFiles();
         else if (settings.location != ES3.Location.File)
             throw new System.NotSupportedException("ES3.GetFiles can only be used when the location is set to File or Cache.");
-        return ES3IO.GetFiles(settings.FullPath, false);
+        return ES3IO.GetFiles(settings.FullPath(), false);
     }
 
     /// <summary>Gets an array of all of the sub-directory names in a directory.</summary>
@@ -1356,7 +1354,7 @@ public static class ES3
     {
         if (settings.location != ES3.Location.File)
             throw new System.NotSupportedException("ES3.GetDirectories can only be used when the location is set to File.");
-        return ES3IO.GetDirectories(settings.FullPath, false);
+        return ES3IO.GetDirectories(settings.FullPath(), false);
     }
 
     /// <summary>Creates a backup of the default file .</summary>
@@ -1449,9 +1447,9 @@ public static class ES3
     public static DateTime GetTimestamp(ES3Settings settings)
     {
         if (settings.location == Location.File)
-            return ES3IO.GetTimestamp(settings.FullPath);
+            return ES3IO.GetTimestamp(settings.FullPath());
         else if (settings.location == Location.PlayerPrefs)
-            return new DateTime(long.Parse(PlayerPrefs.GetString("timestamp_" + settings.FullPath, "0")), DateTimeKind.Utc);
+            return new DateTime(long.Parse(PlayerPrefs.GetString("timestamp_" + settings.FullPath(), "0")), DateTimeKind.Utc);
         else if (settings.location == Location.Cache)
             return ES3File.GetTimestamp(settings);
         else

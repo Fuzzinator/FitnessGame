@@ -18,7 +18,7 @@ namespace ES3Internal
 		{
 			string directoryPath = ES3IO.GetDirectoryPath(path);
             // Attempt to create the directory incase it does not exist if we are storing data.
-            if (fileMode != ES3FileMode.Read && directoryPath != ES3IO.persistentDataPath)
+            if (fileMode != ES3FileMode.Read && directoryPath != ES3Settings.persistentDataPath)
 				ES3IO.CreateDirectory(directoryPath);
 			if(fileMode != ES3FileMode.Write || fileMode == ES3FileMode.Append)
 				return path;

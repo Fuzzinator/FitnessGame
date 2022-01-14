@@ -12177,6 +12177,7 @@ GameObject:
   - component: {fileID: 1037454725}
   - component: {fileID: 1037454724}
   - component: {fileID: 1037454726}
+  - component: {fileID: 1037454727}
   m_Layer: 0
   m_Name: Scoring Manager
   m_TagString: Untagged
@@ -12286,6 +12287,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &1037454727
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1037454723}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8e69159c8e1ff14eb8031e008e074a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1041961964
 GameObject:
   m_ObjectHideFlags: 0
@@ -24169,7 +24182,6 @@ MonoBehaviour:
     _beatmapFilename: 
     _noteJumpMovementSpeed: 0
     _noteJumpStartBeatOffset: 0
-    _minTargetSpace: 0
   finishedLoadingSongInfo:
     m_PersistentCalls:
       m_Calls:

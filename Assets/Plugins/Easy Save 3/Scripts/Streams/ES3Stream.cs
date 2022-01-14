@@ -11,9 +11,9 @@ namespace ES3Internal
 		{
             bool isWriteStream = (fileMode != ES3FileMode.Read);
             Stream stream = null;
-
+            var fullPath = settings.FullPath();
             // Check that the path is in a valid format. This will throw an exception if not.
-            new FileInfo(settings.FullPath);
+            new FileInfo(fullPath);
 
             try
             {
@@ -26,26 +26,26 @@ namespace ES3Internal
                 }
                 else if (settings.location == ES3.Location.File)
                 {
-                    if (!isWriteStream && !ES3IO.FileExists(settings.FullPath))
+                    if (!isWriteStream && !ES3IO.FileExists(fullPath))
                         return null;
-                    stream = new ES3FileStream(settings.FullPath, fileMode, settings.bufferSize, false);
+                    stream = new ES3FileStream(fullPath, fileMode, settings.bufferSize, false);
                 }
                 else if (settings.location == ES3.Location.PlayerPrefs)
                 {
                     if (isWriteStream)
-                        stream = new ES3PlayerPrefsStream(settings.FullPath, settings.bufferSize, (fileMode == ES3FileMode.Append));
+                        stream = new ES3PlayerPrefsStream(fullPath, settings.bufferSize, (fileMode == ES3FileMode.Append));
                     else
                     {
-                        if (!PlayerPrefs.HasKey(settings.FullPath))
+                        if (!PlayerPrefs.HasKey(fullPath))
                             return null;
-                        stream = new ES3PlayerPrefsStream(settings.FullPath);
+                        stream = new ES3PlayerPrefsStream(fullPath);
                     }
                 }
                 else if (settings.location == ES3.Location.Resources)
                 {
                     if (!isWriteStream)
                     {
-                        var resourcesStream = new ES3ResourcesStream(settings.FullPath);
+                        var resourcesStream = new ES3ResourcesStream(fullPath);
                         if (resourcesStream.Exists)
                             stream = resourcesStream;
                         else

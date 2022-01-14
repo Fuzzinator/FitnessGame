@@ -75,6 +75,8 @@ public class ES3Settings : System.ICloneable
             return _unencryptedUncompressedSettings;
         }
     }
+    
+    internal static string persistentDataPath;
 
     #endregion
 
@@ -140,10 +142,10 @@ public class ES3Settings : System.ICloneable
 	public string[] assemblyNames = new string[] { "Assembly-CSharp-firstpass", "Assembly-CSharp"};
 
     /// <summary>Gets the full, absolute path which this ES3Settings object identifies.</summary>
-    public string FullPath
+    public string FullPath()
 	{
-		get
-		{
+		//get
+		//{
             if (path == null)
                 throw new System.NullReferenceException("The 'path' field of this ES3Settings is null, indicating that it was not possible to load the default settings from Resources. Please check that the ES3 Default Settings.prefab exists in Assets/Plugins/Resources/ES3/");
 
@@ -153,9 +155,9 @@ public class ES3Settings : System.ICloneable
 			if(location == ES3.Location.File)
 			{
 				if(directory == ES3.Directory.PersistentDataPath)
-					return ES3IO.persistentDataPath + "/" + path;
+					return $"{persistentDataPath}/{path}";
 				if(directory == ES3.Directory.DataPath)
-					return Application.dataPath + "/" + path;
+					return $"{Application.dataPath}/{path}";
 				throw new System.NotImplementedException("File directory \""+directory+"\" has not been implemented.");
 			}
 			if(location == ES3.Location.Resources)
@@ -180,7 +182,7 @@ public class ES3Settings : System.ICloneable
 				return resourcesPath;
 			}
 			return path;
-		}
+		//}
 	}
 
     #endregion
@@ -192,6 +194,10 @@ public class ES3Settings : System.ICloneable
     /// <param name="settings">The settings we want to use to override the default settings.</param>
     public ES3Settings(string path = null, ES3Settings settings = null) : this(true)
     {
+        if(string.IsNullOrWhiteSpace(persistentDataPath))
+        {
+            persistentDataPath = Application.persistentDataPath;
+        }
         // if there are settings to merge, merge them.
         if (settings != null)
             settings.CopyInto(this);
@@ -215,6 +221,10 @@ public class ES3Settings : System.ICloneable
     /// <param name="enums">Accepts an ES3.EncryptionType, ES3.CompressionType, ES3.Location, ES3.Directory or ES3.ReferenceMode.</param>
     public ES3Settings(params System.Enum[] enums) : this(true)
     {
+        if(string.IsNullOrWhiteSpace(persistentDataPath))
+        {
+            persistentDataPath = Application.persistentDataPath;
+        }
         foreach (var setting in enums)
         {
             if (setting is ES3.EncryptionType)
