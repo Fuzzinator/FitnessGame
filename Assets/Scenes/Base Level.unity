@@ -3817,7 +3817,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh51008
+  m_Name: pb_Mesh57292
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -4232,7 +4232,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh44304
+  m_Name: pb_Mesh57026
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -7374,7 +7374,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh37504
+  m_Name: pb_Mesh57510
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -7631,7 +7631,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh50642
+  m_Name: pb_Mesh56904
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -10879,7 +10879,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh50482
+  m_Name: pb_Mesh56744
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -13216,6 +13216,45 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1037454727}
+        m_TargetAssemblyTypeName: SongAndPlaylistScoreRecorder, Assembly-CSharp
+        m_MethodName: SongCompleted
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1037454724}
+        m_TargetAssemblyTypeName: ScoringManager, Assembly-CSharp
+        m_MethodName: NewSongStarted
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1037454726}
+        m_TargetAssemblyTypeName: StreakManager, Assembly-CSharp
+        m_MethodName: ResetCurrentSong
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  resetForNextSong:
+    m_PersistentCalls:
+      m_Calls:
       - m_Target: {fileID: 1037454726}
         m_TargetAssemblyTypeName: StreakManager, Assembly-CSharp
         m_MethodName: ResetCurrentSong
@@ -17725,7 +17764,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh51182
+  m_Name: pb_Mesh57466
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2

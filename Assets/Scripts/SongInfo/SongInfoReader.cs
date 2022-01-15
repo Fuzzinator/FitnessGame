@@ -166,7 +166,7 @@ public class SongInfoReader : MonoBehaviour
 
     public string GetSongFullName()
     {
-        return $"{songInfo.SongName}:{songInfo.fileLocation}:{songInfo.SongLength}";
+        return $"{songInfo.SongName}-{songInfo.fileLocation}-{songInfo.SongLength}";
     }
     
     public AudioClip GetCurrentSong()

@@ -50,7 +50,7 @@ namespace InfoSaving
             return await GetValue<T>(key, folder, token);
         }
     
-        public static async void RecordPlaylistValue<T>(string key, T value, CancellationToken token)
+        public static async UniTask RecordPlaylistValue<T>(string key, T value, CancellationToken token)
         {
             var folder = $"{Path}{PLAYLISTRECORDS}";
             await RecordValue(key, value, folder, token);

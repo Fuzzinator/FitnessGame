@@ -15,6 +15,7 @@ public class LevelManager : MonoBehaviour
     public UnityEvent playLevel = new UnityEvent();
     
     public UnityEvent songCompleted = new UnityEvent();
+    public UnityEvent resetForNextSong = new UnityEvent();
     public UnityEvent levelLoadFailed = new UnityEvent();
 
     [SerializeField]
@@ -182,8 +183,15 @@ public class LevelManager : MonoBehaviour
     {
         if (_choreographyCompleted && _songCompleted)
         {
-            songCompleted?.Invoke();
+            FireEndSongMessagesAsync().Forget();
         }
+    }
+
+    private async UniTaskVoid FireEndSongMessagesAsync()
+    {
+        songCompleted?.Invoke();
+        //await UniTask.DelayFrame(1);
+        //resetForNextSong?.Invoke();
     }
 
     private async UniTask DelaySongStart(float delayLength)

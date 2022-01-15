@@ -17,22 +17,92 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
         _cancellationToken = this.GetCancellationTokenOnDestroy();
     }
 
+    public void SongCompleted()
+    {
+        SaveSongStats().Forget();
+        if (PlaylistManager.Instance.CurrentIndex >= PlaylistManager.Instance.CurrentPlaylist.Items.Length - 1)
+        {
+            SavePlaylistStats().Forget();
+        }
+    }
+    
     public async UniTaskVoid SaveSongStats()
     {
-        var songScore = ScoringManager.Instance.ScoreThisSong;
-        var bestStreak = StreakManager.Instance.RecordCurrentSongStreak;
-
+        while (_updatingSongRecord)
+        {
+            await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
+        }
         var songFullName = SongInfoReader.Instance.GetSongFullName();
 
+        ulong songScore;
+        int bestStreak;
+        if (ES3.KeyExists(songFullName))
+        {
+            var oldRecord =
+                (SongAndPlaylistRecord) await PlayerStatsFileManager.GetSongValue<SongAndPlaylistRecord>(songFullName,
+                    _cancellationToken);
+
+            if (!ShouldUpdateFile(oldRecord, out songScore, out bestStreak))
+            {
+                return;
+            }
+        }
+        else
+        {
+            songScore = ScoringManager.Instance.ScoreThisSong;
+            bestStreak = StreakManager.Instance.RecordCurrentSongStreak;
+        }
+
+        var newRecord = new SongAndPlaylistRecord(songScore, bestStreak);
+        _updatingSongRecord = true;
+        await PlayerStatsFileManager.RecordSongValue(songFullName, newRecord, _cancellationToken);
+        _updatingPlaylistRecord = false;
+    }
+
+    public async UniTaskVoid SavePlaylistStats()
+    {
+        while (_updatingPlaylistRecord)
+        {
+            await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
+        }
+        var playlist = PlaylistManager.Instance.CurrentPlaylist;
+        var playlistFullName = $"{playlist.PlaylistName}-{playlist.Length}-{playlist.Items.Length}";
+
+        ulong songScore;
+        int bestStreak;
+        if (ES3.KeyExists(playlistFullName))
+        {
         var oldRecord =
-            (SongAndPlaylistRecord) await PlayerStatsFileManager.GetSongValue<SongAndPlaylistRecord>(songFullName,_cancellationToken);
-
-        var newScoreHigher = oldRecord.Score < songScore;
-        var newStreakHigher = oldRecord.Streak < bestStreak;
-
-        if (!newScoreHigher && !newStreakHigher)
+            (SongAndPlaylistRecord) await PlayerStatsFileManager.GetPlaylistValue<SongAndPlaylistRecord>(
+                playlistFullName, _cancellationToken);
+        
+        if (!ShouldUpdateFile(oldRecord, out songScore, out bestStreak))
         {
             return;
+        }
+        }
+        else
+        {
+            songScore = ScoringManager.Instance.ScoreThisSong;
+            bestStreak = StreakManager.Instance.RecordCurrentSongStreak;
+        }
+        
+        var newRecord = new SongAndPlaylistRecord(songScore, bestStreak);
+        _updatingSongRecord = true;
+        await PlayerStatsFileManager.RecordPlaylistValue(playlistFullName, newRecord, _cancellationToken);
+        _updatingPlaylistRecord = false;
+    }
+
+    private bool ShouldUpdateFile(SongAndPlaylistRecord oldRecord, out ulong songScore, out int bestStreak)
+    {
+        songScore = ScoringManager.Instance.ScoreThisSong;
+        bestStreak = StreakManager.Instance.RecordCurrentSongStreak;
+        
+        var newScoreHigher = oldRecord.Score < songScore;
+        var newStreakHigher = oldRecord.Streak < bestStreak;
+        if (!newScoreHigher && !newStreakHigher)
+        {
+            return false;
         }
         
         if (!newScoreHigher)
@@ -44,9 +114,7 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
         {
             bestStreak = oldRecord.Streak;
         }
-        var newRecord = new SongAndPlaylistRecord(songScore, bestStreak);
-        _updatingSongRecord = true;
-        await PlayerStatsFileManager.RecordSongValue(songFullName, newRecord, _cancellationToken);
-        _updatingPlaylistRecord = false;
+
+        return true;
     }
 }
