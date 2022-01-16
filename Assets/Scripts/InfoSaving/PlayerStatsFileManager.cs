@@ -83,5 +83,17 @@ namespace InfoSaving
 
             return null;
         }
+
+        public static bool PlaylistKeyExists(string key)
+        {
+            var folder = $"{Path}{PLAYLISTRECORDS}";
+            return ES3.KeyExists(key, folder);
+        }
+        
+        public static bool SongKeyExists(string key)
+        {
+            var folder = $"{Path}{SONGRECORDS}";
+            return ES3.KeyExists(key, folder);
+        }
     }
 }
