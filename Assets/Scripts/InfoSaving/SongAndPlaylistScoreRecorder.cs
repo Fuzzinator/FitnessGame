@@ -28,7 +28,7 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
     
     public async UniTaskVoid SaveSongStats()
     {
-        while (_updatingSongRecord)
+        while (_updatingPlaylistRecord)
         {
             await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
         }
@@ -54,7 +54,7 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
         }
 
         var newRecord = new SongAndPlaylistRecord(songScore, bestStreak);
-        _updatingSongRecord = true;
+        _updatingPlaylistRecord = true;
         await PlayerStatsFileManager.RecordSongValue(songFullName, newRecord, _cancellationToken);
         _updatingPlaylistRecord = false;
     }
