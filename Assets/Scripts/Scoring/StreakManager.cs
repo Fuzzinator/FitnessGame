@@ -103,6 +103,7 @@ public class StreakManager : MonoBehaviour
     public void ResetCurrentSong()
     {
         CurrentSongStreak = 0;
+        _recordCurrentSongStreak = 0;
     }
 
     public static int GetStreakScoreMod()
