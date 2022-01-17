@@ -28,7 +28,7 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
 
     public async UniTaskVoid SaveSongStats()
     {
-        while (_updatingPlaylistRecord)
+        while (_updatingSongRecord)
         {
             await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
         }
@@ -55,9 +55,9 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
         }
 
         var newRecord = new SongAndPlaylistRecord(songScore, bestStreak);
-        _updatingPlaylistRecord = true;
+        _updatingSongRecord = true;
         await PlayerStatsFileManager.RecordSongValue(songFullName, newRecord, _cancellationToken);
-        _updatingPlaylistRecord = false;
+        _updatingSongRecord = false;
     }
 
     public async UniTaskVoid SavePlaylistStats()
@@ -90,7 +90,7 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
         }
 
         var newRecord = new SongAndPlaylistRecord(songScore, bestStreak);
-        _updatingSongRecord = true;
+        _updatingPlaylistRecord = true;
         await PlayerStatsFileManager.RecordPlaylistValue(playlistFullName, newRecord, _cancellationToken);
         _updatingPlaylistRecord = false;
     }
