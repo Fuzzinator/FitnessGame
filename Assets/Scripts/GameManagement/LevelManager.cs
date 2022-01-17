@@ -15,7 +15,7 @@ public class LevelManager : MonoBehaviour
     public UnityEvent playLevel = new UnityEvent();
     
     public UnityEvent songCompleted = new UnityEvent();
-    public UnityEvent resetForNextSong = new UnityEvent();
+    public UnityEvent prepForNextSong = new UnityEvent();
     public UnityEvent levelLoadFailed = new UnityEvent();
 
     [SerializeField]
@@ -46,9 +46,7 @@ public class LevelManager : MonoBehaviour
         {
             _choreographyLoaded = value;
             
-#pragma warning disable 4014
-            CheckIfLoaded();
-#pragma warning restore 4014
+            CheckIfLoaded().Forget();
         }
     }
     
@@ -59,9 +57,7 @@ public class LevelManager : MonoBehaviour
         {
             _songInfoLoaded = value;
             
-#pragma warning disable 4014
-            CheckIfLoaded();
-#pragma warning restore 4014
+            CheckIfLoaded().Forget();
         }
     }
 
@@ -72,9 +68,7 @@ public class LevelManager : MonoBehaviour
         {
             _actualSongLoaded = value;
             
-#pragma warning disable 4014
-            CheckIfLoaded();
-#pragma warning restore 4014
+            CheckIfLoaded().Forget();
         }
     }
 
@@ -100,7 +94,7 @@ public class LevelManager : MonoBehaviour
         
         if (PlaylistManager.Instance != null)
         {
-            songCompleted.AddListener(PlaylistManager.Instance.UpdateCurrentPlaylist);
+            prepForNextSong.AddListener(PlaylistManager.Instance.UpdateCurrentPlaylist);
         }
         LoadLevel();
     }
@@ -190,8 +184,8 @@ public class LevelManager : MonoBehaviour
     private async UniTaskVoid FireEndSongMessagesAsync()
     {
         songCompleted?.Invoke();
-        //await UniTask.DelayFrame(1);
-        //resetForNextSong?.Invoke();
+        await UniTask.DelayFrame(1, cancellationToken:_cancellationToken);
+        prepForNextSong?.Invoke();
     }
 
     private async UniTask DelaySongStart(float delayLength)
