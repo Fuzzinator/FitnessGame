@@ -16,6 +16,7 @@ public class StreakManager : MonoBehaviour
 
     private int _recordModifier = 1;
     private int _currentSongStreak = 0;
+    private int _recordCurrentSongStreak;
 
     [SerializeField]
     private UnityEvent<int> _currentStreakChanged = new UnityEvent<int>();
@@ -57,7 +58,22 @@ public class StreakManager : MonoBehaviour
         }
     }
 
-    public int CurrentSongStreak => _currentSongStreak;
+    public int CurrentSongStreak
+    {
+        get => _currentSongStreak;
+        private set
+        {
+            if (_currentSongStreak != value)
+            {
+                _currentSongStreak = value;
+                if (_currentSongStreak > _recordCurrentSongStreak)
+                {
+                    _recordCurrentSongStreak = _currentSongStreak;
+                }
+            }
+        }
+    }
+    public int RecordCurrentSongStreak => _recordCurrentSongStreak;
 
     private void Awake()
     {
@@ -74,19 +90,20 @@ public class StreakManager : MonoBehaviour
     public void IncreaseStreak(int increase = 1)
     {
         CurrentStreak += increase;
-        _currentSongStreak += increase;
+        CurrentSongStreak += increase;
     }
 
     public void ResetStreak()
     {
         CurrentStreak = 0;
-        _currentSongStreak = 0;
+        CurrentSongStreak = 0;
         GetStreakScoreMod();
     }
 
     public void ResetCurrentSong()
     {
-        _currentSongStreak = 0;
+        CurrentSongStreak = 0;
+        _recordCurrentSongStreak = 0;
     }
 
     public static int GetStreakScoreMod()

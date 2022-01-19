@@ -10,6 +10,12 @@ public class FocusTracker : MonoBehaviour
 
     public UnityEvent<bool> focusChanged = new UnityEvent<bool>();
 
+    public bool IsFocused
+    {
+        get;
+        private set;
+    }
+    
 #if UNITY_EDITOR
     [Header("Editor Only Properties"), SerializeField]
     private bool _trackFocus = true;
@@ -41,5 +47,6 @@ public class FocusTracker : MonoBehaviour
         if (_trackFocus)
 #endif
             focusChanged?.Invoke(hasFocus);
+        IsFocused = hasFocus;
     }
 }

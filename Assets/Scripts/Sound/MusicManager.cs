@@ -216,7 +216,8 @@ public class MusicManager : BaseGameStateListener
         if (_musicAudioSource != null && _musicAudioSource.clip != null)
         {
             var timeSpan = TimeSpan.FromSeconds(.05f);
-            while (_musicAudioSource.clip.length - _musicAudioSource.time >= .0525f && (_musicAudioSource.isPlaying || _musicPaused))
+            var isMusicPlaying = _musicAudioSource.isPlaying || _musicPaused;
+            while (_musicAudioSource.clip.length - _musicAudioSource.time >= .0525f && isMusicPlaying)
             {
                 await UniTask.Delay(timeSpan, cancellationToken: _cancellationToken);
             }

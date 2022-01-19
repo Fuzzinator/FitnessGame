@@ -3817,7 +3817,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh51008
+  m_Name: pb_Mesh57292
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -4232,7 +4232,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh44304
+  m_Name: pb_Mesh57026
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -7374,7 +7374,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh37504
+  m_Name: pb_Mesh57510
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -7631,7 +7631,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh50642
+  m_Name: pb_Mesh56904
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -10879,7 +10879,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh50482
+  m_Name: pb_Mesh56744
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -12177,6 +12177,7 @@ GameObject:
   - component: {fileID: 1037454725}
   - component: {fileID: 1037454724}
   - component: {fileID: 1037454726}
+  - component: {fileID: 1037454727}
   m_Layer: 0
   m_Name: Scoring Manager
   m_TagString: Untagged
@@ -12286,6 +12287,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &1037454727
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1037454723}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8e69159c8e1ff14eb8031e008e074a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1041961964
 GameObject:
   m_ObjectHideFlags: 0
@@ -13203,9 +13216,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1037454726}
-        m_TargetAssemblyTypeName: StreakManager, Assembly-CSharp
-        m_MethodName: ResetCurrentSong
+      - m_Target: {fileID: 1037454727}
+        m_TargetAssemblyTypeName: SongAndPlaylistScoreRecorder, Assembly-CSharp
+        m_MethodName: SongCompleted
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -13215,9 +13228,24 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  prepForNextSong:
+    m_PersistentCalls:
+      m_Calls:
       - m_Target: {fileID: 1037454724}
         m_TargetAssemblyTypeName: ScoringManager, Assembly-CSharp
         m_MethodName: NewSongStarted
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1037454726}
+        m_TargetAssemblyTypeName: StreakManager, Assembly-CSharp
+        m_MethodName: ResetCurrentSong
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -17712,7 +17740,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh51182
+  m_Name: pb_Mesh57466
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -24169,7 +24197,6 @@ MonoBehaviour:
     _beatmapFilename: 
     _noteJumpMovementSpeed: 0
     _noteJumpStartBeatOffset: 0
-    _minTargetSpace: 0
   finishedLoadingSongInfo:
     m_PersistentCalls:
       m_Calls:

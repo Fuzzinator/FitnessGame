@@ -24,10 +24,7 @@
   <component name="ChangeListManager">
     <list default="true" id="39c8e4b5-5816-4073-86c0-257352c63bc5" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.FitnessGame/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.FitnessGame/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/AddressableAssetsData/Android/addressables_content_state.bin" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/AddressableAssetsData/Android/addressables_content_state.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Choreography/ChoreographyReader.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Choreography/ChoreographyReader.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/SongInfo/DifficultyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/SongInfo/DifficultyInfo.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/SongInfo/SongInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/SongInfo/SongInfo.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/InfoSaving/SongAndPlaylistScoreRecorder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/InfoSaving/SongAndPlaylistScoreRecorder.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,23 +45,21 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Asset Management/PlaylistFilesReader.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/ObjectPositioning/MatchPlayerHeight.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Scene Management/ActiveSceneManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/MainMenuUIController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/Playlists/KeyboardTextField.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/de1f8ef4975b4eacbeb0accc1b22c9b02a000/c9/28d7559b/Sequence.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Runtime/EventSystem/UIBehaviour.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Runtime/EventSystem/ExecuteEvents.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/Playlists/DisplayNewPlaylistInfo.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.cysharp.unitask@50a67d8f41/Runtime/UniTaskScheduler.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.xr.interaction.toolkit@1.0.0-pre.8/Runtime/Interaction/XRInteractionManager.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Scoring/AddToScore.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Scoring/StreakManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Runtime/UI/Core/ScrollRect.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Asset Management/CustomPlaylistsManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/UI/PlaylistCountdownClock.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.cysharp.unitask@50a67d8f41/Runtime/UniTask.Delay.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/VFX/BaseHitVFX.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.xr.interaction.toolkit@1.0.0-pre.8/Runtime/Interaction/Interactors/XRBaseControllerInteractor.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/VFX/BaseOptimalHitIndicator.cs" root0="FORCE_HIGHLIGHTING" />
@@ -79,7 +74,6 @@
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/HitEffects/HitSpawnEffect.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/HitEffects/IMissedHit.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/GameManagement/GameManager.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/GameManagement/FocusTracker.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Asset Management/SongInfoFilesReader.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/UI/ScrollRectScroller.cs" root0="FORCE_HIGHLIGHTING" />
@@ -93,8 +87,10 @@
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Playlists/PlaylistMaker.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Asset Management/SongLoader.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/XR Rig/Head.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.cysharp.unitask@50a67d8f41/Runtime/UniTaskCompletionSource.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Sound/MusicManager.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/31c0f51ac5a24a22ba784db24f4ba02346a800/a5/58e5568f/TypeInitializationException.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/31c0f51ac5a24a22ba784db24f4ba02346a800/c2/2e63a8b3/SR.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/UI/InGame/XRRig_UIInteraction.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Choreography/ChoreographyNote.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/Scrollers/PlaylistSongCellView.cs" root0="FORCE_HIGHLIGHTING" />
@@ -103,20 +99,9 @@
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/Scrollers/PlaylistSongScrollerController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Choreography/ChoreographyFormation.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Choreography/Choreography.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Asset Management/PlaylistFilesReader.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/0713F2BF-9762-4928-88A6-BA6EF8E57AE8/9a/aeac29e4/EventDispatcher.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/WebRequests/WebSongRetriever.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Sound/MusicManager.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Colors/SetRendererMaterial.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/UI/PlaylistCountdownClock.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Scene Management/ActiveSceneManager.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/VFX/BaseHitVFX.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/12F9706B-DB06-4A6C-8A1D-1B6F565A0097/f6/fb09c7d8/ArtifactInfo.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/SongInfo/SongInfo.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/SongInfo/DifficultyInfo.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/Playlists/DisplayNewPlaylistInfo.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Scoring/AddToScore.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Choreography/ChoreographyEvent.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/Scrollers/PlaylistSongInfoCellView.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.cysharp.unitask@50a67d8f41/Runtime/UniTask.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/Playlists/DisplayPlaylistInfo.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Choreography/ISequenceable.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Playlists/PlaylistItem.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/UI/PauseMenuUIController.cs" root0="FORCE_HIGHLIGHTING" />
@@ -124,11 +109,12 @@
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Choreography/ChoreographyEvent.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Choreography/ChoreographySequencer.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.textmeshpro@3.0.6/Scripts/Runtime/TextMeshProUGUI.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Playlists/Playlist.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ebc0553765c843f19ac88161374553e23400/57/03fbd152/JsonUtility.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.textmeshpro@3.0.6/Scripts/Runtime/TMP_InputField.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.cysharp.unitask@50a67d8f41/Runtime/CompilerServices/StateMachineRunner.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Input/KeyboardManager.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.cysharp.unitask@50a67d8f41/Runtime/CompilerServices/AsyncUniTaskVoidMethodBuilder.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Debug/FPSCounter.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Animator Behaviours/CycleCountDown.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Targets/ActiveTargetManager.cs" root0="FORCE_HIGHLIGHTING" />
@@ -194,7 +180,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="XThreadsFramesViewSplitterKey" value="0.60917586" />
+    <property name="XThreadsFramesViewSplitterKey" value="0.60942763" />
     <property name="rider.run.widget.enabled.cache" value="false" />
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.CoffeeScript" />
     <property name="vue.rearranger.settings.migration" value="true" />
@@ -210,10 +196,10 @@
       </option>
       <method v="2" />
     </configuration>
-    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" ignored-value-for-modified-check="24124">
+    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" ignored-value-for-modified-check="27376">
       <option name="allowRunningInParallel" value="false" />
       <option name="listenPortForConnections" value="false" />
-      <option name="pid" value="24124" />
+      <option name="pid" value="27376" />
       <option name="projectPathOnTarget" />
       <option name="selectedOptions">
         <list />
@@ -278,6 +264,9 @@
       <workItem from="1641099898950" duration="3602000" />
       <workItem from="1641182062489" duration="315000" />
       <workItem from="1641182405611" duration="18675000" />
+      <workItem from="1642228875471" duration="6399000" />
+      <workItem from="1642307515904" duration="334000" />
+      <workItem from="1642309989204" duration="12286000" />
     </task>
     <servers />
   </component>
@@ -305,45 +294,30 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <condition expression="note.HitSideType == HitSideType.Right &amp;&amp; note.CutDir == ChoreographyNote.CutDirection.HookRight" language="C#" />
-          <url>file://$PROJECT_DIR$/Assets/Scripts/Choreography/ChoreographyReader.cs</url>
-          <line>352</line>
-          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\Choreography\ChoreographyReader.cs" initialLine="350" containingFunctionPresentation="method 'UpdateFormation'">
+          <url>file://$PROJECT_DIR$/Assets/Scripts/InfoSaving/SongAndPlaylistScoreRecorder.cs</url>
+          <line>21</line>
+          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\InfoSaving\SongAndPlaylistScoreRecorder.cs" initialLine="21" containingFunctionPresentation="method 'SongCompleted'">
             <startOffsets>
-              <option value="12510" />
+              <option value="509" />
             </startOffsets>
             <endOffsets>
-              <option value="12530" />
+              <option value="534" />
             </endOffsets>
           </properties>
-          <option name="timeStamp" value="235" />
+          <option name="timeStamp" value="245" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <condition expression="note.HitSideType == HitSideType.Right &amp;&amp; note.CutDir == ChoreographyNote.CutDirection.HookRight" language="C#" />
-          <url>file://$PROJECT_DIR$/Assets/Scripts/Choreography/ChoreographyReader.cs</url>
-          <line>260</line>
-          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\Choreography\ChoreographyReader.cs" initialLine="260" containingFunctionPresentation="method 'UpdateFormation'">
+          <url>file://$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/Playlists/DisplayPlaylistInfo.cs</url>
+          <line>86</line>
+          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\UI\MainMenu\Playlists\DisplayPlaylistInfo.cs" initialLine="86" containingFunctionPresentation="method 'GetPlaylistRecord'">
             <startOffsets>
-              <option value="8351" />
+              <option value="3036" />
             </startOffsets>
             <endOffsets>
-              <option value="8380" />
+              <option value="3092" />
             </endOffsets>
           </properties>
-          <option name="timeStamp" value="236" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Scripts/Choreography/ChoreographySequencer.cs</url>
-          <line>214</line>
-          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\Choreography\ChoreographySequencer.cs" initialLine="214" containingFunctionPresentation="method 'CreateSequence'">
-            <startOffsets>
-              <option value="5987" />
-            </startOffsets>
-            <endOffsets>
-              <option value="6055" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="237" />
+          <option name="timeStamp" value="247" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
