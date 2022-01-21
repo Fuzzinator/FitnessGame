@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using Cysharp.Threading.Tasks;
 using EnhancedUI.EnhancedScroller;
 using TMPro;
 using UnityEngine;
@@ -25,12 +26,18 @@ namespace UI.Scrollers.Playlists
         [SerializeField]
         private Image _invalidIndicator;
 
-        public async void SetData(PlaylistItem playlist)
+        public void SetData(PlaylistItem playlist)
         {
             _songName?.SetText(playlist.SongName);
             _songDifficulty?.SetText(playlist.Difficulty);
             _songLength?.SetText(playlist.SongInfo.ReadableLength);
-            _invalidIndicator.enabled = !await PlaylistValidator.IsValid(playlist);
+            SetInvalidIndicator(playlist).Forget();
+        }
+        
+        private async UniTaskVoid SetInvalidIndicator(PlaylistItem item)
+        {
+            var isValid = await PlaylistValidator.IsValid(item);
+            _invalidIndicator.enabled = !isValid;
         }
 
         public void SetHighlight(bool on)

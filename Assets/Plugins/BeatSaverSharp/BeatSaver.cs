@@ -275,6 +275,8 @@ namespace BeatSaverSharp
 
 #region Byte Fetching
 
+        
+
         internal async UniTask<byte[]?> DownloadZIP(BeatmapVersion version, CancellationToken token = default, IProgress<double>? progress = null)
         {
             var response = await _httpService.GetAsync(version.DownloadURL, token, progress);//.ConfigureAwait(false);
