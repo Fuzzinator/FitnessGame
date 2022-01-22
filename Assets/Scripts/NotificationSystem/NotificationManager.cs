@@ -35,7 +35,7 @@ public class NotificationManager : MonoBehaviour
     {
         _notificationPoolManager = new PoolManager(_notificationPrefab, transform);
     }
-
+    
     public static Notification RequestNotification(Notification.NotificationVisuals visuals,
         Action button1Pressed = null, Action button2Pressed = null, Action button3Pressed = null)
     {

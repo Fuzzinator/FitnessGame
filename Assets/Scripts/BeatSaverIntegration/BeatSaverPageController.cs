@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using BeatSaverSharp;
@@ -10,7 +9,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UI.Scrollers.BeatsaverIntegraton;
-using UnityEngine.PlayerLoop;
 
 public class BeatSaverPageController : MonoBehaviour
 {
@@ -23,6 +21,7 @@ public class BeatSaverPageController : MonoBehaviour
     [Header("Info Cards")]
     [SerializeField]
     private GameObject _infoCardHolder;
+
     [SerializeField]
     private TextMeshProUGUI _songName;
 
@@ -47,15 +46,21 @@ public class BeatSaverPageController : MonoBehaviour
     [SerializeField]
     private Image _songImage;
 
+    [SerializeField]
+    private Button _downloadButton;
+
 
     private Page _activePage;
 
     private CancellationToken _cancellationToken;
     private BeatSaver _beatSaver;
+    private LevelFileManagement _levelFileManagement;
 
     private Beatmap _activeBeatmap;
 
     private Texture2D _activeBeatmapImage;
+
+    private List<string> _downloadingIds = new List<string>();
 
     private const int MINUTE = 60;
 
@@ -64,6 +69,10 @@ public class BeatSaverPageController : MonoBehaviour
         _cancellationToken = this.GetCancellationTokenOnDestroy();
         _beatSaver = new BeatSaver(Application.productName, Version.Parse(Application.version));
         _scrollerController.SetPageController(this);
+
+        var directory = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/'));
+        ZipFileManagement.Initialize(directory);
+        _levelFileManagement = new LevelFileManagement(directory);
     }
 
     #region Webcalls
@@ -97,7 +106,7 @@ public class BeatSaverPageController : MonoBehaviour
     {
         Search(textField.text);
     }
-    
+
     public void Search(string search)
     {
         if (_activePage == null)
@@ -123,6 +132,7 @@ public class BeatSaverPageController : MonoBehaviour
 
         DownloadSongAsync().Forget();
     }
+
     private async UniTaskVoid RequestLatestAsync()
     {
         var request = await _beatSaver.LatestBeatmaps(token: _cancellationToken);
@@ -189,8 +199,45 @@ public class BeatSaverPageController : MonoBehaviour
 
     private async UniTaskVoid DownloadSongAsync()
     {
+        var folderName =
+            $"{_activeBeatmap.ID} ({_activeBeatmap.Metadata.SongName} - {_activeBeatmap.Metadata.LevelAuthorName})";
+        
+        _downloadButton.interactable = false;
+        var shouldContinue = await VerifyShouldDownload(folderName);
+        if (!shouldContinue)
+        {
+            _downloadButton.interactable = true;
+            return;
+        }
+        
+        var beatmapID = _activeBeatmap.ID;
+        _downloadingIds.Add(beatmapID);
+        
         var songBytes = await _activeBeatmap.LatestVersion.DownloadZIP(_cancellationToken);
+        if (songBytes == null)
+        {
+            NotificationManager.RequestNotification(new Notification.NotificationVisuals("Download failed."));
+            return;
+        }
+
+
+        await ZipFileManagement.ExtractAndSaveZippedSongAsync(folderName, songBytes);
+        await UniTask.SwitchToMainThread(_cancellationToken);
+        _downloadingIds.Remove(beatmapID);
+        if (beatmapID == _activeBeatmap.ID)
+        {
+            _downloadButton.interactable = true;
+        }
+
+        if (_downloadingIds.Count == 0)
+        {
+            var visuals =
+                new Notification.NotificationVisuals("All downloads completed.", autoTimeOutTime: .5f, popUp: true);
+            NotificationManager.RequestNotification(visuals);
+        }
+        SongInfoFilesReader.Instance.UpdateSongs().Forget();
     }
+
     #endregion
 
     private async UniTask UpdateData()
@@ -215,6 +262,7 @@ public class BeatSaverPageController : MonoBehaviour
             _infoCardHolder.SetActive(false);
             return;
         }
+
         _infoCardHolder.SetActive(true);
         _songName.SetText(_activeBeatmap.Metadata.SongName);
         _songAuthor.SetText(_activeBeatmap.Metadata.SongAuthorName);
@@ -237,8 +285,8 @@ public class BeatSaverPageController : MonoBehaviour
         }
 
         _mapDifficulties.SetText(string.Join(", ", difficultyNames));
-        
-        
+
+
         var imageBytes = await _activeBeatmap.LatestVersion.DownloadCoverImage(token: _cancellationToken);
         if (imageBytes != null)
         {
@@ -248,5 +296,31 @@ public class BeatSaverPageController : MonoBehaviour
             _songImage.sprite = Sprite.Create(_activeBeatmapImage,
                 new Rect(0, 0, _activeBeatmapImage.width, _activeBeatmapImage.height), Vector2.one * .5f, 100f);
         }
+        
+        _downloadButton.enabled = !_downloadingIds.Contains(_activeBeatmap.ID);
+    }
+
+    private async UniTask<bool> VerifyShouldDownload(string folderName)
+    {
+        var shouldDownload = true;
+        await UniTask.SwitchToMainThread(_cancellationToken);
+
+        if (_levelFileManagement.FolderExists(folderName))
+        {
+            var visuals = new Notification.NotificationVisuals(
+                $"The song {_activeBeatmap.Metadata.SongName} already exists on your device. Would you like to download and replace the song?",
+                "Song Already Exists", "Yes", "No");
+            var notification = NotificationManager.RequestNotification(visuals, () => shouldDownload = true,
+                () => shouldDownload = false);
+            await UniTask.WaitUntil(() => notification.IsPooled, cancellationToken: _cancellationToken);
+
+            if (shouldDownload)
+            {
+                _levelFileManagement.DeleteFolder(folderName);
+                await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
+            }
+        }
+
+        return shouldDownload;
     }
 }
