@@ -227,7 +227,6 @@ public class BeatSaverPageController : MonoBehaviour
         
         var beatmapID = _activeBeatmap.ID;
         _downloadingIds.Add(beatmapID);
-        Debug.LogError("Starting Download");
         var progress = new Progress<double>();
         var loadingDisplay = _loadingDisplays.DisplayNewLoading(_activeBeatmap.Metadata.SongName);
         if (loadingDisplay != null)
@@ -243,10 +242,8 @@ public class BeatSaverPageController : MonoBehaviour
         }
 
         await UniTask.DelayFrame(1);
-        Debug.LogError("Starting extract");
         ZipFileManagement.ExtractAndSaveZippedSongAsync(folderName, songBytes);
         await UniTask.DelayFrame(1);
-        Debug.LogError("Starting Unity Bits");
         await UniTask.SwitchToMainThread(_cancellationToken);
         _downloadingIds.Remove(beatmapID);
         if (beatmapID == _activeBeatmap.ID)

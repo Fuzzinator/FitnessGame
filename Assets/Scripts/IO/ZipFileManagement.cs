@@ -17,7 +17,10 @@ public static class ZipFileManagement
     private const string UNITYEDITORLOCATION = "/LocalCustomSongs/Songs/";
 #endif
     private static string _dataPath = string.Empty;
+
     #endregion
+
+    private static char[] _illegalCharacters = new[] {':', '*', '?', '\"', '<', '>', '|'};
 
     public static void Initialize(string dataPath)
     {
@@ -26,6 +29,16 @@ public static class ZipFileManagement
 
     public static void ExtractAndSaveZippedSongAsync(string folderName, byte[] songBytes)
     {
+        foreach (var character in _illegalCharacters)
+        {
+            if (!folderName.Contains(character))
+            {
+                continue;
+            }
+
+            folderName = folderName.Replace(character, ' ');
+        }
+
 #if UNITY_ANDROID && !UNITY_EDITOR
         var path = $"{_dataPath}{SONGSFOLDER}{folderName}/";
 #elif UNITY_EDITOR
@@ -33,7 +46,6 @@ public static class ZipFileManagement
         var path = $"{_dataPath}{UNITYEDITORLOCATION}{folderName}/";
 #endif
         using var memoryStream = new MemoryStream(songBytes);
-        Debug.LogError(path);
         if (!Directory.Exists(path))
         {
             Directory.CreateDirectory(path);
