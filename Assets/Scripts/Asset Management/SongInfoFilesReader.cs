@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
@@ -43,8 +44,6 @@ public class SongInfoFilesReader : MonoBehaviour
     private const string SONGSFOLDER = "/Resources/Songs/";
 #elif UNITY_EDITOR
     private const string UNITYEDITORLOCATION =  "/LocalCustomSongs/Songs/";
-    private const string UNITYEDITORLOCATION2 =
-        "C:\\Asus WebStorage\\fuzzinator12@gmail.com\\MySyncFolder\\FitnessGame\\LocalCustomSongs";
 #endif
 
     private const string SONGINFONAME = "Info.txt";
@@ -80,10 +79,10 @@ public class SongInfoFilesReader : MonoBehaviour
 
     private void OnEnable()
     {
-        UpdateSongs();
+        UpdateSongs().Forget();
     }
 
-    private async void UpdateSongs()
+    public async UniTaskVoid UpdateSongs()
     {
         _startSongsUpdate?.Invoke();
         await UpdateAvailableSongs();

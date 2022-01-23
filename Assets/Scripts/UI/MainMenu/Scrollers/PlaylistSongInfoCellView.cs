@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using EnhancedUI.EnhancedScroller;
 using TMPro;
 using UnityEngine;
@@ -16,10 +17,15 @@ namespace UI.Scrollers.Playlists
         private TextMeshProUGUI _songDifficulty;
 
         [SerializeField] private Image _invalidIndicator;
-        public async void SetData(PlaylistItem item)
+        public void SetData(PlaylistItem item)
         {
             _songName.SetText(item.SongName);
             _songDifficulty.SetText(item.Difficulty);
+            SetInvalidIndicator(item).Forget();
+        }
+
+        private async UniTaskVoid SetInvalidIndicator(PlaylistItem item)
+        {
             var isValid = await PlaylistValidator.IsValid(item);
             _invalidIndicator.enabled = !isValid;
         }

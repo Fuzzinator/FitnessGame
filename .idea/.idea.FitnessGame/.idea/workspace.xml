@@ -24,7 +24,13 @@
   <component name="ChangeListManager">
     <list default="true" id="39c8e4b5-5816-4073-86c0-257352c63bc5" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.FitnessGame/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.FitnessGame/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/InfoSaving/SongAndPlaylistScoreRecorder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/InfoSaving/SongAndPlaylistScoreRecorder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/UI/Download Songs Canvas.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/UI/Download Songs Canvas.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Main Menu.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Main Menu.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/BeatSaverIntegration/BeatSaverPageController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/BeatSaverIntegration/BeatSaverPageController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/IO/LevelFileManagement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/IO/LevelFileManagement.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/IO/ZipFileManagement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/IO/ZipFileManagement.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Pooling/IPoolable.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Pooling/IPoolable.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/ScrollRectScroller.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/ScrollRectScroller.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,6 +58,7 @@
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Runtime/EventSystem/UIBehaviour.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Runtime/EventSystem/ExecuteEvents.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/Playlists/DisplayNewPlaylistInfo.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/73a61a142f31425aba3c6269da8d19ba11b80/97/9a1b4750/ZipArchiveEntry.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.cysharp.unitask@50a67d8f41/Runtime/UniTaskScheduler.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.xr.interaction.toolkit@1.0.0-pre.8/Runtime/Interaction/XRInteractionManager.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Scoring/AddToScore.cs" root0="FORCE_HIGHLIGHTING" />
@@ -181,8 +188,9 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="XThreadsFramesViewSplitterKey" value="0.60942763" />
+    <property name="com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File" value="C#" />
     <property name="rider.run.widget.enabled.cache" value="false" />
-    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.CoffeeScript" />
+    <property name="settings.editor.selected.configurable" value="preferences.sourceCode.C#" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor">
@@ -196,10 +204,10 @@
       </option>
       <method v="2" />
     </configuration>
-    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" ignored-value-for-modified-check="27376">
+    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" ignored-value-for-modified-check="28340">
       <option name="allowRunningInParallel" value="false" />
       <option name="listenPortForConnections" value="false" />
-      <option name="pid" value="27376" />
+      <option name="pid" value="28340" />
       <option name="projectPathOnTarget" />
       <option name="selectedOptions">
         <list />
@@ -267,6 +275,11 @@
       <workItem from="1642228875471" duration="6399000" />
       <workItem from="1642307515904" duration="334000" />
       <workItem from="1642309989204" duration="12286000" />
+      <workItem from="1642556846495" duration="27783000" />
+      <workItem from="1642835493563" duration="854000" />
+      <workItem from="1642836432677" duration="241000" />
+      <workItem from="1642836700171" duration="195000" />
+      <workItem from="1642836993094" duration="18814000" />
     </task>
     <servers />
   </component>
@@ -318,6 +331,45 @@
             </endOffsets>
           </properties>
           <option name="timeStamp" value="247" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Assets/Scripts/NotificationSystem/Notification.cs</url>
+          <line>86</line>
+          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\NotificationSystem\Notification.cs" initialLine="86" containingFunctionPresentation="method 'OnEnable'">
+            <startOffsets>
+              <option value="2098" />
+            </startOffsets>
+            <endOffsets>
+              <option value="2145" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="249" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Assets/Scripts/UI/ScrollRectScroller.cs</url>
+          <line>29</line>
+          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\UI\ScrollRectScroller.cs" initialLine="29" containingFunctionPresentation="method 'AsyncScroll'">
+            <startOffsets>
+              <option value="586" />
+            </startOffsets>
+            <endOffsets>
+              <option value="635" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="252" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/Loading Display/LoadingDisplay.cs</url>
+          <line>44</line>
+          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\UI\MainMenu\Loading Display\LoadingDisplay.cs" initialLine="44" containingFunctionPresentation="method 'UpdateLoadingBar'">
+            <startOffsets>
+              <option value="1136" />
+            </startOffsets>
+            <endOffsets>
+              <option value="1137" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="254" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

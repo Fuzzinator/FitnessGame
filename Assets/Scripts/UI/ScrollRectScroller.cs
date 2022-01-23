@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class ScrollRectScroller : MonoBehaviour
 {
     [SerializeField] private ScrollRect _scrollRect;
-
+    
     private bool _scroll = false;
     
     public async void Scroll(float value)
@@ -27,6 +27,9 @@ public class ScrollRectScroller : MonoBehaviour
 
     private async UniTask AsyncScroll(float value)
     {
+        var rectHeight = _scrollRect.content.rect.height;
+        value = (rectHeight * value) / rectHeight;
+        
         while (_scroll)
         {
             await UniTask.DelayFrame(1);
