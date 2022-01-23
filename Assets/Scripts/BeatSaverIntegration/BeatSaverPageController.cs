@@ -49,6 +49,9 @@ public class BeatSaverPageController : MonoBehaviour
     [SerializeField]
     private Button _downloadButton;
 
+    [SerializeField]
+    private LoadingDisplaysController _loadingDisplays;
+
 
     private Page _activePage;
 
@@ -70,7 +73,12 @@ public class BeatSaverPageController : MonoBehaviour
         _beatSaver = new BeatSaver(Application.productName, Version.Parse(Application.version));
         _scrollerController.SetPageController(this);
 
+#if UNITY_ANDROID && !UNITY_EDITOR
+        var directory = Application.persistentDataPath;
+#elif UNITY_EDITOR
+        //var dataPath = 
         var directory = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/'));
+#endif
         ZipFileManagement.Initialize(directory);
         _levelFileManagement = new LevelFileManagement(directory);
     }
@@ -79,6 +87,7 @@ public class BeatSaverPageController : MonoBehaviour
 
     public void RequestLatest()
     {
+        _showLoadingObject.SetActive(true);
         RequestLatestAsync().Forget();
     }
 
@@ -89,6 +98,7 @@ public class BeatSaverPageController : MonoBehaviour
             return;
         }
 
+        _showLoadingObject.SetActive(true);
         RequestNextPageAsync().Forget();
     }
 
@@ -99,11 +109,13 @@ public class BeatSaverPageController : MonoBehaviour
             return;
         }
 
+        _showLoadingObject.SetActive(true);
         RequestPreviousPageAsync().Forget();
     }
 
     public void RequestSearch(TMP_InputField textField)
     {
+        _showLoadingObject.SetActive(true);
         Search(textField.text);
     }
 
@@ -114,12 +126,14 @@ public class BeatSaverPageController : MonoBehaviour
             return;
         }
 
+        _showLoadingObject.SetActive(true);
         var options = new SearchTextFilterOption(search);
         SearchAsync(options).Forget();
     }
 
     public void RequestHighestRated()
     {
+        _showLoadingObject.SetActive(true);
         RequestHighestRatedAsync().Forget();
     }
 
@@ -175,7 +189,6 @@ public class BeatSaverPageController : MonoBehaviour
 
     private async UniTaskVoid RequestPreviousPageAsync()
     {
-        _showLoadingObject.SetActive(true);
         _activePage = await _activePage.Previous(_cancellationToken);
         if (_activePage == null)
         {
@@ -187,7 +200,6 @@ public class BeatSaverPageController : MonoBehaviour
 
     private async UniTaskVoid SearchAsync(SearchTextFilterOption option)
     {
-        _showLoadingObject.SetActive(true);
         _activePage = await _beatSaver.SearchBeatmaps(option, token: _cancellationToken);
         if (_activePage == null)
         {
@@ -197,6 +209,8 @@ public class BeatSaverPageController : MonoBehaviour
         await UpdateData();
     }
 
+    private double prevValue = 0;
+    
     private async UniTaskVoid DownloadSongAsync()
     {
         var folderName =
@@ -207,34 +221,39 @@ public class BeatSaverPageController : MonoBehaviour
         if (!shouldContinue)
         {
             _downloadButton.interactable = true;
+            Debug.Log("Will Not Download");
             return;
         }
         
         var beatmapID = _activeBeatmap.ID;
         _downloadingIds.Add(beatmapID);
-        
-        var songBytes = await _activeBeatmap.LatestVersion.DownloadZIP(_cancellationToken);
+        Debug.LogError("Starting Download");
+        var progress = new Progress<double>();
+        var loadingDisplay = _loadingDisplays.DisplayNewLoading(_activeBeatmap.Metadata.SongName);
+        if (loadingDisplay != null)
+        {
+            progress.ProgressChanged += (sender, d) => loadingDisplay.UpdateLoadingBar(d);
+        }
+        var songBytes = await _activeBeatmap.LatestVersion.DownloadZIP(_cancellationToken, progress);
         if (songBytes == null)
         {
             NotificationManager.RequestNotification(new Notification.NotificationVisuals("Download failed."));
+            Debug.LogError("Download Failed");
             return;
         }
 
-
-        await ZipFileManagement.ExtractAndSaveZippedSongAsync(folderName, songBytes);
+        await UniTask.DelayFrame(1);
+        Debug.LogError("Starting extract");
+        ZipFileManagement.ExtractAndSaveZippedSongAsync(folderName, songBytes);
+        await UniTask.DelayFrame(1);
+        Debug.LogError("Starting Unity Bits");
         await UniTask.SwitchToMainThread(_cancellationToken);
         _downloadingIds.Remove(beatmapID);
         if (beatmapID == _activeBeatmap.ID)
         {
             _downloadButton.interactable = true;
         }
-
-        if (_downloadingIds.Count == 0)
-        {
-            var visuals =
-                new Notification.NotificationVisuals("All downloads completed.", autoTimeOutTime: .5f, popUp: true);
-            NotificationManager.RequestNotification(visuals);
-        }
+        
         SongInfoFilesReader.Instance.UpdateSongs().Forget();
     }
 

@@ -15,9 +15,8 @@ public static class ZipFileManagement
     private const string SONGSFOLDER = "/Resources/Songs/";
 #elif UNITY_EDITOR
     private const string UNITYEDITORLOCATION = "/LocalCustomSongs/Songs/";
-
-    private static string _dataPath = string.Empty;
 #endif
+    private static string _dataPath = string.Empty;
     #endregion
 
     public static void Initialize(string dataPath)
@@ -25,25 +24,22 @@ public static class ZipFileManagement
         _dataPath = dataPath;
     }
 
-    public static async UniTask ExtractAndSaveZippedSongAsync(string folderName, byte[] songBytes)
+    public static void ExtractAndSaveZippedSongAsync(string folderName, byte[] songBytes)
     {
 #if UNITY_ANDROID && !UNITY_EDITOR
-        var path = $"{Application.persistentDataPath}{SONGSFOLDER}{folderName}/";
+        var path = $"{_dataPath}{SONGSFOLDER}{folderName}/";
 #elif UNITY_EDITOR
         //var dataPath = 
         var path = $"{_dataPath}{UNITYEDITORLOCATION}{folderName}/";
 #endif
-        await using (var memoryStream = new MemoryStream(songBytes))
+        using var memoryStream = new MemoryStream(songBytes);
+        Debug.LogError(path);
+        if (!Directory.Exists(path))
         {
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-            }
-
-            using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Read))
-            {
-                archive.ExtractToDirectory(path);
-            }
+            Directory.CreateDirectory(path);
         }
+
+        using var archive = new ZipArchive(memoryStream, ZipArchiveMode.Read);
+        archive.ExtractToDirectory(path);
     }
 }

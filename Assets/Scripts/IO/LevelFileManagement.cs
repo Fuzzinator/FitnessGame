@@ -13,8 +13,8 @@ public class LevelFileManagement
 #elif UNITY_EDITOR
     private const string UNITYEDITORLOCATION = "/LocalCustomSongs/Songs/";
 
-    private static string _dataPath = string.Empty;
 #endif
+    private static string _dataPath = string.Empty;
     #endregion
 
     public LevelFileManagement(string dataPath)
@@ -25,7 +25,7 @@ public class LevelFileManagement
     private string GetPath(string folderName)
     {
 #if UNITY_ANDROID && !UNITY_EDITOR
-        var path = $"{Application.persistentDataPath}{SONGSFOLDER}{folderName}/";
+        var path = $"{_dataPath}{SONGSFOLDER}{folderName}/";
 #elif UNITY_EDITOR
         //var dataPath = 
         var path = $"{_dataPath}{UNITYEDITORLOCATION}{folderName}/";
