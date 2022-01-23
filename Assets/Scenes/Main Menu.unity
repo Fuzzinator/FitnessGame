@@ -4610,8 +4610,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9b7d822b9bed7643b1e524e97fa0642, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playlistName: {fileID: 1110459308}
+  _inputField: {fileID: 1110459308}
   _defaultText: 
+  _editFieldCompleted:
+    m_PersistentCalls:
+      m_Calls: []
   _playlistLength: {fileID: 453948264}
 --- !u!1001 &322211549
 PrefabInstance:
@@ -13267,6 +13270,26 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -370.00003
       objectReference: {fileID: 0}
+    - target: {fileID: 5313518645997525568, guid: 0a78f42969aaff74eb063b367f045548,
+        type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5313518645997525568, guid: 0a78f42969aaff74eb063b367f045548,
+        type: 3}
+      propertyPath: m_OnSelect.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 789226867}
+    - target: {fileID: 5313518645997525568, guid: 0a78f42969aaff74eb063b367f045548,
+        type: 3}
+      propertyPath: m_OnSelect.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: StartEditTextField
+      objectReference: {fileID: 0}
+    - target: {fileID: 5313518645997525568, guid: 0a78f42969aaff74eb063b367f045548,
+        type: 3}
+      propertyPath: m_OnSelect.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: InputFieldController, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 5313518646000652804, guid: 0a78f42969aaff74eb063b367f045548,
         type: 3}
       propertyPath: m_Pivot.x
@@ -13510,6 +13533,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ba9655b4e6fe3d449d867d298b147b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &789226865 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5313518645997525574, guid: 0a78f42969aaff74eb063b367f045548,
+    type: 3}
+  m_PrefabInstance: {fileID: 789226860}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &789226866 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5313518645997525568, guid: 0a78f42969aaff74eb063b367f045548,
+    type: 3}
+  m_PrefabInstance: {fileID: 789226860}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 789226865}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2da0c512f12947e489f739169773d7ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &789226867
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 789226865}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b823e89885a60024cb932deb89e67324, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _inputField: {fileID: 789226866}
+  _defaultText: 
+  _editFieldCompleted:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &797228126
 GameObject:
   m_ObjectHideFlags: 0

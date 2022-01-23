@@ -7,29 +7,21 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Serialization;
 
-public class DisplayNewPlaylistInfo : MonoBehaviour
+public class DisplayNewPlaylistInfo : InputFieldController
 {
-    [FormerlySerializedAs("_textField")] [SerializeField]
-    private TMP_InputField _playlistName;
-
-    [SerializeField]
-    private string _defaultText;
-    
     [SerializeField]
     private TextMeshProUGUI _playlistLength;
 
-    public async void StartEditTextField()
+    protected override async  UniTask EditTextField()
     {
-        var keyboard = KeyboardManager.Instance.ActivateKeyboard(_playlistName, _defaultText);
-        await UniTask.WaitWhile(() => keyboard.gameObject.activeInHierarchy);
-        PlaylistMaker.Instance.SetPlaylistName(_playlistName.text);
-
+        await base.EditTextField();
+        PlaylistMaker.Instance.SetPlaylistName(_inputField.text);
     }
     
     public void ShowInfo()
     {
         var length = PlaylistMaker.Instance.GetLength();
         _playlistLength.SetText($"{length:0.00}  minutes");
-        _playlistName.SetTextWithoutNotify(PlaylistMaker.Instance.PlaylistName);
+        _inputField.SetTextWithoutNotify(PlaylistMaker.Instance.PlaylistName);
     }
 }
