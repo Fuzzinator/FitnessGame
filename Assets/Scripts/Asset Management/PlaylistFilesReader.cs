@@ -174,4 +174,16 @@ public class PlaylistFilesReader : MonoBehaviour
                 break;
         }
     }
+
+    public void RemovePlaylistByName(string playlistName)
+    {
+        for (var i = 0; i < availablePlaylists.Count; i++)
+        {
+            if (availablePlaylists[i].PlaylistName == playlistName)
+            {
+                availablePlaylists.RemoveAt(i);
+                break;
+            }
+        }
+    }
 }

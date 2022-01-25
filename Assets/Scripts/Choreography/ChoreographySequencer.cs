@@ -278,7 +278,8 @@ public class ChoreographySequencer : MonoBehaviour
             target.SetUpTarget(formation.Note.Type, _optimalStrikePoint.position, formationHolder);
             target.layer = formation.Note.LineLayer;
             target.transform.SetParent(formationHolder.transform);
-            target.transform.position = (GetTargetParent(formation.Note)).position;
+            target.transform.position = (GetTargetPosition(formation.Note));
+            
             target.gameObject.SetActive(true);
             ActiveTargetManager.Instance.AddActiveTarget(target);
             if (formationHolder.children == null)
@@ -328,18 +329,20 @@ public class ChoreographySequencer : MonoBehaviour
         _ => null,
     } as BaseTarget;
 
-    private Transform GetTargetParent(ChoreographyNote note)
+    private Vector3 GetTargetPosition(ChoreographyNote note)
     {
         switch (note.HitSideType)
         {
             case HitSideType.Block:
-                return _formationStart;
+                var lineLayerObj = _sequenceStartPoses[(1 + (int) note.LineLayer * 4)].position;
+                var position = _formationStart.position;
+                return new Vector3(position.x, lineLayerObj.y, position.z);
             case HitSideType.Left:
-                return _sequenceStartPoses[(1 + (int) note.LineLayer * 4)];
+                return _sequenceStartPoses[(1 + (int) note.LineLayer * 4)].position;
             case HitSideType.Right:
-                return _sequenceStartPoses[(2 + (int) note.LineLayer * 4)];
+                return _sequenceStartPoses[(2 + (int) note.LineLayer * 4)].position;
             default:
-                return null;
+                return Vector3.zero;
         }
     }
 
