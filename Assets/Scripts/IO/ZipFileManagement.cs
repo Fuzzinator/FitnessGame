@@ -20,7 +20,6 @@ public static class ZipFileManagement
 
     #endregion
 
-    private static char[] _illegalCharacters = new[] {':', '*', '?', '\"', '<', '>', '|'};
 
     public static void Initialize(string dataPath)
     {
@@ -29,15 +28,7 @@ public static class ZipFileManagement
 
     public static void ExtractAndSaveZippedSongAsync(string folderName, byte[] songBytes)
     {
-        foreach (var character in _illegalCharacters)
-        {
-            if (!folderName.Contains(character))
-            {
-                continue;
-            }
-
-            folderName = folderName.Replace(character, ' ');
-        }
+        folderName = folderName.RemoveIllegalIOCharacters();
 
 #if UNITY_ANDROID && !UNITY_EDITOR
         var path = $"{_dataPath}{SONGSFOLDER}{folderName}/";

@@ -208,8 +208,6 @@ public class BeatSaverPageController : MonoBehaviour
 
         await UpdateData();
     }
-
-    private double prevValue = 0;
     
     private async UniTaskVoid DownloadSongAsync()
     {

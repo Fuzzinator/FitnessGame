@@ -123,6 +123,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
             Directory.CreateDirectory(path);
         }
 
+        _playlistName = _playlistName.RemoveIllegalIOCharacters();
         var newPlaylist = new Playlist(_playlistItems, _playlistName);
         if (string.IsNullOrWhiteSpace(_playlistName))
         {
@@ -134,7 +135,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         {
             if (_originalName != _playlistName && File.Exists($"{path}{_originalName}.txt"))
             {
-                CustomPlaylistsManager.Instance.DeletePlaylist(_originalName);
+                CustomPlaylistsManager.Instance.DeletePlaylist(_originalName, false);
             }
         }
 

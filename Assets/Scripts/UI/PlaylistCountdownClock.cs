@@ -16,6 +16,7 @@ public class PlaylistCountdownClock : MonoBehaviour
     private bool _clockRunning = false;
     private bool _clockEnabled = false;
     private bool _clockPaused = false;
+    private bool _applicationPaused = false;
 
 
     private const int MINUTE = 60;
@@ -36,6 +37,11 @@ public class PlaylistCountdownClock : MonoBehaviour
     private void Start()
     {
         InitializeClock();
+    }
+
+    private void OnApplicationPause(bool pauseStatus)
+    {
+        _applicationPaused = pauseStatus;
     }
 
     public async void InitializeClock()
@@ -96,7 +102,7 @@ public class PlaylistCountdownClock : MonoBehaviour
                     break;
                 }
 
-                if (!_clockRunning || _clockPaused || _timeRemaining <= 0)
+                if (!_clockRunning || _clockPaused || _applicationPaused || _timeRemaining <= 0)
                 {
                     continue;
                 }

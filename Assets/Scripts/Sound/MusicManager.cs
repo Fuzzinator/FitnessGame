@@ -26,8 +26,15 @@ public class MusicManager : BaseGameStateListener
 
     private bool _awaitingSongEnd = false;
     private bool _musicPaused = false;
+    private bool _applicationPaused = false;
 
     private SongLoader _songLoader;
+
+    private float _previousTime = 0;
+    
+    private bool IsPlayingOrPaused => _musicAudioSource.isPlaying || _musicPaused || _applicationPaused;
+
+    private bool IsSongCompleted => _previousTime > 0 && _musicAudioSource.time == 0;
 
     #region Const Strings
 
@@ -67,13 +74,18 @@ public class MusicManager : BaseGameStateListener
 
         _songLoader = new SongLoader();
     }
-    
+
     private void OnDestroy()
     {
         if (Instance == this)
         {
             Instance = null;
         }
+    }
+
+    private void OnApplicationPause(bool pauseStatus)
+    {
+        _applicationPaused = pauseStatus;
     }
 
     public async void LoadFromPlaylist(PlaylistItem info)
@@ -85,7 +97,7 @@ public class MusicManager : BaseGameStateListener
     {
         _cancellationSource?.Cancel();
     }
-    
+
     private async UniTask AsyncLoadFromPlaylist(PlaylistItem item)
     {
         AudioClip audioClip;
@@ -93,7 +105,7 @@ public class MusicManager : BaseGameStateListener
         {
             _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
         }
-        
+
         if (item.IsCustomSong)
         {
             audioClip = await _songLoader.LoadCustomSong(item.FileLocation, item.SongInfo, _cancellationSource.Token);
@@ -102,19 +114,21 @@ public class MusicManager : BaseGameStateListener
         {
             audioClip = await _songLoader.LoadBuiltInSong(item.SongInfo, _cancellationSource.Token);
         }
-        
-        
+
+
         if (audioClip == null)
         {
             LevelManager.Instance.LoadFailed();
             NotificationManager.ReportFailedToLoadInGame($"{item.SongName}'s music failed to load.");
             if (_cancellationSource.IsCancellationRequested)
             {
-                _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
+                _cancellationSource =
+                    CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
             }
+
             return;
         }
-        
+
         SetNewMusic(audioClip);
 
         finishedLoadingSong?.Invoke();
@@ -159,7 +173,7 @@ public class MusicManager : BaseGameStateListener
             {
                 return;
             }
-            
+
             _awaitingSongEnd = true;
             await WaitForSongFinish();
         }
@@ -216,11 +230,14 @@ public class MusicManager : BaseGameStateListener
         if (_musicAudioSource != null && _musicAudioSource.clip != null)
         {
             var timeSpan = TimeSpan.FromSeconds(.05f);
-            var isMusicPlaying = _musicAudioSource.isPlaying || _musicPaused;
-            while (_musicAudioSource.clip.length - _musicAudioSource.time >= .0525f && isMusicPlaying)
+            _previousTime = -1f;
+            while (!IsSongCompleted && IsPlayingOrPaused)//_musicAudioSource.clip.length - _musicAudioSource.time >= .05f && IsPlayingOrPaused)
             {
+                _previousTime = _musicAudioSource.time;
                 await UniTask.Delay(timeSpan, cancellationToken: _cancellationToken);
             }
+
+            _previousTime = -1f;
         }
 
         if (_cancellationToken.IsCancellationRequested)
