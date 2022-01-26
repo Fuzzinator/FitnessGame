@@ -240,7 +240,14 @@ public class ChoreographyReader : MonoBehaviour
                 }
                 else
                 {
-                    var minGap = (lastSequenceable is ChoreographyNote ? minTargetDistance : minTargetDistance * 1.5f);
+                    var isJabOrBlock = sequenceable is ChoreographyNote note &&
+                                       (note.CutDir == ChoreographyNote.CutDirection.Jab ||
+                                        note.HitSideType == HitSideType.Block);
+                    
+                    var minGap = (sequenceable is ChoreographyNote ? isJabOrBlock ? minTargetDistance :
+                        minTargetDistance * 1.5f
+                        : minTargetDistance * 2f);
+                    
                     if (lastTime + minGap < sequenceable.Time)
                     {
                         lastTime = sequenceable.Time;
@@ -326,7 +333,7 @@ public class ChoreographyReader : MonoBehaviour
                             {
                                 note.SetLineIndex(1);
                             }
-                            
+
                             if (note.CutDir == ChoreographyNote.CutDirection.HookLeft)
                             {
                                 note.SetToBasicJab();

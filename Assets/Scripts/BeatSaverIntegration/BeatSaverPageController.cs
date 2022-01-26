@@ -165,13 +165,25 @@ public class BeatSaverPageController : MonoBehaviour
         {
             SortOrder = SortingOptions.Rating,
         };
-        var request = await _beatSaver.SearchBeatmaps(searchOptions, token: _cancellationToken);
-        if (request == null)
+        try
         {
+            var request = await _beatSaver.SearchBeatmaps(searchOptions, token: _cancellationToken);
+            if (request == null)
+            {
+                return;
+            }
+
+            _activePage = request;
+        }
+        catch (Exception e)
+        {
+            await UniTask.SwitchToMainThread(_cancellationToken);
+            
+            Debug.LogError(e);
+            _showLoadingObject.SetActive(false);
             return;
         }
 
-        _activePage = request;
         await UpdateData();
     }
 
@@ -208,12 +220,12 @@ public class BeatSaverPageController : MonoBehaviour
 
         await UpdateData();
     }
-    
+
     private async UniTaskVoid DownloadSongAsync()
     {
         var folderName =
             $"{_activeBeatmap.ID} ({_activeBeatmap.Metadata.SongName} - {_activeBeatmap.Metadata.LevelAuthorName})";
-        
+
         _downloadButton.interactable = false;
         var shouldContinue = await VerifyShouldDownload(folderName);
         if (!shouldContinue)
@@ -222,7 +234,7 @@ public class BeatSaverPageController : MonoBehaviour
             Debug.Log("Will Not Download");
             return;
         }
-        
+
         var beatmapID = _activeBeatmap.ID;
         _downloadingIds.Add(beatmapID);
         var progress = new Progress<double>();
@@ -231,6 +243,7 @@ public class BeatSaverPageController : MonoBehaviour
         {
             progress.ProgressChanged += (sender, d) => loadingDisplay.UpdateLoadingBar(d);
         }
+
         var songBytes = await _activeBeatmap.LatestVersion.DownloadZIP(_cancellationToken, progress);
         if (songBytes == null)
         {
@@ -248,7 +261,7 @@ public class BeatSaverPageController : MonoBehaviour
         {
             _downloadButton.interactable = true;
         }
-        
+
         SongInfoFilesReader.Instance.UpdateSongs().Forget();
     }
 
@@ -310,7 +323,7 @@ public class BeatSaverPageController : MonoBehaviour
             _songImage.sprite = Sprite.Create(_activeBeatmapImage,
                 new Rect(0, 0, _activeBeatmapImage.width, _activeBeatmapImage.height), Vector2.one * .5f, 100f);
         }
-        
+
         _downloadButton.enabled = !_downloadingIds.Contains(_activeBeatmap.ID);
     }
 

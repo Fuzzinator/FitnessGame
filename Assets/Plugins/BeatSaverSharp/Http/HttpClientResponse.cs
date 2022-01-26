@@ -32,7 +32,7 @@ namespace BeatSaverSharp.Http
         public async UniTask<byte[]> ReadAsByteArrayAsync()
         {
             if (_bytes is null)
-                _bytes = await _httpResponseMessage.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+                _bytes = await _httpResponseMessage.Content.ReadAsByteArrayAsync().AsUniTask();//.ConfigureAwait(false);
             return _bytes;
         }
 
@@ -44,6 +44,14 @@ namespace BeatSaverSharp.Http
                     _bytes = await ReadAsByteArrayAsync();//.ConfigureAwait(false);
                 _bodyAsString = Encoding.UTF8.GetString(_bytes);
             }
+
+            /*while (_bodyAsString.Contains("\"curator\": {"))
+            {
+                var index = _bodyAsString.IndexOf("curator");
+                var endIndex = _bodyAsString.IndexOf('}', index);
+                _bodyAsString = _bodyAsString.Substring(0, index) +
+                                _bodyAsString.Substring(endIndex, _bodyAsString.Length);
+            }*/
             return _bodyAsString;
         }
 

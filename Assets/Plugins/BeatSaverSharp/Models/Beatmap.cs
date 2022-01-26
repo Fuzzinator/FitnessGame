@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
+using UnityEngine;
 
 namespace BeatSaverSharp.Models
 {
@@ -82,7 +83,7 @@ namespace BeatSaverSharp.Models
         /// The person who curated this map.
         /// </summary>
         [JsonProperty("curator")]
-        public string? Curator { get; internal set; }
+        public CuratorInfo? Curator { get; internal set; }
 
         private BeatmapVersion? _latestVersion;
 
@@ -142,5 +143,24 @@ namespace BeatSaverSharp.Models
         public static bool operator ==(Beatmap? left, Beatmap? right) => Equals(left, right);
         public static bool operator !=(Beatmap? left, Beatmap? right) => !Equals(left, right);
 
+        [SerializeField]
+        public struct CuratorInfo
+        {
+            public int id;
+            public string name;
+            public string hash;
+            public string avatar;
+            public string type;
+
+            public static bool operator ==(CuratorInfo info1, CuratorInfo info2)
+            {
+                return info1.id == info2.id;
+            }
+
+            public static bool operator !=(CuratorInfo info1, CuratorInfo info2)
+            {
+                return info1.id != info2.id;;
+            }
+        }
     }
 }
