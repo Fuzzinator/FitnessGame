@@ -161,7 +161,7 @@ public class SongInfoReader : MonoBehaviour
     {
         info = json;
         songInfo = JsonUtility.FromJson<SongInfo>(json);
-        _difficultyInfo = songInfo.TryGetActiveDifficultySet(item.Difficulty);
+        _difficultyInfo = songInfo.TryGetActiveDifficultyInfo(item.Difficulty, item.TargetGameMode);
     }
 
     public string GetSongFullName()

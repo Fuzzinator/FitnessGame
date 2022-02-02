@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using EnhancedUI.EnhancedScroller;
+using GameModeManagement;
 using TMPro;
 using UnityEngine;
 
@@ -13,17 +14,19 @@ namespace UI.Scrollers.Playlists
 
         private SongDifficultyScrollerController _controller;
         private DifficultyInfo _info;
+        private GameMode _gameMode;
 
-        public void SetData(DifficultyInfo info, SongDifficultyScrollerController scroller)
+        public void SetData(GameMode gameMode, DifficultyInfo info, SongDifficultyScrollerController scroller)
         {
+            _gameMode = gameMode;
             _info = info;
-            _difficultyName.SetText(info.Difficulty);
+            _difficultyName.SetText($"{gameMode.GetDisplayName()} - {info.Difficulty}");
             _controller = scroller;
         }
 
         public void DifficultySelected()
         {
-            _controller.SetInfoSelected(_info);
+            _controller.SetInfoSelected(_gameMode, _info);
         }
     }
 }

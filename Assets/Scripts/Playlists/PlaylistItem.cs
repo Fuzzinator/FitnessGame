@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using GameModeManagement;
 using UnityEngine;
 
 [Serializable]
@@ -25,6 +26,15 @@ public struct PlaylistItem
     public bool IsCustomSong => _isCustomSong;
 
     [SerializeField]
+    private GameMode _gameMode;
+
+    public GameMode TargetGameMode
+    {
+        get => _gameMode;
+        private set => _gameMode = value;
+    }
+
+    [SerializeField]
     private SongInfo _songInfo;
 
     public SongInfo SongInfo
@@ -33,12 +43,14 @@ public struct PlaylistItem
         set => _songInfo = value;
     }
 
-    public PlaylistItem(string songName, string fileLocation, string difficulty, bool isCustomSong, SongInfo info)
+    public PlaylistItem(string songName, string fileLocation, string difficulty, bool isCustomSong, GameMode gameMode,
+        SongInfo info)
     {
         _songName = songName;
         _fileLocation = fileLocation;
         _difficulty = difficulty;
         _isCustomSong = isCustomSong;
+        _gameMode = gameMode;
         _songInfo = info;
     }
 

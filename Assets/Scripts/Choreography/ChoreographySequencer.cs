@@ -2,12 +2,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using GameModeManagement;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 public class ChoreographySequencer : MonoBehaviour
 {
+    [Header("Targets")]
     [SerializeField]
     private FormationHolder _formationHolderPrefab;
 
@@ -38,6 +41,7 @@ public class ChoreographySequencer : MonoBehaviour
 
     private PoolManager _baseBlockPool;
 
+    [Header("Obstacles")]
     [SerializeField]
     private BaseObstacle _baseObstacle;
 
@@ -53,12 +57,15 @@ public class ChoreographySequencer : MonoBehaviour
 
     private PoolManager _rightObstaclePool;
 
+    [Header("Sequence Positioning")]
     [SerializeField]
     private Transform _formationStart;
 
     [SerializeField]
     private Transform _formationEnd;
 
+    [SerializeField]
+    private Transform _playerCenter;
 
     private Sequence _sequence;
 
@@ -76,6 +83,9 @@ public class ChoreographySequencer : MonoBehaviour
     private float _songStartTime;
     private float _delayStartTime;
     private float _pauseOffset;
+
+    private float _currentRotation = 0;
+    private const float MAX90ROTATION = 45;
 
 
     private List<Sequence> _activeSequences = new List<Sequence>();
@@ -95,6 +105,7 @@ public class ChoreographySequencer : MonoBehaviour
         }
     }
 
+    [Header("Events")]
     [SerializeField]
     private UnityEvent _sequenceStarted = new UnityEvent();
 
@@ -103,9 +114,6 @@ public class ChoreographySequencer : MonoBehaviour
 
     public bool SequenceRunning { get; private set; }
     private bool _sequenceUnstartedOrFinished = true;
-
-  
-
 
     // Start is called before the first frame update
     void Start()
@@ -125,8 +133,8 @@ public class ChoreographySequencer : MonoBehaviour
         var position = _formationStart.position;
         _meterDistance = Vector3.Distance(position, _formationEnd.position);
         _optimalPointDistance = Vector3.Distance(position, _optimalStrikePoint.position);
-        
-        DOTween.SetTweensCapacity(100,100);
+
+        DOTween.SetTweensCapacity(100, 100);
         _sequenceUnstartedOrFinished = true;
     }
 
@@ -158,6 +166,7 @@ public class ChoreographySequencer : MonoBehaviour
             {
                 return;
             }
+
             ResumeChoreography();
         }
         else if (oldState == GameState.Playing && (newState == GameState.Paused || newState == GameState.Unfocused))
@@ -166,6 +175,7 @@ public class ChoreographySequencer : MonoBehaviour
             {
                 return;
             }
+
             PauseChoreography();
         }
     }
@@ -199,14 +209,21 @@ public class ChoreographySequencer : MonoBehaviour
 
     private Sequence CreateSequence(ChoreographyFormation formation, int nextFormationIndex)
     {
+        if (formation.HasEvent && formation.Event.Type == ChoreographyEvent.EventType.EarlyRotation)
+        {
+            RotateSpawnSource(formation.Event.RotationValue);
+        }
+
         var sequence = DOTween.Sequence();
-    
+
         var formationHolder = _formationHolderPool.GetNewPoolable() as FormationHolder;
         formationHolder.gameObject.SetActive(true);
         var formationTransform = formationHolder.transform;
         formationTransform.SetParent(transform);
         formationTransform.position = _formationStart.position;
-        
+        formationTransform.rotation = _formationStart.rotation;
+
+
         var _path = new[]
         {
             _formationStart.position,
@@ -217,8 +234,8 @@ public class ChoreographySequencer : MonoBehaviour
 
         tween.SetEase(Ease.Linear);
 
-        formationHolder.SetUp(this, formation, nextFormationIndex, sequence);
-        
+        formationHolder.SetUp(this, formation, nextFormationIndex, sequence, _optimalStrikePoint.position);
+
         tween.OnStart(formationHolder.OnStartCallback);
         tween.OnComplete(formationHolder.OnCompleteCallback);
 
@@ -231,6 +248,11 @@ public class ChoreographySequencer : MonoBehaviour
         var delay = Mathf.Max(0, (formation.Time * beatsTime) - time - timeToPoint);
 
         sequence.Insert(delay, tween);
+
+        if (formation.HasEvent && formation.Event.Type == ChoreographyEvent.EventType.LateRotation)
+        {
+            RotateSpawnSource(formation.Event.RotationValue);
+        }
 
         return sequence;
     }
@@ -257,11 +279,16 @@ public class ChoreographySequencer : MonoBehaviour
         {
             return;
         }
+
         if (formation.HasObstacle)
         {
             var obstacle = GetObstacle(formation.Obstacle);
-            obstacle.transform.SetParent(formationHolder.transform);
-            obstacle.transform.localPosition = Vector3.zero;
+
+            var obstacleTransform = obstacle.transform;
+            obstacleTransform.SetParent(formationHolder.transform);
+            obstacleTransform.localPosition = Vector3.zero;
+            obstacleTransform.localRotation = quaternion.identity;
+
             obstacle.gameObject.SetActive(true);
 
             if (formationHolder.children == null)
@@ -275,11 +302,14 @@ public class ChoreographySequencer : MonoBehaviour
         if (formation.HasNote)
         {
             var target = GetTarget(formation.Note);
-            target.SetUpTarget(formation.Note.Type, _optimalStrikePoint.position, formationHolder);
+            target.SetUpTarget(formation.Note.Type, formationHolder.StrikePoint, formationHolder);
             target.layer = formation.Note.LineLayer;
-            target.transform.SetParent(formationHolder.transform);
-            target.transform.position = (GetTargetPosition(formation.Note));
-            
+
+            var targetTransform = target.transform;
+            targetTransform.SetParent(formationHolder.transform);
+            targetTransform.localRotation = quaternion.identity;
+            targetTransform.localPosition = (GetTargetPosition(formation.Note));
+
             target.gameObject.SetActive(true);
             ActiveTargetManager.Instance.AddActiveTarget(target);
             if (formationHolder.children == null)
@@ -334,13 +364,12 @@ public class ChoreographySequencer : MonoBehaviour
         switch (note.HitSideType)
         {
             case HitSideType.Block:
-                var lineLayerObj = _sequenceStartPoses[(1 + (int) note.LineLayer * 4)].position;
-                var position = _formationStart.position;
-                return new Vector3(position.x, lineLayerObj.y, position.z);
+                var lineLayerObj = _sequenceStartPoses[(1 + (int) note.LineLayer * 4)].localPosition;
+                return new Vector3(0, lineLayerObj.y, 0);
             case HitSideType.Left:
-                return _sequenceStartPoses[(1 + (int) note.LineLayer * 4)].position;
+                return _sequenceStartPoses[(1 + (int) note.LineLayer * 4)].localPosition;
             case HitSideType.Right:
-                return _sequenceStartPoses[(2 + (int) note.LineLayer * 4)].position;
+                return _sequenceStartPoses[(2 + (int) note.LineLayer * 4)].localPosition;
             default:
                 return Vector3.zero;
         }
@@ -353,7 +382,7 @@ public class ChoreographySequencer : MonoBehaviour
 
     public void ResetChoreography()
     {
-        while (_activeSequences.Count>0)
+        while (_activeSequences.Count > 0)
         {
             var sequence = _activeSequences[0];
             sequence.Complete();
@@ -387,5 +416,27 @@ public class ChoreographySequencer : MonoBehaviour
     public void SwitchFootPlacement()
     {
         CurrentStance = _currentStance == HitSideType.Left ? HitSideType.Right : HitSideType.Left;
+    }
+
+    public void RotateSpawnSource(float angle)
+    {
+        var direction = _formationStart.position - _playerCenter.position;
+        
+        var targetGameMode = PlaylistManager.Instance.OverrideGameMode
+            ? PlaylistManager.Instance.CurrentItem.TargetGameMode
+            : GameManager.Instance.CurrentGameMode;
+
+        if (targetGameMode == GameMode.Degrees90 &&
+            Mathf.Abs(_currentRotation + angle) > MAX90ROTATION)
+        {
+            angle *= -1;
+        }
+
+        if (targetGameMode != GameMode.Degrees90 ||
+            Mathf.Abs(_currentRotation + angle) <= MAX90ROTATION)
+        {
+            _formationStart.RotateAround(_playerCenter.position, _playerCenter.up, angle);
+            _currentRotation += angle;
+        }
     }
 }

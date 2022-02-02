@@ -82,12 +82,11 @@ public static class PlaylistValidator
             }
 
             var streamReader = new StreamReader(path);
-            var reading = streamReader.ReadToEndAsync();
-            await reading;
+            var json = await streamReader.ReadToEndAsync();
             streamReader.Close();
-            if (reading.IsCompleted)
+            if (!string.IsNullOrWhiteSpace(json))
             {
-                return JsonUtility.FromJson<SongInfo>(reading.Result);
+                return JsonUtility.FromJson<SongInfo>(json);
             }
             else
             {
@@ -96,16 +95,14 @@ public static class PlaylistValidator
         }
         else
         {
-            var location = Addressables.LoadResourceLocationsAsync($"{LOCALSONGSFOLDER}{item.FileLocation}{INFO}{TXT}");
-            await location;
-            if (location.Result.Count == 0)
+            var fileLocation = $"{LOCALSONGSFOLDER}{item.FileLocation}{INFO}{TXT}";
+            var resourceLocations = await Addressables.LoadResourceLocationsAsync(fileLocation);
+            if (resourceLocations.Count == 0)
             {
                 return null;
             }
 
-            var request = Addressables.LoadAssetAsync<TextAsset>($"{LOCALSONGSFOLDER}{item.FileLocation}{INFO}{TXT}");
-            await request;
-            var json = request.Result;
+            var json = await Addressables.LoadAssetAsync<TextAsset>(fileLocation);
             if (json == null)
             {
                 Debug.LogError("Failed to load local resource file");
@@ -120,7 +117,7 @@ public static class PlaylistValidator
 
     private static async UniTask<bool> AsyncCheckChoreography(PlaylistItem item)
     {
-        var difficultyInfo = item.SongInfo.TryGetActiveDifficultySet(item.Difficulty);
+        var difficultyInfo = item.SongInfo.TryGetActiveDifficultyInfo(item.Difficulty, item.TargetGameMode);
         if (item.IsCustomSong)
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
@@ -135,15 +132,18 @@ public static class PlaylistValidator
         else
         {
             var txtVersion = difficultyInfo.FileName;
+            if (string.IsNullOrWhiteSpace(txtVersion))
+            {
+                return false;
+            }
             if (txtVersion.EndsWith(DAT))
             {
                 txtVersion = txtVersion.Replace(DAT, TXT);
             }
 
             var path = $"{LOCALSONGSFOLDER}{item.FileLocation}/{txtVersion}";
-            var locations = Addressables.LoadResourceLocationsAsync(path);
-            await locations;
-            return locations.Result.Count > 0;
+            var resourceLocations = await Addressables.LoadResourceLocationsAsync(path);
+            return resourceLocations.Count > 0;
         }
     }
 
@@ -163,9 +163,8 @@ public static class PlaylistValidator
         else
         {
             var path = $"{LOCALSONGSFOLDER}{item.SongInfo.fileLocation}/{item.SongInfo.SongFilename}";
-            var locations = Addressables.LoadResourceLocationsAsync(path);
-            await locations;
-            return locations.Result.Count > 0;
+            var resourceLocations = await Addressables.LoadResourceLocationsAsync(path);
+            return resourceLocations.Count > 0;
         }
     }
 }

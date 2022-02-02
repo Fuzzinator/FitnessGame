@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using Cysharp.Threading.Tasks;
 using EnhancedUI.EnhancedScroller;
+using GameModeManagement;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -30,14 +31,14 @@ namespace UI.Scrollers.Playlists
         {
             _songName?.SetText(playlist.SongName);
             _songDifficulty?.SetText(playlist.Difficulty);
-            _songLength?.SetText(playlist.SongInfo.ReadableLength);
+            _songLength?.SetText(playlist.TargetGameMode.GetDisplayName());
             SetInvalidIndicator(playlist).Forget();
         }
         
         private async UniTaskVoid SetInvalidIndicator(PlaylistItem item)
         {
             var isValid = await PlaylistValidator.IsValid(item);
-            _invalidIndicator.enabled = !isValid;
+            _invalidIndicator.gameObject.SetActive(!isValid);
         }
 
         public void SetHighlight(bool on)

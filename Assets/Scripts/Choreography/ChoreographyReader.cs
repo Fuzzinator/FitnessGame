@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using GameModeManagement;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
@@ -79,7 +80,7 @@ public class ChoreographyReader : MonoBehaviour
 
     private async UniTaskVoid AsyncLoadJson(PlaylistItem item)
     {
-        _difficultyInfo = item.SongInfo.TryGetActiveDifficultySet(item.Difficulty);
+        _difficultyInfo = item.SongInfo.TryGetActiveDifficultyInfo(item.Difficulty, item.TargetGameMode);
 
         if (_cancellationSource.IsCancellationRequested)
         {
@@ -209,15 +210,41 @@ public class ChoreographyReader : MonoBehaviour
             sequenceables.Add(Obstacles[i]);
         }
 
-        /*for (int i = 0; i < Events.Length; i++)//Need to process Events differently. TODO: Figure this out
+        var targetGameMode = PlaylistManager.Instance.OverrideGameMode
+            ? PlaylistManager.Instance.CurrentItem.TargetGameMode
+            : GameManager.Instance.CurrentGameMode;
+        
+        for (int i = 0; i < Events.Length; i++) //Need to process Events differently. TODO: Figure this out
         {
+            switch (targetGameMode)
+            {
+                case GameMode.Unset:
+                case GameMode.Normal:
+                case GameMode.JabsOnly:
+                case GameMode.OneHanded:
+                case GameMode.LegDay:
+                    break;
+                case GameMode.LightShow:
+                    break; //Will figure this out later
+                case GameMode.Degrees90:
+                case GameMode.Degrees360:
+                case GameMode.Lawless:
+                    if (Events[i].Type is ChoreographyEvent.EventType.EarlyRotation
+                        or ChoreographyEvent.EventType.LateRotation)
+                    {
+                        sequenceables.Add(Events[i]);
+                    }
+
+                    break;
+            }
+
             sequenceables.Add(Events[i]);
-        }*/
+        }
 
         return sequenceables;
     }
 
-    private void UpdateFormation(List<ISequenceable> target)
+    private void UpdateFormation(List<ISequenceable> sequenceables)
     {
         _formations.Clear();
 
@@ -228,10 +255,11 @@ public class ChoreographyReader : MonoBehaviour
         ISequenceable thisTimeEvent = null;
 
         ISequenceable lastSequenceable = null;
+        float lastRotation = 0f;
         var minTargetDistance = _difficultyInfo.MinTargetSpace;
-        for (var i = 0; i < target.Count; i++)
+        for (var i = 0; i < sequenceables.Count; i++)
         {
-            var sequenceable = target[i];
+            var sequenceable = sequenceables[i];
             if (lastTime < sequenceable.Time)
             {
                 if (lastSequenceable == null)
@@ -240,21 +268,50 @@ public class ChoreographyReader : MonoBehaviour
                 }
                 else
                 {
-                    var isJabOrBlock = sequenceable is ChoreographyNote note &&
-                                       (note.CutDir == ChoreographyNote.CutDirection.Jab ||
-                                        note.HitSideType == HitSideType.Block);
-                    
-                    var minGap = (sequenceable is ChoreographyNote ? isJabOrBlock ? minTargetDistance :
-                        minTargetDistance * 1.5f
-                        : minTargetDistance * 2f);
-                    
-                    if (lastTime + minGap < sequenceable.Time)
+                    var minGap = minTargetDistance;
+                    if (sequenceable is ChoreographyNote note)
                     {
-                        lastTime = sequenceable.Time;
+                        if (note.CutDir != ChoreographyNote.CutDirection.Jab &&
+                            note.HitSideType != HitSideType.Block)
+                        {
+                            minGap *= 1.5f;
+                        }
                     }
-                    else
+                    else if (sequenceable is ChoreographyObstacle obstacle)
                     {
-                        continue;
+                        minGap *= 2;
+                    }
+                    else if (sequenceable is ChoreographyEvent chorEvent)
+                    {
+                        if (chorEvent.Type is ChoreographyEvent.EventType.EarlyRotation
+                            or ChoreographyEvent.EventType.LateRotation)
+                        {
+                            if (lastRotation + minGap * 5 < sequenceable.Time)
+                            {
+                                lastRotation = sequenceable.Time;
+                            }
+                            else
+                            {
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            //For now TODO: Lighting events.
+                            continue;
+                        }
+                    }
+
+                    if (sequenceable is ChoreographyNote or ChoreographyObstacle)
+                    {
+                        if (lastTime + minGap < sequenceable.Time)
+                        {
+                            lastTime = sequenceable.Time;
+                        }
+                        else
+                        {
+                            continue;
+                        }
                     }
                 }
             }
@@ -391,11 +448,17 @@ public class ChoreographyReader : MonoBehaviour
                     thisTimeObstacle = obstacle;
                 }
 
-                //TODO: Come back and add ChoreographyEvent
                 lastSequenceable = sequenceable;
             }
+            else if (Mathf.Abs(lastRotation - sequenceable.Time) < .01f)
+            {
+                if (sequenceable is ChoreographyEvent chorEvent && thisTimeEvent == null)
+                {
+                    thisTimeEvent = sequenceable;
+                }
+            }
 
-            if ((i + 1 < target.Count && target[1 + i].Time > lastTime) || i + 1 == target.Count)
+            if ((i + 1 < sequenceables.Count && sequenceables[1 + i].Time > lastTime) || i + 1 == sequenceables.Count)
             {
                 _formations.Add(new ChoreographyFormation(lastTime, note: thisTimeNote, obstacle: thisTimeObstacle,
                     choreographyEvent: thisTimeEvent));

@@ -4,24 +4,29 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public struct ChoreographyEvent : ISequenceable//First release wont use this probably
+public struct ChoreographyEvent : ISequenceable //First release wont use this probably
 {
     public float Time => _time;
     public EventType Type => _type;
-    public EventValue Value => _value;
-    
+    public LightEventValue Value => _value;
+
     [SerializeField]
     private float _time;
+
     [SerializeField]
     private EventType _type;
-    [SerializeField]
-    private EventValue _value;
 
+    [SerializeField]
+    private LightEventValue _value;
+
+    private static readonly float[] _rotationValues = new[] {-60f, -45f, -30f, -15f, 15f, 30f, 45f, 60f};
+    public float RotationValue => _rotationValues[Mathf.Clamp((int) _value, 0, _rotationValues.Length)];
 
     public HitSideType HitSideType
     {
         get { return HitSideType.Unused; }
     }
+
     public enum EventType
     {
         BackLasers = 0,
@@ -38,13 +43,13 @@ public struct ChoreographyEvent : ISequenceable//First release wont use this pro
         Unused = 11,
         LeftRotatingLaserSpeed = 12,
         RightRotatingLaserSpeed = 13,
-        EarlyRotation = 14,//for 360/90 mode
-        LateRotation = 15,//for 360/90 mode
-        LowerCarHydrolics = 16,//wtf?
+        EarlyRotation = 14, //for 360/90 mode
+        LateRotation = 15, //for 360/90 mode
+        LowerCarHydrolics = 16, //Car on one level
         RaiseCarHydrolics = 17
     }
 
-    public enum EventValue
+    public enum LightEventValue
     {
         LightOff = 0,
         LightOnRight = 1,
@@ -54,5 +59,17 @@ public struct ChoreographyEvent : ISequenceable//First release wont use this pro
         LightOnLeft = 5,
         FlashLightToNormalLeft = 6,
         FlashLightToBlackLeft = 7,
+    }
+
+    public enum RotateEventValue
+    {
+        CounterClock60 = 0,
+        CounterClock45 = 1,
+        CounterClock30 = 2,
+        CounterClock15 = 3,
+        ClockWise15 = 4,
+        ClockWise30 = 5,
+        ClockWise45 = 6,
+        ClockWise60 = 7
     }
 }

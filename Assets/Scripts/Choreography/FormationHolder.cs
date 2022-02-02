@@ -16,6 +16,8 @@ public class  FormationHolder : MonoBehaviour, IPoolable
     private int _nextFormationIndex;
     private Sequence _sequence;
     
+    public Vector3 StrikePoint { get; private set; }
+    
     public TweenCallback OnStartCallback { get; private set; }
     public TweenCallback OnCompleteCallback { get; private set; }
     
@@ -60,7 +62,7 @@ public class  FormationHolder : MonoBehaviour, IPoolable
         _sequencer.RemoveSequence(_sequence);
     }
 
-    public void SetUp(ChoreographySequencer sequencer, ChoreographyFormation formation, int index, Sequence sequence)
+    public void SetUp(ChoreographySequencer sequencer, ChoreographyFormation formation, int index, Sequence sequence, Vector3 strikePoint)
     {
         if (OnStartCallback == null)
         {
@@ -70,6 +72,7 @@ public class  FormationHolder : MonoBehaviour, IPoolable
         _formation = formation;
         _nextFormationIndex = index;
         _sequence = sequence;
+        StrikePoint = strikePoint;
     }
     
     public void ReturnRemainingChildren()

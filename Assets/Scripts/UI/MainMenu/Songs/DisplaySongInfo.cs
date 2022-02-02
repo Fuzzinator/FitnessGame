@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using GameModeManagement;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -25,6 +26,8 @@ namespace UI.Scrollers.Playlists
 
         private SongInfo _currentSongInfo;
 
+        private GameMode _selectedGameMode;
+
         public void UpdateDisplayedInfo(SongInfo info)
         {
             _currentSongInfo = info;
@@ -32,7 +35,12 @@ namespace UI.Scrollers.Playlists
             _songAuthor.SetText(info.SongAuthorName);
             _levelAuthor.SetText(info.LevelAuthorName);
             _songLength.SetText(info.ReadableLength);
-            _difficultyScroller.UpdateDifficultyOptions(info, info.DifficultySets[0]);
+            _difficultyScroller.UpdateDifficultyOptions(info, info.DifficultySets , _selectedGameMode);
+        }
+
+        public void SetTargetGameMode(int gameMode)
+        {
+            _selectedGameMode = (GameMode) gameMode;
         }
     }
 }

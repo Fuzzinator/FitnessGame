@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using Cysharp.Threading.Tasks;
+using GameModeManagement;
 using UnityEngine;
 #if UNITY_ANDROID
 using UnityEngine.Android;
@@ -72,9 +73,9 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         _activeItem = info;
     }
 
-    public static PlaylistItem GetPlaylistItem(SongInfo songInfo, string difficulty)
+    public static PlaylistItem GetPlaylistItem(SongInfo songInfo, string difficulty, GameMode gameMode)
     {
-        return new PlaylistItem(songInfo.SongName, songInfo.fileLocation, difficulty, songInfo.isCustomSong, songInfo);
+        return new PlaylistItem(songInfo.SongName, songInfo.fileLocation, difficulty, songInfo.isCustomSong, gameMode, songInfo);
     }
 
     public void AppendPlaylistItems(PlaylistItem item)

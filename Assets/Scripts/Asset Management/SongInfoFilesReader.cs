@@ -156,8 +156,12 @@ public class SongInfoFilesReader : MonoBehaviour
 
                     streamReader.Close();
 
-                    item.DifficultySets[0].TryCreateMissingDifficulties();
-                    item.DifficultySets[0].RemoveExpertPlus();
+                    for (var i = 0; i < item.DifficultySets.Length; i++)
+                    {
+                        item.DifficultySets[i].TryCreateMissingDifficulties();
+                        item.DifficultySets[i].RemoveExpertPlus();
+                    }
+                    
                     if (file.Directory != null)
                     {
                         item.fileLocation = file.Directory.Name;

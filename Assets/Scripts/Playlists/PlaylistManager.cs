@@ -41,6 +41,8 @@ public class PlaylistManager : MonoBehaviour
             currentPlaylistUpdated?.Invoke(_currentIndex);
         }
     }
+    
+    public bool OverrideGameMode { get; private set; }
 
     public UnityEvent<PlaylistItem> playlistItemUpdated = new UnityEvent<PlaylistItem>();
     public UnityEvent<int> currentPlaylistUpdated = new UnityEvent<int>();

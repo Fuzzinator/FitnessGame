@@ -1,0 +1,158 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace GameModeManagement
+{
+    [Serializable]
+    public enum GameMode
+    {
+        Unset = 0,
+        Normal = 1,
+        JabsOnly = 2,
+        OneHanded = 3,
+        Degrees90 = 4,
+        Degrees360 = 5,
+        LightShow = 6,
+        LegDay = 7,
+        Lawless = 8
+    }
+
+    public static class GameModeExtensions
+    {
+        #region DifficultySetName String Const
+
+        private const string NORMAL = "Standard";
+        private const string JABSONLY = "NoArrows";
+        private const string ONEHANDED = "OneSaber";
+        private const string DEGREE90 = "90Degree";
+        private const string DEGREE360 = "360Degree";
+        private const string LIGHTSHOW = "Lightshow";
+        private const string LEGDAY = "LegDay";
+        private const string LAWLESS = "Lawless";
+        
+        private const string DISPLAYNORMAL = "Standard";
+        private const string DISPLAYJABSONLY = "Jabs Only";
+        private const string DISPLAYONEHANDED = "One Handed";
+        private const string DISPLAYDEGREE90 = "90 Degree";
+        private const string DISPLAYDEGREE360 = "360 Degree";
+        private const string DISPLAYLIGHTSHOW = "Lightshow";
+        private const string DISPLAYLEGDAY = "Leg Day";
+        private const string DISPLAYLAWLESS = "Lawless";
+
+        #endregion
+        
+        public static string GetDifficultySetName(this GameMode gameMode)
+        {
+            var name = string.Empty;
+            switch (gameMode)
+            {
+                case GameMode.Unset://For now this may change later
+                case GameMode.Normal:
+                    name = NORMAL;
+                    break;
+                case GameMode.JabsOnly:
+                    name = JABSONLY;
+                    break;
+                case GameMode.OneHanded:
+                    name = ONEHANDED;
+                    break;
+                case GameMode.Degrees90:
+                    name = DEGREE90;
+                    break;
+                case GameMode.Degrees360:
+                    name = DEGREE360;
+                    break;
+                case GameMode.LightShow:
+                    name = LIGHTSHOW;
+                    break;
+                case GameMode.LegDay:
+                    name = LEGDAY;
+                    break;
+                case GameMode.Lawless:
+                    name = LAWLESS;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(gameMode), gameMode, null);
+            }
+
+            return name;
+        }
+        
+        public static string GetDisplayName(this GameMode gameMode)
+        {
+            var name = string.Empty;
+            switch (gameMode)
+            {
+                case GameMode.Unset://For now this may change later
+                case GameMode.Normal:
+                    name = DISPLAYNORMAL;
+                    break;
+                case GameMode.JabsOnly:
+                    name = DISPLAYJABSONLY;
+                    break;
+                case GameMode.OneHanded:
+                    name = DISPLAYONEHANDED;
+                    break;
+                case GameMode.Degrees90:
+                    name = DISPLAYDEGREE90;
+                    break;
+                case GameMode.Degrees360:
+                    name = DISPLAYDEGREE360;
+                    break;
+                case GameMode.LightShow:
+                    name = DISPLAYLIGHTSHOW;
+                    break;
+                case GameMode.LegDay:
+                    name = DISPLAYLEGDAY;
+                    break;
+                case GameMode.Lawless:
+                    name = DISPLAYLAWLESS;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(gameMode), gameMode, null);
+            }
+
+            return name;
+        }
+        
+        public static GameMode GetGameMode(this string gameModeName)
+        {
+            var gameMode = GameMode.Unset;
+            switch (true)
+            {
+                case true when NORMAL.Equals(gameModeName, StringComparison.InvariantCultureIgnoreCase):
+                    gameMode = GameMode.Normal;
+                    break;
+                case true when JABSONLY.Equals(gameModeName, StringComparison.InvariantCultureIgnoreCase):
+                    gameMode = GameMode.JabsOnly;
+                    break;
+                case true when ONEHANDED.Equals(gameModeName, StringComparison.InvariantCultureIgnoreCase):
+                    gameMode = GameMode.OneHanded;
+                    break;
+                case true when DEGREE90.Equals(gameModeName, StringComparison.InvariantCultureIgnoreCase):
+                    gameMode = GameMode.Degrees90;
+                    break;
+                case true when DEGREE360.Equals(gameModeName, StringComparison.InvariantCultureIgnoreCase):
+                    gameMode = GameMode.Degrees360;
+                    break;
+                case true when LIGHTSHOW.Equals(gameModeName, StringComparison.InvariantCultureIgnoreCase):
+                    gameMode = GameMode.LightShow;
+                    break;
+                case true when LEGDAY.Equals(gameModeName, StringComparison.InvariantCultureIgnoreCase):
+                    gameMode = GameMode.LegDay;
+                    break;
+                case true when LAWLESS.Equals(gameModeName, StringComparison.InvariantCultureIgnoreCase):
+                    gameMode = GameMode.Lawless;
+                    break;
+                default:
+                    gameMode = GameMode.Normal;
+                    Debug.LogError($"{gameModeName} is an invalid game mode. Returning Normal.");
+                    break;
+            }
+
+            return gameMode;
+        }
+    }
+}

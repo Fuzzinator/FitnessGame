@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using GameModeManagement;
 using UnityEngine;
 
 [Serializable]
@@ -78,22 +79,45 @@ public class SongInfo
     [SerializeField]
     private DifficultySet[] _difficultyBeatmapSets;
 
-    public DifficultyInfo TryGetActiveDifficultySet(string difficulty)
+    public DifficultyInfo TryGetActiveDifficultyInfo(string difficulty, GameMode gameMode)
     {
-        for (var i = 0; i < _difficultyBeatmapSets.Length; i++)
+        var difficulties = GetBeatMapSet(gameMode);
+        for (var j = 0; j < difficulties.DifficultyInfos.Length; j++)
         {
-            var difficulties = _difficultyBeatmapSets[i];
-            for (var j = 0; j < difficulties.DifficultyInfos.Length; j++)
+            var info = difficulties.DifficultyInfos[j];
+            if (info.Difficulty == difficulty)
             {
-                var info = difficulties.DifficultyInfos[j];
-                if (info.Difficulty == difficulty)
-                {
-                    return info;
-                }
+                return info;
             }
         }
 
         return new DifficultyInfo();
+    }
+
+    public DifficultySet GetBeatMapSet(GameMode mode)
+    {
+        var setName = mode.GetDifficultySetName();
+        if (string.IsNullOrWhiteSpace(setName))
+        {
+            Debug.LogError("Difficulty Not Set?");
+            return _difficultyBeatmapSets.Length > 0 ? _difficultyBeatmapSets[0] : new DifficultySet();
+        }
+
+        foreach (var beatMapSet in _difficultyBeatmapSets)
+        {
+            if (beatMapSet.BeatMapName == null)
+            {
+                
+            }
+            if (beatMapSet.BeatMapName.Equals(setName, StringComparison.InvariantCultureIgnoreCase))
+            {
+                return beatMapSet;
+            }
+        }
+
+        Debug.LogError("No BeatMap found, returning beatMap 0");
+
+        return _difficultyBeatmapSets.Length > 0 ? _difficultyBeatmapSets[0] : new DifficultySet();
     }
 
     [Serializable]
@@ -109,7 +133,17 @@ public class SongInfo
         [SerializeField]
         private DifficultyInfo[] _difficultyBeatmaps;
 
+        [SerializeField]
+        private string _beatmapCharacteristicName;
+
         public DifficultyInfo[] DifficultyInfos => _difficultyBeatmaps;
+        public string BeatMapName
+        {
+            get
+            {
+                return _beatmapCharacteristicName?? GameMode.Normal.GetDifficultySetName();
+            }
+        }
 
         public void TryCreateMissingDifficulties()
         {
