@@ -10,9 +10,10 @@ public class BaseHitVFX : MonoBehaviour, IPoolable
     [SerializeField]
     private ParticleSystem _particleSystem;
 
+    [SerializeField]
+    private float _lifespan = 1.25f;
+    
     private CancellationToken token;
-
-    private const int FRAMEDELAY = 5;
     
     public PoolManager MyPoolManager { get; set; }
 
@@ -40,23 +41,13 @@ public class BaseHitVFX : MonoBehaviour, IPoolable
     public async UniTask PlayParticles()
     {
         _particleSystem.Play(true);
-        await UniTask.DelayFrame(FRAMEDELAY, cancellationToken: token);
-        await WaitForParticleFinish();
+        await UniTask.Delay(TimeSpan.FromSeconds(_lifespan), cancellationToken: token);
         ReturnToPool();
-    }
-
-    private async UniTask WaitForParticleFinish()
-    {
-        var timeSpan = TimeSpan.FromSeconds(.25f);
-        while (_particleSystem.IsAlive(true))
-        {
-            await UniTask.Delay(timeSpan, cancellationToken: token);
-        }
     }
     
     public void ReturnToPool()
     {
-        gameObject.SetActive(false);
+        _particleSystem.Stop(true);
         transform.SetParent(MyPoolManager.poolParent);
         MyPoolManager.ReturnToPool(this);
     }

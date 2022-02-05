@@ -10,10 +10,19 @@ using TimeSpan = System.TimeSpan;
 public class Clock : MonoBehaviour
 {
     [SerializeField]
-    private TextMeshProUGUI _text;
+    private TextMeshProUGUI _hourText;
+
+    [SerializeField]
+    private TextMeshProUGUI _minuteText;
+
+    [SerializeField]
+    private TextMeshProUGUI _amPMDisplayText;
 
     public bool use24HourTime = false;
 
+    private const string AM = "AM";
+    private const string PM = "PM";
+    
     private async void Start()
     {
         await RunClock(this.GetCancellationTokenOnDestroy()).SuppressCancellationThrow();
@@ -22,8 +31,7 @@ public class Clock : MonoBehaviour
     private async UniTask RunClock(CancellationToken token)
     {
         var delayLength = TimeSpan.FromMinutes(.25);
-        var prevTime = DateTime.Now;
-        SetClock(out prevTime);
+        SetClock(out DateTime prevTime);
         await UniTask.Delay(delayLength, DelayType.Realtime, cancellationToken: token);
         while (enabled)
         {
@@ -38,8 +46,12 @@ public class Clock : MonoBehaviour
 
     private void SetClock(out DateTime prevTime)
     {
-        var time = use24HourTime ? DateTime.Now.ToString("HH:mm") : DateTime.Now.ToShortTimeString();
-        _text.SetText(time);
+        _amPMDisplayText.SetText(use24HourTime?string.Empty:DateTime.Now.Hour<12?AM:PM);
+        
+        var hour = use24HourTime?DateTime.Now.Hour:DateTime.Now.Hour.To12HrFormat();
+        _hourText.SetText(hour.GetCachedSecondsString());
+        _minuteText.SetText(DateTime.Now.Minute.GetCachedSecondsString());
+        
         prevTime = DateTime.Now;
     }
 }

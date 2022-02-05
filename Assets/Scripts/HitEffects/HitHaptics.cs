@@ -11,13 +11,15 @@ public class HitHaptics : MonoBehaviour, IValidHit
     public void TriggerHitEffect(HitInfo info)
     {
         var amplitude = Mathf.Clamp(info.DirectionDotProduct * info.ImpactDotProduct, .5f, 1f);
-        if (info.Hands == null)
+
+        if (info.RightHand != null)
         {
-            return;
+            info.RightHand.SendHapticPulse(amplitude, _effectLength);
         }
-        for (int i = 0; i < info.Hands.Length; i++)
+
+        if (info.LeftHand != null)
         {
-            info.Hands[i].SendHapticPulse(amplitude, _effectLength);
+            info.LeftHand.SendHapticPulse(amplitude, _effectLength);
         }
     }
 }

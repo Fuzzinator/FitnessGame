@@ -20,7 +20,7 @@ public struct ChoreographyEvent : ISequenceable //First release wont use this pr
     private LightEventValue _value;
 
     private static readonly float[] _rotationValues = new[] {-60f, -45f, -30f, -15f, 15f, 30f, 45f, 60f};
-    public float RotationValue => _rotationValues[Mathf.Clamp((int) _value, 0, _rotationValues.Length)];
+    public float RotationValue => _rotationValues[Mathf.Clamp((int) _value, 0, _rotationValues.Length-1)];
 
     public HitSideType HitSideType
     {

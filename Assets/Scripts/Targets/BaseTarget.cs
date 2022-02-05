@@ -17,11 +17,11 @@ public class BaseTarget : MonoBehaviour, IPoolable
     [SerializeField]
     protected UnityEvent<Collision> _collidedEvent;
 
-    [SerializeField]
+    /*[SerializeField]
     protected UnityEvent _missedHitEvent = new UnityEvent();
 
     [SerializeField]
-    protected UnityEvent<HitInfo> _successfulHitEvent;
+    protected UnityEvent<HitInfo> _successfulHitEvent;*/
 
     [SerializeField]
     protected UnityEvent<HitSideType> _targetCreated = new UnityEvent<HitSideType>();
@@ -36,14 +36,28 @@ public class BaseTarget : MonoBehaviour, IPoolable
     protected float _minHitSpeed = 1f;
 
     protected bool _wasHit = false;
+
+    protected IValidHit[] _validHitEffects;
+    protected IMissedHit[] _missedHitEffects;
     public bool WasHit => _wasHit;
     public PoolManager MyPoolManager { get; set; }
     public Vector3 OptimalHitPoint { get; private set; }
 
     public FormationHolder parentFormation { get; private set; }
 
+    protected void Start()
+    {
+        _validHitEffects = GetComponents<IValidHit>();
+        _missedHitEffects = GetComponents<IMissedHit>();
+    }
+
     public bool IsPooled { get; set; }
-    
+
+    protected void OnTriggerEnter(Collider other)
+    {
+        throw new NotImplementedException();
+    }
+
     protected virtual void OnCollisionEnter(Collision other)
     {
         if (!IsHit(other.collider, out var hand))
@@ -58,18 +72,25 @@ public class BaseTarget : MonoBehaviour, IPoolable
         {
             _wasHit = true;
             var currentDistance = Vector3.Distance(transform.position, OptimalHitPoint);
-            var hitInfo = new HitInfo(impactDotProduct, dirDotProduct, hand, other, currentDistance,
+            var hitInfo = new HitInfo(impactDotProduct, dirDotProduct, hand, currentDistance,
                 hand.MovementSpeed);
-            _successfulHitEvent?.Invoke(hitInfo);
+            
+            foreach (var hitEffect in _validHitEffects)
+            {
+                hitEffect.TriggerHitEffect(hitInfo);
+            }
         }
     }
-
 
     public void ReturnToPool()
     {
         if (!_wasHit)
         {
-            _missedHitEvent?.Invoke();
+            
+            foreach (var missEffect in _missedHitEffects)
+            {
+                missEffect.TriggerMissEffect();
+            }
         }
 
         gameObject.SetActive(false);
@@ -105,7 +126,7 @@ public class BaseTarget : MonoBehaviour, IPoolable
     {
         var handDirection = Vector3.Normalize(transform.InverseTransformDirection(hand.MovementDirection));
         impactDotProd = Vector3.Dot(-handDirection, _optimalHitDirection);
-        var collisionDirection = Vector3.Normalize(other.contacts[0].point - transform.position);
+        var collisionDirection = Vector3.Normalize(other.GetContact(0).point - transform.position);
         dirDotProd = Vector3.Dot(collisionDirection, _optimalHitDirection);
         
 #if UNITY_EDITOR

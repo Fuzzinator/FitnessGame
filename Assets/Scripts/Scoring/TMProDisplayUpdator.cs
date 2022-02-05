@@ -26,7 +26,7 @@ public class TMProDisplayUpdator : MonoBehaviour
     
     public void UpdateText(int value)
     {
-        _targetText.SetText($"{_prefix}{value}{_suffix}");
+        _targetText.SetText(value.TryGetCachedIntString());
     }
 
     public void UpdateText(System.Object willBeText)

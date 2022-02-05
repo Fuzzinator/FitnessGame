@@ -10,7 +10,9 @@ using UnityEngine;
 public class PlaylistCountdownClock : MonoBehaviour
 {
     [SerializeField]
-    private TextMeshProUGUI _text;
+    private TextMeshProUGUI _minutesText;
+    [SerializeField]
+    private TextMeshProUGUI _secondsText;
 
     private float _timeRemaining = 0;
     private bool _clockRunning = false;
@@ -50,10 +52,9 @@ public class PlaylistCountdownClock : MonoBehaviour
         UpdateDisplay();
 
         var token = this.GetCancellationTokenOnDestroy();
-#pragma warning disable 4014
-        RunClock(token);
-        //UniTask.Run(() => RunClock(token), cancellationToken: token);//_source.Token));
-#pragma warning restore 4014
+        
+        RunClock(token).Forget();
+        
         await RunDisplayUpdate(token).SuppressCancellationThrow();
     }
 
@@ -76,10 +77,11 @@ public class PlaylistCountdownClock : MonoBehaviour
 
     private void UpdateDisplay()
     {
-        var minutes = Mathf.Floor(_timeRemaining / MINUTE);
-        var seconds = Mathf.Floor(_timeRemaining % MINUTE);
+        var minutes = (int)Mathf.Floor(_timeRemaining / MINUTE);
+        var seconds = (int)Mathf.Floor(_timeRemaining % MINUTE);
 
-        _text.SetText($"{minutes}:{seconds:00}");
+        _minutesText.SetText(minutes.TryGetCachedIntString());
+        _secondsText.SetText(seconds.GetCachedSecondsString());
     }
 
     public void SongFailedToLoad()
@@ -143,6 +145,10 @@ public class PlaylistCountdownClock : MonoBehaviour
                     break;
                 }
 
+                if (_timeRemaining < 0)
+                {
+                    continue;
+                }
                 UpdateDisplay();
             }
             catch (Exception e) when (e is OperationCanceledException)

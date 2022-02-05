@@ -16,6 +16,9 @@ public class UpdateScoreDisplay : MonoBehaviour
     
     [SerializeField]
     private TextMeshProUGUI _currentScore;
+
+    [SerializeField]
+    private TextMeshProUGUI _plusSymbol;
     
 
     private bool _delayingUpdate = false;
@@ -31,19 +34,29 @@ public class UpdateScoreDisplay : MonoBehaviour
     public async void ScoreUpdated(uint increaseAmount)
     {
         _increaseAmount = increaseAmount;
-        _scoreIncrease.SetText($"+{increaseAmount}");
+        _plusSymbol.gameObject.SetActive(true);
+        _scoreIncrease.SetText(((int)increaseAmount).TryGetCachedIntString());
         if (_delayingUpdate)
         {
             _currentScore.SetText((ScoringManager.Instance.CurrentScore-increaseAmount).ToString());
         }
 
-        await UniTask.Delay(TimeSpan.FromSeconds(_delayLength), cancellationToken: _token).SuppressCancellationThrow();
-        if (_increaseAmount == increaseAmount)
+        try
         {
-            _currentScore.SetText((ScoringManager.Instance.CurrentScore).ToString());
-            _scoreIncrease.SetText(string.Empty);
-        }
+            await UniTask.Delay(TimeSpan.FromSeconds(_delayLength), cancellationToken: _token);
+            if (_increaseAmount == increaseAmount)
+            {
+                _currentScore.SetText((ScoringManager.Instance.CurrentScore).ToString());
 
-        _delayingUpdate = false;
+                _plusSymbol.gameObject.SetActive(false);
+                _scoreIncrease.SetText(string.Empty);
+            }
+
+            _delayingUpdate = false;
+        }
+        catch (Exception e) when (e is OperationCanceledException)
+        {
+            return;
+        }
     }
 }

@@ -13,6 +13,11 @@ public class SetRendererMaterial : MonoBehaviour
     [SerializeField]
     private bool _isController;
 
+    public void Initialize(HitSideType type)
+    {
+        SetMaterial(type);
+    }
+    
     public void SetMaterial(HitSideType hitSideType)
     {
         var currentMaterial = _targetRenderer.sharedMaterial;

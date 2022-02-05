@@ -41,10 +41,13 @@ public class BlockTarget : BaseTarget
             _wasHit = true;
 
             var currentDistance = Vector3.Distance(transform.position, OptimalHitPoint);
-            var hitInfo = new HitInfo(1, 1, new[] {_leftHand, _rightHand}, other, currentDistance,
+            var hitInfo = new HitInfo(1, 1, new[] {_leftHand, _rightHand}, currentDistance,
                 hand.MovementSpeed);
 
-            _successfulHitEvent?.Invoke(hitInfo);
+            foreach (var hitEffect in _validHitEffects)
+            {
+                hitEffect.TriggerHitEffect(hitInfo);
+            }
         }
     }
 

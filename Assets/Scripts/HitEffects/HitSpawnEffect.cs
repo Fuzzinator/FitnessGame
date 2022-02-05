@@ -32,8 +32,6 @@ public class HitSpawnEffect : MonoBehaviour, IValidHit
         hitParticleTransform.position = thisTransform.position;
 
         hitParticle.SetParticleColor(_thisRenderer.sharedMaterial.color);
-
-        hitParticle.gameObject.SetActive(true);
         
         try
         {

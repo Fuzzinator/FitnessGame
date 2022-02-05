@@ -7,35 +7,60 @@ public struct HitInfo
     public float ImpactDotProduct { get; private set; }
     public float DirectionDotProduct { get; private set; }
 
-    public Hand HitHand => Hands?[0];
-    public Hand[] Hands { get; private set; }
-    public Collision CollisionData { get; private set; }
+    public Hand HitHand => RightHand != null ? RightHand : LeftHand;
+
+    private Hand _leftHand;
+    public Hand LeftHand => _leftHand;
+
+    private Hand _rightHand;
+    public Hand RightHand => _rightHand;
+    // Collision CollisionData { get; private set; }
     public float DistanceFromOptimalHit { get; private set; }
 
     public float HitSpeed { get; private set; }
 
-    public HitInfo(float impact, float direction, Hand hand, Collision collision, float distance, float speed)
+    public HitInfo(float impact, float direction, Hand hand, float distance, float speed)
     {
         ImpactDotProduct = impact;
         DirectionDotProduct = direction;
-        Hands = new[] {hand};
-        CollisionData = collision;
+        _rightHand = null;
+        _leftHand = null;
+        switch (hand.AssignedHand)
+        {
+            case HitSideType.Right:
+                _rightHand = hand;
+                break;
+            case HitSideType.Left:
+                _leftHand = hand;
+                break;
+        }
+        
         DistanceFromOptimalHit = distance;
         HitSpeed = speed;
     }
 
-    public HitInfo(float impact, float direction, IReadOnlyList<Hand> hands, Collision collision, float distance,
+    public HitInfo(float impact, float direction, IReadOnlyList<Hand> hands, float distance,
         float speed)
     {
         ImpactDotProduct = impact;
         DirectionDotProduct = direction;
-        Hands = new Hand[hands.Count];
-        for (int i = 0; i < hands.Count; i++)
+        
+        _rightHand = null;
+        _leftHand = null;
+        
+        foreach (var hand in hands)
         {
-            Hands[i] = hands[i];
+            switch (hand.AssignedHand)
+            {
+                case HitSideType.Right:
+                    _rightHand = hand;
+                    break;
+                case HitSideType.Left:
+                    _leftHand = hand;
+                    break;
+            }
         }
 
-        CollisionData = collision;
         DistanceFromOptimalHit = distance;
         HitSpeed = speed;
     }

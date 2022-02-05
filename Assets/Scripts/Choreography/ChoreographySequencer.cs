@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using DG.Tweening.Plugins.Core.PathCore;
 using GameModeManagement;
 using Unity.Mathematics;
 using UnityEngine;
@@ -112,6 +113,8 @@ public class ChoreographySequencer : MonoBehaviour
     [SerializeField]
     private UnityEvent<int> _stanceUpdated = new UnityEvent<int>();
 
+    private Dictionary<Vector3, Path> _paths = new Dictionary<Vector3, Path>();
+
     public bool SequenceRunning { get; private set; }
     private bool _sequenceUnstartedOrFinished = true;
 
@@ -197,7 +200,7 @@ public class ChoreographySequencer : MonoBehaviour
         _songStartTime = Time.time;
         _delayStartTime = 0;
         _pauseOffset = 0;
-        DOTween.Init(true, false);
+        DOTween.Init(true);
         _sequence = DOTween.Sequence();
 
         var formationSequence = CreateSequence(formations[0], 1);
@@ -223,14 +226,9 @@ public class ChoreographySequencer : MonoBehaviour
         formationTransform.position = _formationStart.position;
         formationTransform.rotation = _formationStart.rotation;
 
-
-        var _path = new[]
-        {
-            _formationStart.position,
-            _formationEnd.position
-        };
         var tweenSpeed = _meterDistance / SongInfoReader.Instance.NoteSpeed;
-        var tween = formationHolder.transform.DOLocalPath(_path, tweenSpeed);
+        
+        var tween = formationHolder.transform.DOMove(_formationEnd.position, tweenSpeed);
 
         tween.SetEase(Ease.Linear);
 
@@ -238,7 +236,7 @@ public class ChoreographySequencer : MonoBehaviour
 
         tween.OnStart(formationHolder.OnStartCallback);
         tween.OnComplete(formationHolder.OnCompleteCallback);
-
+    
         formationHolder.MyTween = tween;
 
         var beatsTime = 60 / SongInfoReader.Instance.BeatsPerMinute;
@@ -423,8 +421,8 @@ public class ChoreographySequencer : MonoBehaviour
         var direction = _formationStart.position - _playerCenter.position;
         
         var targetGameMode = PlaylistManager.Instance.OverrideGameMode
-            ? PlaylistManager.Instance.CurrentItem.TargetGameMode
-            : GameManager.Instance.CurrentGameMode;
+            ? GameManager.Instance.CurrentGameMode
+            : PlaylistManager.Instance.CurrentItem.TargetGameMode;
 
         if (targetGameMode == GameMode.Degrees90 &&
             Mathf.Abs(_currentRotation + angle) > MAX90ROTATION)

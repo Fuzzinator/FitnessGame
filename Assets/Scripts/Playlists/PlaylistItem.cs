@@ -27,7 +27,6 @@ public struct PlaylistItem
 
     [SerializeField]
     private GameMode _gameMode;
-
     public GameMode TargetGameMode
     {
         get => _gameMode;
