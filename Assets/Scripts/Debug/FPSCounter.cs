@@ -53,7 +53,7 @@ public class FPSCounter : MonoBehaviour
                     }
 
                     total /= _fps.Length;
-                    _text.SetText(Mathf.Round(total).ToString(CultureInfo.InvariantCulture));
+                    _text.SetText(((int)Mathf.Round(total)).TryGetCachedIntString());
                 }
             }
             catch (Exception e) when (e is OperationCanceledException)
