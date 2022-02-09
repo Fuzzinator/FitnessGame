@@ -7,7 +7,7 @@ public static class StringCaching
 {
     private static string[] CachedInts { get; set; }
     private static string[] Seconds { get; set; }
-    
+
     private const string SECONDSFORMAT = "00";
 
     static StringCaching()
@@ -17,17 +17,17 @@ public static class StringCaching
         {
             Seconds[i] = i.ToString(SECONDSFORMAT);
         }
-        
+
         CachedInts = new string[2000];
         for (var time = 0; time < CachedInts.Length; time++)
         {
             CachedInts[time] = time.ToString();
         }
     }
-    
+
     public static string GetCachedSecondsString(this int value)
     {
-        if (value>=Seconds.Length)
+        if (value >= Seconds.Length)
         {
             Debug.LogError($"Requesting {value} in seconds is invalid. Returning null");
             return null;
@@ -35,8 +35,9 @@ public static class StringCaching
 
         return Seconds[value];
     }
+
     public static string TryGetCachedIntString(this int value)
     {
-        return value>=CachedInts.Length ? value.ToString() : CachedInts[value];
+        return value >= CachedInts.Length || value < 0 ? value.ToString() : CachedInts[value];
     }
 }

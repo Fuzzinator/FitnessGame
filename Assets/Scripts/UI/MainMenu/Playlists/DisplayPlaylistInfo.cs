@@ -14,13 +14,18 @@ namespace UI.Scrollers.Playlists
     {
         public static DisplayPlaylistInfo Instance { get; private set; }
 
-        [SerializeField] private GameObject _playlistTitleCard;
+        [SerializeField] 
+        private GameObject _playlistTitleCard;
 
-        [SerializeField] private TextMeshProUGUI _playlistTitle;
+        [SerializeField] 
+        TextMeshProUGUI _playlistTitle;
 
-        [SerializeField] private TextMeshProUGUI _playlistLength;
-        [SerializeField] private TextMeshProUGUI _playlistRecordScore;
-        [SerializeField] private TextMeshProUGUI _playlistRecordStreak;
+        [SerializeField] 
+        private TextMeshProUGUI _playlistLength;
+        [SerializeField] 
+        private TextMeshProUGUI _playlistRecordScore;
+        [SerializeField] 
+        TextMeshProUGUI _playlistRecordStreak;
 
         [SerializeField] private Button _playButton;
 
@@ -61,7 +66,7 @@ namespace UI.Scrollers.Playlists
 
             var playlistRecord = await GetPlaylistRecord();
             _playlistRecordScore.SetText(playlistRecord.Score.ToString());
-            _playlistRecordStreak.SetText(playlistRecord.Streak.ToString());
+            _playlistRecordStreak.SetText(playlistRecord.Streak.TryGetCachedIntString());
         }
 
         private void TryLoadBaseLevel()

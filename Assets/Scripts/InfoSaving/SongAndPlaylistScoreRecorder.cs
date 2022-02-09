@@ -85,8 +85,8 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
         }
         else
         {
-            songScore = ScoringManager.Instance.ScoreThisSong;
-            bestStreak = StreakManager.Instance.RecordCurrentSongStreak;
+            songScore = ScoringManager.Instance.CurrentScore;
+            bestStreak = StreakManager.Instance.RecordStreak;
         }
 
         var newRecord = new SongAndPlaylistRecord(songScore, bestStreak);

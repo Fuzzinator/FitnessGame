@@ -21,9 +21,9 @@ public struct Playlist
     {
         get
         {
-            var minutes = Mathf.Floor(_length / MINUTE);
-            var seconds = Mathf.Floor(_length % MINUTE);
-            return $"{minutes}:{seconds:00}";
+            var minutes = (int)Mathf.Floor(_length / MINUTE);
+            var seconds = (int)Mathf.Floor(_length % MINUTE);
+            return $"{minutes.TryGetCachedIntString()}:{seconds.GetCachedSecondsString()}";
         }
     }
 

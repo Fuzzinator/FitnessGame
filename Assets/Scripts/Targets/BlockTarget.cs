@@ -80,6 +80,7 @@ public class BlockTarget : BaseTarget
         _hitRight = false;
         _rightHand = null;
         _leftHand = null;
+        OptimalHitPoint = hitPoint;
         base.SetUpTarget(hitSideType, hitPoint, holder);
     }
 }

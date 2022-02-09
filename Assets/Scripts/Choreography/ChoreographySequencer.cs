@@ -385,6 +385,9 @@ public class ChoreographySequencer : MonoBehaviour
             var sequence = _activeSequences[0];
             sequence.Complete();
         }
+
+        _formationStart.RotateAround(_playerCenter.position, _playerCenter.up,  -_currentRotation);
+        _currentRotation = 0;
     }
 
     public void PauseChoreography()
@@ -418,8 +421,6 @@ public class ChoreographySequencer : MonoBehaviour
 
     public void RotateSpawnSource(float angle)
     {
-        var direction = _formationStart.position - _playerCenter.position;
-        
         var targetGameMode = PlaylistManager.Instance.OverrideGameMode
             ? GameManager.Instance.CurrentGameMode
             : PlaylistManager.Instance.CurrentItem.TargetGameMode;

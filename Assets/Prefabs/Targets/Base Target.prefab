@@ -151,113 +151,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31fe72fbc6ea5ff4580adf2c873053a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  layer: 0
   _noteType: 0
   _cutDirection: 0
   _collidedEvent:
     m_PersistentCalls:
       m_Calls: []
-  _missedHitEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3329512613624926614}
-        m_TargetAssemblyTypeName: UpdateHitStreak, Assembly-CSharp
-        m_MethodName: TriggerMissEffect
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 8778464567127622631}
-        m_TargetAssemblyTypeName: UpdateHitStats, Assembly-CSharp
-        m_MethodName: RegisterMiss
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  _successfulHitEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: -2783967854265906086}
-        m_TargetAssemblyTypeName: BaseValidHitEffect, Assembly-CSharp
-        m_MethodName: TriggerHitEffect
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: -4992076642799770043}
-        m_TargetAssemblyTypeName: HitHaptics, Assembly-CSharp
-        m_MethodName: TriggerHitEffect
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1972825640803934643}
-        m_TargetAssemblyTypeName: AddToScore, Assembly-CSharp
-        m_MethodName: TriggerHitEffect
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 3329512613624926614}
-        m_TargetAssemblyTypeName: UpdateHitStreak, Assembly-CSharp
-        m_MethodName: TriggerHitEffect
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: -309534086680282040}
-        m_TargetAssemblyTypeName: HitSpawnEffect, Assembly-CSharp
-        m_MethodName: TriggerHitEffect
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 8778464567127622631}
-        m_TargetAssemblyTypeName: UpdateHitStats, Assembly-CSharp
-        m_MethodName: RegisterHit
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
   _targetCreated:
     m_PersistentCalls:
       m_Calls:
@@ -372,7 +271,7 @@ MonoBehaviour:
   _baseTarget: {fileID: -8971507887394260220}
   _renderer: {fileID: 2904331627907752747}
   _effectRange: 2
-  _propertyName: _EffectOn
+  _propertyName: _OptimalHitPosition
 --- !u!114 &8778464567127622631
 MonoBehaviour:
   m_ObjectHideFlags: 0

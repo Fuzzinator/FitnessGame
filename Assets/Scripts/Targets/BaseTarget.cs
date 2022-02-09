@@ -41,9 +41,9 @@ public class BaseTarget : MonoBehaviour, IPoolable
     protected IMissedHit[] _missedHitEffects;
     public bool WasHit => _wasHit;
     public PoolManager MyPoolManager { get; set; }
-    public Vector3 OptimalHitPoint { get; private set; }
+    public Vector3 OptimalHitPoint { get; protected set; }
 
-    public FormationHolder parentFormation { get; private set; }
+    public FormationHolder parentFormation { get; protected set; }
 
     protected void Start()
     {
