@@ -28,16 +28,17 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
 
     public async UniTaskVoid SaveSongStats()
     {
+        var songFullName = SongInfoReader.Instance.GetSongFullName();
         while (_updatingSongRecord)
         {
             await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
         }
 
-        var songFullName = SongInfoReader.Instance.GetSongFullName();
 
         ulong songScore;
         int bestStreak;
-        if (PlayerStatsFileManager.SongKeyExists(songFullName))
+        var exists = await PlayerStatsFileManager.SongKeyExists(songFullName);
+        if (exists)
         {
             var oldRecord =
                 (SongAndPlaylistRecord) await PlayerStatsFileManager.GetSongValue<SongAndPlaylistRecord>(songFullName,
@@ -62,17 +63,18 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
 
     public async UniTaskVoid SavePlaylistStats()
     {
+        var playlist = PlaylistManager.Instance.CurrentPlaylist;
         while (_updatingPlaylistRecord)
         {
             await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
         }
 
-        var playlist = PlaylistManager.Instance.CurrentPlaylist;
         var playlistFullName = $"{playlist.PlaylistName}-{playlist.Length}-{playlist.Items.Length}";
 
         ulong songScore;
         int bestStreak;
-        if (PlayerStatsFileManager.PlaylistKeyExists(playlistFullName))
+        var exists = await PlayerStatsFileManager.PlaylistKeyExists(playlistFullName);
+        if (exists)
         {
             var oldRecord =
                 (SongAndPlaylistRecord) await PlayerStatsFileManager.GetPlaylistValue<SongAndPlaylistRecord>(

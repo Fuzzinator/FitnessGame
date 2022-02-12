@@ -441,6 +441,7 @@ GameObject:
   - component: {fileID: 19305199}
   - component: {fileID: 19305198}
   - component: {fileID: 19305200}
+  - component: {fileID: 19305201}
   m_Layer: 0
   m_Name: XR Rig
   m_TagString: Untagged
@@ -496,6 +497,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _head: {fileID: 963194228}
+--- !u!114 &19305201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 19305197}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b1399a77dcbc31469769f85444bebeb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _leftHand: {fileID: 1993093608}
+  _rightHand: {fileID: 983265259}
 --- !u!1 &24603189
 GameObject:
   m_ObjectHideFlags: 0
@@ -3144,7 +3159,7 @@ GameObject:
   - component: {fileID: 69504086}
   - component: {fileID: 69504087}
   m_Layer: 7
-  m_Name: GameObject
+  m_Name: Right Editor Hand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3179,6 +3194,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _assignedHand: 1
+  _collider: {fileID: 410617948}
 --- !u!1 &70815640
 GameObject:
   m_ObjectHideFlags: 0
@@ -4591,7 +4607,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh199042
+  m_Name: pb_Mesh103208
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -8750,7 +8766,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh199580
+  m_Name: pb_Mesh103718
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -9007,7 +9023,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh198874
+  m_Name: pb_Mesh108166
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -12780,7 +12796,7 @@ GameObject:
   - component: {fileID: 876928969}
   - component: {fileID: 876928970}
   m_Layer: 7
-  m_Name: GameObject
+  m_Name: Left Editor Hand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12815,6 +12831,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _assignedHand: 0
+  _collider: {fileID: 1919017094}
 --- !u!1 &951690943
 GameObject:
   m_ObjectHideFlags: 0
@@ -13424,6 +13441,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _assignedHand: 1
+  _collider: {fileID: 1976264131}
 --- !u!114 &983265260
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19790,7 +19808,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh199536
+  m_Name: pb_Mesh108802
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -25582,6 +25600,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _assignedHand: 0
+  _collider: {fileID: 759509196}
 --- !u!114 &1993093609
 MonoBehaviour:
   m_ObjectHideFlags: 0

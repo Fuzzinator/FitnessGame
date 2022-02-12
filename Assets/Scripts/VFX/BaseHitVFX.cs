@@ -37,8 +37,8 @@ public class BaseHitVFX : MonoBehaviour, IPoolable
         
         main.startColor = color;
     }
-
-    public async UniTask PlayParticles()
+    
+    public async UniTaskVoid PlayParticles()
     {
         _particleSystem.Play(true);
         await UniTask.Delay(TimeSpan.FromSeconds(_lifespan), cancellationToken: token);

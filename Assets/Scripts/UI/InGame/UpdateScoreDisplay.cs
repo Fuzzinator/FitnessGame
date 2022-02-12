@@ -31,7 +31,7 @@ public class UpdateScoreDisplay : MonoBehaviour
         _token = this.GetCancellationTokenOnDestroy();
     }
 
-    public async void ScoreUpdated(uint increaseAmount)
+    public void ScoreUpdated(uint increaseAmount)
     {
         _increaseAmount = increaseAmount;
         _plusSymbol.gameObject.SetActive(true);
@@ -41,6 +41,11 @@ public class UpdateScoreDisplay : MonoBehaviour
             _currentScore.SetText((ScoringManager.Instance.CurrentScore-increaseAmount).ToString());
         }
 
+        AsyncScoreUpdate(increaseAmount).Forget();
+    }
+
+    private async UniTaskVoid AsyncScoreUpdate(uint increaseAmount)
+    {
         try
         {
             await UniTask.Delay(TimeSpan.FromSeconds(_delayLength), cancellationToken: _token);
@@ -56,7 +61,6 @@ public class UpdateScoreDisplay : MonoBehaviour
         }
         catch (Exception e) when (e is OperationCanceledException)
         {
-            return;
         }
     }
 }

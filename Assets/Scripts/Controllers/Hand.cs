@@ -11,6 +11,11 @@ public class Hand : BaseGameStateListener
     [SerializeField]
     private HitSideType _assignedHand;
 
+    [SerializeField]
+    private Collider _collider;
+
+    public Collider MyCollider => _collider;
+
     public HitSideType AssignedHand => _assignedHand;
 
     public Vector3 MovementDirection

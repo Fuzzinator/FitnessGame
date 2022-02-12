@@ -8,6 +8,7 @@ public class BaseTarget : MonoBehaviour, IPoolable
 {
     [SerializeField]
     public ChoreographyNote.LineLayerType layer;
+
     [SerializeField]
     protected HitSideType _noteType;
 
@@ -45,17 +46,20 @@ public class BaseTarget : MonoBehaviour, IPoolable
 
     public FormationHolder parentFormation { get; protected set; }
 
+    private int _nameLayer;
+
     protected void Start()
     {
         _validHitEffects = GetComponents<IValidHit>();
         _missedHitEffects = GetComponents<IMissedHit>();
+        _nameLayer = LayerMask.NameToLayer("Hand");
     }
 
     public bool IsPooled { get; set; }
 
     protected void OnTriggerEnter(Collider other)
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
 
     protected virtual void OnCollisionEnter(Collision other)
@@ -74,7 +78,7 @@ public class BaseTarget : MonoBehaviour, IPoolable
             var currentDistance = Vector3.Distance(transform.position, OptimalHitPoint);
             var hitInfo = new HitInfo(impactDotProduct, dirDotProduct, hand, currentDistance,
                 hand.MovementSpeed);
-            
+
             foreach (var hitEffect in _validHitEffects)
             {
                 hitEffect.TriggerHitEffect(hitInfo);
@@ -86,7 +90,6 @@ public class BaseTarget : MonoBehaviour, IPoolable
     {
         if (!_wasHit)
         {
-            
             foreach (var missEffect in _missedHitEffects)
             {
                 missEffect.TriggerMissEffect();
@@ -94,10 +97,11 @@ public class BaseTarget : MonoBehaviour, IPoolable
         }
 
         gameObject.SetActive(false);
-        if(MyPoolManager.poolParent.gameObject.activeSelf)
+        if (MyPoolManager.poolParent.gameObject.activeSelf)
         {
             transform.SetParent(MyPoolManager.poolParent);
         }
+
         ActiveTargetManager.Instance.RemoveActiveTarget(this);
         MyPoolManager.ReturnToPool(this);
         parentFormation.Remove(this);
@@ -105,21 +109,24 @@ public class BaseTarget : MonoBehaviour, IPoolable
 
     protected bool IsHit(Collider col, out Hand hand)
     {
-        if (col.gameObject.layer == LayerMask.NameToLayer("Hand"))
+        if (col.gameObject.layer != _nameLayer)
         {
-            //var hasHand = col.TryGetComponent(out hand);
-            hand = col.GetComponentInParent<Hand>();
-            var hasHand = hand != null;
-            if (_noteType == HitSideType.Block)
-            {
-                return true;
-            }
-
-            return (hasHand && hand.AssignedHand == _noteType);
+            hand = null;
+            return false;
+        }
+        
+        var hasHand = HandTracker.TryGetHand(col, out hand);
+        if (!hasHand)
+        {
+            return false;
         }
 
-        hand = null;
-        return false;
+        if (_noteType == HitSideType.Block)
+        {
+            return true;
+        }
+
+        return hand.AssignedHand == _noteType;
     }
 
     protected bool IsValidDirection(Collision other, Hand hand, out float impactDotProd, out float dirDotProd)
@@ -128,7 +135,7 @@ public class BaseTarget : MonoBehaviour, IPoolable
         impactDotProd = Vector3.Dot(-handDirection, _optimalHitDirection);
         var collisionDirection = Vector3.Normalize(other.GetContact(0).point - transform.position);
         dirDotProd = Vector3.Dot(collisionDirection, _optimalHitDirection);
-        
+
 #if UNITY_EDITOR
         return true;
 #else

@@ -1,7 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.Mathematics;
 using UnityEngine;
 
 public class HitSpawnEffect : MonoBehaviour, IValidHit
@@ -17,7 +14,7 @@ public class HitSpawnEffect : MonoBehaviour, IValidHit
         }
     }
 
-    public async void TriggerHitEffect(HitInfo info)
+    public void TriggerHitEffect(HitInfo info)
     {
         if (VFXManager.Instance == null)
         {
@@ -25,17 +22,18 @@ public class HitSpawnEffect : MonoBehaviour, IValidHit
         }
 
         var hitParticle = VFXManager.GetBaseHitVFX;
+        
         var hitParticleTransform = hitParticle.transform;
         var thisTransform = transform;
 
         hitParticleTransform.rotation = thisTransform.rotation;
         hitParticleTransform.position = thisTransform.position;
-
+        
         hitParticle.SetParticleColor(_thisRenderer.sharedMaterial.color);
         
         try
         {
-            await hitParticle.PlayParticles();
+            hitParticle.PlayParticles().Forget();
         }
         catch (Exception e) when (e is OperationCanceledException)
         {

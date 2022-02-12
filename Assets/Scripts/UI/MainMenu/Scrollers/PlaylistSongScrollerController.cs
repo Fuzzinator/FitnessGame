@@ -61,9 +61,8 @@ namespace UI.Scrollers.Playlists
                 }
             }
 
-            _scroller.ReloadData(
-                _scroller.GetScrollPositionForDataIndex(PlaylistManager.Instance.CurrentIndex,
-                    EnhancedScroller.CellViewPositionEnum.Before));
+            _scroller.SetScrollPositionImmediately(_scroller.GetScrollPositionForDataIndex(PlaylistManager.Instance.CurrentIndex,
+                EnhancedScroller.CellViewPositionEnum.Before));
         }
 
         public void ReloadScroller()

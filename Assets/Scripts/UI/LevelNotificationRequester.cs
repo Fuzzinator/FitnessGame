@@ -37,10 +37,10 @@ public class LevelNotificationRequester : MonoBehaviour
     public void DisplayEndSongStats()
     {
         var score = ScoringManager.Instance.ScoreThisSong;
-        var goodHits = ScoringManager.Instance.GoodHitsThisSong;
-        var missedHits = ScoringManager.Instance.MissedTargetsThisSong;
-        var hitObstacles = ScoringManager.Instance.HitObstaclesThisSong;
-        var message = $"{SONGSCORE}{score}\n{GOODHITS}{goodHits}\n{MISSEDHITS}{missedHits}\n{HITOBSTACLES}{hitObstacles}";
+        var goodHits = (int)ScoringManager.Instance.GoodHitsThisSong;
+        var missedHits = (int)ScoringManager.Instance.MissedTargetsThisSong;
+        var hitObstacles = (int)ScoringManager.Instance.HitObstaclesThisSong;
+        var message = $"{SONGSCORE}{score}\n{GOODHITS}{goodHits.TryGetCachedIntString()}\n{MISSEDHITS}{missedHits.TryGetCachedIntString()}\n{HITOBSTACLES}{hitObstacles.TryGetCachedIntString()}";
         var visuals = new Notification.NotificationVisuals(message, SONGCOMPLETE, disableUI:false, autoTimeOutTime:4f, popUp:true);
         NotificationManager.RequestNotification(visuals,  _mainMenuAction);
     }
@@ -48,10 +48,10 @@ public class LevelNotificationRequester : MonoBehaviour
     public void DisplayEndLevelStats()
     {
         var totalScore = ScoringManager.Instance.CurrentScore;
-        var goodHits = ScoringManager.Instance.GoodHits;
-        var missedHits = ScoringManager.Instance.MissedTargets;
-        var hitObstacles = ScoringManager.Instance.HitObstacles;
-        var message = $"{TOTALSCORE}{totalScore}\n{GOODHITS}{goodHits}\n{MISSEDHITS}{missedHits}\n{HITOBSTACLES}{hitObstacles}";
+        var goodHits = (int)ScoringManager.Instance.GoodHits;
+        var missedHits = (int)ScoringManager.Instance.MissedTargets;
+        var hitObstacles = (int)ScoringManager.Instance.HitObstacles;
+        var message = $"{TOTALSCORE}{totalScore}\n{GOODHITS}{goodHits.TryGetCachedIntString()}\n{MISSEDHITS}{missedHits.TryGetCachedIntString()}\n{HITOBSTACLES}{hitObstacles.TryGetCachedIntString()}";
         var visuals = new Notification.NotificationVisuals(message, WORKOUTCOMPLETE, FINISHBUTTON, disableUI:false);
         NotificationManager.RequestNotification(visuals,  _mainMenuAction);
     }

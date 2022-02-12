@@ -91,7 +91,8 @@ namespace UI.Scrollers.Playlists
         {
             var playlist = PlaylistManager.Instance.CurrentPlaylist;
             var playlistFullName = $"{playlist.PlaylistName}-{playlist.Length}-{playlist.Items.Length}";
-            if (!PlayerStatsFileManager.PlaylistKeyExists(playlistFullName))
+            var exists = await PlayerStatsFileManager.PlaylistKeyExists(playlistFullName);
+            if (!exists)
             {
                 return new SongAndPlaylistRecord(0, 0);
             }
