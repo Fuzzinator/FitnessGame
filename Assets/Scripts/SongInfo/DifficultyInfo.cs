@@ -86,6 +86,7 @@ public struct DifficultyInfo
     public const int NORMAL = 3;
     public const int HARD = 5;
     public const int EXPERT = 7;
+    public const int EXPERTPLUS = 9;
 
     #endregion
 
@@ -101,5 +102,10 @@ public struct DifficultyInfo
             true when _difficultyRank <= EXPERT => downScale ? MINEXPERTSPEED : MAXEXPERTSPEED,
             _ => MINNORMALSPEED
         };
+    }
+
+    public void SetFileName(string fileName)
+    {
+        _beatmapFilename = fileName;
     }
 }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
+using Cysharp.Text;
 using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
@@ -53,7 +54,13 @@ public class FPSCounter : MonoBehaviour
                     }
 
                     total /= _fps.Length;
-                    _text.SetText(((int)Mathf.Round(total)).TryGetCachedIntString());
+                    using (var sb = ZString.CreateStringBuilder(true))
+                    {
+                        sb.Append((int)Mathf.Round(total));
+
+                        var buffer = sb.AsArraySegment();
+                        _text.SetCharArray(buffer.Array, buffer.Offset, buffer.Count);
+                    }
                 }
             }
             catch (Exception e) when (e is OperationCanceledException)

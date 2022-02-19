@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Burst;
 using UnityEngine;
 
 [Serializable]
+[BurstCompile]
 public struct ChoreographyNote : ISequenceable
 {
     public float Time => _time;
@@ -51,7 +53,7 @@ public struct ChoreographyNote : ISequenceable
     public void SetToBlock()
     {
         SetCutDirection(CutDirection.Jab);
-        SetLineLayer(LineLayerType.Middle);
+        //SetLineLayer(LineLayerType.Middle);
         SetLineIndex(1);
         SetType(HitSideType.Block);
     }
@@ -71,7 +73,7 @@ public struct ChoreographyNote : ISequenceable
         _lineIndex = index;
     }
 
-    private void SetType(HitSideType type)
+    public void SetType(HitSideType type)
     {
         _type = type;
     }

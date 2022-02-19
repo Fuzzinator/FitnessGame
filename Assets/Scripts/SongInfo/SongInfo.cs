@@ -1,7 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using GameModeManagement;
+using Unity.Burst;
 using UnityEngine;
 
 [Serializable]
@@ -107,8 +110,8 @@ public class SongInfo
         {
             if (beatMapSet.BeatMapName == null)
             {
-                
             }
+
             if (beatMapSet.BeatMapName.Equals(setName, StringComparison.InvariantCultureIgnoreCase))
             {
                 return beatMapSet;
@@ -118,6 +121,165 @@ public class SongInfo
         Debug.LogError("No BeatMap found, returning beatMap 0");
 
         return _difficultyBeatmapSets.Length > 0 ? _difficultyBeatmapSets[0] : new DifficultySet();
+    }
+
+    public async UniTask<bool> UpdateDifficultySets(CancellationToken token)
+    {
+        var madeChange = false;
+        var difficultySet = new DifficultySet();
+        var hasRotationSet = false;
+        var rotationSet = new DifficultySet();
+        for (var i = 0; i < _difficultyBeatmapSets.Length; i++)
+        {
+            var mapName = _difficultyBeatmapSets[i].BeatMapName;
+            if (!string.IsNullOrWhiteSpace(mapName))
+            {
+                if (_difficultyBeatmapSets[i].MapGameMode == GameMode.Unset)
+                {
+                    _difficultyBeatmapSets[i].SetMapGameMode(mapName.GetGameMode());
+                    madeChange = true;
+                }
+
+                if (_difficultyBeatmapSets[i].MapGameMode == GameMode.Normal)
+                {
+                    _difficultyBeatmapSets[i].TryCreateMissingDifficulties();
+                    _difficultyBeatmapSets[i].RemoveExpertPlus();
+                    difficultySet = _difficultyBeatmapSets[i];
+                }
+
+                if (_difficultyBeatmapSets[i].MapGameMode is GameMode.Degrees90 or GameMode.Degrees360)
+                {
+                    hasRotationSet = true;
+                    rotationSet = _difficultyBeatmapSets[i];
+                }
+            }
+        }
+
+        var length = (int) GameMode.LightShow;
+        if (_difficultyBeatmapSets.Length < length)
+        {
+            var maps = new DifficultySet[length];
+            for (int i = 0; i < _difficultyBeatmapSets.Length; i++)
+            {
+                maps[i] = _difficultyBeatmapSets[i];
+            }
+
+            _difficultyBeatmapSets = maps;
+        }
+
+        for (var index = 1; index <= length; index++)
+        {
+            var gameMode = (GameMode) index;
+            if (gameMode == GameMode.LightShow)
+            {
+                gameMode++;
+            }
+
+            var hasSet = false;
+            for (var i = 0; i < _difficultyBeatmapSets.Length; i++)
+            {
+                if (_difficultyBeatmapSets[i].MapGameMode == gameMode)
+                {
+                    hasSet = true;
+                    break;
+                }
+            }
+
+            if (hasSet)
+            {
+                continue;
+            }
+
+            madeChange = true;
+            for (var i = 0; i < _difficultyBeatmapSets.Length; i++)
+            {
+                if (_difficultyBeatmapSets[i].MapGameMode == GameMode.Unset)
+                {
+                    _difficultyBeatmapSets[i] = difficultySet;
+                    switch (gameMode)
+                    {
+                        case GameMode.Unset:
+                            break;
+                        case GameMode.Normal:
+                            break;
+                        case GameMode.JabsOnly:
+                            break;
+                        case GameMode.OneHanded:
+                            break;
+                        case GameMode.Degrees90:
+                        case GameMode.Degrees360:
+                            if (hasRotationSet)
+                            {
+                                _difficultyBeatmapSets[i] = rotationSet;
+                            }
+                            else
+                            {
+                                var newFileName =
+                                    await AsyncCreateNewDifficultyFile(difficultySet.DifficultyInfos[^1], gameMode,
+                                        token);
+                                _difficultyBeatmapSets[i].SetFileName(newFileName);
+                                rotationSet = _difficultyBeatmapSets[i];
+                                hasRotationSet = true;
+                            }
+
+                            break;
+                        case GameMode.LightShow:
+                            break;
+                        case GameMode.LegDay:
+                            break;
+                        case GameMode.Lawless:
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+
+                    _difficultyBeatmapSets[i].SetMapGameMode(gameMode);
+                    break;
+                }
+            }
+        }
+
+        return madeChange;
+    }
+
+    public void SetDifficultySets(DifficultySet[] sets)
+    {
+        _difficultyBeatmapSets = sets;
+    }
+
+    private async UniTask<string> AsyncCreateNewDifficultyFile(DifficultyInfo info, GameMode mode,
+        CancellationToken token)
+    {
+        var choreography = await Choreography.AsyncLoadFromSongInfo(this, info, token);
+        var newFileName = info.FileName.Substring(0, info.FileName.LastIndexOf('.'));
+        switch (mode)
+        {
+            case GameMode.Unset:
+                break;
+            case GameMode.Normal:
+                break;
+            case GameMode.JabsOnly:
+                break;
+            case GameMode.OneHanded:
+                break;
+            case GameMode.Degrees90:
+            case GameMode.Degrees360:
+                newFileName = $"AutoRotation-{newFileName}.dat";
+                await choreography.AddRotationEventsAsync();
+                await Choreography.AsyncSave(choreography, fileLocation, newFileName, _songName, token);
+                break;
+            case GameMode.LightShow:
+                break;
+            case GameMode.LegDay:
+                break;
+            case GameMode.Lawless:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
+        }
+
+
+        return newFileName;
     }
 
     [Serializable]
@@ -136,21 +298,33 @@ public class SongInfo
         [SerializeField]
         private string _beatmapCharacteristicName;
 
+        [SerializeField]
+        private GameMode _mapGameMode;
+
+        public GameMode MapGameMode => _mapGameMode;
         public DifficultyInfo[] DifficultyInfos => _difficultyBeatmaps;
+
         public string BeatMapName
         {
-            get
-            {
-                return _beatmapCharacteristicName?? GameMode.Normal.GetDifficultySetName();
-            }
+            get { return _beatmapCharacteristicName ?? GameMode.Normal.GetDifficultySetName(); }
+        }
+
+        public void SetMapGameMode(GameMode gameMode)
+        {
+            _mapGameMode = gameMode;
+            _beatmapCharacteristicName = gameMode.GetDifficultySetName();
         }
 
         public void TryCreateMissingDifficulties()
         {
             var hardestSet = new DifficultyInfo();
+            var easyInfo = new DifficultyInfo();
             var hasEasy = false;
+            var normalInfo = new DifficultyInfo();
             var hasNormal = false;
+            var hardInfo = new DifficultyInfo();
             var hasHard = false;
+            var expertInfo = new DifficultyInfo();
             var hasExpert = false;
 
             foreach (var difficulty in _difficultyBeatmaps)
@@ -159,15 +333,19 @@ public class SongInfo
                 {
                     case var b when difficulty.DifficultyRank <= DifficultyInfo.EASY:
                         hasEasy = true;
+                        easyInfo = difficulty;
                         break;
                     case var b when difficulty.DifficultyRank <= DifficultyInfo.NORMAL:
                         hasNormal = true;
+                        normalInfo = difficulty;
                         break;
                     case var b when difficulty.DifficultyRank <= DifficultyInfo.HARD:
                         hasHard = true;
+                        hardInfo = difficulty;
                         break;
                     case var b when difficulty.DifficultyRank <= DifficultyInfo.EXPERT:
                         hasExpert = true;
+                        expertInfo = difficulty;
                         break;
                 }
 
@@ -182,48 +360,63 @@ public class SongInfo
                 return;
             }
 
-            var allDifficulties = new List<DifficultyInfo>(_difficultyBeatmaps);
-
+            _difficultyBeatmaps = new DifficultyInfo[4];
             if (!hasEasy)
             {
-                var easy = hardestSet;
-                easy.SetDifficulty($"{AUTONAME}{EASY}", DifficultyInfo.EASY,
-                    hardestSet.DifficultyRank > DifficultyInfo.EASY);
-                allDifficulties.Add(easy);
+                easyInfo = SetDifficultyName(hardestSet, DifficultyInfo.EASY);
             }
 
             if (!hasNormal)
             {
-                var normal = hardestSet;
-                normal.SetDifficulty($"{AUTONAME}{NORMAL}", DifficultyInfo.NORMAL,
-                    hardestSet.DifficultyRank > DifficultyInfo.NORMAL);
-                allDifficulties.Add(normal);
+                normalInfo = SetDifficultyName(hardestSet, DifficultyInfo.NORMAL);
             }
 
             if (!hasHard)
             {
-                var hard = hardestSet;
-                hard.SetDifficulty($"{AUTONAME}{HARD}", DifficultyInfo.HARD,
-                    hardestSet.DifficultyRank > DifficultyInfo.HARD);
-                allDifficulties.Add(hard);
+                hardInfo = SetDifficultyName(hardestSet, DifficultyInfo.HARD);
             }
 
             if (!hasExpert)
             {
-                var expert = hardestSet;
-                expert.SetDifficulty($"{AUTONAME}{EXPERT}", DifficultyInfo.EXPERT,
-                    hardestSet.DifficultyRank > DifficultyInfo.EXPERT);
-                allDifficulties.Add(expert);
+                expertInfo = SetDifficultyName(hardestSet, DifficultyInfo.EXPERT);
             }
 
-            allDifficulties.Sort((x, y) => x.DifficultyRank.CompareTo(y.DifficultyRank));
-            _difficultyBeatmaps = allDifficulties.ToArray();
+            _difficultyBeatmaps[0] = easyInfo;
+            _difficultyBeatmaps[1] = normalInfo;
+            _difficultyBeatmaps[2] = hardInfo;
+            _difficultyBeatmaps[3] = expertInfo;
+        }
+
+        private DifficultyInfo SetDifficultyName(DifficultyInfo info, int difficulty)
+        {
+            var newDifficulty = info;
+            switch (difficulty)
+            {
+                case DifficultyInfo.EASY:
+                    newDifficulty.SetDifficulty($"{AUTONAME}{EASY}", DifficultyInfo.EASY,
+                        info.DifficultyRank > DifficultyInfo.EASY);
+                    break;
+                case DifficultyInfo.NORMAL:
+                    newDifficulty.SetDifficulty($"{AUTONAME}{NORMAL}", DifficultyInfo.NORMAL,
+                        info.DifficultyRank > DifficultyInfo.NORMAL);
+                    break;
+                case DifficultyInfo.HARD:
+                    newDifficulty.SetDifficulty($"{AUTONAME}{HARD}", DifficultyInfo.HARD,
+                        info.DifficultyRank > DifficultyInfo.HARD);
+                    break;
+                case DifficultyInfo.EXPERT:
+                    newDifficulty.SetDifficulty($"{AUTONAME}{EXPERT}", DifficultyInfo.EXPERT,
+                        info.DifficultyRank > DifficultyInfo.EXPERT);
+                    break;
+            }
+
+            return newDifficulty;
         }
 
         public void RemoveExpertPlus()
         {
             if (_difficultyBeatmaps.Length - 1 > -1 &&
-                _difficultyBeatmaps[_difficultyBeatmaps.Length - 1].Difficulty == EXPERTPLUS)
+                _difficultyBeatmaps[^1].DifficultyRank >= DifficultyInfo.EXPERTPLUS) // ^1 is the last in array
             {
                 var newArray = new DifficultyInfo[_difficultyBeatmaps.Length - 1];
                 for (var i = 0; i < newArray.Length; i++)
@@ -234,8 +427,27 @@ public class SongInfo
                 _difficultyBeatmaps = newArray;
             }
         }
+
+        public void SetFileName(string fileName)
+        {
+            var beatmaps = new DifficultyInfo[_difficultyBeatmaps.Length];
+            for (var i = 0; i < _difficultyBeatmaps.Length; i++)
+            {
+                beatmaps[i] = _difficultyBeatmaps[i];
+                beatmaps[i].SetFileName(fileName);
+            }
+
+            _difficultyBeatmaps = beatmaps;
+        }
     }
 
+    public struct UnManagedDifficultySet
+    {
+        [SerializeField]
+        private GameMode _mapGameMode;
+
+        public GameMode MapGameMode => _mapGameMode;
+    }
 
     public enum SortingMethod
     {

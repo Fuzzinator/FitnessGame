@@ -12,7 +12,7 @@ public static class StringCaching
 
     static StringCaching()
     {
-        Seconds = new string[60];
+        /*Seconds = new string[60];
         for (var i = 0; i < Seconds.Length; i++)
         {
             Seconds[i] = i.ToString(SECONDSFORMAT);
@@ -22,7 +22,7 @@ public static class StringCaching
         for (var time = 0; time < CachedInts.Length; time++)
         {
             CachedInts[time] = time.ToString();
-        }
+        }*/
     }
 
     public static string GetCachedSecondsString(this int value)

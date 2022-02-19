@@ -42,79 +42,41 @@ namespace GameModeManagement
         private const string DISPLAYLAWLESS = "Lawless";
 
         #endregion
-        
+
+        private static readonly string[] _difficultySetNames = new[]
+        {
+            NORMAL,
+            NORMAL,
+            JABSONLY,
+            ONEHANDED,
+            DEGREE90,
+            DEGREE360,
+            LIGHTSHOW,
+            LEGDAY,
+            LAWLESS
+        };
+
+        private static readonly string[] _difficultySetDisplayNames = new[]
+        {
+            DISPLAYNORMAL,
+            DISPLAYNORMAL,
+            DISPLAYJABSONLY,
+            DISPLAYONEHANDED,
+            DISPLAYDEGREE90,
+            DISPLAYDEGREE360,
+            DISPLAYLIGHTSHOW,
+            DISPLAYLEGDAY,
+            DISPLAYLAWLESS
+        };
+            
         public static string GetDifficultySetName(this GameMode gameMode)
         {
-            var name = string.Empty;
-            switch (gameMode)
-            {
-                case GameMode.Unset://For now this may change later
-                case GameMode.Normal:
-                    name = NORMAL;
-                    break;
-                case GameMode.JabsOnly:
-                    name = JABSONLY;
-                    break;
-                case GameMode.OneHanded:
-                    name = ONEHANDED;
-                    break;
-                case GameMode.Degrees90:
-                    name = DEGREE90;
-                    break;
-                case GameMode.Degrees360:
-                    name = DEGREE360;
-                    break;
-                case GameMode.LightShow:
-                    name = LIGHTSHOW;
-                    break;
-                case GameMode.LegDay:
-                    name = LEGDAY;
-                    break;
-                case GameMode.Lawless:
-                    name = LAWLESS;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(gameMode), gameMode, null);
-            }
-
-            return name;
+            return _difficultySetNames[(int)gameMode];
         }
         
         public static string GetDisplayName(this GameMode gameMode)
         {
-            var name = string.Empty;
-            switch (gameMode)
-            {
-                case GameMode.Unset://For now this may change later
-                case GameMode.Normal:
-                    name = DISPLAYNORMAL;
-                    break;
-                case GameMode.JabsOnly:
-                    name = DISPLAYJABSONLY;
-                    break;
-                case GameMode.OneHanded:
-                    name = DISPLAYONEHANDED;
-                    break;
-                case GameMode.Degrees90:
-                    name = DISPLAYDEGREE90;
-                    break;
-                case GameMode.Degrees360:
-                    name = DISPLAYDEGREE360;
-                    break;
-                case GameMode.LightShow:
-                    name = DISPLAYLIGHTSHOW;
-                    break;
-                case GameMode.LegDay:
-                    name = DISPLAYLEGDAY;
-                    break;
-                case GameMode.Lawless:
-                    name = DISPLAYLAWLESS;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(gameMode), gameMode, null);
-            }
-
-            return name;
+            return _difficultySetDisplayNames[(int) gameMode];
         }
         
         public static GameMode GetGameMode(this string gameModeName)

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using EnhancedUI.EnhancedScroller;
+using GameModeManagement;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,12 +15,16 @@ namespace UI.Scrollers.Playlists
         private TextMeshProUGUI _songName;
 
         [SerializeField]
+        private TextMeshProUGUI _songGameMode;
+        
+        [SerializeField]
         private TextMeshProUGUI _songDifficulty;
 
         [SerializeField] private Image _invalidIndicator;
         public void SetData(PlaylistItem item)
         {
             _songName.SetText(item.SongName);
+            _songGameMode.SetText(item.TargetGameMode.GetDisplayName());
             _songDifficulty.SetText(item.Difficulty);
             SetInvalidIndicator(item).Forget();
         }

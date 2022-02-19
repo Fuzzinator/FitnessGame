@@ -21,6 +21,7 @@ public class LoadingDisplay : MonoBehaviour, IPoolable
     public PoolManager MyPoolManager { get; set; }
     public bool IsPooled { get; set; }
 
+    
     private void Start()
     {
         _cancellationToken = this.GetCancellationTokenOnDestroy();

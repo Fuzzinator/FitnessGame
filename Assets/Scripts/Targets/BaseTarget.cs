@@ -90,9 +90,12 @@ public class BaseTarget : MonoBehaviour, IPoolable
     {
         if (!_wasHit)
         {
-            foreach (var missEffect in _missedHitEffects)
+            if (_missedHitEffects != null)
             {
-                missEffect.TriggerMissEffect();
+                foreach (var missEffect in _missedHitEffects)
+                {
+                    missEffect.TriggerMissEffect();
+                }
             }
         }
 
@@ -104,7 +107,10 @@ public class BaseTarget : MonoBehaviour, IPoolable
 
         ActiveTargetManager.Instance.RemoveActiveTarget(this);
         MyPoolManager.ReturnToPool(this);
-        parentFormation.Remove(this);
+        if (parentFormation != null)
+        {
+            parentFormation.Remove(this);
+        }
     }
 
     protected bool IsHit(Collider col, out Hand hand)
@@ -114,7 +120,7 @@ public class BaseTarget : MonoBehaviour, IPoolable
             hand = null;
             return false;
         }
-        
+
         var hasHand = HandTracker.TryGetHand(col, out hand);
         if (!hasHand)
         {

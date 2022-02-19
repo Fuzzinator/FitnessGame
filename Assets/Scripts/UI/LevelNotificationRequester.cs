@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cysharp.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -16,6 +17,8 @@ public class LevelNotificationRequester : MonoBehaviour
     private const string GOODHITS = "Good Hits: ";
     private const string MISSEDHITS = "Missed Hits: ";
     private const string HITOBSTACLES = "Hit Obstacles: ";
+    private const string ENDSONGSTATSFORMAT = "{}{}\n{}{}\n{}{}\n{}{}";
+    private const string ENDLEVELSTATSFORMAT = "{}{}\n{}{}\n{}{}\n{}{}";
 
     private LevelNotificationRequester()
     {
@@ -40,7 +43,15 @@ public class LevelNotificationRequester : MonoBehaviour
         var goodHits = (int)ScoringManager.Instance.GoodHitsThisSong;
         var missedHits = (int)ScoringManager.Instance.MissedTargetsThisSong;
         var hitObstacles = (int)ScoringManager.Instance.HitObstaclesThisSong;
-        var message = $"{SONGSCORE}{score}\n{GOODHITS}{goodHits.TryGetCachedIntString()}\n{MISSEDHITS}{missedHits.TryGetCachedIntString()}\n{HITOBSTACLES}{hitObstacles.TryGetCachedIntString()}";
+        string message;
+        using (var sb = ZString.CreateStringBuilder(true))
+        {
+            sb.AppendFormat(ENDSONGSTATSFORMAT, SONGSCORE,score,GOODHITS,goodHits,MISSEDHITS,missedHits,HITOBSTACLES,hitObstacles);
+
+            //var buffer = sb.AsArraySegment();
+            message = sb.ToString(); //(buffer.Array, buffer.Offset, buffer.Count);
+        }
+        
         var visuals = new Notification.NotificationVisuals(message, SONGCOMPLETE, disableUI:false, autoTimeOutTime:4f, popUp:true);
         NotificationManager.RequestNotification(visuals,  _mainMenuAction);
     }
@@ -51,7 +62,16 @@ public class LevelNotificationRequester : MonoBehaviour
         var goodHits = (int)ScoringManager.Instance.GoodHits;
         var missedHits = (int)ScoringManager.Instance.MissedTargets;
         var hitObstacles = (int)ScoringManager.Instance.HitObstacles;
-        var message = $"{TOTALSCORE}{totalScore}\n{GOODHITS}{goodHits.TryGetCachedIntString()}\n{MISSEDHITS}{missedHits.TryGetCachedIntString()}\n{HITOBSTACLES}{hitObstacles.TryGetCachedIntString()}";
+
+        string message;
+        using (var sb = ZString.CreateStringBuilder(true))
+        {
+            sb.AppendFormat(ENDLEVELSTATSFORMAT, TOTALSCORE, totalScore,GOODHITS,goodHits,MISSEDHITS,missedHits,HITOBSTACLES,hitObstacles);
+
+            //var buffer = sb.AsArraySegment();
+            message = sb.ToString(); //(buffer.Array, buffer.Offset, buffer.Count);
+        }
+        
         var visuals = new Notification.NotificationVisuals(message, WORKOUTCOMPLETE, FINISHBUTTON, disableUI:false);
         NotificationManager.RequestNotification(visuals,  _mainMenuAction);
     }

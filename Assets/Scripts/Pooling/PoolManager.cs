@@ -22,7 +22,7 @@ public class PoolManager
         }
         else
         {
-            var objToReturn = Object.Instantiate(_poolableObj as Object) as IPoolable;
+            var objToReturn = Object.Instantiate(_poolableObj as Object, poolParent) as IPoolable;
             if (objToReturn != null)
             {
                 objToReturn.MyPoolManager = this;
@@ -41,9 +41,20 @@ public class PoolManager
         _pooledObjs.Add(poolable);
     }
 
-    public PoolManager(IPoolable poolable, Transform poolParent)
+    public PoolManager(IPoolable poolable, Transform poolParent, int initialSize = 10)
     {
         _poolableObj = poolable;
         this.poolParent = poolParent;
+        
+        var tempPoolables = new IPoolable[initialSize];
+        for (var i = 0; i < initialSize; i++)
+        {
+            tempPoolables[i] = GetNewPoolable();
+        }
+
+        for (var i = 0; i < tempPoolables.Length; i++)
+        {
+            tempPoolables[i].ReturnToPool();
+        }
     }
 }

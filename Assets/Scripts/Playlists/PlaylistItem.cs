@@ -74,7 +74,8 @@ public struct PlaylistItem
     {
         return StringMatches(item1.SongName, item2.SongName) &&
                StringMatches(item1.FileLocation, item2.FileLocation) &&
-               StringMatches(item1.Difficulty, item2.Difficulty);
+               StringMatches(item1.Difficulty, item2.Difficulty) &&
+               item1.TargetGameMode == item2.TargetGameMode;
     }
 
     public static bool operator !=(PlaylistItem item1, PlaylistItem item2)
@@ -84,7 +85,7 @@ public struct PlaylistItem
 
     public bool Equals(PlaylistItem other)
     {
-        return _songName == other._songName && _fileLocation == other._fileLocation && _difficulty == other._difficulty;
+        return _songName == other._songName && _fileLocation == other._fileLocation && _difficulty == other._difficulty && TargetGameMode == other.TargetGameMode;
     }
 
     public override bool Equals(object obj)

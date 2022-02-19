@@ -26,7 +26,7 @@ public class SongInfoReader : MonoBehaviour
     private CancellationTokenSource _cancellationSource;
 
     public int Difficulty => _difficultyInfo.DifficultyRank;
-    
+
     public float NoteSpeed => _difficultyInfo.MovementSpeed;
     public float BeatsPerMinute => songInfo.BeatsPerMinute;
 
@@ -63,7 +63,7 @@ public class SongInfoReader : MonoBehaviour
         SubscribeToPlaylistUpdating();
         _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
     }
-    
+
     private void OnDestroy()
     {
         if (Instance == this)
@@ -74,9 +74,7 @@ public class SongInfoReader : MonoBehaviour
 
     public void LoadJson(PlaylistItem item)
     {
-#pragma warning disable 4014
-        AsyncLoadJson(item);
-#pragma warning restore 4014
+        AsyncLoadJson(item).Forget();
     }
 
 
@@ -168,7 +166,7 @@ public class SongInfoReader : MonoBehaviour
     {
         return $"{songInfo.SongName}-{songInfo.fileLocation}-{songInfo.SongLength}";
     }
-    
+
     public AudioClip GetCurrentSong()
     {
         return null;

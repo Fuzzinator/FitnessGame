@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using Cysharp.Text;
 using Cysharp.Threading.Tasks;
 using InfoSaving;
 using TMPro;
@@ -65,8 +66,22 @@ namespace UI.Scrollers.Playlists
             _scrollerController.ReloadScroller();
 
             var playlistRecord = await GetPlaylistRecord();
-            _playlistRecordScore.SetText(playlistRecord.Score.ToString());
-            _playlistRecordStreak.SetText(playlistRecord.Streak.TryGetCachedIntString());
+            
+            
+            using (var sb = ZString.CreateStringBuilder(true))
+            {
+                sb.Append(playlistRecord.Score);
+
+                var buffer = sb.AsArraySegment();
+                _playlistRecordScore.SetCharArray(buffer.Array, buffer.Offset, buffer.Count);
+            }
+            using (var sb = ZString.CreateStringBuilder(true))
+            {
+                sb.Append(playlistRecord.Streak);
+
+                var buffer = sb.AsArraySegment();
+                _playlistRecordStreak.SetCharArray(buffer.Array, buffer.Offset, buffer.Count);
+            }
         }
 
         private void TryLoadBaseLevel()

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
+using Cysharp.Text;
 using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
@@ -11,8 +12,6 @@ public class PlaylistCountdownClock : MonoBehaviour
 {
     [SerializeField]
     private TextMeshProUGUI _minutesText;
-    [SerializeField]
-    private TextMeshProUGUI _secondsText;
 
     private float _timeRemaining = 0;
     private bool _clockRunning = false;
@@ -22,6 +21,8 @@ public class PlaylistCountdownClock : MonoBehaviour
 
 
     private const int MINUTE = 60;
+    private const string DIVIDER = ":";
+    
     private CancellationTokenSource _source;
 
     private void OnEnable()
@@ -80,8 +81,23 @@ public class PlaylistCountdownClock : MonoBehaviour
         var minutes = (int)Mathf.Floor(_timeRemaining / MINUTE);
         var seconds = (int)Mathf.Floor(_timeRemaining % MINUTE);
 
-        _minutesText.SetText(minutes.TryGetCachedIntString());
-        _secondsText.SetText(seconds.GetCachedSecondsString());
+        using (var sb = ZString.CreateStringBuilder(true))
+        {
+            if (minutes < 10)
+            {
+                sb.Append(0);
+            }
+            sb.Append(minutes);
+            sb.Append(DIVIDER);
+            if (seconds < 10)
+            {
+                sb.Append(0);
+            }
+            sb.Append(seconds);
+
+            var buffer = sb.AsArraySegment();
+            _minutesText.SetCharArray(buffer.Array, buffer.Offset, buffer.Count);
+        }
     }
 
     public void SongFailedToLoad()

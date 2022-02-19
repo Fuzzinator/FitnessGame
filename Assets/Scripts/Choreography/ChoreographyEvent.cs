@@ -1,9 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Burst;
 using UnityEngine;
+using Random = Unity.Mathematics.Random;
 
 [Serializable]
+[BurstCompile]
 public struct ChoreographyEvent : ISequenceable //First release wont use this probably
 {
     public float Time => _time;
@@ -20,11 +23,19 @@ public struct ChoreographyEvent : ISequenceable //First release wont use this pr
     private LightEventValue _value;
 
     private static readonly float[] _rotationValues = new[] {-60f, -45f, -30f, -15f, 15f, 30f, 45f, 60f};
-    public float RotationValue => _rotationValues[Mathf.Clamp((int) _value, 0, _rotationValues.Length-1)];
+    public float RotationValue => _rotationValues[Mathf.Clamp((int) _value, 0, _rotationValues.Length - 1)];
 
     public HitSideType HitSideType
     {
         get { return HitSideType.Unused; }
+    }
+
+    public ChoreographyEvent(float time, EventType type, Random random)
+    {
+        _time = time;
+        _type = type;
+        _value = (LightEventValue) random.NextInt((int) LightEventValue.LightOff,
+            (int) LightEventValue.FlashLightToBlackLeft);
     }
 
     public enum EventType

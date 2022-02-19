@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using Cysharp.Text;
 using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
@@ -17,14 +18,11 @@ public class UpdateScoreDisplay : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI _currentScore;
 
-    [SerializeField]
-    private TextMeshProUGUI _plusSymbol;
-    
-
     private bool _delayingUpdate = false;
     private uint _increaseAmount;
     private CancellationToken _token;
-    
+
+    private const string ADD = "+";
 
     private void Start()
     {
@@ -34,11 +32,19 @@ public class UpdateScoreDisplay : MonoBehaviour
     public void ScoreUpdated(uint increaseAmount)
     {
         _increaseAmount = increaseAmount;
-        _plusSymbol.gameObject.SetActive(true);
-        _scoreIncrease.SetText(((int)increaseAmount).TryGetCachedIntString());
+        
+        using (var sb = ZString.CreateStringBuilder(true))
+        {
+            sb.Append(ADD);
+            sb.Append(increaseAmount);
+
+            var buffer = sb.AsArraySegment();
+            _scoreIncrease.SetCharArray(buffer.Array, buffer.Offset, buffer.Count);
+        }
+        
         if (_delayingUpdate)
         {
-            _currentScore.SetText((ScoringManager.Instance.CurrentScore-increaseAmount).ToString());
+            SetScoreDisplay(ScoringManager.Instance.CurrentScore-increaseAmount);
         }
 
         AsyncScoreUpdate(increaseAmount).Forget();
@@ -51,9 +57,8 @@ public class UpdateScoreDisplay : MonoBehaviour
             await UniTask.Delay(TimeSpan.FromSeconds(_delayLength), cancellationToken: _token);
             if (_increaseAmount == increaseAmount)
             {
-                _currentScore.SetText((ScoringManager.Instance.CurrentScore).ToString());
+                SetScoreDisplay(ScoringManager.Instance.CurrentScore);
 
-                _plusSymbol.gameObject.SetActive(false);
                 _scoreIncrease.SetText(string.Empty);
             }
 
@@ -61,6 +66,17 @@ public class UpdateScoreDisplay : MonoBehaviour
         }
         catch (Exception e) when (e is OperationCanceledException)
         {
+        }
+    }
+
+    public void SetScoreDisplay(ulong score)
+    {
+        using (var sb = ZString.CreateStringBuilder(true))
+        {
+            sb.Append(score);
+
+            var buffer = sb.AsArraySegment();
+            _currentScore.SetCharArray(buffer.Array, buffer.Offset, buffer.Count);
         }
     }
 }

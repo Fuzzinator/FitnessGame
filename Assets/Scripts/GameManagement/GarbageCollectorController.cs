@@ -17,7 +17,7 @@ public class GarbageCollectorController : MonoBehaviour
     void Start()
     {
         _cancellationToken = this.GetCancellationTokenOnDestroy();
-        //BackgroundGarbageCollectorAsync().Forget();
+        BackgroundGarbageCollectorAsync().Forget();
     }
 
     public void SetGarbageCollectorState(bool enabled)
@@ -29,10 +29,10 @@ public class GarbageCollectorController : MonoBehaviour
 
     public void RunGarbageCollector()
     {
-        RunGarbageCollectorAsync().Forget();
+        RunGarbageCollectorAsync(1000000).Forget();
     }
 
-    private async UniTaskVoid RunGarbageCollectorAsync()
+    private async UniTask RunGarbageCollectorAsync(ulong nanoseconds)
     {
         for (var i = 0; i < _frameCount; i++)
         {
@@ -42,7 +42,7 @@ public class GarbageCollectorController : MonoBehaviour
                 return;
             }
 
-            GarbageCollector.CollectIncremental(1000000 );
+            GarbageCollector.CollectIncremental( );
         }
     }
 
@@ -50,7 +50,8 @@ public class GarbageCollectorController : MonoBehaviour
     {
         while (!_cancellationToken.IsCancellationRequested)
         {
-            GarbageCollector.CollectIncremental(100000);
+            GarbageCollector.CollectIncremental(10000);
+            //await RunGarbageCollectorAsync(10000);
             await UniTask.Delay(TimeSpan.FromSeconds(1f), cancellationToken:_cancellationToken);
         }
     }

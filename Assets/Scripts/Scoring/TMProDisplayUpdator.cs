@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cysharp.Text;
 using TMPro;
 using UnityEngine;
 
@@ -15,22 +16,48 @@ public class TMProDisplayUpdator : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI _targetText;
 
-    public void UpdateText(string newText)
+    private const string FORMAT = "{0}{1}{2}";
+    
+    public void UpdateText(string value)
     {
-        _targetText.SetText($"{_prefix}{newText}{_suffix}");
+        using (var sb = ZString.CreateStringBuilder(true))
+        {
+            sb.AppendFormat(FORMAT, _prefix, value, _suffix);
+
+            var buffer = sb.AsArraySegment();
+            _targetText.SetCharArray(buffer.Array, buffer.Offset, buffer.Count);
+        }
     }
     public void UpdateText(ulong value)
     {
-        _targetText.SetText($"{_prefix}{value}{_suffix}");
+        using (var sb = ZString.CreateStringBuilder(true))
+        {
+            sb.AppendFormat(FORMAT, _prefix, value, _suffix);
+
+            var buffer = sb.AsArraySegment();
+            _targetText.SetCharArray(buffer.Array, buffer.Offset, buffer.Count);
+        }
     }
     
     public void UpdateText(int value)
     {
-        _targetText.SetText(value.TryGetCachedIntString());
+        using (var sb = ZString.CreateStringBuilder(true))
+        {
+            sb.AppendFormat(FORMAT, _prefix, value, _suffix);
+
+            var buffer = sb.AsArraySegment();
+            _targetText.SetCharArray(buffer.Array, buffer.Offset, buffer.Count);
+        }
     }
 
-    public void UpdateText(System.Object willBeText)
+    public void UpdateText<T>(T value)
     {
-        _targetText.SetText($"{_prefix}{willBeText}{_suffix}");
+        using (var sb = ZString.CreateStringBuilder(true))
+        {
+            sb.AppendFormat(FORMAT, _prefix, value, _suffix);
+
+            var buffer = sb.AsArraySegment();
+            _targetText.SetCharArray(buffer.Array, buffer.Offset, buffer.Count);
+        }
     }
 }

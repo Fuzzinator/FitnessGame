@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cysharp.Text;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Random = System.Random;
@@ -15,6 +16,8 @@ public struct Playlist
     [SerializeField]
     private float _length;
 
+    //private const string LENGTHFORMAT = "{0}:{1}";
+    private const string DIVIDER = ":";
     public float Length => _length;
 
     public string ReadableLength
@@ -23,7 +26,25 @@ public struct Playlist
         {
             var minutes = (int)Mathf.Floor(_length / MINUTE);
             var seconds = (int)Mathf.Floor(_length % MINUTE);
-            return $"{minutes.TryGetCachedIntString()}:{seconds.GetCachedSecondsString()}";
+            using (var sb = ZString.CreateStringBuilder(true))
+            {
+                //sb.AppendFormat(LENGTHFORMAT, minutes, seconds);
+
+                if (minutes < 10)
+                {
+                    sb.Append(0);
+                }
+                sb.Append(minutes);
+                sb.Append(DIVIDER);
+                if (seconds < 10)
+                {
+                    sb.Append(0);
+                }
+                sb.Append(seconds);
+                
+                //var buffer = sb.AsArraySegment();
+                return sb.ToString();
+            }
         }
     }
 

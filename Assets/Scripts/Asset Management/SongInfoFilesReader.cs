@@ -6,6 +6,10 @@ using System.IO.Compression;
 using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
+using GameModeManagement;
+using Unity.Burst;
+using Unity.Collections;
+using Unity.Jobs;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 #if UNITY_ANDROID && !UNITY_EDITOR
@@ -43,7 +47,7 @@ public class SongInfoFilesReader : MonoBehaviour
     private const string ANDROIDPATHSTART = "file://";
     private const string SONGSFOLDER = "/Resources/Songs/";
 #elif UNITY_EDITOR
-    private const string UNITYEDITORLOCATION =  "/LocalCustomSongs/Songs/";
+    private const string UNITYEDITORLOCATION = "/LocalCustomSongs/Songs/";
 #endif
 
     private const string SONGINFONAME = "Info.txt";
@@ -68,7 +72,7 @@ public class SongInfoFilesReader : MonoBehaviour
         _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
         _destructionCancellationToken = this.GetCancellationTokenOnDestroy();
     }
-    
+
     private void OnDestroy()
     {
         if (Instance == this)
@@ -151,17 +155,13 @@ public class SongInfoFilesReader : MonoBehaviour
                     var streamReader = new StreamReader(file.FullName);
                     var result = await streamReader.ReadToEndAsync().AsUniTask()
                         .AttachExternalCancellation(_destructionCancellationToken);
-                    
+
                     var item = JsonUtility.FromJson<SongInfo>(result);
 
                     streamReader.Close();
 
-                    for (var i = 0; i < item.DifficultySets.Length; i++)
-                    {
-                        item.DifficultySets[i].TryCreateMissingDifficulties();
-                        item.DifficultySets[i].RemoveExpertPlus();
-                    }
-                    
+                    var updatedMaps = await item.UpdateDifficultySets(_destructionCancellationToken);
+
                     if (file.Directory != null)
                     {
                         item.fileLocation = file.Directory.Name;
@@ -172,6 +172,12 @@ public class SongInfoFilesReader : MonoBehaviour
                     {
                         var songLength = await TryGetSongLength(item, songLoader);
                         item.SongLength = songLength;
+                        updatedMaps = true;
+                    }
+
+                    if (updatedMaps)
+                    {
+                        await UniTask.DelayFrame(1, cancellationToken: _cancellationSource.Token);
                         using (var streamWriter = new StreamWriter(file.FullName))
                         {
                             await streamWriter.WriteAsync(JsonUtility.ToJson(item));
@@ -261,4 +267,18 @@ public class SongInfoFilesReader : MonoBehaviour
                 break;
         }
     }
+    /*private struct CreateMissingDifficultiesJob : IJobParallelFor
+    {
+        private NativeArray<SongInfo.DifficultySet> _difficultySets;
+        public NativeArray<SongInfo.DifficultySet> DifficultySets => _difficultySets;
+        public CreateMissingDifficultiesJob(NativeArray<SongInfo.DifficultySet> difficultySets)
+        {
+            _difficultySets = difficultySets;
+        }
+        
+        public void Execute(int index)
+        {
+            
+        }
+    }*/
 }
