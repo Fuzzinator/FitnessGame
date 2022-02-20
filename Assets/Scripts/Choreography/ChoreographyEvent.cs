@@ -30,12 +30,11 @@ public struct ChoreographyEvent : ISequenceable //First release wont use this pr
         get { return HitSideType.Unused; }
     }
 
-    public ChoreographyEvent(float time, EventType type, Random random)
+    public ChoreographyEvent(float time, EventType type, RotateEventValue eventValue)
     {
         _time = time;
         _type = type;
-        _value = (LightEventValue) random.NextInt((int) LightEventValue.LightOff,
-            (int) LightEventValue.FlashLightToBlackLeft);
+        _value = (LightEventValue)eventValue;
     }
 
     public enum EventType

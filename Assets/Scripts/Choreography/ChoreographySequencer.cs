@@ -1,9 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using DG.Tweening.Plugins.Core.PathCore;
 using GameModeManagement;
+using SimpleTweens;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Events;
@@ -58,6 +61,8 @@ public class ChoreographySequencer : MonoBehaviour
 
     private PoolManager _rightObstaclePool;
 
+    private SimpleTweenPool _tweenPool;
+
     [Header("Sequence Positioning")]
     [SerializeField]
     private Transform _formationStart;
@@ -88,9 +93,8 @@ public class ChoreographySequencer : MonoBehaviour
     private float _currentRotation = 0;
     private const float MAX90ROTATION = 45;
 
-
-    private List<Sequence> _activeSequences = new List<Sequence>();
-
+    private CancellationToken _cancellationToken;
+    
     [SerializeField]
     private HitSideType _currentStance = HitSideType.Left;
 
@@ -133,6 +137,9 @@ public class ChoreographySequencer : MonoBehaviour
         _leftObstaclePool = new PoolManager(_leftObstacle, thisTransform);
         _rightObstaclePool = new PoolManager(_rightObstacle, thisTransform);
 
+        _cancellationToken = this.GetCancellationTokenOnDestroy();
+        _tweenPool = new SimpleTweenPool(20, _cancellationToken);
+
         var position = _formationStart.position;
         _meterDistance = Vector3.Distance(position, _formationEnd.position);
         _optimalPointDistance = Vector3.Distance(position, _optimalStrikePoint.position);
@@ -153,12 +160,7 @@ public class ChoreographySequencer : MonoBehaviour
 
     private void OnDestroy()
     {
-        while (_activeSequences.Count > 0)
-        {
-            var sequence = _activeSequences[0];
-            _activeSequences.Remove(sequence);
-            sequence.Complete();
-        }
+        _tweenPool.CompleteAllActive();
     }
 
     private void GameStateListener(GameState oldState, GameState newState)
@@ -200,24 +202,21 @@ public class ChoreographySequencer : MonoBehaviour
         _songStartTime = Time.time;
         _delayStartTime = 0;
         _pauseOffset = 0;
-        DOTween.Init(true);
-        _sequence = DOTween.Sequence();
-
-        var formationSequence = CreateSequence(formations[0], 1);
-        _activeSequences.Add(formationSequence);
+        
+        var formationTween = CreateSequence(formations[0], 1);
         SequenceRunning = true;
         _sequenceUnstartedOrFinished = false;
         LevelManager.Instance.SetChoreographyCompleted(false);
     }
 
-    private Sequence CreateSequence(ChoreographyFormation formation, int nextFormationIndex)
+    private SimpleTween CreateSequence(ChoreographyFormation formation, int nextFormationIndex)
     {
         if (formation.HasEvent && formation.Event.Type == ChoreographyEvent.EventType.EarlyRotation)
         {
             RotateSpawnSource(formation.Event.RotationValue);
         }
 
-        var sequence = DOTween.Sequence();
+        //var sequence = DOTween.Sequence();
 
         var formationHolder = _formationHolderPool.GetNewPoolable() as FormationHolder;
         formationHolder.gameObject.SetActive(true);
@@ -226,18 +225,15 @@ public class ChoreographySequencer : MonoBehaviour
         formationTransform.position = _formationStart.position;
         formationTransform.rotation = _formationStart.rotation;
 
-        var tweenSpeed = _meterDistance / SongInfoReader.Instance.NoteSpeed;
+        var tweenSpeed = _meterDistance*10 / SongInfoReader.Instance.NoteSpeed;
+
         
-        var tween = formationHolder.transform.DOMove(_formationEnd.position, tweenSpeed);
+        formationHolder.SetUp(this, formation, nextFormationIndex, _optimalStrikePoint.position);
+        
+        var tweenData = new SimpleTween.Data(formationTransform, formationHolder.OnStartCallback,
+            formationHolder.OnCompleteCallback, _formationEnd.position, tweenSpeed);
+        var tween = _tweenPool.GetNewTween(tweenData);
 
-        tween.SetEase(Ease.Linear);
-
-        formationHolder.SetUp(this, formation, nextFormationIndex, sequence, _optimalStrikePoint.position);
-
-        tween.OnStart(formationHolder.OnStartCallback);
-        tween.OnComplete(formationHolder.OnCompleteCallback);
-    
-        formationHolder.MyTween = tween;
 
         var beatsTime = 60 / SongInfoReader.Instance.BeatsPerMinute;
         var time = (Time.time - (_songStartTime + _pauseOffset));
@@ -245,14 +241,14 @@ public class ChoreographySequencer : MonoBehaviour
 
         var delay = Mathf.Max(0, (formation.Time * beatsTime) - time - timeToPoint);
 
-        sequence.Insert(delay, tween);
+        tween.DelayTweenStart(delay).Forget();
 
         if (formation.HasEvent && formation.Event.Type == ChoreographyEvent.EventType.LateRotation)
         {
             RotateSpawnSource(formation.Event.RotationValue);
         }
 
-        return sequence;
+        return tween;
     }
 
     public void TryCreateNextSequence(int nextFormationIndex)
@@ -261,8 +257,6 @@ public class ChoreographySequencer : MonoBehaviour
         if (nextFormationIndex < formations.Count)
         {
             var formationSequence = CreateSequence(formations[nextFormationIndex], ++nextFormationIndex);
-
-            _activeSequences.Add(formationSequence);
         }
         else //Sequence is completed
         {
@@ -373,18 +367,9 @@ public class ChoreographySequencer : MonoBehaviour
         }
     }
 
-    public void RemoveSequence(Sequence sequence)
-    {
-        _activeSequences.Remove(sequence);
-    }
-
     public void ResetChoreography()
     {
-        while (_activeSequences.Count > 0)
-        {
-            var sequence = _activeSequences[0];
-            sequence.Complete();
-        }
+        _tweenPool.CompleteAllActive();
 
         _formationStart.RotateAround(_playerCenter.position, _playerCenter.up,  -_currentRotation);
         _currentRotation = 0;
@@ -392,10 +377,10 @@ public class ChoreographySequencer : MonoBehaviour
 
     public void PauseChoreography()
     {
-        foreach (var sequence in _activeSequences)
+        /*foreach (var sequence in _activeSequences)
         {
             sequence.Pause();
-        }
+        }*/
 
 
         _delayStartTime = Time.time;
@@ -405,10 +390,10 @@ public class ChoreographySequencer : MonoBehaviour
 
     public void ResumeChoreography()
     {
-        foreach (var sequence in _activeSequences)
+        /*foreach (var sequence in _activeSequences)
         {
             sequence.Play();
-        }
+        }*/
 
         _pauseOffset += Time.time - _delayStartTime;
         SequenceRunning = true;

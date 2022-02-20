@@ -9,7 +9,6 @@ using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using Random = UnityEngine.Random;
 
 [Serializable]
 public class Choreography
@@ -35,6 +34,11 @@ public class Choreography
 
     [SerializeField]
     private ChoreographyCustomData _customData;
+
+    private static readonly int[] TypeOptionsArray = new[]
+    {
+        0, 1, 2, 3, 4, 5, 6, 7, 1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 2, 3, 4, 5, 3, 4, 5, 3, 4, 3, 4
+    };
 
     #region Const Strings
 
@@ -155,11 +159,19 @@ public class Choreography
 
     public async UniTask AddRotationEventsAsync()
     {
+        var eventTypes = GetOptionTypes();
         var events = new NativeArray<ChoreographyEvent>(_events, Allocator.TempJob);
-        var jobHandle = new AddRotationEventsJob(events, (uint) (Time.time * Random.Range(1, 10)));
+        var jobHandle = new AddRotationEventsJob(events, eventTypes);
         await jobHandle.Schedule(events.Length, 8);
         _events = jobHandle.Events.ToArray();
+        
+        eventTypes.Dispose();
         events.Dispose();
+    }
+
+    private NativeArray<int> GetOptionTypes()
+    {
+        return new NativeArray<int>(TypeOptionsArray, Allocator.Persistent);
     }
 
     [BurstCompile]
@@ -170,30 +182,50 @@ public class Choreography
         private NativeArray<ChoreographyObstacle> _obstacles;
         private ChoreographyCustomData _customData;
     }
+}
 
-    //[BurstCompile]
-    private struct AddRotationEventsJob : IJobParallelFor
+//[BurstCompile]
+public struct AddRotationEventsJob : IJobParallelFor
+{
+    public readonly NativeArray<ChoreographyEvent> Events => _events;
+    private NativeArray<ChoreographyEvent> _events;
+    private uint _seed;
+    private const int INTERVAL = 10;
+
+    private readonly NativeArray<int> _eventTypes;
+
+    public AddRotationEventsJob(NativeArray<ChoreographyEvent> events, NativeArray<int> eventTypes)
     {
-        public NativeArray<ChoreographyEvent> Events => _events;
-        private NativeArray<ChoreographyEvent> _events;
-        private Unity.Mathematics.Random _random;
-        private const int INTERVAL = 10;
+        _events = events;
+        _eventTypes = eventTypes;
+        _seed = 0 + 118 + 999 + 881 + 999 + 119 + 725;
+    }
 
-        public AddRotationEventsJob(NativeArray<ChoreographyEvent> events, uint seed)
+    public void Execute(int index)
+    {
+        if (index % INTERVAL == 0)
         {
-            _events = events;
-            _random = new Unity.Mathematics.Random(seed);
+            _events[index] = new ChoreographyEvent(_events[index].Time,
+                (ChoreographyEvent.EventType) Math.Clamp((int) _events[index].Type * 1.5f,
+                    (int) ChoreographyEvent.EventType.EarlyRotation,
+                    (int) ChoreographyEvent.EventType.LateRotation), GetRotationEvent(index));
         }
+    }
 
-        public void Execute(int index)
+    private ChoreographyEvent.RotateEventValue GetRotationEvent(int index)
+    {
+        if (index + _seed > uint.MaxValue)
         {
-            if (index % INTERVAL == 0)
-            {
-                _events[index] = new ChoreographyEvent(_events[index].Time,
-                    (ChoreographyEvent.EventType) Math.Clamp((int) _events[index].Type * 2,
-                        (int) ChoreographyEvent.EventType.EarlyRotation,
-                        (int) ChoreographyEvent.EventType.LateRotation), _random);
-            }
+            index = (int)(index*.5);
         }
+        
+        var random = new Unity.Mathematics.Random((uint)(_seed+index));
+        var randValue = random.NextInt(0, _eventTypes.Length - 1);
+        for (var i = 0; i < INTERVAL; i++)
+        {
+            randValue = random.NextInt(0, _eventTypes.Length - 1);
+        }
+        var value = (ChoreographyEvent.RotateEventValue)_eventTypes[randValue];
+        return value;
     }
 }

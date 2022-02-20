@@ -17,8 +17,8 @@ public class LevelNotificationRequester : MonoBehaviour
     private const string GOODHITS = "Good Hits: ";
     private const string MISSEDHITS = "Missed Hits: ";
     private const string HITOBSTACLES = "Hit Obstacles: ";
-    private const string ENDSONGSTATSFORMAT = "{}{}\n{}{}\n{}{}\n{}{}";
-    private const string ENDLEVELSTATSFORMAT = "{}{}\n{}{}\n{}{}\n{}{}";
+    private const string ENDSONGSTATSFORMAT = "{0}{1}\n{2}{3}\n{4}{5}\n{6}{7}";
+    private const string ENDLEVELSTATSFORMAT = "{0}{1}\n{2}{3}\n{4}{5}\n{6}{7}";
 
     private LevelNotificationRequester()
     {

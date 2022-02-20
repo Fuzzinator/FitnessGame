@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using SimpleTweens;
 using UnityEngine;
 
 [Serializable]
@@ -14,15 +15,12 @@ public class  FormationHolder : MonoBehaviour, IPoolable
     private ChoreographySequencer _sequencer;
     private ChoreographyFormation _formation;
     private int _nextFormationIndex;
-    private Sequence _sequence;
     
     public Vector3 StrikePoint { get; private set; }
     
-    public TweenCallback OnStartCallback { get; private set; }
-    public TweenCallback OnCompleteCallback { get; private set; }
+    public Action OnStartCallback { get; private set; }
+    public Action OnCompleteCallback { get; private set; }
     
-    public Tween MyTween { get; set; }
-
     public PoolManager MyPoolManager
     {
         get => _myPoolManager;
@@ -59,10 +57,9 @@ public class  FormationHolder : MonoBehaviour, IPoolable
             return;
         }
         ReturnRemainingChildren();
-        _sequencer.RemoveSequence(_sequence);
     }
 
-    public void SetUp(ChoreographySequencer sequencer, ChoreographyFormation formation, int index, Sequence sequence, Vector3 strikePoint)
+    public void SetUp(ChoreographySequencer sequencer, ChoreographyFormation formation, int index, Vector3 strikePoint)
     {
         if (OnStartCallback == null)
         {
@@ -71,7 +68,6 @@ public class  FormationHolder : MonoBehaviour, IPoolable
         _sequencer = sequencer;
         _formation = formation;
         _nextFormationIndex = index;
-        _sequence = sequence;
         StrikePoint = strikePoint;
     }
     

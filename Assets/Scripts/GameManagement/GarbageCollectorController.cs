@@ -17,7 +17,7 @@ public class GarbageCollectorController : MonoBehaviour
     void Start()
     {
         _cancellationToken = this.GetCancellationTokenOnDestroy();
-        BackgroundGarbageCollectorAsync().Forget();
+        //BackgroundGarbageCollectorAsync().Forget();
     }
 
     public void SetGarbageCollectorState(bool enabled)
