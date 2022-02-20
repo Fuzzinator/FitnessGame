@@ -16,7 +16,8 @@ namespace GameModeManagement
         Degrees360 = 5,
         LightShow = 6,
         LegDay = 7,
-        Lawless = 8
+        NoObstacles = 8,
+        Lawless = 9
     }
 
     public static class GameModeExtensions
@@ -30,6 +31,7 @@ namespace GameModeManagement
         private const string DEGREE360 = "360Degree";
         private const string LIGHTSHOW = "Lightshow";
         private const string LEGDAY = "LegDay";
+        private const string NOOBSTACLES = "NoObstacles";
         private const string LAWLESS = "Lawless";
         
         private const string DISPLAYNORMAL = "Standard";
@@ -39,6 +41,7 @@ namespace GameModeManagement
         private const string DISPLAYDEGREE360 = "360 Degree";
         private const string DISPLAYLIGHTSHOW = "Lightshow";
         private const string DISPLAYLEGDAY = "Leg Day";
+        private const string DISPLAYNOOBSTACLES = "No Obstacles";
         private const string DISPLAYLAWLESS = "Lawless";
 
         #endregion
@@ -53,6 +56,7 @@ namespace GameModeManagement
             DEGREE360,
             LIGHTSHOW,
             LEGDAY,
+            NOOBSTACLES,
             LAWLESS
         };
 
@@ -66,6 +70,7 @@ namespace GameModeManagement
             DISPLAYDEGREE360,
             DISPLAYLIGHTSHOW,
             DISPLAYLEGDAY,
+            DISPLAYNOOBSTACLES,
             DISPLAYLAWLESS
         };
             
@@ -104,6 +109,9 @@ namespace GameModeManagement
                     break;
                 case true when LEGDAY.Equals(gameModeName, StringComparison.InvariantCultureIgnoreCase):
                     gameMode = GameMode.LegDay;
+                    break;
+                case true when NOOBSTACLES.Equals(gameModeName, StringComparison.InvariantCultureIgnoreCase):
+                    gameMode = GameMode.NoObstacles;
                     break;
                 case true when LAWLESS.Equals(gameModeName, StringComparison.InvariantCultureIgnoreCase):
                     gameMode = GameMode.Lawless;

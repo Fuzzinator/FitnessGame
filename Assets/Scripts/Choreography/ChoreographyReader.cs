@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using GameModeManagement;
+using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -94,21 +95,28 @@ public class ChoreographyReader : MonoBehaviour
     {
         var sequenceables = new List<ISequenceable>();
 
-        for (int i = 0; i < Notes.Length; i++)
-        {
-            sequenceables.Add(Notes[i]);
-        }
-
-        for (int i = 0; i < Obstacles.Length; i++)
-        {
-            sequenceables.Add(Obstacles[i]);
-        }
-
         var targetGameMode = PlaylistManager.Instance.OverrideGameMode
             ? PlaylistManager.Instance.CurrentItem.TargetGameMode
             : GameManager.Instance.CurrentGameMode;
 
-        for (int i = 0; i < Events.Length; i++) //Need to process Events differently. TODO: Figure this out
+        if (targetGameMode != GameMode.LightShow)
+        {
+            for (var i = 0; i < Notes.Length; i++)
+            {
+                sequenceables.Add(Notes[i]);
+            }
+        }
+
+        if (targetGameMode is not (GameMode.NoObstacles or GameMode.LightShow))
+        {
+            for (var i = 0; i < Obstacles.Length; i++)
+            {
+
+                sequenceables.Add(Obstacles[i]);
+            }
+        }
+
+        for (var i = 0; i < Events.Length; i++) //Need to process Events differently. TODO: Figure this out
         {
             switch (targetGameMode)
             {
@@ -117,6 +125,7 @@ public class ChoreographyReader : MonoBehaviour
                 case GameMode.JabsOnly:
                 case GameMode.OneHanded:
                 case GameMode.LegDay:
+                case GameMode.NoObstacles:
                     break;
                 case GameMode.LightShow:
                     break; //Will figure this out later

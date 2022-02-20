@@ -227,6 +227,8 @@ public class SongInfo
                             break;
                         case GameMode.LegDay:
                             break;
+                        case GameMode.NoObstacles:
+                            break;
                         case GameMode.Lawless:
                             break;
                         default:

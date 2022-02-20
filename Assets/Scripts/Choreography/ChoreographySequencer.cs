@@ -94,7 +94,7 @@ public class ChoreographySequencer : MonoBehaviour
     private const float MAX90ROTATION = 45;
 
     private CancellationToken _cancellationToken;
-    
+
     [SerializeField]
     private HitSideType _currentStance = HitSideType.Left;
 
@@ -202,34 +202,38 @@ public class ChoreographySequencer : MonoBehaviour
         _songStartTime = Time.time;
         _delayStartTime = 0;
         _pauseOffset = 0;
-        
-        var formationTween = CreateSequence(formations[0], 1);
+
+        CreateSequence(formations[0], 1);
         SequenceRunning = true;
         _sequenceUnstartedOrFinished = false;
         LevelManager.Instance.SetChoreographyCompleted(false);
     }
 
-    private SimpleTween CreateSequence(ChoreographyFormation formation, int nextFormationIndex)
+    private void CreateSequence(ChoreographyFormation formation, int nextFormationIndex)
     {
         if (formation.HasEvent && formation.Event.Type == ChoreographyEvent.EventType.EarlyRotation)
         {
             RotateSpawnSource(formation.Event.RotationValue);
         }
 
-        //var sequence = DOTween.Sequence();
-
         var formationHolder = _formationHolderPool.GetNewPoolable() as FormationHolder;
+        if (formationHolder == null)
+        {
+            throw new NullReferenceException();
+        }
+
         formationHolder.gameObject.SetActive(true);
         var formationTransform = formationHolder.transform;
         formationTransform.SetParent(transform);
         formationTransform.position = _formationStart.position;
         formationTransform.rotation = _formationStart.rotation;
 
-        var tweenSpeed = _meterDistance*10 / SongInfoReader.Instance.NoteSpeed;
+        var tweenSpeed = _meterDistance * 10 / SongInfoReader.Instance.NoteSpeed;
 
-        
+
         formationHolder.SetUp(this, formation, nextFormationIndex, _optimalStrikePoint.position);
-        
+
+
         var tweenData = new SimpleTween.Data(formationTransform, formationHolder.OnStartCallback,
             formationHolder.OnCompleteCallback, _formationEnd.position, tweenSpeed);
         var tween = _tweenPool.GetNewTween(tweenData);
@@ -247,8 +251,6 @@ public class ChoreographySequencer : MonoBehaviour
         {
             RotateSpawnSource(formation.Event.RotationValue);
         }
-
-        return tween;
     }
 
     public void TryCreateNextSequence(int nextFormationIndex)
@@ -256,7 +258,7 @@ public class ChoreographySequencer : MonoBehaviour
         var formations = ChoreographyReader.Instance.GetOrderedFormations();
         if (nextFormationIndex < formations.Count)
         {
-            var formationSequence = CreateSequence(formations[nextFormationIndex], ++nextFormationIndex);
+            CreateSequence(formations[nextFormationIndex], ++nextFormationIndex);
         }
         else //Sequence is completed
         {
@@ -371,7 +373,7 @@ public class ChoreographySequencer : MonoBehaviour
     {
         _tweenPool.CompleteAllActive();
 
-        _formationStart.RotateAround(_playerCenter.position, _playerCenter.up,  -_currentRotation);
+        _formationStart.RotateAround(_playerCenter.position, _playerCenter.up, -_currentRotation);
         _currentRotation = 0;
     }
 
@@ -414,6 +416,10 @@ public class ChoreographySequencer : MonoBehaviour
             Mathf.Abs(_currentRotation + angle) > MAX90ROTATION)
         {
             angle *= -1;
+            if (Mathf.Abs(_currentRotation + angle) > MAX90ROTATION)
+            {
+                angle = angle < 0 ? -MAX90ROTATION : MAX90ROTATION;
+            }
         }
 
         if (targetGameMode != GameMode.Degrees90 ||
