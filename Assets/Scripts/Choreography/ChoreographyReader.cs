@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
@@ -99,21 +100,45 @@ public class ChoreographyReader : MonoBehaviour
             ? PlaylistManager.Instance.CurrentItem.TargetGameMode
             : GameManager.Instance.CurrentGameMode;
 
-        if (targetGameMode != GameMode.LightShow)
+        var notes = Notes;
+        var obstacles = Obstacles;
+        switch (targetGameMode)
         {
-            for (var i = 0; i < Notes.Length; i++)
-            {
-                sequenceables.Add(Notes[i]);
-            }
+            case GameMode.Unset:
+                break;
+            case GameMode.Normal:
+                break;
+            case GameMode.JabsOnly:
+                notes = Choreography.SetNotesToType(notes, ChoreographyNote.CutDirection.Jab);
+                break;
+            case GameMode.OneHanded:
+                notes = Choreography.SetNotesToSide(notes, HitSideType.Right);
+                break;
+            case GameMode.Degrees90:
+                break;
+            case GameMode.Degrees360:
+                break;
+            case GameMode.LegDay:
+                break;
+            case GameMode.NoObstacles:
+                obstacles = null;
+                break;
+            case GameMode.LightShow:
+                obstacles = null;
+                break;
+            case GameMode.Lawless:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
 
-        if (targetGameMode is not (GameMode.NoObstacles or GameMode.LightShow))
+        for (var i = 0; i < (notes?.Length ?? 0); i++)
         {
-            for (var i = 0; i < Obstacles.Length; i++)
-            {
-
-                sequenceables.Add(Obstacles[i]);
-            }
+            sequenceables.Add(notes[i]);
+        }
+        for (var i = 0; i < (obstacles?.Length??0); i++)
+        {
+            sequenceables.Add(obstacles[i]);
         }
 
         for (var i = 0; i < Events.Length; i++) //Need to process Events differently. TODO: Figure this out
@@ -141,7 +166,7 @@ public class ChoreographyReader : MonoBehaviour
                     break;
             }
 
-            sequenceables.Add(Events[i]);
+            //sequenceables.Add(Events[i]);
         }
 
         return sequenceables;
@@ -237,7 +262,7 @@ public class ChoreographyReader : MonoBehaviour
                         HitSideType.Right => rightSidePriority,
                         _ => 0
                     };
-                    
+
                     var shouldSkipNote = thisTimeNote != null;
                     if (shouldSkipNote)
                     {
@@ -254,7 +279,7 @@ public class ChoreographyReader : MonoBehaviour
 
                     if (!shouldSkipNote)
                     {
-                        if (notePriority<blockPriority && Mathf.Abs(notePriority - blockPriority) > 20)
+                        if (notePriority < blockPriority && Mathf.Abs(notePriority - blockPriority) > 20)
                         {
                             note.SetToBlock();
                             blockPriority++;
@@ -271,7 +296,7 @@ public class ChoreographyReader : MonoBehaviour
                                 blockAdd = 3;
                             }
                         }
-                        else if (notePriority<leftSidePriority && Mathf.Abs(notePriority - leftSidePriority) >10)
+                        else if (notePriority < leftSidePriority && Mathf.Abs(notePriority - leftSidePriority) > 10)
                         {
                             note.SetType(HitSideType.Left);
                             leftSidePriority++;
@@ -288,7 +313,7 @@ public class ChoreographyReader : MonoBehaviour
                                 leftSideAdd = 3;
                             }
                         }
-                        else if (notePriority<rightSidePriority && Mathf.Abs(notePriority - rightSidePriority) >10)
+                        else if (notePriority < rightSidePriority && Mathf.Abs(notePriority - rightSidePriority) > 10)
                         {
                             note.SetType(HitSideType.Right);
                             rightSidePriority++;
@@ -305,7 +330,7 @@ public class ChoreographyReader : MonoBehaviour
                                 rightSideAdd = 3;
                             }
                         }
-                        
+
                         if (thisTimeObstacle != null)
                         {
                             note.SetCutDirection(ChoreographyNote.CutDirection.Jab);
@@ -365,12 +390,12 @@ public class ChoreographyReader : MonoBehaviour
                                 }
                             }
                         }
-                        
+
                         switch (note.HitSideType)
                         {
                             case HitSideType.Block:
                                 note.SetLineIndex(1);
-                                
+
                                 blockPriority--;
                                 break;
                             case HitSideType.Left:

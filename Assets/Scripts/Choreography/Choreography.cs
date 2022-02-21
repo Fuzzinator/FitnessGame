@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using Cysharp.Threading.Tasks;
@@ -162,11 +163,51 @@ public class Choreography
         var eventTypes = GetOptionTypes();
         var events = new NativeArray<ChoreographyEvent>(_events, Allocator.TempJob);
         var jobHandle = new AddRotationEventsJob(events, eventTypes);
-        await jobHandle.Schedule(events.Length, 8);
+        try
+        {
+            await jobHandle.Schedule(events.Length, 8);
+        }
+        catch (Exception e)when (e is OperationCanceledException)
+        {
+            eventTypes.Dispose();
+            events.Dispose();
+        }
+
         _events = jobHandle.Events.ToArray();
         
         eventTypes.Dispose();
         events.Dispose();
+    }
+
+    public static ChoreographyNote[] SetNotesToType(ChoreographyNote[] notes, ChoreographyNote.CutDirection cutDirection)
+    {
+        var nativeArray = new NativeArray<ChoreographyNote>(notes.Length, Allocator.TempJob);
+        for (var i = 0; i < notes.Length; i++)
+        {
+            nativeArray[i] = notes[i];
+        }
+
+        var job = new SetNotesCutDirection(nativeArray, cutDirection);
+        var jobHandler = job.Schedule(nativeArray.Length, 8);
+        jobHandler.Complete();
+        nativeArray.Dispose();
+        return job.Notes.ToArray();
+    }
+
+    public static ChoreographyNote[] SetNotesToSide(ChoreographyNote[] notes, HitSideType hitSideType)
+    {
+        
+        var nativeArray = new NativeArray<ChoreographyNote>(notes.Length, Allocator.TempJob);
+        for (var i = 0; i < notes.Length; i++)
+        {
+            nativeArray[i] = notes[i];
+        }
+
+        var job = new SetNotesCutSideTypeJob(nativeArray, hitSideType);
+        var jobHandler = job.Schedule(nativeArray.Length, 8);
+        jobHandler.Complete();
+        nativeArray.Dispose();
+        return job.Notes.ToArray();
     }
 
     private NativeArray<int> GetOptionTypes()
@@ -184,7 +225,7 @@ public class Choreography
     }
 }
 
-//[BurstCompile]
+[BurstCompile]
 public struct AddRotationEventsJob : IJobParallelFor
 {
     public readonly NativeArray<ChoreographyEvent> Events => _events;
@@ -227,5 +268,57 @@ public struct AddRotationEventsJob : IJobParallelFor
         }
         var value = (ChoreographyEvent.RotateEventValue)_eventTypes[randValue];
         return value;
+    }
+}
+
+[BurstCompile]
+public struct SetNotesCutDirection : IJobParallelFor
+{
+    public NativeArray<ChoreographyNote> Notes => _notes;
+    private NativeArray<ChoreographyNote> _notes;
+
+    private ChoreographyNote.CutDirection _cutDirection;
+    public SetNotesCutDirection(NativeArray<ChoreographyNote> notes, ChoreographyNote.CutDirection cutDirection)
+    {
+        _notes = notes;
+        _cutDirection = cutDirection;
+    }
+    
+    public void Execute(int index)
+    {
+        _notes[index].SetCutDirection(_cutDirection);
+        if (_cutDirection != ChoreographyNote.CutDirection.Jab)
+        {
+            return;
+        }
+        if (_notes[index].HitSideType == HitSideType.Block)
+        {
+            var random = new Unity.Mathematics.Random((uint)(index));
+            var randValue = random.NextInt(0, 1);
+            for (var i = 0; i < 5; i++)
+            {
+                randValue = random.NextInt(0, 1);
+            }
+            _notes[index].SetType((HitSideType)randValue);
+        }
+    }
+}
+
+[BurstCompile]
+public struct SetNotesCutSideTypeJob : IJobParallelFor
+{
+    public NativeArray<ChoreographyNote> Notes => _notes;
+    private NativeArray<ChoreographyNote> _notes;
+
+    private HitSideType _hitSideType;
+    public SetNotesCutSideTypeJob(NativeArray<ChoreographyNote> notes, HitSideType hitSideType)
+    {
+        _notes = notes;
+        _hitSideType = hitSideType;
+    }
+    
+    public void Execute(int index)
+    {
+        _notes[index].SetType(_hitSideType);
     }
 }

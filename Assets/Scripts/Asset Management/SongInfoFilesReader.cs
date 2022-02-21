@@ -177,7 +177,7 @@ public class SongInfoFilesReader : MonoBehaviour
 
                     if (updatedMaps)
                     {
-                        await UniTask.DelayFrame(1, cancellationToken: _cancellationSource.Token);
+                        await UniTask.DelayFrame(2, cancellationToken: _cancellationSource.Token);
                         using (var streamWriter = new StreamWriter(file.FullName))
                         {
                             await streamWriter.WriteAsync(JsonUtility.ToJson(item));

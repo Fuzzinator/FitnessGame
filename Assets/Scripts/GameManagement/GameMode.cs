@@ -14,9 +14,9 @@ namespace GameModeManagement
         OneHanded = 3,
         Degrees90 = 4,
         Degrees360 = 5,
-        LightShow = 6,
-        LegDay = 7,
-        NoObstacles = 8,
+        LegDay = 6,
+        NoObstacles = 7,
+        LightShow = 8,
         Lawless = 9
     }
 
@@ -54,9 +54,9 @@ namespace GameModeManagement
             ONEHANDED,
             DEGREE90,
             DEGREE360,
-            LIGHTSHOW,
             LEGDAY,
             NOOBSTACLES,
+            LIGHTSHOW,
             LAWLESS
         };
 
@@ -68,9 +68,9 @@ namespace GameModeManagement
             DISPLAYONEHANDED,
             DISPLAYDEGREE90,
             DISPLAYDEGREE360,
-            DISPLAYLIGHTSHOW,
             DISPLAYLEGDAY,
             DISPLAYNOOBSTACLES,
+            DISPLAYLIGHTSHOW,
             DISPLAYLAWLESS
         };
             
