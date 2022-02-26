@@ -324,7 +324,7 @@ public class BeatSaverPageController : MonoBehaviour
                 new Rect(0, 0, _activeBeatmapImage.width, _activeBeatmapImage.height), Vector2.one * .5f, 100f);
         }
 
-        _downloadButton.enabled = !_downloadingIds.Contains(_activeBeatmap.ID);
+        _downloadButton.interactable = !_downloadingIds.Contains(_activeBeatmap.ID);
     }
 
     private async UniTask<bool> VerifyShouldDownload(string folderName)

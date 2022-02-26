@@ -379,12 +379,6 @@ public class ChoreographySequencer : MonoBehaviour
 
     public void PauseChoreography()
     {
-        /*foreach (var sequence in _activeSequences)
-        {
-            sequence.Pause();
-        }*/
-
-
         _delayStartTime = Time.time;
 
         SequenceRunning = false;
@@ -392,11 +386,6 @@ public class ChoreographySequencer : MonoBehaviour
 
     public void ResumeChoreography()
     {
-        /*foreach (var sequence in _activeSequences)
-        {
-            sequence.Play();
-        }*/
-
         _pauseOffset += Time.time - _delayStartTime;
         SequenceRunning = true;
     }

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Threading;
 using Cysharp.Threading.Tasks;
@@ -10,6 +11,7 @@ using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using Debug = UnityEngine.Debug;
 
 [Serializable]
 public class Choreography
@@ -167,19 +169,63 @@ public class Choreography
         {
             await jobHandle.Schedule(events.Length, 8);
         }
-        catch (Exception e)when (e is OperationCanceledException)
+        catch (Exception e)
         {
             eventTypes.Dispose();
             events.Dispose();
+            if (e is not OperationCanceledException)
+            {
+                Debug.LogError(e);
+            }
         }
 
         _events = jobHandle.Events.ToArray();
-        
+
         eventTypes.Dispose();
         events.Dispose();
     }
 
-    public static ChoreographyNote[] SetNotesToType(ChoreographyNote[] notes, ChoreographyNote.CutDirection cutDirection)
+    public async UniTask AddObstaclesAsync(SongInfo info)
+    {
+        var bps = info.BeatsPerMinute / 60;
+        var modifiedBPS = (bps/Mathf.Ceil(bps)) * 3;
+        
+        var beatCount = Mathf.FloorToInt(info.SongLength * modifiedBPS);
+        
+        var obstacles = new NativeArray<ChoreographyObstacle>((_notes.Length / 5) + beatCount, Allocator.TempJob);
+        var notes = new NativeArray<ChoreographyNote>(_notes, Allocator.TempJob);
+        var jobHandle = new AddObstaclesJob(obstacles, notes, modifiedBPS); //, _obstacles.Length);
+        try
+        {
+            await jobHandle.Schedule(obstacles.Length, 8);
+        }
+        catch (Exception e)
+        {
+            obstacles.Dispose();
+            notes.Dispose();
+            if (e is not OperationCanceledException)
+            {
+                Debug.LogError(e);
+            }
+        }
+
+        jobHandle.Obstacles.Sort(new SortISequenceable());
+        _obstacles = jobHandle.Obstacles.ToArray();
+
+        obstacles.Dispose();
+        notes.Dispose();
+    }
+
+    private struct SortISequenceable : IComparer<ChoreographyObstacle>
+    {
+        public int Compare(ChoreographyObstacle x, ChoreographyObstacle y)
+        {
+            return x.Time.CompareTo(y.Time);
+        }
+    }
+
+    public static ChoreographyNote[] SetNotesToType(ChoreographyNote[] notes,
+        ChoreographyNote.CutDirection cutDirection)
     {
         var nativeArray = new NativeArray<ChoreographyNote>(notes.Length, Allocator.TempJob);
         for (var i = 0; i < notes.Length; i++)
@@ -190,13 +236,13 @@ public class Choreography
         var job = new SetNotesCutDirection(nativeArray, cutDirection);
         var jobHandler = job.Schedule(nativeArray.Length, 8);
         jobHandler.Complete();
+        var tweakedNotes = job.Notes.ToArray();
         nativeArray.Dispose();
-        return job.Notes.ToArray();
+        return tweakedNotes;
     }
 
     public static ChoreographyNote[] SetNotesToSide(ChoreographyNote[] notes, HitSideType hitSideType)
     {
-        
         var nativeArray = new NativeArray<ChoreographyNote>(notes.Length, Allocator.TempJob);
         for (var i = 0; i < notes.Length; i++)
         {
@@ -206,8 +252,10 @@ public class Choreography
         var job = new SetNotesCutSideTypeJob(nativeArray, hitSideType);
         var jobHandler = job.Schedule(nativeArray.Length, 8);
         jobHandler.Complete();
+        var tweakedNotes = job.Notes.ToArray();
+
         nativeArray.Dispose();
-        return job.Notes.ToArray();
+        return tweakedNotes;
     }
 
     private NativeArray<int> GetOptionTypes()
@@ -246,10 +294,11 @@ public struct AddRotationEventsJob : IJobParallelFor
     {
         if (index % INTERVAL == 0)
         {
-            _events[index] = new ChoreographyEvent(_events[index].Time,
+            var newEvent = new ChoreographyEvent(_events[index].Time,
                 (ChoreographyEvent.EventType) Math.Clamp((int) _events[index].Type * 1.5f,
                     (int) ChoreographyEvent.EventType.EarlyRotation,
                     (int) ChoreographyEvent.EventType.LateRotation), GetRotationEvent(index));
+            _events[index] = newEvent;
         }
     }
 
@@ -257,16 +306,82 @@ public struct AddRotationEventsJob : IJobParallelFor
     {
         if (index + _seed > uint.MaxValue)
         {
-            index = (int)(index*.5);
+            index = (int) (index * .5);
         }
-        
-        var random = new Unity.Mathematics.Random((uint)(_seed+index));
+
+        var random = new Unity.Mathematics.Random((uint) (_seed + index));
         var randValue = random.NextInt(0, _eventTypes.Length - 1);
         for (var i = 0; i < INTERVAL; i++)
         {
             randValue = random.NextInt(0, _eventTypes.Length - 1);
         }
-        var value = (ChoreographyEvent.RotateEventValue)_eventTypes[randValue];
+
+        var value = (ChoreographyEvent.RotateEventValue) _eventTypes[randValue];
+        return value;
+    }
+}
+
+[BurstCompile]
+public struct AddObstaclesJob : IJobParallelFor
+{
+    public readonly NativeArray<ChoreographyObstacle> Obstacles => _obstacles;
+    private NativeArray<ChoreographyObstacle> _obstacles;
+    private readonly NativeArray<ChoreographyNote> _notes;
+    
+    private uint _seed;
+    private readonly float _bps;
+    
+    private const int INTERVAL = 5;
+
+    [DeallocateOnJobCompletion]
+    private readonly NativeArray<int> _obstacleOptions;
+
+    public AddObstaclesJob(NativeArray<ChoreographyObstacle> obstacles, NativeArray<ChoreographyNote> sourceNotes, float bps)
+    {
+        _obstacles = obstacles;
+        _notes = sourceNotes;
+        _seed = 0 + 118 + 999 + 881 + 999 + 119 + 725;
+        _bps = bps;
+        _obstacleOptions = new NativeArray<int>(5, Allocator.TempJob);
+        for (var i = 0; i < _obstacleOptions.Length; i++)
+        {
+            _obstacleOptions[i] = 2 > i ? 0 : 1;
+        }
+    }
+
+    public void Execute(int index)
+    {
+        var noteIndex = index * INTERVAL;
+        ChoreographyObstacle newObstacle;
+        if (noteIndex < _notes.Length)
+        {
+            newObstacle = new ChoreographyObstacle(_notes[noteIndex].Time, 1, GetObstacleType(index),
+                _notes[noteIndex].LineIndex, 1);
+        }
+        else
+        {
+            var newIndex = index - (_notes.Length/INTERVAL);
+            newObstacle = new ChoreographyObstacle(_bps * newIndex, 1, GetObstacleType(index), 1, 1);
+        }
+
+        _obstacles[index] = newObstacle;
+    }
+
+    private ChoreographyObstacle.ObstacleType GetObstacleType(int index)
+    {
+        if (index + _seed > uint.MaxValue)
+        {
+            index = (int) (index * .5);
+        }
+
+        var random = new Unity.Mathematics.Random((uint) (_seed + index));
+        var randValue = random.NextInt(0, _obstacleOptions.Length - 1);
+        for (var i = 0; i < INTERVAL; i++)
+        {
+            randValue = random.NextInt(0, _obstacleOptions.Length - 1);
+        }
+
+        var value = (ChoreographyObstacle.ObstacleType) _obstacleOptions[randValue];
         return value;
     }
 }
@@ -278,28 +393,31 @@ public struct SetNotesCutDirection : IJobParallelFor
     private NativeArray<ChoreographyNote> _notes;
 
     private ChoreographyNote.CutDirection _cutDirection;
+
     public SetNotesCutDirection(NativeArray<ChoreographyNote> notes, ChoreographyNote.CutDirection cutDirection)
     {
         _notes = notes;
         _cutDirection = cutDirection;
     }
-    
+
     public void Execute(int index)
     {
-        _notes[index].SetCutDirection(_cutDirection);
+        _notes[index] = _notes[index].SetCutDirection(_cutDirection);
         if (_cutDirection != ChoreographyNote.CutDirection.Jab)
         {
             return;
         }
+
         if (_notes[index].HitSideType == HitSideType.Block)
         {
-            var random = new Unity.Mathematics.Random((uint)(index));
+            var random = new Unity.Mathematics.Random((uint) (index));
             var randValue = random.NextInt(0, 1);
             for (var i = 0; i < 5; i++)
             {
                 randValue = random.NextInt(0, 1);
             }
-            _notes[index].SetType((HitSideType)randValue);
+
+            _notes[index] = _notes[index].SetType((HitSideType) randValue);
         }
     }
 }
@@ -311,14 +429,15 @@ public struct SetNotesCutSideTypeJob : IJobParallelFor
     private NativeArray<ChoreographyNote> _notes;
 
     private HitSideType _hitSideType;
+
     public SetNotesCutSideTypeJob(NativeArray<ChoreographyNote> notes, HitSideType hitSideType)
     {
         _notes = notes;
         _hitSideType = hitSideType;
     }
-    
+
     public void Execute(int index)
     {
-        _notes[index].SetType(_hitSideType);
+        _notes[index] = _notes[index].SetType(_hitSideType);
     }
 }

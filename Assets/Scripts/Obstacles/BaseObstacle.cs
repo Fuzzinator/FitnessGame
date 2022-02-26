@@ -14,7 +14,11 @@ public class BaseObstacle : MonoBehaviour, IPoolable
     public void ReturnToPool()
     {
         gameObject.SetActive(false);
-        transform.SetParent(MyPoolManager.poolParent);
+        if (MyPoolManager.poolParent != null)
+        {
+            transform.SetParent(MyPoolManager.poolParent);
+        }
+
         MyPoolManager.ReturnToPool(this);
     }
 }

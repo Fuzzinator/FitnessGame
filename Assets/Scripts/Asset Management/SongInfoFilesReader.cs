@@ -111,7 +111,7 @@ public class SongInfoFilesReader : MonoBehaviour
             }
 
             var item = JsonUtility.FromJson<SongInfo>(asset.text);
-            item.DifficultySets[0].RemoveExpertPlus();
+            item.DifficultySets[0].TryRemoveExpertPlus();
             item.isCustomSong = false;
 
             availableSongs.Add(item);
@@ -160,12 +160,14 @@ public class SongInfoFilesReader : MonoBehaviour
 
                     streamReader.Close();
 
-                    var updatedMaps = await item.UpdateDifficultySets(_destructionCancellationToken);
 
+                    var updatedMaps = false;
                     if (file.Directory != null)
                     {
                         item.fileLocation = file.Directory.Name;
+                        updatedMaps = true;
                     }
+                    
 
                     item.isCustomSong = true;
                     if (item.SongLength < 1)
@@ -175,6 +177,8 @@ public class SongInfoFilesReader : MonoBehaviour
                         updatedMaps = true;
                     }
 
+                    updatedMaps = await item.UpdateDifficultySets(_destructionCancellationToken);
+                    
                     if (updatedMaps)
                     {
                         await UniTask.DelayFrame(2, cancellationToken: _cancellationSource.Token);

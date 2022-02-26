@@ -143,7 +143,6 @@ public class SongInfo
                 if (_difficultyBeatmapSets[i].MapGameMode == GameMode.Normal)
                 {
                     _difficultyBeatmapSets[i].TryCreateMissingDifficulties();
-                    _difficultyBeatmapSets[i].RemoveExpertPlus();
                     difficultySet = _difficultyBeatmapSets[i];
                 }
 
@@ -155,7 +154,7 @@ public class SongInfo
             }
         }
 
-        var length = (int) GameMode.LightShow;
+        var length = (int) GameMode.NoObstacles;
         if (_difficultyBeatmapSets.Length < length)
         {
             var maps = new DifficultySet[length];
@@ -170,10 +169,6 @@ public class SongInfo
         for (var index = 1; index <= length; index++)
         {
             var gameMode = (GameMode) index;
-            if (gameMode == GameMode.LightShow)
-            {
-                gameMode++;
-            }
 
             var hasSet = false;
             for (var i = 0; i < _difficultyBeatmapSets.Length; i++)
@@ -196,6 +191,7 @@ public class SongInfo
                 if (_difficultyBeatmapSets[i].MapGameMode == GameMode.Unset)
                 {
                     _difficultyBeatmapSets[i] = difficultySet;
+                    string newFileName = null;
                     switch (gameMode)
                     {
                         case GameMode.Unset:
@@ -214,10 +210,12 @@ public class SongInfo
                             }
                             else
                             {
-                                var newFileName =
+                                newFileName =
                                     await AsyncCreateNewDifficultyFile(difficultySet.DifficultyInfos[^1], gameMode,
                                         token);
-                                _difficultyBeatmapSets[i].SetFileName(newFileName);
+                                var set = _difficultyBeatmapSets[i];
+                                set.SetFileName(newFileName);
+                                _difficultyBeatmapSets[i] = set;
                                 rotationSet = _difficultyBeatmapSets[i];
                                 hasRotationSet = true;
                             }
@@ -226,6 +224,10 @@ public class SongInfo
                         case GameMode.LightShow:
                             break;
                         case GameMode.LegDay:
+                            newFileName =
+                                await AsyncCreateNewDifficultyFile(difficultySet.DifficultyInfos[^1], gameMode,
+                                    token);
+                            _difficultyBeatmapSets[i].SetFileName(newFileName);
                             break;
                         case GameMode.NoObstacles:
                             break;
@@ -238,6 +240,15 @@ public class SongInfo
                     _difficultyBeatmapSets[i].SetMapGameMode(gameMode);
                     break;
                 }
+            }
+        }
+
+        for (var i = 0; i < _difficultyBeatmapSets.Length; i++)
+        {
+            var removed = _difficultyBeatmapSets[i].TryRemoveExpertPlus();
+            if (removed)
+            {
+                madeChange = true;
             }
         }
 
@@ -262,6 +273,8 @@ public class SongInfo
                 break;
             case GameMode.JabsOnly:
                 break;
+            case GameMode.NoObstacles:
+                break;
             case GameMode.OneHanded:
                 break;
             case GameMode.Degrees90:
@@ -273,6 +286,9 @@ public class SongInfo
             case GameMode.LightShow:
                 break;
             case GameMode.LegDay:
+                newFileName = $"LegDay-{newFileName}.dat";
+                await choreography.AddObstaclesAsync(this);
+                await Choreography.AsyncSave(choreography, fileLocation, newFileName, _songName, token);
                 break;
             case GameMode.Lawless:
                 break;
@@ -415,8 +431,9 @@ public class SongInfo
             return newDifficulty;
         }
 
-        public void RemoveExpertPlus()
+        public bool TryRemoveExpertPlus()
         {
+            var removed = false;
             if (_difficultyBeatmaps.Length - 1 > -1 &&
                 _difficultyBeatmaps[^1].DifficultyRank >= DifficultyInfo.EXPERTPLUS) // ^1 is the last in array
             {
@@ -427,7 +444,10 @@ public class SongInfo
                 }
 
                 _difficultyBeatmaps = newArray;
+                removed = true;
             }
+
+            return removed;
         }
 
         public void SetFileName(string fileName)

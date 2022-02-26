@@ -21,6 +21,11 @@ public class ChoreographyReader : MonoBehaviour
     public ChoreographyEvent[] Events => _choreography.Events;
     public ChoreographyObstacle[] Obstacles => _choreography.Obstacles;
 
+    public bool CanHaveBlock =>
+        PlaylistManager.Instance.CurrentItem.TargetGameMode is not GameMode.JabsOnly or GameMode.OneHanded or GameMode.LightShow;
+    public bool CanSwitchHands => PlaylistManager.Instance.CurrentItem.TargetGameMode is not GameMode.OneHanded;
+    
+
     [Header("Settings")] public UnityEvent finishedLoadingSong = new UnityEvent();
 
     private CancellationTokenSource _cancellationSource;
@@ -97,8 +102,8 @@ public class ChoreographyReader : MonoBehaviour
         var sequenceables = new List<ISequenceable>();
 
         var targetGameMode = PlaylistManager.Instance.OverrideGameMode
-            ? PlaylistManager.Instance.CurrentItem.TargetGameMode
-            : GameManager.Instance.CurrentGameMode;
+            ? GameManager.Instance.CurrentGameMode
+            :PlaylistManager.Instance.CurrentItem.TargetGameMode;
 
         var notes = Notes;
         var obstacles = Obstacles;
@@ -124,6 +129,7 @@ public class ChoreographyReader : MonoBehaviour
                 obstacles = null;
                 break;
             case GameMode.LightShow:
+                notes = null;
                 obstacles = null;
                 break;
             case GameMode.Lawless:
@@ -279,55 +285,60 @@ public class ChoreographyReader : MonoBehaviour
 
                     if (!shouldSkipNote)
                     {
-                        if (notePriority < blockPriority && Mathf.Abs(notePriority - blockPriority) > 20)
+                        if (CanSwitchHands)
                         {
-                            note.SetToBlock();
-                            blockPriority++;
-                            if (blockAdd > 0)
+                            if (CanHaveBlock && notePriority < blockPriority &&
+                                Mathf.Abs(notePriority - blockPriority) > 20)
                             {
-                                blockAdd--;
-                                if (blockAdd == 0)
+                                note.SetToBlock();
+                                blockPriority++;
+                                if (blockAdd > 0)
                                 {
-                                    blockPriority = notePriority;
+                                    blockAdd--;
+                                    if (blockAdd == 0)
+                                    {
+                                        blockPriority = notePriority;
+                                    }
+                                }
+                                else
+                                {
+                                    blockAdd = 3;
                                 }
                             }
-                            else
+                            else if (notePriority < leftSidePriority && Mathf.Abs(notePriority - leftSidePriority) > 10)
                             {
-                                blockAdd = 3;
-                            }
-                        }
-                        else if (notePriority < leftSidePriority && Mathf.Abs(notePriority - leftSidePriority) > 10)
-                        {
-                            note.SetType(HitSideType.Left);
-                            leftSidePriority++;
-                            if (leftSideAdd > 0)
-                            {
-                                leftSideAdd--;
-                                if (leftSideAdd == 0)
+                                note.SetType(HitSideType.Left);
+                                leftSidePriority++;
+                                if (leftSideAdd > 0)
                                 {
-                                    leftSidePriority = notePriority;
+                                    leftSideAdd--;
+                                    if (leftSideAdd == 0)
+                                    {
+                                        leftSidePriority = notePriority;
+                                    }
+                                }
+                                else
+                                {
+                                    leftSideAdd = 3;
                                 }
                             }
-                            else
+                            else if (notePriority < rightSidePriority &&
+                                     Mathf.Abs(notePriority - rightSidePriority) > 10)
                             {
-                                leftSideAdd = 3;
-                            }
-                        }
-                        else if (notePriority < rightSidePriority && Mathf.Abs(notePriority - rightSidePriority) > 10)
-                        {
-                            note.SetType(HitSideType.Right);
-                            rightSidePriority++;
-                            if (rightSideAdd > 0)
-                            {
-                                rightSideAdd--;
-                                if (rightSideAdd == 0)
+                                note.SetType(HitSideType.Right);
+                                rightSidePriority++;
+                                if (rightSideAdd > 0)
                                 {
-                                    rightSidePriority = notePriority;
+                                    rightSideAdd--;
+                                    if (rightSideAdd == 0)
+                                    {
+                                        rightSidePriority = notePriority;
+                                    }
                                 }
-                            }
-                            else
-                            {
-                                rightSideAdd = 3;
+                                else
+                                {
+                                    rightSideAdd = 3;
+                                }
                             }
                         }
 

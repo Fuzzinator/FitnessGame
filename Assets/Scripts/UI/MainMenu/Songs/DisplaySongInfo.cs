@@ -4,6 +4,7 @@ using GameModeManagement;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 namespace UI.Scrollers.Playlists
 {
@@ -24,6 +25,9 @@ namespace UI.Scrollers.Playlists
         [SerializeField]
         private SongDifficultyScrollerController _difficultyScroller;
 
+        [SerializeField]
+        private Button _deleteButton;
+
         private SongInfo _currentSongInfo;
 
         private GameMode _selectedGameMode;
@@ -36,6 +40,7 @@ namespace UI.Scrollers.Playlists
             _levelAuthor.SetText(info.LevelAuthorName);
             _songLength.SetText(info.ReadableLength);
             _difficultyScroller.UpdateDifficultyOptions(info, info.DifficultySets , _selectedGameMode);
+            _deleteButton.gameObject.SetActive(info.isCustomSong);
         }
 
         public void SetTargetGameMode(int gameMode)

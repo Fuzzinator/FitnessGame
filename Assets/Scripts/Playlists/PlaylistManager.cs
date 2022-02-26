@@ -42,7 +42,9 @@ public class PlaylistManager : MonoBehaviour
         }
     }
     
-    public bool OverrideGameMode { get; private set; }
+    [SerializeField]
+    private bool _overrideGameMode;
+    public bool OverrideGameMode { get => _overrideGameMode; private set => _overrideGameMode = value; }
 
     public UnityEvent<PlaylistItem> playlistItemUpdated = new UnityEvent<PlaylistItem>();
     public UnityEvent<int> currentPlaylistUpdated = new UnityEvent<int>();

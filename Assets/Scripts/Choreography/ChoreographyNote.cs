@@ -43,39 +43,45 @@ public struct ChoreographyNote : ISequenceable
         High = 2
     }
 
-    public void SetToBasicJab()
+    public ChoreographyNote SetToBasicJab()
     {
         SetCutDirection(CutDirection.Jab);
         SetLineLayer(LineLayerType.Middle);
         SetLineIndex(_type == HitSideType.Left || _type == HitSideType.Block? 1:2);
+        return this;
     }
 
-    public void SetToBlock()
+    public ChoreographyNote SetToBlock()
     {
         SetCutDirection(CutDirection.Jab);
         //SetLineLayer(LineLayerType.Middle);
         SetLineIndex(1);
         SetType(HitSideType.Block);
+        return this;
     }
 
-    public void SetCutDirection(CutDirection direction)
+    public ChoreographyNote SetCutDirection(CutDirection direction)
     {
         _cutDirection = direction;
+        return this;
     }
 
-    public void SetLineLayer(LineLayerType layerType)
+    public ChoreographyNote SetLineLayer(LineLayerType layerType)
     {
         _lineLayer = layerType;
+        return this;
     }
 
-    public void SetLineIndex(int index)
+    public ChoreographyNote SetLineIndex(int index)
     {
         _lineIndex = index;
+        return this;
     }
 
-    public void SetType(HitSideType type)
+    public ChoreographyNote SetType(HitSideType type)
     {
         _type = type;
+        return this;
     }
     
     public enum CutDirection
@@ -84,8 +90,8 @@ public struct ChoreographyNote : ISequenceable
         JabDown = 1,//Will be treated as Jab(8) {Only exists for BeatSaber map support}
         HookLeft = 2,//Only allowed on NoteType.Right
         HookRight = 3,//Only allowed on NoteType.Left
-        UppercutLeft = 4,//Only allowed on NoteType.Right {Experimental}
-        UppercutRight = 5,//Only allowed on NoteType.Left {Experimental}
+        UppercutLeft = 4,//Treated as Uppercut(0) {Only exists for BeatSaber map support}
+        UppercutRight = 5,//Treated as Uppercut(0) {Only exists for BeatSaber map support}
         HookLeftDown = 6,//Will be treated as Jab(8) {Only exists for BeatSaber map support}
         HookRightDown = 7,//Will be treated as Jab(8) {Only exists for BeatSaber map support}
         Jab = 8

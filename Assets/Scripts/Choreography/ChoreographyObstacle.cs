@@ -37,4 +37,13 @@ public struct ChoreographyObstacle : ISequenceable
         Dodge = 0,
         Crouch = 1
     }
+
+    public ChoreographyObstacle(float time, float duration, ObstacleType type, int lineIndex, int width)
+    {
+        _time = time;
+        _duration = duration;
+        _type = type;
+        _lineIndex = lineIndex;
+        _width = width;
+    }
 }
