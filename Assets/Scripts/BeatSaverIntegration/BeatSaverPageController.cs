@@ -9,6 +9,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UI.Scrollers.BeatsaverIntegraton;
+using UnityEngine.Events;
 
 public class BeatSaverPageController : MonoBehaviour
 {
@@ -51,7 +52,6 @@ public class BeatSaverPageController : MonoBehaviour
 
     [SerializeField]
     private LoadingDisplaysController _loadingDisplays;
-
 
     private Page _activePage;
 
@@ -262,7 +262,8 @@ public class BeatSaverPageController : MonoBehaviour
             _downloadButton.interactable = true;
         }
 
-        SongInfoFilesReader.Instance.UpdateSongs().Forget();
+        await SongInfoFilesReader.Instance.UpdateSongs();
+        PlaylistFilesReader.Instance.RefreshPlaylistsValidStates().Forget();
     }
 
     #endregion

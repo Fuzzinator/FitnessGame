@@ -59,6 +59,6 @@ public class CustomPlaylistsManager : MonoBehaviour
         {
             return;
         }
-        PlaylistFilesReader.Instance.UpdatePlaylists();
+        PlaylistFilesReader.Instance.UpdatePlaylists().Forget();
     }
 }

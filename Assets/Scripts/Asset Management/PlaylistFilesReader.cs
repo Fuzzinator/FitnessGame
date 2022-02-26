@@ -52,12 +52,22 @@ public class PlaylistFilesReader : MonoBehaviour
 
     private void OnEnable()
     {
-        UpdatePlaylists();
+        UpdatePlaylists().Forget();
     }
 
-    public async void UpdatePlaylists()
+    public async UniTaskVoid UpdatePlaylists()
     {
         await UpdateAvailablePlaylists();
+    }
+
+    public async UniTaskVoid RefreshPlaylistsValidStates()
+    {
+        for (int i = 0; i < availablePlaylists.Count; i++)
+        {
+            var playlist = availablePlaylists[i];
+            playlist.isValid = await PlaylistValidator.IsValid(playlist);
+            availablePlaylists[i] = playlist;
+        }
     }
 
     private async UniTask UpdateAvailablePlaylists()

@@ -86,7 +86,7 @@ public class SongInfoFilesReader : MonoBehaviour
         UpdateSongs().Forget();
     }
 
-    public async UniTaskVoid UpdateSongs()
+    public async UniTask UpdateSongs()
     {
         _startSongsUpdate?.Invoke();
         await UpdateAvailableSongs();
