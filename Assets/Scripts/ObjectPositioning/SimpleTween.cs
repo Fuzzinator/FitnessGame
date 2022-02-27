@@ -3,24 +3,25 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Unity.Jobs;
 using UnityEngine;
+using UnityEngine.Jobs;
 
 namespace SimpleTweens
 {
     public class SimpleTween
     {
         internal Data data;
-        internal delegate void OnReturnDelegate();
-        internal event OnReturnDelegate OnReturn;
-        
-        private CancellationToken _destroyedCancellationToken;
+
+        private readonly SimpleTweenPool _pool;
         private CancellationTokenSource _internalCancelTokenSource;
 
-        public SimpleTween(Data data, CancellationToken token)
+        public SimpleTween(SimpleTweenPool pool, Data data, CancellationTokenSource tokenSource)
         {
+            _pool = pool;
             this.data = data;
-            _destroyedCancellationToken = token;
-            _internalCancelTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_destroyedCancellationToken);
+            
+            _internalCancelTokenSource = tokenSource;
         }
         
         public async UniTask DelayTweenStart(float delayTime)
@@ -36,23 +37,21 @@ namespace SimpleTweens
                 }
 
                 data.OnStart?.Invoke();
-                await DoTween();
-                if (_internalCancelTokenSource.Token.IsCancellationRequested)
-                {
-                    InternalCancel();
-                    return;
-                }
-
-                data.OnComplete?.Invoke();
+                
+                _pool._datasToAdd.Add(data);
             }
             catch (Exception e) when (e is OperationCanceledException)
             {
                 InternalCancel();
             }
-            OnReturn?.Invoke();
+        }  
+        
+        public void Complete()
+        {
+            data.OnComplete?.Invoke();
         }
 
-        public void Complete()
+        public void ForceComplete()
         {
             data.OnComplete?.Invoke();
             Cancel();
@@ -63,26 +62,45 @@ namespace SimpleTweens
             _internalCancelTokenSource?.Cancel();
         }
 
-        private void InternalCancel()
+        internal void InternalCancel()
         {
-            OnReturn?.Invoke();
-            if (_destroyedCancellationToken.IsCancellationRequested)
-            {
-                OnReturn = null;
-                return;
-            }
-            _internalCancelTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_destroyedCancellationToken);
+            _pool.CompleteTween(this);
         }
 
         private async UniTask DoTween()
         {
+            DoTweenJob job;
+            JobHandle handle = new JobHandle();
+            TransformAccessArray access = new TransformAccessArray();
             while (!_internalCancelTokenSource.Token.IsCancellationRequested &&
                    Vector3.Distance(data.MyTransform.position, data.EndPosition) > .01f)
             {
+                handle.Complete();
+                access.RemoveAtSwapBack(0);
+                access.Add(data.MyTransform);
                 var time = Time.time;
                 await UniTask.DelayFrame(1, cancellationToken: _internalCancelTokenSource.Token);
-                var step = data.Speed * (Time.time - time);
-                data.MyTransform.position = Vector3.MoveTowards(data.MyTransform.position, data.EndPosition, step);
+                job = new DoTweenJob(Time.time - time, data.Speed, data.EndPosition);
+                handle = job.Schedule(access);
+            }
+        }
+
+        private struct DoTweenJob : IJobParallelForTransform
+        {
+            private float _deltaTime;
+            private float _speed;
+            private Vector3 _endPosition;
+            public DoTweenJob(float deltaTime, float speed, Vector3 endPosition)
+            {
+                _deltaTime = deltaTime;
+                _speed = speed;
+                _endPosition = endPosition;
+            }
+            public void Execute(int index, TransformAccess transform)
+            {
+                var step = _speed * (_deltaTime);
+                transform.position = Vector3.MoveTowards(transform.position, _endPosition, step);
+                transform = new TransformAccess();
             }
         }
 
@@ -104,5 +122,7 @@ namespace SimpleTweens
                 Speed = speed;
             }
         }
+
+        
     }
 }

@@ -161,6 +161,7 @@ public class ChoreographySequencer : MonoBehaviour
     private void OnDestroy()
     {
         _tweenPool.CompleteAllActive();
+        _tweenPool.Destroy();
     }
 
     private void GameStateListener(GameState oldState, GameState newState)
