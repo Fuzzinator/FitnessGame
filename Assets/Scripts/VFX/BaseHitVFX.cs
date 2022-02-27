@@ -26,7 +26,7 @@ public class BaseHitVFX : MonoBehaviour, IPoolable
         }
     }
 
-    private void Start()
+    public void Initialize()
     {
         token = this.GetCancellationTokenOnDestroy();
     }

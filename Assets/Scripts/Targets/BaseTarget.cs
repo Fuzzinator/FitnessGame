@@ -48,7 +48,7 @@ public class BaseTarget : MonoBehaviour, IPoolable
 
     private int _nameLayer;
 
-    protected void Start()
+    public void Initialize()
     {
         _validHitEffects = GetComponents<IValidHit>();
         _missedHitEffects = GetComponents<IMissedHit>();
@@ -56,11 +56,6 @@ public class BaseTarget : MonoBehaviour, IPoolable
     }
 
     public bool IsPooled { get; set; }
-
-    protected void OnTriggerEnter(Collider other)
-    {
-        //throw new NotImplementedException();
-    }
 
     protected virtual void OnCollisionEnter(Collision other)
     {

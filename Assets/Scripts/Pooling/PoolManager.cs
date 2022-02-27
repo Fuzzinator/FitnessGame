@@ -27,6 +27,7 @@ public class PoolManager
             {
                 objToReturn.MyPoolManager = this;
                 objToReturn.IsPooled = false;
+                objToReturn.Initialize();
                 return objToReturn;
             }
 

@@ -33,7 +33,7 @@ public class  FormationHolder : MonoBehaviour, IPoolable
         set => _isPooled = value;
     }
 
-    private void Start()
+    public void Initialize()
     {
         SetCallbacks();
     }

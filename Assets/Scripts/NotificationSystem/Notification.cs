@@ -56,7 +56,7 @@ public class Notification : MonoBehaviour, IPoolable
         set => _isPooled = value;
     }
 
-    private void Start()
+    public void Initialize()
     {
         _cancellationToken = this.GetCancellationTokenOnDestroy();
         if (_canvas == null)

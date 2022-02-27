@@ -6,11 +6,14 @@ using UnityEngine.Events;
 
 public class BaseObstacle : MonoBehaviour, IPoolable
 {
-    
     public PoolManager MyPoolManager { get; set; }
 
     public bool IsPooled { get; set; }
-    
+
+    public void Initialize()
+    {
+        
+    }
     public void ReturnToPool()
     {
         gameObject.SetActive(false);
