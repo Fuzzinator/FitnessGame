@@ -2,7 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using Unity.Collections;
 using UnityEngine;
+using UnityEngine.Jobs;
 
 namespace SimpleTweens
 {
@@ -12,7 +14,9 @@ namespace SimpleTweens
         public List<SimpleTween> activeTweens;
 
         private CancellationToken _cancellationToken;
-        
+
+        private TransformAccessArray _objectsToTween;
+
         public SimpleTweenPool(int initialSize, CancellationToken token)
         {
             _cancellationToken = token;
@@ -26,7 +30,6 @@ namespace SimpleTweens
                 ReturnToPool(tween);
             }
         }
-
 
         public SimpleTween GetNewTween(SimpleTween.Data data)
         {

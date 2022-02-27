@@ -17,14 +17,22 @@ public class GarbageCollectorController : MonoBehaviour
     void Start()
     {
         _cancellationToken = this.GetCancellationTokenOnDestroy();
+        SetGarbageCollectorState(false);
         //BackgroundGarbageCollectorAsync().Forget();
+    }
+
+    private void OnDestroy()
+    {
+        SetGarbageCollectorState(true);
     }
 
     public void SetGarbageCollectorState(bool enabled)
     {
+        #if !UNITY_EDITOR
         GarbageCollector.GCMode = enabled ? 
             GarbageCollector.Mode.Enabled :
-            GarbageCollector.Mode.Disabled;
+            GarbageCollector.Mode.Manual;
+        #endif
     }
 
     public void RunGarbageCollector()
@@ -42,7 +50,7 @@ public class GarbageCollectorController : MonoBehaviour
                 return;
             }
 
-            GarbageCollector.CollectIncremental( );
+            GarbageCollector.CollectIncremental(nanoseconds);
         }
     }
 
