@@ -90,6 +90,7 @@ namespace SimpleTweens
         {
             var tween = new SimpleTween(data, _cancellationToken);
             tween.OnReturn += () => ReturnToPool(tween);
+            tween.StartTweener();
             activeTweens.Add(tween);
             return tween;
         }

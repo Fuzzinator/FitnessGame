@@ -16,17 +16,11 @@ public class BaseTarget : MonoBehaviour, IPoolable
     protected ChoreographyNote.CutDirection _cutDirection;
 
     [SerializeField]
-    protected UnityEvent<Collision> _collidedEvent;
-
-    /*[SerializeField]
-    protected UnityEvent _missedHitEvent = new UnityEvent();
-
+    private SetRendererMaterial _setMaterial;
+    
     [SerializeField]
-    protected UnityEvent<HitInfo> _successfulHitEvent;*/
-
-    [SerializeField]
-    protected UnityEvent<HitSideType> _targetCreated = new UnityEvent<HitSideType>();
-
+    private BaseOptimalHitIndicator _optimalHitIndicator;
+    
     [SerializeField]
     protected Vector3 _optimalHitDirection;
 
@@ -53,6 +47,7 @@ public class BaseTarget : MonoBehaviour, IPoolable
         _validHitEffects = GetComponents<IValidHit>();
         _missedHitEffects = GetComponents<IMissedHit>();
         _nameLayer = LayerMask.NameToLayer("Hand");
+        _optimalHitIndicator.Initialize();
     }
 
     public bool IsPooled { get; set; }
@@ -64,8 +59,6 @@ public class BaseTarget : MonoBehaviour, IPoolable
             _wasHit = false;
             return;
         }
-
-        _collidedEvent?.Invoke(other);
 
         if (IsValidDirection(other, hand, out var impactDotProduct, out var dirDotProduct))
         {
@@ -81,7 +74,7 @@ public class BaseTarget : MonoBehaviour, IPoolable
         }
     }
 
-    public void ReturnToPool()
+    public void Complete()
     {
         if (!_wasHit)
         {
@@ -93,7 +86,11 @@ public class BaseTarget : MonoBehaviour, IPoolable
                 }
             }
         }
+        ReturnToPool();
+    }
 
+    public void ReturnToPool()
+    {
         gameObject.SetActive(false);
         if (MyPoolManager.poolParent.gameObject.activeSelf)
         {
@@ -148,8 +145,8 @@ public class BaseTarget : MonoBehaviour, IPoolable
     {
         _noteType = hitSideType;
         _wasHit = false;
-        _targetCreated?.Invoke(_noteType);
         parentFormation = holder;
         OptimalHitPoint = hitPoint;
+        _setMaterial.SetMaterial(hitSideType);
     }
 }

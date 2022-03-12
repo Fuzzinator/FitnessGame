@@ -1455,8 +1455,9 @@ namespace EnhancedUI.EnhancedScroller
         {
             var offset = 0f;
 			_singleLoopGroupSize = 0;
+            var cellCount = NumberOfCells;
             // add a size for each row in our data based on how many the delegate tells us to create
-            for (var i = 0; i < NumberOfCells; i++)
+            for (var i = 0; i < cellCount; i++)
             {
                 // add the size of this cell based on what the delegate tells us to use. Also add spacing if this cell isn't the first one
                 _cellViewSizeArray.Add(_delegate.GetCellViewSize(this, i) + (i == 0 ? 0 : _layoutGroup.spacing));

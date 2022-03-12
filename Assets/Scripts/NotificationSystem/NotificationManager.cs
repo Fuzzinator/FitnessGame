@@ -78,7 +78,8 @@ public class NotificationManager : MonoBehaviour
         var visuals = new Notification.NotificationVisuals(message,
             "Failed to load.",
             "Play Next",
-            "Main Menu");
+            "Main Menu",
+            disableUI: false);
 
         RequestNotification(visuals,
             () => { LevelManager.Instance.LoadNextSong(); },

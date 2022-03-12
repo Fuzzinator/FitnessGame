@@ -24,9 +24,12 @@ public class UpdateScoreDisplay : MonoBehaviour
 
     private const string ADD = "+";
 
+    private WaitForSeconds _updateDelay;
+
     private void Start()
     {
         _token = this.GetCancellationTokenOnDestroy();
+        _updateDelay = new WaitForSeconds(_delayLength);
     }
 
     public void ScoreUpdated(uint increaseAmount)
@@ -47,7 +50,21 @@ public class UpdateScoreDisplay : MonoBehaviour
             SetScoreDisplay(ScoringManager.Instance.CurrentScore-increaseAmount);
         }
 
-        AsyncScoreUpdate(increaseAmount).Forget();
+        StartCoroutine(CoroutineScoreUpdate(increaseAmount));
+        //AsyncScoreUpdate(increaseAmount).Forget();
+    }
+
+    private IEnumerator CoroutineScoreUpdate(uint increaseAmount)
+    {
+        yield return _updateDelay;
+        if (_increaseAmount == increaseAmount)
+        {
+            SetScoreDisplay(ScoringManager.Instance.CurrentScore);
+
+            _scoreIncrease.SetText(string.Empty);
+        }
+
+        _delayingUpdate = false;
     }
 
     private async UniTaskVoid AsyncScoreUpdate(uint increaseAmount)

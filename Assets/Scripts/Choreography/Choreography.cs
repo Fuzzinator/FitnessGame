@@ -78,9 +78,21 @@ public class Choreography
 
             var json = await streamReader.ReadToEndAsync().AsUniTask().AttachExternalCancellation(token);
             Choreography choreography = null;
+
+
             if (!string.IsNullOrWhiteSpace(json))
             {
-                choreography = JsonUtility.FromJson<Choreography>(json);
+                try
+                {
+                    choreography = JsonUtility.FromJson<Choreography>(json);
+                }
+                catch (Exception e)
+                {
+                    LevelManager.Instance.LoadFailed();
+                    NotificationManager.ReportFailedToLoadInGame($"{songName}'s choreography failed to load.");
+                    Debug.LogError(e);
+                    return choreography;
+                }
             }
 
             if (choreography == null || choreography.Notes == null)
@@ -160,7 +172,7 @@ public class Choreography
         return false;
     }
 
-    public async UniTask AddRotationEventsAsync()
+    public async UniTask<Choreography> AddRotationEventsAsync()
     {
         var eventTypes = GetOptionTypes();
         var events = new NativeArray<ChoreographyEvent>(_events, Allocator.TempJob);
@@ -177,21 +189,24 @@ public class Choreography
             {
                 Debug.LogError(e);
             }
+
+            return this;
         }
 
         _events = jobHandle.Events.ToArray();
 
         eventTypes.Dispose();
         events.Dispose();
+        return this;
     }
 
-    public async UniTask AddObstaclesAsync(SongInfo info)
+    public async UniTask<Choreography> AddObstaclesAsync(SongInfo info)
     {
         var bps = info.BeatsPerMinute / 60;
-        var modifiedBPS = (bps/Mathf.Ceil(bps)) * 3;
-        
+        var modifiedBPS = (bps / Mathf.Ceil(bps)) * 3;
+
         var beatCount = Mathf.FloorToInt(info.SongLength * modifiedBPS);
-        
+
         var obstacles = new NativeArray<ChoreographyObstacle>((_notes.Length / 5) + beatCount, Allocator.TempJob);
         var notes = new NativeArray<ChoreographyNote>(_notes, Allocator.TempJob);
         var jobHandle = new AddObstaclesJob(obstacles, notes, modifiedBPS); //, _obstacles.Length);
@@ -214,6 +229,7 @@ public class Choreography
 
         obstacles.Dispose();
         notes.Dispose();
+        return this;
     }
 
     private struct SortISequenceable : IComparer<ChoreographyObstacle>
@@ -281,12 +297,15 @@ public struct AddRotationEventsJob : IJobParallelFor
     private uint _seed;
     private const int INTERVAL = 10;
 
-    private readonly NativeArray<int> _eventTypes;
+    private const int EARLYROTATION = 14;
+    private const int LATEROTATION = 15;
 
-    public AddRotationEventsJob(NativeArray<ChoreographyEvent> events, NativeArray<int> eventTypes)
+    private readonly NativeArray<int> _rotateEventValues;
+
+    public AddRotationEventsJob(NativeArray<ChoreographyEvent> events, NativeArray<int> rotateEventValues)
     {
         _events = events;
-        _eventTypes = eventTypes;
+        _rotateEventValues = rotateEventValues;
         _seed = 0 + 118 + 999 + 881 + 999 + 119 + 725;
     }
 
@@ -294,12 +313,26 @@ public struct AddRotationEventsJob : IJobParallelFor
     {
         if (index % INTERVAL == 0)
         {
-            var newEvent = new ChoreographyEvent(_events[index].Time,
-                (ChoreographyEvent.EventType) Math.Clamp((int) _events[index].Type * 1.5f,
-                    (int) ChoreographyEvent.EventType.EarlyRotation,
-                    (int) ChoreographyEvent.EventType.LateRotation), GetRotationEvent(index));
+            var newEvent = new ChoreographyEvent(_events[index].Time, GetEventType(index), GetRotationEvent(index));
             _events[index] = newEvent;
         }
+    }
+
+    private ChoreographyEvent.EventType GetEventType(int index)
+    {
+        if (index + _seed > uint.MaxValue)
+        {
+            index = (int) (index * .5);
+        }
+
+        var random = new Unity.Mathematics.Random((uint) (_seed + index));
+        var randValue = random.NextInt(EARLYROTATION, LATEROTATION);
+        for (var i = 0; i < INTERVAL; i++)
+        {
+            randValue = random.NextInt(EARLYROTATION, LATEROTATION);
+        }
+
+        return (ChoreographyEvent.EventType) randValue;
     }
 
     private ChoreographyEvent.RotateEventValue GetRotationEvent(int index)
@@ -310,13 +343,13 @@ public struct AddRotationEventsJob : IJobParallelFor
         }
 
         var random = new Unity.Mathematics.Random((uint) (_seed + index));
-        var randValue = random.NextInt(0, _eventTypes.Length - 1);
+        var randValue = random.NextInt(0, _rotateEventValues.Length - 1);
         for (var i = 0; i < INTERVAL; i++)
         {
-            randValue = random.NextInt(0, _eventTypes.Length - 1);
+            randValue = random.NextInt(0, _rotateEventValues.Length - 1);
         }
 
-        var value = (ChoreographyEvent.RotateEventValue) _eventTypes[randValue];
+        var value = (ChoreographyEvent.RotateEventValue) _rotateEventValues[randValue];
         return value;
     }
 }
@@ -327,16 +360,17 @@ public struct AddObstaclesJob : IJobParallelFor
     public readonly NativeArray<ChoreographyObstacle> Obstacles => _obstacles;
     private NativeArray<ChoreographyObstacle> _obstacles;
     private readonly NativeArray<ChoreographyNote> _notes;
-    
+
     private uint _seed;
     private readonly float _bps;
-    
+
     private const int INTERVAL = 5;
 
     [DeallocateOnJobCompletion]
     private readonly NativeArray<int> _obstacleOptions;
 
-    public AddObstaclesJob(NativeArray<ChoreographyObstacle> obstacles, NativeArray<ChoreographyNote> sourceNotes, float bps)
+    public AddObstaclesJob(NativeArray<ChoreographyObstacle> obstacles, NativeArray<ChoreographyNote> sourceNotes,
+        float bps)
     {
         _obstacles = obstacles;
         _notes = sourceNotes;
@@ -360,7 +394,7 @@ public struct AddObstaclesJob : IJobParallelFor
         }
         else
         {
-            var newIndex = index - (_notes.Length/INTERVAL);
+            var newIndex = index - (_notes.Length / INTERVAL);
             newObstacle = new ChoreographyObstacle(_bps * newIndex, 1, GetObstacleType(index), 1, 1);
         }
 

@@ -34,7 +34,7 @@ namespace UI.Scrollers.Playlists
             _displaySongInfo.UpdateDisplayedInfo(info);
             PlaylistMaker.Instance.SetActiveItem(info);
         }
-
+        
         protected override void SetDataFromFilter()
         {
             _songInfos.Clear();

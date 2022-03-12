@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,6 +26,7 @@ public struct HitInfo
         DirectionDotProduct = direction;
         _rightHand = null;
         _leftHand = null;
+        
         switch (hand.AssignedHand)
         {
             case HitSideType.Right:
@@ -39,27 +41,14 @@ public struct HitInfo
         HitSpeed = speed;
     }
 
-    public HitInfo(float impact, float direction, IReadOnlyList<Hand> hands, float distance,
+    public HitInfo(float impact, float direction, Hand leftHand, Hand rightHand, float distance,
         float speed)
     {
         ImpactDotProduct = impact;
         DirectionDotProduct = direction;
         
-        _rightHand = null;
-        _leftHand = null;
-        
-        foreach (var hand in hands)
-        {
-            switch (hand.AssignedHand)
-            {
-                case HitSideType.Right:
-                    _rightHand = hand;
-                    break;
-                case HitSideType.Left:
-                    _leftHand = hand;
-                    break;
-            }
-        }
+        _rightHand = rightHand;
+        _leftHand = leftHand;
 
         DistanceFromOptimalHit = distance;
         HitSpeed = speed;

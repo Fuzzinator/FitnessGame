@@ -81,7 +81,14 @@ public class  FormationHolder : MonoBehaviour, IPoolable
 
                 if (child != null && !child.IsPooled)
                 {
-                    child.ReturnToPool();
+                    if (child is BaseTarget target)
+                    {
+                        target.Complete();
+                    }
+                    else
+                    {
+                        child.ReturnToPool();
+                    }
                 }
 
                 children.Remove(child);

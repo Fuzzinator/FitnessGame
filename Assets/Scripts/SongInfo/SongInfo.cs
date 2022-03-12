@@ -15,7 +15,7 @@ public class SongInfo
     private const int MINUTE = 60;
 
     #endregion
-
+    
     public float BeatsPerMinute => _beatsPerMinute;
 
     public string SongName => _songName;
@@ -213,9 +213,8 @@ public class SongInfo
                                 newFileName =
                                     await AsyncCreateNewDifficultyFile(difficultySet.DifficultyInfos[^1], gameMode,
                                         token);
-                                var set = _difficultyBeatmapSets[i];
-                                set.SetFileName(newFileName);
-                                _difficultyBeatmapSets[i] = set;
+
+                                _difficultyBeatmapSets[i].SetFileName(newFileName);
                                 rotationSet = _difficultyBeatmapSets[i];
                                 hasRotationSet = true;
                             }
@@ -280,14 +279,14 @@ public class SongInfo
             case GameMode.Degrees90:
             case GameMode.Degrees360:
                 newFileName = $"AutoRotation-{newFileName}.dat";
-                await choreography.AddRotationEventsAsync();
+                choreography = await choreography.AddRotationEventsAsync();
                 await Choreography.AsyncSave(choreography, fileLocation, newFileName, _songName, token);
                 break;
             case GameMode.LightShow:
                 break;
             case GameMode.LegDay:
                 newFileName = $"LegDay-{newFileName}.dat";
-                await choreography.AddObstaclesAsync(this);
+                choreography = await choreography.AddObstaclesAsync(this);
                 await Choreography.AsyncSave(choreography, fileLocation, newFileName, _songName, token);
                 break;
             case GameMode.Lawless:
@@ -411,19 +410,19 @@ public class SongInfo
             switch (difficulty)
             {
                 case DifficultyInfo.EASY:
-                    newDifficulty.SetDifficulty($"{AUTONAME}{EASY}", DifficultyInfo.EASY,
+                    newDifficulty = newDifficulty.SetDifficulty($"{AUTONAME}{EASY}", DifficultyInfo.EASY,
                         info.DifficultyRank > DifficultyInfo.EASY);
                     break;
                 case DifficultyInfo.NORMAL:
-                    newDifficulty.SetDifficulty($"{AUTONAME}{NORMAL}", DifficultyInfo.NORMAL,
+                    newDifficulty = newDifficulty.SetDifficulty($"{AUTONAME}{NORMAL}", DifficultyInfo.NORMAL,
                         info.DifficultyRank > DifficultyInfo.NORMAL);
                     break;
                 case DifficultyInfo.HARD:
-                    newDifficulty.SetDifficulty($"{AUTONAME}{HARD}", DifficultyInfo.HARD,
+                    newDifficulty = newDifficulty.SetDifficulty($"{AUTONAME}{HARD}", DifficultyInfo.HARD,
                         info.DifficultyRank > DifficultyInfo.HARD);
                     break;
                 case DifficultyInfo.EXPERT:
-                    newDifficulty.SetDifficulty($"{AUTONAME}{EXPERT}", DifficultyInfo.EXPERT,
+                    newDifficulty = newDifficulty.SetDifficulty($"{AUTONAME}{EXPERT}", DifficultyInfo.EXPERT,
                         info.DifficultyRank > DifficultyInfo.EXPERT);
                     break;
             }
@@ -456,7 +455,7 @@ public class SongInfo
             for (var i = 0; i < _difficultyBeatmaps.Length; i++)
             {
                 beatmaps[i] = _difficultyBeatmaps[i];
-                beatmaps[i].SetFileName(fileName);
+                beatmaps[i] = beatmaps[i].SetFileName(fileName);
             }
 
             _difficultyBeatmaps = beatmaps;

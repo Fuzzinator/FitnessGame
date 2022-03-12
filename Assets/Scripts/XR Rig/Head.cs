@@ -15,6 +15,13 @@ public class Head : MonoBehaviour
     private LayerMask _layerMask;
     
     [SerializeField]
+    private string _flyBySound;
+
+    [SerializeField]
+    private LayerMask _flyByLayerMask;
+    
+    
+    [SerializeField]
     protected UnityEvent _hitHeadEvent = new UnityEvent();
 
     private void Awake()
@@ -24,15 +31,27 @@ public class Head : MonoBehaviour
 
     protected void OnTriggerEnter(Collider other)
     {
-        if (!IsHit(other))
+        if (IsHit(other, _layerMask))
+        {
+            _hitHeadEvent?.Invoke();
+        }
+        else if (IsHit(other, _flyByLayerMask))
+        {
+            TriggerFlyByEffect();
+        }
+    }
+
+    protected bool IsHit(Collider col, LayerMask layerMask)
+    {
+        return layerMask == (layerMask.value | (1 << col.gameObject.layer));
+    }
+
+    private void TriggerFlyByEffect()
+    {
+        if (string.IsNullOrWhiteSpace(_flyBySound))
         {
             return;
         }
-        _hitHeadEvent?.Invoke();
-    }
-
-    protected bool IsHit(Collider col)
-    {
-        return _layerMask == (_layerMask.value | (1 << col.gameObject.layer));
+        SoundManager.PlaySound(_flyBySound);
     }
 }

@@ -90,7 +90,7 @@ public struct DifficultyInfo
 
     #endregion
 
-    public void SetDifficulty(string difficultyName, int difficultyRank, bool downScale)
+    public DifficultyInfo SetDifficulty(string difficultyName, int difficultyRank, bool downScale)
     {
         _difficulty = difficultyName;
         _difficultyRank = difficultyRank;
@@ -102,10 +102,12 @@ public struct DifficultyInfo
             true when _difficultyRank <= EXPERT => downScale ? MINEXPERTSPEED : MAXEXPERTSPEED,
             _ => MINNORMALSPEED
         };
+        return this;
     }
 
-    public void SetFileName(string fileName)
+    public DifficultyInfo SetFileName(string fileName)
     {
         _beatmapFilename = fileName;
+        return this;
     }
 }

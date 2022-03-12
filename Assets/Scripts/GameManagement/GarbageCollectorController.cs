@@ -8,22 +8,14 @@ using UnityEngine.Scripting;
 
 public class GarbageCollectorController : MonoBehaviour
 {
-    [SerializeField]
-    private int _frameCount = 10;
-
     private CancellationToken _cancellationToken;
     
     // Start is called before the first frame update
     void Start()
     {
         _cancellationToken = this.GetCancellationTokenOnDestroy();
-        SetGarbageCollectorState(false);
+        //SetGarbageCollectorState(false);
         //BackgroundGarbageCollectorAsync().Forget();
-    }
-
-    private void OnDestroy()
-    {
-        SetGarbageCollectorState(true);
     }
 
     public void SetGarbageCollectorState(bool enabled)
@@ -42,15 +34,13 @@ public class GarbageCollectorController : MonoBehaviour
 
     private async UniTask RunGarbageCollectorAsync(ulong nanoseconds)
     {
-        for (var i = 0; i < _frameCount; i++)
+        while(GarbageCollector.CollectIncremental(nanoseconds))
         {
             await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
             if (_cancellationToken.IsCancellationRequested)
             {
                 return;
             }
-
-            GarbageCollector.CollectIncremental(nanoseconds);
         }
     }
 

@@ -14,6 +14,7 @@ public class BaseHitVFX : MonoBehaviour, IPoolable
     private float _lifespan = 1.25f;
     
     private CancellationToken token;
+    private WaitForSeconds _lifespanSeconds;
     
     public PoolManager MyPoolManager { get; set; }
 
@@ -29,6 +30,7 @@ public class BaseHitVFX : MonoBehaviour, IPoolable
     public void Initialize()
     {
         token = this.GetCancellationTokenOnDestroy();
+        _lifespanSeconds = new WaitForSeconds(_lifespan);
     }
 
     public void SetParticleColor(Color color)
@@ -36,6 +38,13 @@ public class BaseHitVFX : MonoBehaviour, IPoolable
         var main = _particleSystem.main;
         
         main.startColor = color;
+    }
+
+    public IEnumerator PlayParticlesCoroutine()
+    {
+        _particleSystem.Play(true);
+        yield return _lifespanSeconds;
+        ReturnToPool();
     }
     
     public async UniTaskVoid PlayParticles()

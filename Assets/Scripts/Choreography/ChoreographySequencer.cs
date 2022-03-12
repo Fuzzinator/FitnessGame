@@ -245,7 +245,7 @@ public class ChoreographySequencer : MonoBehaviour
 
         var delay = Mathf.Max(0, (formation.Time * beatsTime) - time - timeToPoint);
 
-        tween.DelayTweenStart(delay).Forget();
+        tween.DelayTweenStart(delay);
 
         if (formation.HasEvent && formation.Event.Type == ChoreographyEvent.EventType.LateRotation)
         {
@@ -358,12 +358,12 @@ public class ChoreographySequencer : MonoBehaviour
         switch (note.HitSideType)
         {
             case HitSideType.Block:
-                var lineLayerObj = _sequenceStartPoses[(1 + (int) note.LineLayer * 4)].localPosition;
+                var lineLayerObj = _sequenceStartPoses[Mathf.Min(1 + (int) note.LineLayer * 4, _sequenceStartPoses.Length-3)].localPosition;
                 return new Vector3(0, lineLayerObj.y, 0);
             case HitSideType.Left:
-                return _sequenceStartPoses[(1 + (int) note.LineLayer * 4)].localPosition;
+                return _sequenceStartPoses[Mathf.Min(1 + (int) note.LineLayer * 4, _sequenceStartPoses.Length-3)].localPosition;
             case HitSideType.Right:
-                return _sequenceStartPoses[(2 + (int) note.LineLayer * 4)].localPosition;
+                return _sequenceStartPoses[Mathf.Min(2 + (int) note.LineLayer * 4, _sequenceStartPoses.Length-2)].localPosition;
             default:
                 return Vector3.zero;
         }

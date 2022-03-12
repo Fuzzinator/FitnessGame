@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using GameModeManagement;
+using UI.Scrollers.Playlists;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Jobs;
@@ -29,12 +30,16 @@ public class SongInfoFilesReader : MonoBehaviour
 
     [SerializeField]
     private AssetLabelReference _labelReference;
-
+    
     [SerializeField]
     private UnityEvent _startSongsUpdate = new UnityEvent();
 
     [SerializeField]
     private UnityEvent _songsUpdated = new UnityEvent();
+
+    [Header("UI Thingy")]
+    [SerializeField]
+    private DisplaySongInfo _displaySongInfo;
 
     private CancellationTokenSource _cancellationSource;
     private CancellationToken _destructionCancellationToken;
@@ -42,14 +47,6 @@ public class SongInfoFilesReader : MonoBehaviour
     public SongInfo.SortingMethod CurrentSortingMethod => _sortingMethod;
 
     #region Const Strings
-
-#if UNITY_ANDROID && !UNITY_EDITOR
-    private const string ANDROIDPATHSTART = "file://";
-    private const string SONGSFOLDER = "/Resources/Songs/";
-#elif UNITY_EDITOR
-    private const string UNITYEDITORLOCATION = "/LocalCustomSongs/Songs/";
-#endif
-
     private const string SONGINFONAME = "Info.txt";
     private const string ALTSONGINFONAME = "Info.dat";
 
@@ -96,9 +93,33 @@ public class SongInfoFilesReader : MonoBehaviour
     {
         availableSongs.Clear();
         await GetBuiltInSongs();
-        await GetCustomSongs();
+        await CustomSongsManager.GetCustomSongs(_cancellationSource);
         SortSongs();
         _songsUpdated?.Invoke();
+    }
+
+    public void TryDeleteSong()
+    {
+        var targetSongInfo = PlaylistMaker.Instance.DisplayedSongInfo;
+        if (!targetSongInfo.isCustomSong)
+        {
+            return;
+        }
+
+        var deleteVisuals = new Notification.NotificationVisuals(
+            $"Are you sure you would like to permanently delete {targetSongInfo.SongName}?", 
+            "Delete Song?", "Confirm", "Cancel");
+
+        NotificationManager.RequestNotification(deleteVisuals, () => ConfirmDeleteSong(targetSongInfo).Forget());
+    }
+
+    private async UniTaskVoid ConfirmDeleteSong(SongInfo targetSongInfo)
+    {
+        MainMenuUIController.Instance.RequestDisableUI(this);
+        await CustomSongsManager.DeleteCustomSong(targetSongInfo);
+        _displaySongInfo.ClearDisplayedInfo();
+        PlaylistMaker.Instance.SetActiveItem(new SongInfo());
+        MainMenuUIController.Instance.RequestEnableUI(this);
     }
 
     private async UniTask GetBuiltInSongs()
@@ -116,119 +137,6 @@ public class SongInfoFilesReader : MonoBehaviour
 
             availableSongs.Add(item);
         });
-    }
-
-    private async UniTask GetCustomSongs()
-    {
-#if UNITY_ANDROID && !UNITY_EDITOR
-        var path = $"{Application.persistentDataPath}{SONGSFOLDER}";
-#elif UNITY_EDITOR
-        var dataPath = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/'));
-        var path = $"{dataPath}{UNITYEDITORLOCATION}";
-#endif
-        if (!Directory.Exists(path))
-        {
-            Directory.CreateDirectory(path);
-        }
-
-        var directories = Directory.GetDirectories(path);
-        SongLoader songLoader = null;
-        if (directories.Length > 0)
-        {
-            songLoader = new SongLoader();
-        }
-
-        foreach (var dir in directories)
-        {
-            var info = new DirectoryInfo(dir);
-            var files = info.GetFiles();
-            foreach (var file in files)
-            {
-                if (file == null)
-                {
-                    return;
-                }
-
-                if (string.Equals(file.Name, SONGINFONAME, StringComparison.InvariantCultureIgnoreCase)
-                    || string.Equals(file.Name, ALTSONGINFONAME, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    var streamReader = new StreamReader(file.FullName);
-                    var result = await streamReader.ReadToEndAsync().AsUniTask()
-                        .AttachExternalCancellation(_destructionCancellationToken);
-
-                    var item = JsonUtility.FromJson<SongInfo>(result);
-
-                    streamReader.Close();
-
-
-                    var updatedMaps = false;
-                    if (file.Directory != null)
-                    {
-                        item.fileLocation = file.Directory.Name;
-                        updatedMaps = true;
-                    }
-                    
-
-                    item.isCustomSong = true;
-                    if (item.SongLength < 1)
-                    {
-                        var songLength = await TryGetSongLength(item, songLoader);
-                        item.SongLength = songLength;
-                        updatedMaps = true;
-                    }
-
-                    updatedMaps = await item.UpdateDifficultySets(_destructionCancellationToken);
-                    
-                    if (updatedMaps)
-                    {
-                        await UniTask.DelayFrame(2, cancellationToken: _cancellationSource.Token);
-                        using (var streamWriter = new StreamWriter(file.FullName))
-                        {
-                            await streamWriter.WriteAsync(JsonUtility.ToJson(item));
-                        }
-                    }
-
-                    availableSongs.Add(item);
-                }
-            }
-        }
-    }
-
-    public async UniTask<float> TryGetSongLength(SongInfo info, SongLoader songLoader,
-        bool customSong = true)
-    {
-        if (songLoader != null)
-        {
-            UniTask<AudioClip> clipRequest;
-            if (customSong)
-            {
-                clipRequest = songLoader.LoadCustomSong(info.fileLocation, info, _cancellationSource.Token);
-            }
-            else
-            {
-                clipRequest = songLoader.LoadBuiltInSong(info, _cancellationSource.Token);
-            }
-
-            var audioClip = await clipRequest;
-            if (audioClip == null)
-            {
-                if (_cancellationSource.IsCancellationRequested)
-                {
-                    _cancellationSource =
-                        CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
-                }
-                else
-                {
-                    Debug.LogError($"Failed to load {info.SongName}");
-                }
-
-                return 0;
-            }
-
-            return audioClip.length;
-        }
-
-        return 0;
     }
 
     public void SetSortMethod(SongInfo.SortingMethod method)

@@ -16,6 +16,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
 
     private List<PlaylistItem> _playlistItems = new List<PlaylistItem>();
     private SongInfo _activeItem;
+    public SongInfo DisplayedSongInfo => _activeItem;
 
     [SerializeField]
     private UnityEvent _playlistItemsUpdated = new UnityEvent();

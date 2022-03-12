@@ -2619,7 +2619,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh653600
+  m_Name: pb_Mesh68618
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -7902,7 +7902,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh654452
+  m_Name: pb_Mesh69470
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -8143,7 +8143,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 554431455}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1017806879}
+        m_TargetAssemblyTypeName: SongInfoFilesReader, Assembly-CSharp
+        m_MethodName: TryDeleteSong
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &554431455
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16554,7 +16566,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1017806877}
-  - component: {fileID: 1017806876}
   - component: {fileID: 1017806881}
   - component: {fileID: 1017806878}
   - component: {fileID: 1017806879}
@@ -16566,18 +16577,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1017806876
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1017806875}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4098a7da14ad3df469eefb143e1fb4e1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &1017806877
 Transform:
   m_ObjectHideFlags: 0
@@ -16682,6 +16681,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  _displaySongInfo: {fileID: 317559082}
 --- !u!114 &1017806880
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20705,7 +20705,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh107378
+  m_Name: pb_Mesh68892
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -23168,7 +23168,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh106590
+  m_Name: pb_Mesh68080
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2

@@ -105,11 +105,16 @@ namespace InfoSaving
                 await UniTask.RunOnThreadPool(() => ES3.Save(key, value, settings), cancellationToken: token);
                 return true;
             }
-            catch (Exception e)when (e is OperationCanceledException)
+            catch (Exception e)
             {
+                if (e is OperationCanceledException)
+                {
+                    return false;
+                }
+                
+                Debug.LogError(e);
+                return false;
             }
-
-            return false;
         }
 
         private static async UniTask<object> GetValue<T>(string key, string folder, CancellationToken token)
@@ -118,7 +123,7 @@ namespace InfoSaving
             try
             {
                 var settings = new ES3Settings(folder);
-                return await UniTask.Run(() => ES3.Load<T>(key, settings), cancellationToken: token);
+                return await UniTask.RunOnThreadPool(() => ES3.Load<T>(key, settings), cancellationToken: token);
             }
             catch (Exception e)when (e is OperationCanceledException)
             {

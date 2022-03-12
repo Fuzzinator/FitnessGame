@@ -9037,6 +9037,18 @@ PrefabInstance:
     - {fileID: 5850640565549118496, guid: 587d90671ab6a2f41bd6f3e162d52355, type: 3}
     - {fileID: -8971507887394260220, guid: 587d90671ab6a2f41bd6f3e162d52355, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 587d90671ab6a2f41bd6f3e162d52355, type: 3}
+--- !u!114 &4192563371479927233 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3011756263484509852, guid: 587d90671ab6a2f41bd6f3e162d52355,
+    type: 3}
+  m_PrefabInstance: {fileID: 1433572333136463709}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8213432111371213983}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e47778f88b40c9742903a94178274c52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8213432111371213983 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7070346352395033538, guid: 587d90671ab6a2f41bd6f3e162d52355,
@@ -9072,24 +9084,8 @@ MonoBehaviour:
   layer: 0
   _noteType: 3
   _cutDirection: 8
-  _collidedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  _targetCreated:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 9204152472188304679}
-        m_TargetAssemblyTypeName: SetRendererMaterial, Assembly-CSharp
-        m_MethodName: SetMaterial
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+  _setMaterial: {fileID: 9204152472188304679}
+  _optimalHitIndicator: {fileID: 4192563371479927233}
   _optimalHitDirection: {x: 0, y: 0, z: -1}
   _minMaxAllowance: {x: 0.25, y: 1}
   _minHitSpeed: 0

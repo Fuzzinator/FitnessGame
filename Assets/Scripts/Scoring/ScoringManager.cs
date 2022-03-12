@@ -7,7 +7,7 @@ public class ScoringManager : MonoBehaviour
 {
     public static ScoringManager Instance { get; private set; }
 
-    public ulong CurrentScore
+    public uint CurrentScore
     {
         get => _currentScore;
         private set
@@ -16,7 +16,7 @@ public class ScoringManager : MonoBehaviour
             _currentScore = value;
             if (oldScore != _currentScore)
             {
-                currentScoreUpdated?.Invoke((uint)(_currentScore-oldScore));
+                currentScoreUpdated?.Invoke((_currentScore-oldScore));
             }
         }
     }
@@ -31,7 +31,7 @@ public class ScoringManager : MonoBehaviour
     public uint HitObstaclesThisSong  => _hitObstaclesThisSong;
     
     [SerializeField]
-    private ulong _currentScore;
+    private uint _currentScore;
 
     private uint _goodHits;
     private uint _missedTargets;
@@ -82,8 +82,8 @@ public class ScoringManager : MonoBehaviour
     
     public void AddToScore(float valueToAdd)
     {
-        CurrentScore += (ulong)(valueToAdd*StreakManager.GetStreakScoreMod());
-        _scoreThisSong += (ulong)(valueToAdd*StreakManager.GetCurrentSongScoreMod());
+        CurrentScore += (uint)(valueToAdd*StreakManager.GetStreakScoreMod());
+        _scoreThisSong += (uint)(valueToAdd*StreakManager.GetCurrentSongScoreMod());
     }
 
     public void RegisterHit()

@@ -53,6 +53,7 @@ GameObject:
   - component: {fileID: -309534086680282040}
   - component: {fileID: 3011756263484509852}
   - component: {fileID: 8778464567127622631}
+  - component: {fileID: 1724931502224803095}
   m_Layer: 8
   m_Name: Base Target
   m_TagString: Untagged
@@ -154,24 +155,8 @@ MonoBehaviour:
   layer: 0
   _noteType: 0
   _cutDirection: 0
-  _collidedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  _targetCreated:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7808860882321832570}
-        m_TargetAssemblyTypeName: SetRendererMaterial, Assembly-CSharp
-        m_MethodName: SetMaterial
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+  _setMaterial: {fileID: 7808860882321832570}
+  _optimalHitIndicator: {fileID: 3011756263484509852}
   _optimalHitDirection: {x: 0, y: 0, z: 0}
   _minMaxAllowance: {x: 0.25, y: 1}
   _minHitSpeed: 1
@@ -270,7 +255,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _baseTarget: {fileID: -8971507887394260220}
   _renderer: {fileID: 2904331627907752747}
-  _effectRange: 2
   _propertyName: _OptimalHitPosition
 --- !u!114 &8778464567127622631
 MonoBehaviour:
@@ -285,6 +269,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTarget: 1
+--- !u!114 &1724931502224803095
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7070346352395033538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2bad1494edd4dfb4ca92db3603cd613e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _hitSound: Punch1
+  _missSound: Miss1
 --- !u!1 &9185772512914332026
 GameObject:
   m_ObjectHideFlags: 0

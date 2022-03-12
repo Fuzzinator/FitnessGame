@@ -56,7 +56,7 @@ public class Clock : MonoBehaviour
             else
             {
                 
-                sb.AppendFormat(FORMAT, hour, 0,minute);
+                sb.AppendFormat(FORMAT00, hour, 0,minute);
             }
 
             if (!use24HourTime)

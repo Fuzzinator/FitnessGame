@@ -19,7 +19,7 @@ public class BaseOptimalHitIndicator : MonoBehaviour
 
     private int _propertyHash;
 
-    private void Start()
+    internal void Initialize()
     {
         if (_renderer == null)
         {
