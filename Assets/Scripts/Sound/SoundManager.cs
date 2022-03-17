@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Audio;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class SoundManager : BaseGameStateListener
@@ -59,33 +60,64 @@ public class SoundManager : BaseGameStateListener
         _poolManager = new PoolManager(_basePoolObject, transform, 5);
     }
 
-    public static void PlaySound(string soundName)
+    public static async UniTask<SoundObject> PlaySoundAsnyc(string soundName, AudioSourceSettings settings)
     {
+        SoundObject playingObject;
         if (Instance._loadedAssets.ContainsKey(soundName))
         {
             if (Instance._loadedAssets[soundName].IsDone)
             {
                 var sound = Instance._loadedAssets[soundName].Result as AudioClip;
-                PlayClip(sound);
+                playingObject = PlayClip(sound, settings);
             }
             else
             {
-                PlayLoadingAsset(soundName).Forget();
+                playingObject = await PlayLoadingAsset(soundName, settings);
             }
         }
         else
         {
-            PlaySoundAsync(soundName).Forget();
+            playingObject = await LoadAndPlayAsync(soundName, settings);
+        }
+
+        return playingObject;
+    }
+
+    public static void PlaySound(string soundName, AudioSourceSettings settings,
+        Action<SoundObject> loadCompleted = null)
+    {
+        SoundObject playingObject;
+        if (Instance._loadedAssets.ContainsKey(soundName))
+        {
+            if (Instance._loadedAssets[soundName].IsDone)
+            {
+                var sound = Instance._loadedAssets[soundName].Result as AudioClip;
+                playingObject = PlayClip(sound, settings);
+                loadCompleted?.Invoke(playingObject);
+            }
+            else
+            {
+                PlayLoadingAsset(soundName, settings, loadCompleted).Forget();
+            }
+        }
+        else
+        {
+            LoadAndPlayAsync(soundName, settings, loadCompleted).Forget();
         }
     }
 
-    private static async UniTaskVoid PlayLoadingAsset(string soundName)
+    private static async UniTask<SoundObject> PlayLoadingAsset(string soundName, AudioSourceSettings settings,
+        Action<SoundObject> loadCompleted = null)
     {
         await Instance._loadedAssets[soundName];
-        PlayClip(Instance._loadedAssets[soundName].Result as AudioClip);
+        var playingObject = PlayClip(Instance._loadedAssets[soundName].Result as AudioClip, settings);
+
+        loadCompleted?.Invoke(playingObject);
+        return playingObject;
     }
 
-    public static async UniTask<SoundObject> PlaySoundAsync(string soundName)
+    public static async UniTask<SoundObject> LoadAndPlayAsync(string soundName, AudioSourceSettings settings,
+        Action<SoundObject> loadCompleted = null)
     {
         var index = Instance._assetReferenceNames.IndexOf(soundName);
         if (index < 0)
@@ -106,15 +138,23 @@ public class SoundManager : BaseGameStateListener
 
         Instance._loadedAssets[soundName] = assetHandle;
         var audioClip = await assetHandle;
-        return PlayClip(audioClip);
+        var playingObject = PlayClip(audioClip, settings);
+
+        loadCompleted?.Invoke(playingObject);
+        return playingObject;
     }
 
-    public static SoundObject PlayClip(AudioClip audioClip)
+    public static SoundObject PlayClip(AudioClip audioClip, AudioSourceSettings settings)
     {
         var sound = Instance._poolManager.GetNewPoolable() as SoundObject;
+        if (sound == null)
+        {
+            Debug.LogError("Sound Object is null. Game may be ending but this should not be null.");
+        }
+
         sound.gameObject.SetActive(true);
         Instance._activeSoundObjects.Add(sound);
-        sound.Play(audioClip);
+        sound.Play(audioClip, settings);
 
         return sound;
     }
@@ -140,6 +180,21 @@ public class SoundManager : BaseGameStateListener
             {
                 soundObject.ToggleSound(false);
             }
+        }
+    }
+
+    public struct AudioSourceSettings
+    {
+        public bool Looping { get; private set; }
+        public AudioMixerGroup MixerGroup { get; private set; }
+
+        public float InitialVolume { get; private set; }
+
+        public AudioSourceSettings(bool looping = false, AudioMixerGroup mixerGroup = null, float initialVolume = 1)
+        {
+            Looping = looping;
+            MixerGroup = mixerGroup;
+            InitialVolume = initialVolume;
         }
     }
 }

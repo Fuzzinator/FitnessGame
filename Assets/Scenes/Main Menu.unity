@@ -3021,7 +3021,7 @@ MonoBehaviour:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
-            m_FloatArgument: -0.01
+            m_FloatArgument: -0.1
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
@@ -3354,7 +3354,7 @@ MonoBehaviour:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
-            m_FloatArgument: 0.01
+            m_FloatArgument: 0.1
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
@@ -7081,6 +7081,62 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 427030428}
   m_CullTransparentMesh: 1
+--- !u!1 &438721421
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 438721423}
+  - component: {fileID: 438721422}
+  m_Layer: 0
+  m_Name: Menu Audio Controller
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &438721422
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 438721421}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42e0d1c516dc12949b31e17b388940eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _menuMusic:
+  - Undiscovered (Long Loop)
+  - Undiscovered (Short Loop 1)
+  - Endless Space (Short Loop 1)
+  - Endless Space (Short Loop 2)
+  - Andromeda (Short Loop 1)
+  - New Worlds (Short Loop 1)
+  - Horizon (Short Loop 1)
+  _menuMusicGroup: {fileID: -8988868724242450184, guid: 48260934faeb6d3489ec0d3b43b3e7db,
+    type: 2}
+  _menuSFXGroup: {fileID: -2551451994996263828, guid: 48260934faeb6d3489ec0d3b43b3e7db,
+    type: 2}
+--- !u!4 &438721423
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 438721421}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.44379318, y: 1.4318137, z: 0.60553384}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &443284766
 GameObject:
   m_ObjectHideFlags: 0
@@ -13250,6 +13306,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4302666231407549471, guid: 0a78f42969aaff74eb063b367f045548,
+        type: 3}
+      propertyPath: _scroller
+      value: 
+      objectReference: {fileID: 789226862}
     - target: {fileID: 5249712021586319672, guid: 0a78f42969aaff74eb063b367f045548,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -15225,7 +15286,7 @@ MonoBehaviour:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
-            m_FloatArgument: -0.01
+            m_FloatArgument: -0.1
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
@@ -15747,6 +15808,11 @@ MonoBehaviour:
   _layerMask:
     serializedVersion: 2
     m_Bits: 0
+  _flyBySound: 
+  _flyByLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  _audioMixer: {fileID: 0}
   _hitHeadEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -15973,7 +16039,7 @@ MonoBehaviour:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
-            m_FloatArgument: 0.01
+            m_FloatArgument: 0.1
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
@@ -17074,6 +17140,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _scrollRect: {fileID: 1028989303}
+  _scroller: {fileID: 1028989301}
 --- !u!114 &1028989303
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18792,6 +18859,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _scrollRect: {fileID: 1079850459}
+  _scroller: {fileID: 1079850452}
 --- !u!114 &1079850459
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21064,7 +21132,7 @@ MonoBehaviour:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
-            m_FloatArgument: -0.01
+            m_FloatArgument: -0.1
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
@@ -21567,6 +21635,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _scrollRect: {fileID: 1400155088}
+  _scroller: {fileID: 1400155084}
 --- !u!114 &1400155088
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22963,6 +23032,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _scrollRect: {fileID: 1580095288}
+  _scroller: {fileID: 1580095286}
 --- !u!114 &1580095288
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23553,7 +23623,7 @@ MonoBehaviour:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
-            m_FloatArgument: -0.01
+            m_FloatArgument: -0.1
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
@@ -23877,7 +23947,7 @@ MonoBehaviour:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
-            m_FloatArgument: 0.01
+            m_FloatArgument: 0.1
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
@@ -26109,7 +26179,7 @@ MonoBehaviour:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
-            m_FloatArgument: 0.01
+            m_FloatArgument: 0.1
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
@@ -29434,6 +29504,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d0b72b9e9911164b99a3bbcb72ab158, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _basePoolObject: {fileID: 0}
+  _activeSoundObjects: []
+  _assetReferenceNames: []
+  _assetReferences: []
 --- !u!4 &2024104558
 Transform:
   m_ObjectHideFlags: 0
@@ -30180,6 +30254,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _scrollRect: {fileID: 2056082821}
+  _scroller: {fileID: 2056082819}
 --- !u!114 &2056082821
 MonoBehaviour:
   m_ObjectHideFlags: 0

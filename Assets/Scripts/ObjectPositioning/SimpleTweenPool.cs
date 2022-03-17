@@ -8,6 +8,7 @@ using UnityEngine.Jobs;
 
 namespace SimpleTweens
 {
+    [Serializable]
     public class SimpleTweenPool
     {
         public List<SimpleTween> pooledTweens;
@@ -20,10 +21,10 @@ namespace SimpleTweens
         public SimpleTweenPool(int initialSize, CancellationToken token)
         {
             _cancellationToken = token;
-            
+
             pooledTweens = new List<SimpleTween>(initialSize);
             activeTweens = new List<SimpleTween>(initialSize);
-            
+
             for (var i = 0; i < initialSize; i++)
             {
                 var tween = CreateNewTween(new SimpleTween.Data());
@@ -38,6 +39,7 @@ namespace SimpleTweens
                 var tween = pooledTweens[0];
                 pooledTweens.Remove(tween);
                 tween.data = data;
+                tween._isPooled = false;
                 activeTweens.Add(tween);
                 return tween;
             }
@@ -55,8 +57,16 @@ namespace SimpleTweens
 
         private void ReturnToPool(SimpleTween tween)
         {
+            tween.data = new SimpleTween.Data();
+
             activeTweens.Remove(tween);
+            if (pooledTweens.Contains(tween))
+            {
+                return;
+            }
+            
             pooledTweens.Add(tween);
+            tween._isPooled = true;
         }
 
         public void CompleteAllActive()
@@ -65,8 +75,6 @@ namespace SimpleTweens
             {
                 var tween = activeTweens[0];
                 tween.Complete();
-                activeTweens.Remove(tween);
-                pooledTweens.Add(tween);
             }
         }
 
@@ -78,6 +86,7 @@ namespace SimpleTweens
                 tween.Cancel();
                 activeTweens.Remove(tween);
             }
+
             while (pooledTweens.Count > 0)
             {
                 var tween = pooledTweens[0];
@@ -91,6 +100,7 @@ namespace SimpleTweens
             var tween = new SimpleTween(data, _cancellationToken);
             tween.OnReturn += () => ReturnToPool(tween);
             tween.StartTweener();
+            tween._isPooled = false;
             activeTweens.Add(tween);
             return tween;
         }

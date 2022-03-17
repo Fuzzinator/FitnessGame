@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.Events;
 
 public class Head : MonoBehaviour
@@ -20,6 +21,9 @@ public class Head : MonoBehaviour
     [SerializeField]
     private LayerMask _flyByLayerMask;
     
+    
+    [SerializeField]
+    private AudioMixerGroup _audioMixer;
     
     [SerializeField]
     protected UnityEvent _hitHeadEvent = new UnityEvent();
@@ -52,6 +56,8 @@ public class Head : MonoBehaviour
         {
             return;
         }
-        SoundManager.PlaySound(_flyBySound);
+
+        var soundSettings = new SoundManager.AudioSourceSettings(false, _audioMixer);
+        SoundManager.PlaySound(_flyBySound, soundSettings);
     }
 }

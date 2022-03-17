@@ -7,19 +7,21 @@ using UnityEngine;
 
 namespace SimpleTweens
 {
+    [Serializable]
     public class SimpleTween
     {
         internal Data data;
         internal delegate void OnReturnDelegate();
         internal event OnReturnDelegate OnReturn;
 
-        internal bool active = false;
+        internal bool _isPooled = false;
+        
+        internal bool _active = false;
 
-        internal float delayTime;
+        internal float _delayTime;
         
         private CancellationToken _destroyedCancellationToken;
         private CancellationTokenSource _internalCancelTokenSource;
-
         public SimpleTween(Data data, CancellationToken token)
         {
             this.data = data;
@@ -34,39 +36,50 @@ namespace SimpleTweens
 
         public void DelayTweenStart(float delay)
         {
-            delayTime = delay;
-            active = true;
+            _delayTime = delay;
+            _active = true;
         }
         
         private async UniTask DelayTweenStartAsync()
         {
             while (!_internalCancelTokenSource.IsCancellationRequested)
             {
-                while (!active)
+                while (!_active)
                 {
                     if (_internalCancelTokenSource.IsCancellationRequested)
                     {
                         InternalCancel();
-                        return;
+                        break;
                     }
                     try
                     {
                         await UniTask.DelayFrame(1, cancellationToken: _internalCancelTokenSource.Token);
                     }
-                    catch (Exception e) when (e is OperationCanceledException)
+                    catch (Exception e)
                     {
+                        if (e is not OperationCanceledException)
+                        {
+                            Debug.LogError(e);
+                        }
                         InternalCancel();
-                        return;
+                        break;
                     }
                 }
+                
+                if (_internalCancelTokenSource.IsCancellationRequested)
+                {
+                    InternalCancel();
+                    continue;
+                }
+                
                 try
                 {
-                    await UniTask.Delay(TimeSpan.FromSeconds(delayTime),
+                    await UniTask.Delay(TimeSpan.FromSeconds(_delayTime),
                         cancellationToken: _internalCancelTokenSource.Token);
                     if (_internalCancelTokenSource.Token.IsCancellationRequested)
                     {
                         InternalCancel();
-                        return;
+                        continue;
                     }
 
                     data.OnStart?.Invoke();
@@ -85,18 +98,26 @@ namespace SimpleTweens
                     if (_internalCancelTokenSource.Token.IsCancellationRequested)
                     {
                         InternalCancel();
-                        return;
+                        continue;
                     }
 
                     data.OnComplete?.Invoke();
                 }
-                catch (Exception e) when (e is OperationCanceledException)
+                catch (Exception e)
                 {
+                    if (e is not OperationCanceledException)
+                    {
+                        Debug.LogError(e);
+                    }
                     InternalCancel();
+                    continue;
                 }
 
-                OnReturn?.Invoke();
-                active = false;
+                _active = false;
+                if (!_isPooled)
+                {
+                    OnReturn?.Invoke();
+                }
             }
         }
 
@@ -108,14 +129,23 @@ namespace SimpleTweens
         
         public void Cancel()
         {
-            active = false;
+            _active = false;
             _internalCancelTokenSource?.Cancel();
+            
+            if (!_isPooled)
+            {
+                OnReturn?.Invoke();
+            }
         }
 
         private void InternalCancel()
         {
-            active = false;
-            OnReturn?.Invoke();
+            _active = false;
+            if (!_isPooled)
+            {
+                OnReturn?.Invoke();
+            }
+
             if (_destroyedCancellationToken.IsCancellationRequested)
             {
                 OnReturn = null;
