@@ -332,6 +332,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1158288263}
   - component: {fileID: 1158288262}
+  - component: {fileID: 1158288264}
   m_Layer: 0
   m_Name: Sound Manager
   m_TagString: Untagged
@@ -370,6 +371,10 @@ MonoBehaviour:
   - UI_SCI-FI_Tone_Deep_Wet_16_stereo
   - UI_Animate_Clean_Beeps_Appear_stereo
   - UI_Animate_Clean_Beeps_Disappear_stereo
+  - UI_Unhovered
+  - UI_Clicked
+  - UI_Confirm 2
+  - UI_Confirm 2
   _assetReferences:
   - m_AssetGUID: a20ff203273429945ab943f8698ddef5
     m_SubObjectName: 
@@ -431,6 +436,22 @@ MonoBehaviour:
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
+  - m_AssetGUID: a924f71e918f8ec4a8e65455cac7fb6e
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  - m_AssetGUID: 226ea3a851279454b8a2011e3ef3030a
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  - m_AssetGUID: 25bb9eb9b1b8d1a4b9281acd12b4f634
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  - m_AssetGUID: 617053b04a4171b48bd52609f0e35c31
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
 --- !u!4 &1158288263
 Transform:
   m_ObjectHideFlags: 0
@@ -446,6 +467,21 @@ Transform:
   m_Father: {fileID: 811981821}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1158288264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1158288261}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c734be416f30c6848b8446050e2eab74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _clickedSound: UI_Confirm 2
+  _hoveredSound: UI_Unhovered
+  _unhoveredSound: UI_Unhovered
 --- !u!1 &1303122977
 GameObject:
   m_ObjectHideFlags: 0

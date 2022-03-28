@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Cysharp.Text;
 using Cysharp.Threading.Tasks;
 using GameModeManagement;
 using UnityEngine;
@@ -46,6 +47,9 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
 
     private const string NEWPLAYLISTNAME = "New Playlist";
     private const string PLAYLISTEXTENSION = ".txt";
+    
+    private const int MINUTE = 60;
+    private const string DIVIDER = ":";
 
     #endregion
 
@@ -187,10 +191,34 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         var length = 0f;
         foreach (var item in _playlistItems)
         {
-            length += item.SongInfo.LengthInMinutes;
+            length += item.SongInfo.SongLength;
         }
 
         return length;
+    }
+
+    public string GetReadableLength()
+    {
+        var length = GetLength();
+        
+        var minutes = (int)Mathf.Floor(length / MINUTE);
+        var seconds = (int)Mathf.Floor(length % MINUTE);
+        using (var sb = ZString.CreateStringBuilder(true))
+        {
+            if (minutes < 10)
+            {
+                sb.Append(0);
+            }
+            sb.Append(minutes);
+            sb.Append(DIVIDER);
+            if (seconds < 10)
+            {
+                sb.Append(0);
+            }
+            sb.Append(seconds);
+            
+            return sb.ToString();
+        }
     }
 
     public void SetEditMode(bool editMode)

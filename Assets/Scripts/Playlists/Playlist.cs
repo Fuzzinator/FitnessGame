@@ -16,7 +16,6 @@ public struct Playlist
     [SerializeField]
     private float _length;
 
-    //private const string LENGTHFORMAT = "{0}:{1}";
     private const string DIVIDER = ":";
     public float Length => _length;
 
@@ -28,8 +27,6 @@ public struct Playlist
             var seconds = (int)Mathf.Floor(_length % MINUTE);
             using (var sb = ZString.CreateStringBuilder(true))
             {
-                //sb.AppendFormat(LENGTHFORMAT, minutes, seconds);
-
                 if (minutes < 10)
                 {
                     sb.Append(0);

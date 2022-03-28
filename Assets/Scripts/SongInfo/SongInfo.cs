@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using Cysharp.Text;
 using Cysharp.Threading.Tasks;
 using GameModeManagement;
 using Unity.Burst;
@@ -13,6 +14,7 @@ public class SongInfo
     #region Const Strings
 
     private const int MINUTE = 60;
+    private const string DIVIDER = ":";
 
     #endregion
     
@@ -41,6 +43,25 @@ public class SongInfo
         {
             var minutes = Mathf.Floor(SongLength / MINUTE);
             var seconds = Mathf.Floor(SongLength % MINUTE);
+            using (var sb = ZString.CreateStringBuilder(true))
+            {
+                //sb.AppendFormat(LENGTHFORMAT, minutes, seconds);
+
+                if (minutes < 10)
+                {
+                    sb.Append(0);
+                }
+                sb.Append(minutes);
+                sb.Append(DIVIDER);
+                if (seconds < 10)
+                {
+                    sb.Append(0);
+                }
+                sb.Append(seconds);
+                
+                //var buffer = sb.AsArraySegment();
+                return sb.ToString();
+            }
             return ($"{minutes}:{seconds:00}");
         }
     }

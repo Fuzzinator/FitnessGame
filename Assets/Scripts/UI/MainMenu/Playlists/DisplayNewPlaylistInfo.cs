@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cysharp.Text;
 using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
@@ -20,8 +21,7 @@ public class DisplayNewPlaylistInfo : InputFieldController
     
     public void ShowInfo()
     {
-        var length = PlaylistMaker.Instance.GetLength();
-        _playlistLength.SetText($"{length:0.00}  minutes");
+        _playlistLength.SetText(PlaylistMaker.Instance.GetReadableLength());
         _inputField.SetTextWithoutNotify(PlaylistMaker.Instance.PlaylistName);
     }
 }
