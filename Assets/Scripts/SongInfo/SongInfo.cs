@@ -62,7 +62,6 @@ public class SongInfo
                 //var buffer = sb.AsArraySegment();
                 return sb.ToString();
             }
-            return ($"{minutes}:{seconds:00}");
         }
     }
 

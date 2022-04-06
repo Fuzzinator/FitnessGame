@@ -61,6 +61,11 @@ public class ChoreographySequencer : MonoBehaviour
 
     private PoolManager _rightObstaclePool;
 
+    [SerializeField]
+    private ActiveLaneIndicator _laneIndicator;
+
+    private PoolManager _laneIndicatorPool;
+
     private SimpleTweenPool _tweenPool;
 
     [Header("Sequence Positioning")]
@@ -72,8 +77,6 @@ public class ChoreographySequencer : MonoBehaviour
 
     [SerializeField]
     private Transform _playerCenter;
-
-    private Sequence _sequence;
 
     [SerializeField]
     private Transform[] _sequenceStartPoses;
@@ -117,7 +120,7 @@ public class ChoreographySequencer : MonoBehaviour
     [SerializeField]
     private UnityEvent<int> _stanceUpdated = new UnityEvent<int>();
 
-    private Dictionary<Vector3, Path> _paths = new Dictionary<Vector3, Path>();
+    private Dictionary<float, ActiveLaneIndicator> _laneIndicators = new Dictionary<float, ActiveLaneIndicator>(20);
 
     public bool SequenceRunning { get; private set; }
     private bool _sequenceUnstartedOrFinished = true;
@@ -136,6 +139,8 @@ public class ChoreographySequencer : MonoBehaviour
         _baseObstaclePool = new PoolManager(_baseObstacle, thisTransform);
         _leftObstaclePool = new PoolManager(_leftObstacle, thisTransform);
         _rightObstaclePool = new PoolManager(_rightObstacle, thisTransform);
+
+        _laneIndicatorPool = new PoolManager(_laneIndicator, thisTransform);
 
         _cancellationToken = this.GetCancellationTokenOnDestroy();
         _tweenPool = new SimpleTweenPool(20, _cancellationToken);
@@ -231,7 +236,7 @@ public class ChoreographySequencer : MonoBehaviour
         var tweenSpeed = _meterDistance * 10 / SongInfoReader.Instance.NoteSpeed;
 
 
-        formationHolder.SetUp(this, formation, nextFormationIndex, _optimalStrikePoint.position);
+        formationHolder.SetUp(this, formation, nextFormationIndex, _optimalStrikePoint.position, _currentRotation);
 
 
         var tweenData = new SimpleTween.Data(formationTransform, formationHolder.OnStartCallback,
@@ -315,6 +320,36 @@ public class ChoreographySequencer : MonoBehaviour
         }
     }
 
+    public void TryAddLaneIndicator(float rotation)
+    {
+        if (_laneIndicators.ContainsKey(rotation))
+        {
+            _laneIndicators[rotation].AddFormation();
+            return;
+        }
+
+        var indicator = _laneIndicatorPool.GetNewPoolable() as ActiveLaneIndicator;
+        indicator.SetUp(rotation, _playerCenter);
+        indicator.AddFormation();
+        _laneIndicators[rotation] = indicator;
+    }
+
+    public void TryRemoveLaneIndicator(float rotation)
+    {
+        if (!_laneIndicators.ContainsKey(rotation))
+        {
+            return;
+        }
+
+        var indicator = _laneIndicators[rotation];
+        indicator.RemoveFormation();
+        if (indicator.ActiveFormations <= 0)
+        {
+            _laneIndicators.Remove(rotation);
+            indicator.HideAndReturn();
+        }
+    }
+
     protected BaseObstacle GetObstacle(ChoreographyObstacle obstacle)
     {
         return obstacle.Type switch
@@ -358,12 +393,16 @@ public class ChoreographySequencer : MonoBehaviour
         switch (note.HitSideType)
         {
             case HitSideType.Block:
-                var lineLayerObj = _sequenceStartPoses[Mathf.Min(1 + (int) note.LineLayer * 4, _sequenceStartPoses.Length-3)].localPosition;
+                var lineLayerObj =
+                    _sequenceStartPoses[Mathf.Min(1 + (int) note.LineLayer * 4, _sequenceStartPoses.Length - 3)]
+                        .localPosition;
                 return new Vector3(0, lineLayerObj.y, 0);
             case HitSideType.Left:
-                return _sequenceStartPoses[Mathf.Min(1 + (int) note.LineLayer * 4, _sequenceStartPoses.Length-3)].localPosition;
+                return _sequenceStartPoses[Mathf.Min(1 + (int) note.LineLayer * 4, _sequenceStartPoses.Length - 3)]
+                    .localPosition;
             case HitSideType.Right:
-                return _sequenceStartPoses[Mathf.Min(2 + (int) note.LineLayer * 4, _sequenceStartPoses.Length-2)].localPosition;
+                return _sequenceStartPoses[Mathf.Min(2 + (int) note.LineLayer * 4, _sequenceStartPoses.Length - 2)]
+                    .localPosition;
             default:
                 return Vector3.zero;
         }

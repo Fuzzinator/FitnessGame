@@ -6,7 +6,7 @@ using SimpleTweens;
 using UnityEngine;
 
 [Serializable]
-public class  FormationHolder : MonoBehaviour, IPoolable
+public class FormationHolder : MonoBehaviour, IPoolable
 {
     private PoolManager _myPoolManager;
     public List<IPoolable> children;
@@ -15,12 +15,13 @@ public class  FormationHolder : MonoBehaviour, IPoolable
     private ChoreographySequencer _sequencer;
     private ChoreographyFormation _formation;
     private int _nextFormationIndex;
-    
+
+    public float Rotation { get; private set; }
     public Vector3 StrikePoint { get; private set; }
-    
+
     public Action OnStartCallback { get; private set; }
     public Action OnCompleteCallback { get; private set; }
-    
+
     public PoolManager MyPoolManager
     {
         get => _myPoolManager;
@@ -43,9 +44,14 @@ public class  FormationHolder : MonoBehaviour, IPoolable
         OnStartCallback = OnStart;
         OnCompleteCallback = OnComplete;
     }
-    
+
     private void OnStart()
     {
+        if (_formation.HasNote || _formation.HasObstacle)
+        {
+            _sequencer.TryAddLaneIndicator(Rotation);
+        }
+
         _sequencer.SpawnFormationObjects(this, _formation);
         _sequencer.TryCreateNextSequence(_nextFormationIndex);
     }
@@ -56,21 +62,26 @@ public class  FormationHolder : MonoBehaviour, IPoolable
         {
             return;
         }
+
+        _sequencer.TryRemoveLaneIndicator(Rotation);
         ReturnRemainingChildren();
     }
 
-    public void SetUp(ChoreographySequencer sequencer, ChoreographyFormation formation, int index, Vector3 strikePoint)
+    public void SetUp(ChoreographySequencer sequencer, ChoreographyFormation formation, int index, Vector3 strikePoint,
+        float rotation)
     {
         if (OnStartCallback == null)
         {
             SetCallbacks();
         }
+
         _sequencer = sequencer;
         _formation = formation;
         _nextFormationIndex = index;
         StrikePoint = strikePoint;
+        Rotation = rotation;
     }
-    
+
     public void ReturnRemainingChildren()
     {
         if (children != null)
@@ -113,6 +124,7 @@ public class  FormationHolder : MonoBehaviour, IPoolable
             children.Add(poolable);
         }
     }
+
     public void Remove(IPoolable poolable)
     {
         if (children != null)

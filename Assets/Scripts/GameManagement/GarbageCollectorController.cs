@@ -18,6 +18,11 @@ public class GarbageCollectorController : MonoBehaviour
         //BackgroundGarbageCollectorAsync().Forget();
     }
 
+    private void OnDestroy()
+    {
+        SetGarbageCollectorState(true);
+    }
+
     public void SetGarbageCollectorState(bool enabled)
     {
         #if !UNITY_EDITOR
@@ -48,9 +53,9 @@ public class GarbageCollectorController : MonoBehaviour
     {
         while (!_cancellationToken.IsCancellationRequested)
         {
-            GarbageCollector.CollectIncremental(10000);
-            //await RunGarbageCollectorAsync(10000);
-            await UniTask.Delay(TimeSpan.FromSeconds(1f), cancellationToken:_cancellationToken);
+            //GarbageCollector.CollectIncremental(10000);
+            await RunGarbageCollectorAsync(10000);
+            await UniTask.Delay(TimeSpan.FromSeconds(5f), cancellationToken:_cancellationToken);
         }
     }
 }

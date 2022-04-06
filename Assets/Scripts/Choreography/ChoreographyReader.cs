@@ -150,32 +150,35 @@ public class ChoreographyReader : MonoBehaviour
             _sequenceables.Add(obstacles[i]);
         }
 
-        for (var i = 0; i < Events.Length; i++) //Need to process Events differently. TODO: Figure this out
+        if (Events != null)
         {
-            switch (targetGameMode)
+            for (var i = 0; i < Events.Length; i++) //Need to process Events differently. TODO: Figure this out
             {
-                case GameMode.Unset:
-                case GameMode.Normal:
-                case GameMode.JabsOnly:
-                case GameMode.OneHanded:
-                case GameMode.LegDay:
-                case GameMode.NoObstacles:
-                    break;
-                case GameMode.LightShow:
-                    break; //Will figure this out later
-                case GameMode.Degrees90:
-                case GameMode.Degrees360:
-                case GameMode.Lawless:
-                    if (Events[i].Type is ChoreographyEvent.EventType.EarlyRotation
-                        or ChoreographyEvent.EventType.LateRotation)
-                    {
-                        _sequenceables.Add(Events[i]);
-                    }
+                switch (targetGameMode)
+                {
+                    case GameMode.Unset:
+                    case GameMode.Normal:
+                    case GameMode.JabsOnly:
+                    case GameMode.OneHanded:
+                    case GameMode.LegDay:
+                    case GameMode.NoObstacles:
+                        break;
+                    case GameMode.LightShow:
+                        break; //Will figure this out later
+                    case GameMode.Degrees90:
+                    case GameMode.Degrees360:
+                    case GameMode.Lawless:
+                        if (Events[i].Type is ChoreographyEvent.EventType.EarlyRotation
+                            or ChoreographyEvent.EventType.LateRotation)
+                        {
+                            _sequenceables.Add(Events[i]);
+                        }
 
-                    break;
+                        break;
+                }
             }
         }
-        
+
         _sequenceables.Sort((sequenceable0, sequenceable1) => sequenceable0.Time.CompareTo(sequenceable1.Time));
     }
 

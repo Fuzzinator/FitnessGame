@@ -30,15 +30,7 @@ public class HitSpawnEffect : MonoBehaviour, IValidHit
         hitParticleTransform.position = thisTransform.position;
         
         hitParticle.SetParticleColor(_thisRenderer.sharedMaterial.color);
-        hitParticle.StartCoroutine(hitParticle.PlayParticlesCoroutine());
         
-        /*try
-        {
-            hitParticle.PlayParticles().Forget();
-        }
-        catch (Exception e) when (e is OperationCanceledException)
-        {
-            return;
-        }*/
+        hitParticle.PlayParticles();
     }
 }

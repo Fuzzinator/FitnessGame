@@ -18,6 +18,7 @@ public class MenuAudioController : MonoBehaviour
     [SerializeField]
     private AudioMixerGroup _menuSFXGroup;
 
+    private SoundObject _activeSoundObject;
     private SoundObject _prevSoundObject;
 
     private CancellationTokenSource _cancellationTokenSource;
@@ -32,16 +33,16 @@ public class MenuAudioController : MonoBehaviour
         var settings = new SoundManager.AudioSourceSettings(true, _menuMusicGroup, 0);
         
         var music = _menuMusic[Random.Range(0, _menuMusic.Count - 1)];
-        var soundObject = await SoundManager.PlaySoundAsnyc(music, settings);
+        _activeSoundObject = await SoundManager.PlaySoundAsnyc(music, settings);
         if (_cancellationTokenSource.IsCancellationRequested)
         {
-            CleanUp(soundObject);
+            CleanUp(_activeSoundObject);
             return;
         }
         
         for (var f = 0f; f < 1; f+=.1f * Time.deltaTime)
         {
-            soundObject.SetVolume(f);
+            _activeSoundObject.SetVolume(f);
             if (_prevSoundObject != null)
             {
                 _prevSoundObject.SetVolume(1-f);
@@ -50,22 +51,22 @@ public class MenuAudioController : MonoBehaviour
             await UniTask.DelayFrame(1, cancellationToken: _cancellationTokenSource.Token);
             if (_cancellationTokenSource.IsCancellationRequested)
             {
-                CleanUp(soundObject);
+                CleanUp(_activeSoundObject);
                 return;
             }
         }
         
-        soundObject.SetVolume(1);
+        _activeSoundObject.SetVolume(1);
         if (_prevSoundObject != null)
         {
             _prevSoundObject.ReturnToPool();
         }
-        _prevSoundObject = soundObject;
+        _prevSoundObject = _activeSoundObject;
 
         await UniTask.Delay(TimeSpan.FromMinutes(Random.Range(.5f, 1)), cancellationToken: _cancellationTokenSource.Token);
         if (_cancellationTokenSource.IsCancellationRequested)
         {
-            CleanUp(soundObject);
+            CleanUp(_activeSoundObject);
             return;
         }
         PlayMenuMusic().Forget();
@@ -78,6 +79,11 @@ public class MenuAudioController : MonoBehaviour
             soundObject.ReturnToPool();
         }
 
+        if (_activeSoundObject != null)
+        {
+            _activeSoundObject.ReturnToPool();
+        }
+        
         if (_prevSoundObject != null)
         {
             _prevSoundObject.ReturnToPool();

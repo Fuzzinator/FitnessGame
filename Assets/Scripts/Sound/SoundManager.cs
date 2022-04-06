@@ -27,7 +27,7 @@ public class SoundManager : BaseGameStateListener
     private List<AssetReference> _assetReferences = new List<AssetReference>();
 
 
-    private Dictionary<string, AsyncOperationHandle> _loadedAssets = new Dictionary<string, AsyncOperationHandle>();
+    private Dictionary<string, AudioClip> _loadedAssets = new Dictionary<string, AudioClip>();
 
 #if UNITY_EDITOR
     private void OnValidate()
@@ -65,9 +65,9 @@ public class SoundManager : BaseGameStateListener
         SoundObject playingObject;
         if (Instance._loadedAssets.ContainsKey(soundName))
         {
-            if (Instance._loadedAssets[soundName].IsDone)
+            if (Instance._loadedAssets[soundName] != null)
             {
-                var sound = Instance._loadedAssets[soundName].Result as AudioClip;
+                var sound = Instance._loadedAssets[soundName];
                 playingObject = PlayClip(sound, settings);
             }
             else
@@ -89,9 +89,9 @@ public class SoundManager : BaseGameStateListener
         SoundObject playingObject;
         if (Instance._loadedAssets.ContainsKey(soundName))
         {
-            if (Instance._loadedAssets[soundName].IsDone)
+            if (Instance._loadedAssets[soundName] != null)
             {
-                var sound = Instance._loadedAssets[soundName].Result as AudioClip;
+                var sound = Instance._loadedAssets[soundName];
                 playingObject = PlayClip(sound, settings);
                 loadCompleted?.Invoke(playingObject);
             }
@@ -109,8 +109,8 @@ public class SoundManager : BaseGameStateListener
     private static async UniTask<SoundObject> PlayLoadingAsset(string soundName, AudioSourceSettings settings,
         Action<SoundObject> loadCompleted = null)
     {
-        await Instance._loadedAssets[soundName];
-        var playingObject = PlayClip(Instance._loadedAssets[soundName].Result as AudioClip, settings);
+        await UniTask.WaitWhile(() => Instance._loadedAssets[soundName] == null);
+        var playingObject = PlayClip(Instance._loadedAssets[soundName], settings);
 
         loadCompleted?.Invoke(playingObject);
         return playingObject;
@@ -135,9 +135,10 @@ public class SoundManager : BaseGameStateListener
         }
 
         var assetHandle = Addressables.LoadAssetAsync<AudioClip>(reference);
-
-        Instance._loadedAssets[soundName] = assetHandle;
+        Instance._loadedAssets[soundName] = null;
         var audioClip = await assetHandle;
+        
+        Instance._loadedAssets[soundName] = assetHandle.Result;
         var playingObject = PlayClip(audioClip, settings);
 
         loadCompleted?.Invoke(playingObject);
@@ -152,7 +153,6 @@ public class SoundManager : BaseGameStateListener
             Debug.LogError("Sound Object is null. Game may be ending but this should not be null.");
         }
 
-        sound.gameObject.SetActive(true);
         Instance._activeSoundObjects.Add(sound);
         sound.Play(audioClip, settings);
 

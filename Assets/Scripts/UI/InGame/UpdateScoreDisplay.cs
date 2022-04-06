@@ -18,18 +18,17 @@ public class UpdateScoreDisplay : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI _currentScore;
 
+    private bool _update = false;
     private bool _delayingUpdate = false;
     private uint _increaseAmount;
     private CancellationToken _token;
 
     private const string ADD = "+";
 
-    private WaitForSeconds _updateDelay;
-
     private void Start()
     {
         _token = this.GetCancellationTokenOnDestroy();
-        _updateDelay = new WaitForSeconds(_delayLength);
+        MonitorScoreUpdate().Forget();
     }
 
     public void ScoreUpdated(uint increaseAmount)
@@ -50,13 +49,14 @@ public class UpdateScoreDisplay : MonoBehaviour
             SetScoreDisplay(ScoringManager.Instance.CurrentScore-increaseAmount);
         }
 
-        StartCoroutine(CoroutineScoreUpdate(increaseAmount));
+        _update = true;
+        //UpdateScore(increaseAmount);
+        //StartCoroutine(CoroutineScoreUpdate(increaseAmount));
         //AsyncScoreUpdate(increaseAmount).Forget();
     }
 
-    private IEnumerator CoroutineScoreUpdate(uint increaseAmount)
+    private void UpdateScore(uint increaseAmount)
     {
-        yield return _updateDelay;
         if (_increaseAmount == increaseAmount)
         {
             SetScoreDisplay(ScoringManager.Instance.CurrentScore);
@@ -83,6 +83,21 @@ public class UpdateScoreDisplay : MonoBehaviour
         }
         catch (Exception e) when (e is OperationCanceledException)
         {
+        }
+    }
+    
+    public async UniTaskVoid MonitorScoreUpdate()
+    {
+        while (!_token.IsCancellationRequested)
+        {
+            if (!_update)
+            {
+                await UniTask.Delay(TimeSpan.FromSeconds(.05f), cancellationToken: _token);
+                continue;
+            }
+            
+            await UniTask.Delay(TimeSpan.FromSeconds(_delayLength), cancellationToken: _token);
+            UpdateScore(_increaseAmount);
         }
     }
 

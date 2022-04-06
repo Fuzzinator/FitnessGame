@@ -38,7 +38,7 @@ public class RotationIndicator : MonoBehaviour
 
     private async UniTaskVoid MonitorHeadRotation()
     {
-        await UniTask.Delay(TimeSpan.FromSeconds(.25f), cancellationToken: _token);
+        await UniTask.Delay(TimeSpan.FromSeconds(.1f), cancellationToken: _token);
         while (!_token.IsCancellationRequested)
         {
             var dot = Vector3.Dot(_targetRotation.forward, Head.Instance.transform.forward);

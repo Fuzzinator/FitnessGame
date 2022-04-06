@@ -30,6 +30,7 @@ public class LevelManager : MonoBehaviour
     [SerializeField]
     private bool _actualSongLoaded = false;
 
+    private bool _canComplete = false;
     private bool _choreographyCompleted = false;
     private bool _songCompleted = false;
 
@@ -175,8 +176,9 @@ public class LevelManager : MonoBehaviour
 
     private void CheckIfCompleted()
     {
-        if (_choreographyCompleted && _songCompleted)
+        if (_choreographyCompleted && _songCompleted && _canComplete)
         {
+            _canComplete = false;
             FireEndSongMessagesAsync().Forget();
         }
     }
@@ -198,6 +200,7 @@ public class LevelManager : MonoBehaviour
         }
 
         PlayLevel();
+        _canComplete = true;
     }
 
     private void PlayLevel()

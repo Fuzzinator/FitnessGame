@@ -28,19 +28,14 @@ public class FollowRotation : MonoBehaviour
         while (!_tokenSource.IsCancellationRequested)
         {
             _previousQuaternion = _targetTransform.rotation;
-            await UniTask.Delay(TimeSpan.FromSeconds(1.5));
+            await UniTask.Delay(TimeSpan.FromSeconds(.25));
             if (_tokenSource.IsCancellationRequested)
             {
                 return;
             }
             if (_previousQuaternion != _targetTransform.rotation)
             {
-                if (_currentTween != null && _currentTween.IsActive())
-                {
-                    _currentTween.Kill();
-                }
-
-                _currentTween = transform.DORotateQuaternion(_targetTransform.rotation, 1.25f);
+                transform.rotation = _targetTransform.rotation;
             }
         }
     }

@@ -50,6 +50,11 @@ public class SoundObject : MonoBehaviour, IPoolable
 
     public void Resume()
     {
+        if (!gameObject.activeInHierarchy)
+        {
+            gameObject.SetActive(true);
+        }
+        
         _audioSource.Play();
         _isPaused = false;
     }
