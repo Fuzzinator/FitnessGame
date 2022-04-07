@@ -3,8 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using DG.Tweening;
-using DG.Tweening.Plugins.Core.PathCore;
 using GameModeManagement;
 using SimpleTweens;
 using Unity.Mathematics;
@@ -149,7 +147,6 @@ public class ChoreographySequencer : MonoBehaviour
         _meterDistance = Vector3.Distance(position, _formationEnd.position);
         _optimalPointDistance = Vector3.Distance(position, _optimalStrikePoint.position);
 
-        DOTween.SetTweensCapacity(100, 100);
         _sequenceUnstartedOrFinished = true;
     }
 

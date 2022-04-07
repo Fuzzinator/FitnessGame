@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using DG.Tweening;
 using UnityEngine;
 
 public class FollowRotation : MonoBehaviour
@@ -13,7 +12,6 @@ public class FollowRotation : MonoBehaviour
 
     private Quaternion _previousQuaternion;
 
-    private Tween _currentTween;
 
     private CancellationTokenSource _tokenSource;
 

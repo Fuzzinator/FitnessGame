@@ -37,13 +37,16 @@ namespace UI.Scrollers.Playlists
 
         public override EnhancedScrollerCellView GetCellView(EnhancedScroller scroller, int dataIndex, int cellIndex)
         {
-            var cellView = base.GetCellView(scroller, dataIndex, cellIndex) as PlaylistSongCellView;
-            cellView.SetData(PlaylistManager.Instance.CurrentPlaylist.Items[dataIndex]);
-            if (highlightActiveItem && dataIndex == 0)
+            var cellView = base.GetCellView(scroller, dataIndex, cellIndex);
+            if (cellView is HighlightableCellView highlightableCellView)
             {
-                if (PlaylistManager.Instance.CurrentIndex == 0)
+                highlightableCellView.SetData(PlaylistManager.Instance.CurrentPlaylist.Items[dataIndex]);
+                if (highlightActiveItem && dataIndex == 0)
                 {
-                    cellView.SetHighlight(true);
+                    if (PlaylistManager.Instance.CurrentIndex == 0)
+                    {
+                        highlightableCellView.SetHighlight(true);
+                    }
                 }
             }
 
@@ -55,7 +58,7 @@ namespace UI.Scrollers.Playlists
             for (var i = 0; i < PlaylistManager.Instance.SongCount; i++)
             {
                 var cellView = _scroller.GetCellViewAtDataIndex(i);
-                if (cellView is PlaylistSongCellView view)
+                if (cellView is HighlightableCellView view)
                 {
                     view.SetHighlight(i == PlaylistManager.Instance.CurrentIndex);
                 }

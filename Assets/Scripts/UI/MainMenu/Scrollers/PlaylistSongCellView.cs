@@ -11,7 +11,7 @@ using UnityEngine.UI;
 
 namespace UI.Scrollers.Playlists
 {
-    public class PlaylistSongCellView : EnhancedScrollerCellView
+    public class PlaylistSongCellView : EnhancedScrollerCellView, HighlightableCellView
     {
         [SerializeField]
         private TextMeshProUGUI _songName;
@@ -26,6 +26,8 @@ namespace UI.Scrollers.Playlists
         private Image _highlight;
         [SerializeField]
         private Image _invalidIndicator;
+
+        public Image HighlightImage => _highlight;
 
         public void SetData(PlaylistItem playlist)
         {
@@ -46,4 +48,11 @@ namespace UI.Scrollers.Playlists
             _highlight.enabled = on;
         }
     }
+}
+
+public interface HighlightableCellView
+{
+    public Image HighlightImage { get; }
+    public void SetData(PlaylistItem playlistItem);
+    public void SetHighlight(bool on);
 }

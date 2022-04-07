@@ -1,9 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
-using Cysharp.Threading.Tasks;
-using DG.Tweening;
 using UnityEngine;
 
 public class BaseOptimalHitIndicator : MonoBehaviour
@@ -28,7 +22,7 @@ public class BaseOptimalHitIndicator : MonoBehaviour
 
         _propertyHash = Shader.PropertyToID(_propertyName);
         _renderer.material.SetFloat(_propertyHash, 0);
-        
+
         OnEnable();
     }
 
@@ -38,6 +32,7 @@ public class BaseOptimalHitIndicator : MonoBehaviour
         {
             return;
         }
+
         _renderer.material.SetVector(_propertyHash, _baseTarget.OptimalHitPoint);
     }
 
