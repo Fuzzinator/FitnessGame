@@ -52,7 +52,7 @@ namespace UI.Scrollers.Playlists
 
         private void Start()
         {
-            _playButton.onClick.AddListener(TryLoadBaseLevel);
+            //_playButton.onClick.AddListener(TryLoadBaseLevel);
             _cancellationToken = this.GetCancellationTokenOnDestroy();
         }
 
@@ -84,7 +84,7 @@ namespace UI.Scrollers.Playlists
             }
         }
 
-        private void TryLoadBaseLevel()
+        public void TryLoadBaseLevel()
         {
             var playlist = PlaylistManager.Instance.CurrentPlaylist;
             if (!playlist.isValid)

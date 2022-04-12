@@ -148,7 +148,7 @@ namespace InfoSaving
             try
             {
                 var settings = new ES3Settings(folder);
-                return await UniTask.RunOnThreadPool(() => ES3.KeyExists(key, settings));
+                return ES3.KeyExists(key, settings); //UniTask.RunOnThreadPool(() => ES3.KeyExists(key, settings));
             }
             catch (Exception e)when (e is OperationCanceledException)
             {

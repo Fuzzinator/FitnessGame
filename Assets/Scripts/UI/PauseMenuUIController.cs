@@ -15,6 +15,9 @@ public class PauseMenuUIController : BaseGameStateListener
 
     [SerializeField]
     private bool _skipUI = false;
+
+    [SerializeField]
+    private TransitionController _transitionController;
     
     protected override async void GameStateListener(GameState oldState, GameState newState)
     {
@@ -63,10 +66,15 @@ public class PauseMenuUIController : BaseGameStateListener
         ResumeGame();
     }
 
-    public void ReturnToMainMenu()
+    public void StartReturnToMainMenu()
     {
         ResumeGame();
         PlaylistManager.Instance.FullReset();
+        _transitionController.RequestTransition();
+    }
+
+    public void ReturnToMainMenu()
+    {
         ActiveSceneManager.Instance.LoadMainMenu();
     }
 }

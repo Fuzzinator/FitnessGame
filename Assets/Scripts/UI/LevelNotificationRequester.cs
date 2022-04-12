@@ -7,6 +7,9 @@ using UnityEngine.SceneManagement;
 
 public class LevelNotificationRequester : MonoBehaviour
 {
+    [SerializeField]
+    private TransitionController _transitionController;
+    
     private readonly Action _mainMenuAction;
     
     private const string WORKOUTCOMPLETE = "Workout Complete";
@@ -22,7 +25,11 @@ public class LevelNotificationRequester : MonoBehaviour
 
     private LevelNotificationRequester()
     {
-        _mainMenuAction = () => { ActiveSceneManager.Instance.LoadMainMenu();};
+        _mainMenuAction = () =>
+        {
+            Time.timeScale = 1;
+            _transitionController.RequestTransition(); 
+        };//ActiveSceneManager.Instance.LoadMainMenu();};
     }
 
     public void CheckLevelStateAndDisplay()

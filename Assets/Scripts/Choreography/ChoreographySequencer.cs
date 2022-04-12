@@ -118,10 +118,23 @@ public class ChoreographySequencer : MonoBehaviour
     [SerializeField]
     private UnityEvent<int> _stanceUpdated = new UnityEvent<int>();
 
-    private Dictionary<float, ActiveLaneIndicator> _laneIndicators = new Dictionary<float, ActiveLaneIndicator>(20);
-
-    public bool SequenceRunning { get; private set; }
     private bool _sequenceUnstartedOrFinished = true;
+    
+    private Dictionary<float, ActiveLaneIndicator> _laneIndicators = new Dictionary<float, ActiveLaneIndicator>(20);
+    public bool SequenceRunning { get; private set; }
+    private BaseTarget GetTargetSwitch(ChoreographyNote.CutDirection cutDirection) => cutDirection switch
+    {
+        ChoreographyNote.CutDirection.Jab => _jabPool.GetNewPoolable(),
+        ChoreographyNote.CutDirection.JabDown => _jabPool.GetNewPoolable(),
+        ChoreographyNote.CutDirection.HookLeft => _leftHookPool.GetNewPoolable(),
+        ChoreographyNote.CutDirection.HookLeftDown => _jabPool.GetNewPoolable(),
+        ChoreographyNote.CutDirection.HookRight => _rightHookPool.GetNewPoolable(),
+        ChoreographyNote.CutDirection.HookRightDown => _jabPool.GetNewPoolable(),
+        ChoreographyNote.CutDirection.Uppercut => _uppercutPool.GetNewPoolable(),
+        ChoreographyNote.CutDirection.UppercutLeft => _uppercutPool.GetNewPoolable(),
+        ChoreographyNote.CutDirection.UppercutRight => _uppercutPool.GetNewPoolable(),
+        _ => null,
+    } as BaseTarget;
 
     // Start is called before the first frame update
     void Start()
@@ -370,20 +383,6 @@ public class ChoreographySequencer : MonoBehaviour
             return GetTargetSwitch(note.CutDir);
         }
     }
-
-    private BaseTarget GetTargetSwitch(ChoreographyNote.CutDirection cutDirection) => cutDirection switch
-    {
-        ChoreographyNote.CutDirection.Jab => _jabPool.GetNewPoolable(),
-        ChoreographyNote.CutDirection.JabDown => _jabPool.GetNewPoolable(),
-        ChoreographyNote.CutDirection.HookLeft => _leftHookPool.GetNewPoolable(),
-        ChoreographyNote.CutDirection.HookLeftDown => _jabPool.GetNewPoolable(),
-        ChoreographyNote.CutDirection.HookRight => _rightHookPool.GetNewPoolable(),
-        ChoreographyNote.CutDirection.HookRightDown => _jabPool.GetNewPoolable(),
-        ChoreographyNote.CutDirection.Uppercut => _uppercutPool.GetNewPoolable(),
-        ChoreographyNote.CutDirection.UppercutLeft => _uppercutPool.GetNewPoolable(),
-        ChoreographyNote.CutDirection.UppercutRight => _uppercutPool.GetNewPoolable(),
-        _ => null,
-    } as BaseTarget;
 
     private Vector3 GetTargetPosition(ChoreographyNote note)
     {
