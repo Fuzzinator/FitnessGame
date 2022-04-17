@@ -9,14 +9,6 @@ public class BaseHitVFX : MonoBehaviour, IPoolable
 {
     [SerializeField]
     private ParticleSystem _particleSystem;
-
-    [SerializeField]
-    private float _lifespan = 1.25f;
-
-    private bool _active;
-    
-    private CancellationToken _token;
-    private WaitForSeconds _lifespanSeconds;
     
     public PoolManager MyPoolManager { get; set; }
 
@@ -31,9 +23,6 @@ public class BaseHitVFX : MonoBehaviour, IPoolable
 
     public void Initialize()
     {
-        _token = this.GetCancellationTokenOnDestroy();
-        _lifespanSeconds = new WaitForSeconds(_lifespan);
-        MonitorParticles().Forget();
     }
 
     public void SetParticleColor(Color color)
@@ -42,40 +31,22 @@ public class BaseHitVFX : MonoBehaviour, IPoolable
         
         main.startColor = color;
     }
-
-    public IEnumerator PlayParticlesCoroutine()
-    {
-        _particleSystem.Play(true);
-        yield return _lifespanSeconds;
-        ReturnToPool();
-    }
     
     public void PlayParticles()
     {
+        gameObject.SetActive(true);
         _particleSystem.Play(true);
-        _active = true;
     }
 
-    public async UniTaskVoid MonitorParticles()
+    private void OnParticleSystemStopped()
     {
-        while (!_token.IsCancellationRequested)
-        {
-            if (!_active)
-            {
-                await UniTask.Delay(TimeSpan.FromSeconds(.5f), cancellationToken: _token);
-                continue;
-            }
-            
-            await UniTask.Delay(TimeSpan.FromSeconds(_lifespan), cancellationToken: _token);
-            ReturnToPool();
-        }
+        ReturnToPool();
     }
     
     public void ReturnToPool()
     {
-        _active = false;
         _particleSystem.Stop(true);
-        transform.SetParent(MyPoolManager.poolParent);
+        gameObject.SetActive(false);
         MyPoolManager.ReturnToPool(this);
     }
 }
