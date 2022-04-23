@@ -14,6 +14,9 @@ public class FootPlacement : MonoBehaviour
     [SerializeField]
     private string _scaleValue = "Scale";
 
+    [SerializeField]
+    private GameObject[] _gameObjects;
+    
     private int _footPositionHash;
     private int _scaleHash;
 
@@ -33,19 +36,27 @@ public class FootPlacement : MonoBehaviour
 
     public void UpdateFootPlacement(int placement)
     {
-        SetAnimatorState(true);
+        SetObjectsState(true);
         _animator.SetInteger(_footPositionHash, placement);
     }
 
     public void ScaleAndUpdatePlacement(int placement)
     {
-        SetAnimatorState(true);
+        SetObjectsState(true);
         _animator.SetInteger(_footPositionHash, placement);
         _animator.SetTrigger(_scaleHash);
     }
-    
-    private void SetAnimatorState(bool on)
+
+    public void DisableAnimator()
     {
-        _animator.enabled = on;
+        SetObjectsState(false);
+    }
+    private void SetObjectsState(bool on)
+    {
+        foreach (var go in _gameObjects)
+        {
+            go.SetActive(on);
+        }
+        //_animator.enabled = on;
     }
 }
