@@ -34,7 +34,7 @@ namespace UI.Scrollers.Playlists
 
         public void SetHighlight(bool on)
         {
-            _highlight.enabled = on;
+            _highlight.gameObject.SetActive(on);
         }
 
         private async UniTaskVoid SetDataAsync(PlaylistItem playlistItem)
