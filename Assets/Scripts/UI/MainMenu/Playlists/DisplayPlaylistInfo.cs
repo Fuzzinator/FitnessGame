@@ -16,7 +16,7 @@ namespace UI.Scrollers.Playlists
         public static DisplayPlaylistInfo Instance { get; private set; }
 
         [SerializeField] 
-        private GameObject _playlistTitleCard;
+        private CanvasGroup _playlistTitleCard;
 
         [SerializeField] 
         TextMeshProUGUI _playlistTitle;
@@ -54,11 +54,12 @@ namespace UI.Scrollers.Playlists
         {
             //_playButton.onClick.AddListener(TryLoadBaseLevel);
             _cancellationToken = this.GetCancellationTokenOnDestroy();
+            _playlistTitleCard.interactable = PlaylistManager.Instance.CurrentPlaylist.isValid;
         }
 
         public async UniTaskVoid ShowInfo()
         {
-            _playlistTitleCard.SetActive(true);
+            _playlistTitleCard.interactable = PlaylistManager.Instance.CurrentPlaylist.isValid;
             _playlistTitle.SetText(PlaylistManager.Instance.CurrentPlaylist.PlaylistName);
             _playlistLength.SetText(PlaylistManager.Instance.CurrentPlaylist.ReadableLength);
             _editButton.gameObject.SetActive(PlaylistManager.Instance.CurrentPlaylist.IsCustomPlaylist);

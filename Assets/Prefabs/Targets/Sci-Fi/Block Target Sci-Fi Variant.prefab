@@ -36,7 +36,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 8720140539145256461, guid: 50f965083986a2e4e8a6656c2c4a3fb9,
+      objectReference: {fileID: -5663330076408878902, guid: 63b965ce04eea6749a4e3da731a91125,
         type: 3}
     - target: {fileID: 4544052038337616394, guid: 587d90671ab6a2f41bd6f3e162d52355,
         type: 3}
@@ -9075,20 +9075,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1433572333136463709}
   m_PrefabAsset: {fileID: 0}
---- !u!136 &7387552972288489622
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8213432111371213983}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.15
-  m_Height: 0.53
-  m_Direction: 0
-  m_Center: {x: 0, y: 0.00000002980233, z: 0}
 --- !u!114 &3129727315385187318
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9109,6 +9095,20 @@ MonoBehaviour:
   _optimalHitDirection: {x: 0, y: 0, z: -1}
   _minMaxAllowance: {x: 0.25, y: 1}
   _minHitSpeed: 0
+--- !u!64 &416860002155068520
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8213432111371213983}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -7613979350663126591, guid: d37c25a63900e8a4bafd7a9c39193e23, type: 3}
 --- !u!114 &9204152472188304679 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7808860882321832570, guid: 587d90671ab6a2f41bd6f3e162d52355,

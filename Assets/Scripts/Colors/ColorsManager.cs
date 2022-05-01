@@ -30,6 +30,9 @@ public class ColorsManager : MonoBehaviour
 
     [SerializeField]
     private Color _centerEnvironment;
+
+    [SerializeField]
+    private Texture2DArray _texture2DArray;
     
     private void Awake()
     {
@@ -41,6 +44,7 @@ public class ColorsManager : MonoBehaviour
         {
             Destroy(this);
         }
+        Shader.SetGlobalTexture("_Textures", _texture2DArray);
     }
 
     public Color GetAppropriateColor(HitSideType hitSide, bool isNote = true)

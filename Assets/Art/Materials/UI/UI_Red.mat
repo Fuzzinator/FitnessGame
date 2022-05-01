@@ -10,7 +10,7 @@ Material:
   m_Name: UI_Red
   m_Shader: {fileID: -6465566751694194690, guid: 91e6112d4b898b5429d13e3ba56e9ace,
     type: 3}
-  m_ShaderKeywords: 
+  m_ShaderKeywords: _USEGRIDSPAWN
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -83,6 +83,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _AlphaClip: 0
+    - _BOOLEAN: 0
     - _Blend: 0
     - _BumpScale: 1
     - _ClearCoatMask: 0
@@ -97,6 +98,7 @@ Material:
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _HexSize: 1.1
+    - _HighlightSize: 0.15
     - _LineSpeed: -0.25
     - _LineTiling: 3
     - _Metallic: 0
@@ -116,6 +118,7 @@ Material:
     - _SquareSize: 2
     - _SrcBlend: 1
     - _Surface: 0
+    - _USEGRIDSPAWN: 1
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:

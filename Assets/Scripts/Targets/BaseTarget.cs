@@ -147,6 +147,6 @@ public class BaseTarget : MonoBehaviour, IPoolable
         _wasHit = false;
         parentFormation = holder;
         OptimalHitPoint = hitPoint;
-        _setMaterial.SetMaterial(hitSideType);
+        _setMaterial.Initialize(hitSideType);
     }
 }
