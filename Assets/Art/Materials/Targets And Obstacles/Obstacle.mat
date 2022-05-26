@@ -21,13 +21,13 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Obstacle
-  m_Shader: {fileID: -6465566751694194690, guid: bfbbd185a7022784fa0a55e8add6639e,
+  m_Shader: {fileID: -6465566751694194690, guid: 484375f57bc0ac74f86bba3b66c843ab,
     type: 3}
   m_ShaderKeywords: _ALPHATEST_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2450
+  m_CustomRenderQueue: -1
   stringTagMap:
     RenderType: TransparentCutout
   disabledShaderPasses: []
@@ -40,6 +40,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CubemapAsset_3811a4838c3e4a94bb50417046ec64f3_Out_0:
+        m_Texture: {fileID: 8900000, guid: f80d450648ef8104da89eccf8560cbcb, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -102,13 +106,13 @@ Material:
     m_Floats:
     - _AlphaClip: 1
     - _Alpha_Clip: 0.5
-    - _Appear_Distance: 12
+    - _Appear_Distance: 9
     - _Blend: 0
     - _BumpScale: 1
     - _CastShadows: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
-    - _Color_Strength: 12
+    - _Color_Strength: 10
     - _Cull: 2
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
@@ -129,13 +133,14 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _Rotation: 90
+    - _Rotation: 180
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _Surface: 0
     - _TextureIndex: 0
+    - _USEDISTANCEDISSOLVE: 0
     - _WorkflowMode: 1
     - _ZTest: 4
     - _ZWrite: 1

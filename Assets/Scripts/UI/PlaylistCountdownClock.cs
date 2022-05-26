@@ -96,7 +96,7 @@ public class PlaylistCountdownClock : MonoBehaviour
             sb.Append(seconds);
 
             var buffer = sb.AsArraySegment();
-            _minutesText.SetCharArray(buffer.Array, buffer.Offset, buffer.Count);
+            _minutesText.SetText(sb);
         }
     }
 

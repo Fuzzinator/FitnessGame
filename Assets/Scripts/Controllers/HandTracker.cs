@@ -9,7 +9,9 @@ public class HandTracker : MonoBehaviour
     private Hand _leftHand;
     [SerializeField]
     private Hand _rightHand;
-    
+
+    public static Hand LeftHand => Instance._leftHand;
+    public static Hand RightHand => Instance._rightHand;
     public static HandTracker Instance { get; private set; }
 
     private void Awake()

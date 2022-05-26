@@ -9,7 +9,7 @@ public class NotificationManager : MonoBehaviour
 
     [SerializeField]
     private Notification _notificationPrefab;
-
+    
     [Header("Positions")]
     [SerializeField]
     private Transform _basePosition;

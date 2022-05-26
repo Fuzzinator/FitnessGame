@@ -14,10 +14,17 @@ public class Hand : BaseGameStateListener
     [SerializeField]
     private Collider _collider;
 
+    [SerializeField]
+    private Transform _glove;
+
     public Collider MyCollider => _collider;
 
     public HitSideType AssignedHand => _assignedHand;
-
+    public Vector3 GloveOffset
+    {
+        get => _glove.localPosition;
+        set => _glove.localPosition = value;
+    }
     public Vector3 MovementDirection
     {
         get
@@ -53,18 +60,31 @@ public class Hand : BaseGameStateListener
     private int _index = 0;
 
     private List<InputDevice> _devices = new List<InputDevice>();
-    private bool _enabled;
     private bool _trackingPaused = false;
+    private CancellationToken _cancellationToken;
+
+    private void Awake()
+    {
+        _cancellationToken = this.GetCancellationTokenOnDestroy();
+    }
+
     private async void OnEnable()
     {
-        _enabled = true;
+        enabled = true;
         UpdateDevices();
-        await TrackDirAndSpeed(this.GetCancellationTokenOnDestroy()).SuppressCancellationThrow();
+        
+        SetOffset();
+        await TrackDirAndSpeed(_cancellationToken).SuppressCancellationThrow();
+        if (_cancellationToken.IsCancellationRequested)
+        {
+            return;
+        }
+        
     }
 
     private void OnDisable()
     {
-        _enabled = false;
+        enabled = false;
     }
 
     protected override void GameStateListener(GameState oldState, GameState newState)
@@ -109,11 +129,14 @@ public class Hand : BaseGameStateListener
 
     private async UniTask TrackDirAndSpeed(CancellationToken token)
     {
-        while (_enabled)
+        while (enabled)
         {
             _previousPosition = transform.position;
             await UniTask.DelayFrame(1, cancellationToken:token);
-            
+            if (_cancellationToken.IsCancellationRequested)
+            {
+                return;
+            }
             if (_trackingPaused)
             {
                 continue;
@@ -133,5 +156,25 @@ public class Hand : BaseGameStateListener
                 _index = 0;
             }
         }
+    }
+
+    private void SetOffset()
+    {
+        GloveOffset = _assignedHand switch
+        {
+            HitSideType.Left => SettingsManager.GetSetting(SettingsManager.LEFTGLOVEOFFSET, Vector3.zero),
+            HitSideType.Right => SettingsManager.GetSetting(SettingsManager.RIGHTGLOVEOFFSET, Vector3.zero),
+            _ => GloveOffset
+        };
+    }
+    
+    public void UnparentGlove()
+    {
+        _glove.SetParent(null);
+    }
+
+    public void ParentGlove()
+    {
+        _glove.SetParent(transform);
     }
 }

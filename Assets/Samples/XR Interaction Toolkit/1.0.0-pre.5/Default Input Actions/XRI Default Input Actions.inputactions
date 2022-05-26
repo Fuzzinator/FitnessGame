@@ -1086,6 +1086,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "LeftGripPressed",
+                    "type": "Button",
+                    "id": "5c0300dd-396b-465d-ba3c-d61abf6071af",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "LeftGripReleased",
+                    "type": "Button",
+                    "id": "72d0438f-d8d6-4645-b92b-a4d8056f72cb",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -1231,6 +1249,28 @@
                     "action": "Rotate Anchor",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "e7a32376-b991-48e2-bd92-0358f7942b80",
+                    "path": "<XRController>{LeftHand}/gripButton",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "Generic XR Controller",
+                    "action": "LeftGripPressed",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ed901bf4-0009-4c7f-a3e4-9d3eb9bed34e",
+                    "path": "<XRController>{LeftHand}/gripButton",
+                    "interactions": "Press(behavior=1)",
+                    "processors": "",
+                    "groups": "Generic XR Controller",
+                    "action": "LeftGripReleased",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -1282,6 +1322,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "RightGripPressed",
+                    "type": "Button",
+                    "id": "5eb041c1-9776-4cc4-9fb2-42db4ebc3b7e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RightGripReleased",
+                    "type": "Button",
+                    "id": "eff790c4-97c2-481e-ac9a-4ffce57c5427",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -1427,6 +1485,28 @@
                     "action": "Translate Anchor",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "2cce0771-8087-442c-ae74-3bf6a50edd7b",
+                    "path": "<XRController>{RightHand}/gripButton",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "Generic XR Controller",
+                    "action": "RightGripPressed",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5ac067b3-2633-4544-82aa-3e3fa01cdfbd",
+                    "path": "<XRController>{RightHand}/gripButton",
+                    "interactions": "Press(behavior=1)",
+                    "processors": "",
+                    "groups": "Generic XR Controller",
+                    "action": "RightGripReleased",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

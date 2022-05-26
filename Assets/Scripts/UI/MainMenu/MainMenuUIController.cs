@@ -63,11 +63,11 @@ public class MainMenuUIController : BaseGameStateListener
         {
             if (group != targetGroup)
             {
-                SetGroupState(group, 0, false);
+                group.SetGroupState(0, false);
             }
             else
             {
-                SetGroupState(group, 1, true);
+                group.SetGroupState(1, true);
                 _activeCanvasGroup = group;
             }
         }
@@ -123,7 +123,7 @@ public class MainMenuUIController : BaseGameStateListener
         {
             _activeCanvasGroup = _pages[0];
         }
-        SetGroupState(_activeCanvasGroup, 1, true);
+        _activeCanvasGroup.SetGroupState(1, true);
     }
     
     private void DisableUI()
@@ -137,13 +137,7 @@ public class MainMenuUIController : BaseGameStateListener
         {
             _activeCanvasGroup = _pages[0];
         }
-        SetGroupState(_activeCanvasGroup, .5f, false);
+        _activeCanvasGroup.SetGroupState(.5f, false);
     }
 
-    private void SetGroupState(CanvasGroup group, float alpha, bool state)
-    {
-        group.alpha = alpha;
-        group.interactable = state;
-        group.blocksRaycasts = state;
-    }
 }
