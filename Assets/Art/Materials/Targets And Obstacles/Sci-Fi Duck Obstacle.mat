@@ -20,10 +20,10 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Obstacle
+  m_Name: Sci-Fi Duck Obstacle
   m_Shader: {fileID: -6465566751694194690, guid: 484375f57bc0ac74f86bba3b66c843ab,
     type: 3}
-  m_ShaderKeywords: _ALPHATEST_ON _TEXTURESET_TARGETS
+  m_ShaderKeywords: _ALPHATEST_ON _TEXTURESET_OBSTACLES
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -107,7 +107,7 @@ Material:
     - _AlphaClip: 1
     - _Alpha_Clip: 0.5
     - _Appear_Distance: 9
-    - _Base_Color_Strength: 1
+    - _Base_Color_Strength: 5
     - _Blend: 0
     - _BumpScale: 1
     - _CastShadows: 1
@@ -140,7 +140,7 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _Surface: 0
-    - _TEXTURESET: 0
+    - _TEXTURESET: 1
     - _TextureIndex: 0
     - _USEDISTANCEDISSOLVE: 0
     - _WorkflowMode: 1
@@ -149,9 +149,9 @@ Material:
     - _ZWriteControl: 0
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Base_Color: {r: 1, g: 1, b: 1, a: 0}
+    - _Base_Color: {r: 0.6862745, g: 0.9490196, b: 1, a: 1}
     - _CenterPosition: {r: 0, g: 0, b: 0, a: 0}
-    - _Color: {r: 0.5865966, g: 0.72987896, b: 0.735849, a: 1}
+    - _Color: {r: 0, g: 0.94736814, b: 1, a: 1}
     - _Color_1: {r: 4.7038727, g: 0.0922328, b: 0, a: 0}
     - _DissolveColor: {r: 3.979057, g: 0.3141361, b: 0, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}

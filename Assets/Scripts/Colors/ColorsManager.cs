@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class ColorsManager : MonoBehaviour
 {
@@ -31,8 +32,11 @@ public class ColorsManager : MonoBehaviour
     [SerializeField]
     private Color _centerEnvironment;
 
+    [FormerlySerializedAs("_texture2DArray")] [SerializeField]
+    private Texture2DArray _targetTexturesArray;
+
     [SerializeField]
-    private Texture2DArray _texture2DArray;
+    private Texture2DArray _obstacleTexturesArray;
     
     private void Awake()
     {
@@ -44,7 +48,22 @@ public class ColorsManager : MonoBehaviour
         {
             Destroy(this);
         }
-        Shader.SetGlobalTexture("_Textures", _texture2DArray);
+    }
+
+    private void Start()
+    {
+        UpdateTextureSets();
+    }
+
+    private void OnValidate()
+    {
+        UpdateTextureSets();
+    }
+
+    public void UpdateTextureSets()
+    {
+        Shader.SetGlobalTexture("_TargetTextures", _targetTexturesArray);
+        Shader.SetGlobalTexture("_ObstacleTextures", _obstacleTexturesArray);
     }
 
     public Color GetAppropriateColor(HitSideType hitSide, bool isNote = true)

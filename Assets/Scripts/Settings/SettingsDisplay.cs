@@ -72,6 +72,7 @@ public class SettingsDisplay : MonoBehaviour
     public void Activate()
     {
         gameObject.SetActive(true);
+        _mainPages.SetGroupState(true);
         for (var i = 0; i < _toggles.Count; i++)
         {
             _toggles[i].isOn = i == 0;
