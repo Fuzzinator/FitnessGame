@@ -21,7 +21,9 @@ public class SettingsManager : MonoBehaviour
     private const string MENUSFXVOLUME = "MenuSFXVolume";
     
     public const string LEFTGLOVEOFFSET = "LeftGloveOffset";
+    public const string LEFTGLOVEROTOFFSET = "LeftGloveRotationOffset";
     public const string RIGHTGLOVEOFFSET = "RightGloveOffset";
+    public const string RIGHTGLOVEROTOFFSET = "RightGloveRotationOffset";
 
     private static readonly string[] _volumeNames = new[] {MASTERVOLUME, MUSICVOLUME, SFXVOLUME};
 

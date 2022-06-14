@@ -25,6 +25,13 @@ public class Hand : BaseGameStateListener
         get => _glove.localPosition;
         set => _glove.localPosition = value;
     }
+
+    public Quaternion GloveRotationOffset
+    {
+        get => _glove.localRotation;
+        set => _glove.localRotation = value;
+    }
+    
     public Vector3 MovementDirection
     {
         get
@@ -165,6 +172,12 @@ public class Hand : BaseGameStateListener
             HitSideType.Left => SettingsManager.GetSetting(SettingsManager.LEFTGLOVEOFFSET, Vector3.zero),
             HitSideType.Right => SettingsManager.GetSetting(SettingsManager.RIGHTGLOVEOFFSET, Vector3.zero),
             _ => GloveOffset
+        };
+        GloveRotationOffset = _assignedHand switch
+        {
+            HitSideType.Left => SettingsManager.GetSetting(SettingsManager.LEFTGLOVEROTOFFSET, Quaternion.identity),
+            HitSideType.Right => SettingsManager.GetSetting(SettingsManager.RIGHTGLOVEROTOFFSET, Quaternion.identity),
+            _ => GloveRotationOffset
         };
     }
     

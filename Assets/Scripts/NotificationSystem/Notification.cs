@@ -167,6 +167,11 @@ public class Notification : MonoBehaviour, IPoolable
 
     public void ReturnToPool()
     {
+        if (this == null)
+        {
+            return;
+        }
+        
         _message.SetText(string.Empty);
         _button1Txt.SetText(string.Empty);
         _button2Txt.SetText(string.Empty);
