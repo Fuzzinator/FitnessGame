@@ -85,24 +85,6 @@ namespace UI.Scrollers.Playlists
             }
         }
 
-        public void TryLoadBaseLevel()
-        {
-            var playlist = PlaylistManager.Instance.CurrentPlaylist;
-            if (!playlist.isValid)
-            {
-                NotificationManager.RequestNotification(
-                    new Notification.NotificationVisuals(
-                        $"A song in {playlist.PlaylistName} is missing from this device. Cannot play {playlist.PlaylistName}. Please remove the missing song from the playlist or add it to this device.",
-                        "Playlist Invalid",
-                        autoTimeOutTime: 1.5f,
-                        popUp: true));
-            }
-            else
-            {
-                ActiveSceneManager.Instance.LoadBaseLevel();
-            }
-        }
-
         private async UniTask<SongAndPlaylistRecord> GetPlaylistRecord()
         {
             var playlist = PlaylistManager.Instance.CurrentPlaylist;

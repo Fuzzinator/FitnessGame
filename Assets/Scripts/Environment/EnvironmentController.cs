@@ -10,6 +10,7 @@ public class EnvironmentController : MonoBehaviour
 {
     public static EnvironmentController Instance { get; private set; }
 
+    [SerializeField]
     private string _targetSceneName = SCIFILEVEL;
 
     private AsyncOperation _sceneLoadOperation;

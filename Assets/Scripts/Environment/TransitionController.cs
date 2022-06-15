@@ -12,6 +12,7 @@ public class TransitionController : MonoBehaviour
 {
     [SerializeField]
     private float _transitionSpeed = 1;
+
     [SerializeField]
     private TransitionData[] _transitionDatas;
 
@@ -26,6 +27,7 @@ public class TransitionController : MonoBehaviour
 
     [SerializeField, ReadOnly]
     private float _longestClipTime;
+
     private int _propertyID;
     private CancellationToken _cancellationToken;
     private Func<bool> _reset;
@@ -56,14 +58,21 @@ public class TransitionController : MonoBehaviour
     private async UniTaskVoid RunTransition()
     {
         await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
+
         //var startingValue = _sourceMaterial.GetFloat(_propertyID);
         _transitionStarted?.Invoke();
+        if (EnvironmentController.Instance != null)
+        {
+            await EnvironmentController.Instance.LoadEnvironmentAsync();
+        }
+
         for (var f = 0f; f < _longestClipTime; f += Time.deltaTime * _transitionSpeed)
         {
             foreach (var data in _transitionDatas)
             {
                 data.Clip.SampleAnimation(data.GameObj, f);
             }
+
             /*_sourceMaterial.SetFloat(_propertyID,
                 Mathf.Lerp(startingValue, _targetValue, _transitionCurve.Evaluate(f)));*/
             await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
@@ -74,6 +83,24 @@ public class TransitionController : MonoBehaviour
         }
 
         _transitionCompleted?.Invoke();
+    }
+
+    public void TryLoadBaseLevel()
+    {
+        var playlist = PlaylistManager.Instance.CurrentPlaylist;
+        if (!playlist.isValid)
+        {
+            NotificationManager.RequestNotification(
+                new Notification.NotificationVisuals(
+                    $"A song in {playlist.PlaylistName} is missing from this device. Cannot play {playlist.PlaylistName}. Please remove the missing song from the playlist or add it to this device.",
+                    "Playlist Invalid",
+                    autoTimeOutTime: 1.5f,
+                    popUp: true));
+        }
+        else
+        {
+            ActiveSceneManager.Instance.LoadBaseLevel();
+        }
     }
 
     [Serializable]

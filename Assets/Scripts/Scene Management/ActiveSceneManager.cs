@@ -11,6 +11,8 @@ public class ActiveSceneManager : MonoBehaviour
     public static ActiveSceneManager Instance { get; private set; }
     public UnityEvent newSceneLoaded = new UnityEvent();
 
+    private AsyncOperation _gameSceneLoader;
+
     private const string MAINMENUNAME = "Main Menu";
     private const string BASELEVELNAME = "Base Level";
 
@@ -49,7 +51,17 @@ public class ActiveSceneManager : MonoBehaviour
     
     private async UniTask LoadSceneAsync(string newSceneName, bool additive = false)
     {
-        await SceneManager.LoadSceneAsync(newSceneName, additive ? LoadSceneMode.Additive : LoadSceneMode.Single);
+        _gameSceneLoader = SceneManager.LoadSceneAsync(newSceneName, additive ? LoadSceneMode.Additive : LoadSceneMode.Single);
+        await _gameSceneLoader;
         newSceneLoaded?.Invoke();
     }
+
+    /*public void CompleteSceneLoad()
+    {
+        if (_gameSceneLoader != null)
+        {
+            _gameSceneLoader.allowSceneActivation = true;
+            _gameSceneLoader = null;
+        }
+    }*/
 }
