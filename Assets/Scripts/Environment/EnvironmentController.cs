@@ -5,6 +5,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class EnvironmentController : MonoBehaviour
 {
@@ -12,6 +13,9 @@ public class EnvironmentController : MonoBehaviour
 
     [SerializeField]
     private string _targetSceneName = SCIFILEVEL;
+
+    //[SerializeField]
+    //private Slider _slider;
 
     private AsyncOperation _sceneLoadOperation;
 
@@ -60,10 +64,21 @@ public class EnvironmentController : MonoBehaviour
         }
 
         _sceneLoadOperation = SceneManager.LoadSceneAsync(_targetSceneName, LoadSceneMode.Additive);
+        //LoadTracker().Forget();
         //_sceneLoadOperation.allowSceneActivation = false;
         await _sceneLoadOperation;
+        _sceneLoadOperation = null;
     }
 
+    /*private async UniTaskVoid LoadTracker()
+    {
+        while (_sceneLoadOperation != null && !_cancellationToken.IsCancellationRequested)
+        {
+            _slider.value = _sceneLoadOperation.progress;
+            await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
+        }
+    }*/
+    
     public void FinishSceneLoad()
     {
         if (_sceneLoadOperation == null)
@@ -72,11 +87,6 @@ public class EnvironmentController : MonoBehaviour
         }
 
         _sceneLoadOperation.allowSceneActivation = true;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
     }
 
     public enum Environments

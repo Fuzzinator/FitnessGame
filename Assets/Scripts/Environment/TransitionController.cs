@@ -37,7 +37,7 @@ public class TransitionController : MonoBehaviour
         _cancellationToken = this.GetCancellationTokenOnDestroy();
     }
 
-    private void OnValidate()
+    /*private void OnValidate()
     {
         foreach (var clip in _transitionDatas)
         {
@@ -47,11 +47,10 @@ public class TransitionController : MonoBehaviour
                 _longestClipTime = length;
             }
         }
-    }
+    }*/
 
     public void RequestTransition()
     {
-        GameStateManager.Instance.SetState(_resumedState);
         RunTransition().Forget();
     }
 
@@ -66,22 +65,33 @@ public class TransitionController : MonoBehaviour
             await EnvironmentController.Instance.LoadEnvironmentAsync();
         }
 
-        for (var f = 0f; f < _longestClipTime; f += Time.deltaTime * _transitionSpeed)
+        foreach (var data in _transitionDatas)
         {
+            data.AnimController.SetTrigger("Change");
+        }
+
+        await UniTask.Delay(TimeSpan.FromSeconds(_longestClipTime));
+        /*for (var f = 0f; f < _longestClipTime; f += Time.deltaTime * _transitionSpeed)
+        {
+            /*while (!FocusTracker.Instance.IsFocused && !_cancellationToken.IsCancellationRequested)
+            {
+                await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
+            }#1#
             foreach (var data in _transitionDatas)
             {
-                data.Clip.SampleAnimation(data.GameObj, f);
+                data.AnimController.SampleAnimation(data.GameObj, f);
             }
 
             /*_sourceMaterial.SetFloat(_propertyID,
-                Mathf.Lerp(startingValue, _targetValue, _transitionCurve.Evaluate(f)));*/
+                Mathf.Lerp(startingValue, _targetValue, _transitionCurve.Evaluate(f)));#1#
             await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
             if (_cancellationToken.IsCancellationRequested)
             {
                 return;
             }
-        }
+        }*/
 
+        GameStateManager.Instance.SetState(_resumedState);
         _transitionCompleted?.Invoke();
     }
 
@@ -110,11 +120,11 @@ public class TransitionController : MonoBehaviour
         private GameObject _gameObject;
 
         [SerializeField]
-        private AnimationClip _animationClip;
+        private Animator _animator;
 
         public GameObject GameObj => _gameObject;
-        public AnimationClip Clip => _animationClip;
-        public float Length => _animationClip != null ? _animationClip.length : 0;
+        public Animator AnimController => _animator;
+        public float Length => _animator != null ? _animator.GetCurrentAnimatorClipInfo(0).Length : 0;
     }
     /*    
         [SerializeField]

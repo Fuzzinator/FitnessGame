@@ -9,7 +9,7 @@ public class PauseMenuUIController : BaseGameStateListener
 {
     [SerializeField]
     private GameState _resumedState;
-    
+
     [SerializeField]
     private Canvas _pauseMenuCanvas;
 
@@ -18,18 +18,38 @@ public class PauseMenuUIController : BaseGameStateListener
 
     [SerializeField]
     private TransitionController _transitionController;
-    
+
+    private void Start()
+    {
+        base.OnEnable();
+    }
+
+    private void OnDestroy()
+    {
+        base.OnDisable();
+    }
+
+    protected override void OnEnable()
+    {
+    }
+
+    protected override void OnDisable()
+    {
+    }
+
     protected override async void GameStateListener(GameState oldState, GameState newState)
     {
-        if (_skipUI)
+        if (_skipUI || !gameObject.activeInHierarchy)
         {
             if (oldState == GameState.Unfocused && newState == GameState.Paused)
             {
                 await UniTask.DelayFrame(1);
                 ResumeGame();
             }
+
             return;
         }
+
         switch (newState)
         {
             case GameState.Paused:

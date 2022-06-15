@@ -2669,7 +2669,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh520796
+  m_Name: pb_Mesh1180314
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -2986,7 +2986,7 @@ MonoBehaviour:
   _transitionSpeed: 1
   _transitionDatas:
   - _gameObject: {fileID: 366741907}
-    _animationClip: {fileID: 7400000, guid: e36e9b35ebadea3429041435ed1b3da9, type: 2}
+    _animator: {fileID: 366741910}
   _transitionStarted:
     m_PersistentCalls:
       m_Calls: []
@@ -5755,9 +5755,9 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1040718795}
-  - {fileID: 2065833221}
   - {fileID: 4032101952773080573}
   - {fileID: 654637868}
+  - {fileID: 2065833221}
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -8026,6 +8026,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 366741908}
+  - component: {fileID: 366741910}
+  - component: {fileID: 366741909}
   m_Layer: 0
   m_Name: Digital Arena
   m_TagString: Untagged
@@ -8049,6 +8051,45 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &366741909
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 366741907}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb678365463da284fa741009474046a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _animator: {fileID: 366741910}
+  _properties:
+  - _propertyName: Expand
+    _type: 0
+    _boolValue: 1
+    _intValue: 0
+    _floatValue: 0
+--- !u!95 &366741910
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 366741907}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: abe11ab512c78e845a403020a30e1508, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &375467779
 GameObject:
   m_ObjectHideFlags: 0
@@ -9580,7 +9621,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh521762
+  m_Name: pb_Mesh1182912
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -23302,7 +23343,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh653692
+  m_Name: pb_Mesh1100446
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -26273,7 +26314,7 @@ PrefabInstance:
     - target: {fileID: 8478822547246551076, guid: 36cd4176249ef924cb4492fc602059d5,
         type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8478822547246551076, guid: 36cd4176249ef924cb4492fc602059d5,
         type: 3}
@@ -26398,7 +26439,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh520068
+  m_Name: pb_Mesh1178638
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -34173,14 +34214,14 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2065833217}
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: -3.88}
   m_LocalScale: {x: 0.0050534285, y: 0.005053429, z: 0.0050534285}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1641227327}
   m_Father: {fileID: 317559080}
-  m_RootOrder: 1
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -35742,7 +35783,7 @@ PrefabInstance:
     - target: {fileID: 8359378594685910287, guid: cd5ab7f78e411bb48abfa7a064ad26be,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8359378594685910287, guid: cd5ab7f78e411bb48abfa7a064ad26be,
         type: 3}

@@ -35,7 +35,7 @@ public class LevelManager : MonoBehaviour
     private bool _songCompleted = false;
 
     private UniTask _songCountdown;
-    private CancellationToken _cancellationToken;
+    private CancellationTokenSource _cancellationToken;
     public bool SongFullyLoaded => _choreographyLoaded && _songInfoLoaded && _actualSongLoaded;
 
     public bool SongCompleted => _songCompleted;
@@ -87,6 +87,8 @@ public class LevelManager : MonoBehaviour
 
     private void Start()
     {
+        
+        _cancellationToken = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
         if (PlaylistManager.Instance != null)
         {
             startedLevelLoad.AddListener(PlaylistManager.Instance.SetFirstPlaylistItem);
@@ -112,7 +114,6 @@ public class LevelManager : MonoBehaviour
     {
         ResetForNextSong();
         startedLevelLoad?.Invoke();
-        _cancellationToken = this.GetCancellationTokenOnDestroy();
     }
 
     public void LoadFailed()
@@ -186,13 +187,13 @@ public class LevelManager : MonoBehaviour
     private async UniTaskVoid FireEndSongMessagesAsync()
     {
         songCompleted?.Invoke();
-        await UniTask.DelayFrame(1, cancellationToken:_cancellationToken);
+        await UniTask.DelayFrame(1, cancellationToken:_cancellationToken.Token);
         prepForNextSong?.Invoke();
     }
 
     private async UniTask DelaySongStart(float delayLength)
     {
-        await UniTask.Delay(TimeSpan.FromSeconds(delayLength), cancellationToken: _cancellationToken,
+        await UniTask.Delay(TimeSpan.FromSeconds(delayLength), cancellationToken: _cancellationToken.Token,
             ignoreTimeScale: false);
         if (_cancellationToken.IsCancellationRequested)
         {
@@ -208,8 +209,8 @@ public class LevelManager : MonoBehaviour
         playLevel?.Invoke();
     }
 
-    private void PauseSongDelay()
+    public void CancelLevelLoad()
     {
-        //_cancellationToken.
+        _cancellationToken.Cancel(false);
     }
 }

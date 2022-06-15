@@ -11584,7 +11584,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh688232
+  m_Name: pb_Mesh1186224
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -11861,7 +11861,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh687404
+  m_Name: pb_Mesh1210320
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -13650,7 +13650,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh688202
+  m_Name: pb_Mesh1186194
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -14517,6 +14517,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1203814493}
+  - component: {fileID: 1203814495}
+  - component: {fileID: 1203814494}
   m_Layer: 0
   m_Name: Digital Arena
   m_TagString: Untagged
@@ -14540,6 +14542,45 @@ Transform:
   m_Father: {fileID: 1533983658}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1203814494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1203814492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb678365463da284fa741009474046a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _animator: {fileID: 1203814495}
+  _properties:
+  - _propertyName: Expand
+    _type: 0
+    _boolValue: 0
+    _intValue: 0
+    _floatValue: 0
+--- !u!95 &1203814495
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1203814492}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: abe11ab512c78e845a403020a30e1508, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &1237058443
 GameObject:
   m_ObjectHideFlags: 0
@@ -17845,7 +17886,7 @@ MonoBehaviour:
   _transitionSpeed: 1
   _transitionDatas:
   - _gameObject: {fileID: 1203814492}
-    _animationClip: {fileID: 7400000, guid: ad27fb20eab5da94082a3ff5137be86c, type: 2}
+    _animator: {fileID: 1203814495}
   _transitionStarted:
     m_PersistentCalls:
       m_Calls:
@@ -17873,6 +17914,42 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 1171833943}
+        m_TargetAssemblyTypeName: LevelManager, Assembly-CSharp
+        m_MethodName: CancelLevelLoad
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 982675444}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2024104557}
+        m_TargetAssemblyTypeName: MusicManager, Assembly-CSharp
+        m_MethodName: StopMusic
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   _transitionCompleted:
     m_PersistentCalls:
       m_Calls:
@@ -17889,7 +17966,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   _resumedState: 2
-  _longestClipTime: 7
+  _longestClipTime: 4
 --- !u!1 &1535297185
 GameObject:
   m_ObjectHideFlags: 0
@@ -19061,7 +19138,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh687578
+  m_Name: pb_Mesh1185570
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -19225,7 +19302,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh687728
+  m_Name: pb_Mesh1185720
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
