@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Text;
 using Cysharp.Threading.Tasks;
@@ -18,13 +16,14 @@ public class UpdateScoreDisplay : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI _currentScore;
 
+    private ulong _previousScore;
     private bool _update = false;
     private bool _delayingUpdate = false;
     private uint _increaseAmount;
     private CancellationToken _token;
 
     private const string ADD = "+";
-
+    
     private void Start()
     {
         _token = this.GetCancellationTokenOnDestroy();
@@ -50,14 +49,11 @@ public class UpdateScoreDisplay : MonoBehaviour
         }
 
         _update = true;
-        //UpdateScore(increaseAmount);
-        //StartCoroutine(CoroutineScoreUpdate(increaseAmount));
-        //AsyncScoreUpdate(increaseAmount).Forget();
     }
 
-    private void UpdateScore(uint increaseAmount)
+    private void UpdateToNewestScore(uint increaseAmount)
     {
-        if (_increaseAmount == increaseAmount)
+        if (ScoringManager.Instance.CurrentScore == _previousScore)
         {
             SetScoreDisplay(ScoringManager.Instance.CurrentScore);
 
@@ -95,9 +91,11 @@ public class UpdateScoreDisplay : MonoBehaviour
                 await UniTask.Delay(TimeSpan.FromSeconds(.05f), cancellationToken: _token);
                 continue;
             }
-            
+
+            _update = false;
+            _previousScore = ScoringManager.Instance.CurrentScore;
             await UniTask.Delay(TimeSpan.FromSeconds(_delayLength), cancellationToken: _token);
-            UpdateScore(_increaseAmount);
+            UpdateToNewestScore(_increaseAmount);
         }
     }
 

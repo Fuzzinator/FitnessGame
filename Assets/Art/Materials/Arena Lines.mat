@@ -23,11 +23,11 @@ Material:
   m_Name: Arena Lines
   m_Shader: {fileID: -6465566751694194690, guid: 118707d76a1f21346889b2a1bbfb15e8,
     type: 3}
-  m_ShaderKeywords: 
+  m_ShaderKeywords: _USE_DISTANCE_DISSOLVE
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2000
+  m_CustomRenderQueue: 2450
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
@@ -117,7 +117,7 @@ Material:
     - _GridLineWidth: 0.45
     - _GridPower: 10
     - _GridStrength: 1.5
-    - _GridTiling: 20
+    - _GridTiling: 5
     - _Metallic: 0
     - _Mode: 0
     - _NoiseStrength: 0.5
@@ -137,6 +137,8 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _Surface: 0
+    - _USE_DISTANCE_DISSOLVE: 1
+    - _USE_NOISE: 0
     - _UVSec: 0
     - _ZTest: 4
     - _ZWrite: 1

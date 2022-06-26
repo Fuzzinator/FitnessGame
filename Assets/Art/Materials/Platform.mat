@@ -23,7 +23,7 @@ Material:
   m_Name: Platform
   m_Shader: {fileID: -6465566751694194690, guid: 118707d76a1f21346889b2a1bbfb15e8,
     type: 3}
-  m_ShaderKeywords: 
+  m_ShaderKeywords: _USE_NOISE
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -104,6 +104,7 @@ Material:
     - _BumpScale: 1
     - _CastShadows: 1
     - _ClipDistance: 0.0001
+    - _ClipDistance_1: 1
     - _Cull: 2
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
@@ -131,6 +132,7 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _Surface: 0
+    - _USE_NOISE: 1
     - _UVSec: 0
     - _ZTest: 4
     - _ZWrite: 1

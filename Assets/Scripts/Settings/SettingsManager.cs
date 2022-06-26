@@ -25,6 +25,8 @@ public class SettingsManager : MonoBehaviour
     public const string RIGHTGLOVEOFFSET = "RightGloveOffset";
     public const string RIGHTGLOVEROTOFFSET = "RightGloveRotationOffset";
 
+    public const string REDUCEMOTION = "ReduceMotion";
+
     private static readonly string[] _volumeNames = new[] {MASTERVOLUME, MUSICVOLUME, SFXVOLUME};
 
     #endregion

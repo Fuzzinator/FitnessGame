@@ -34,6 +34,11 @@ public class LevelNotificationRequester : MonoBehaviour
 
     public void CheckLevelStateAndDisplay()
     {
+        if (PlaylistManager.Instance == null)
+        {
+            return;
+        }
+        
         if (PlaylistManager.Instance.CurrentIndex == PlaylistManager.Instance.CurrentPlaylist.Items.Length - 1)
         {
             DisplayEndLevelStats();

@@ -20,16 +20,15 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Target-Sci-Fi
-  m_Shader: {fileID: -6465566751694194690, guid: 484375f57bc0ac74f86bba3b66c843ab,
+  m_Name: Arena Simple
+  m_Shader: {fileID: -6465566751694194690, guid: 118707d76a1f21346889b2a1bbfb15e8,
     type: 3}
-  m_ShaderKeywords: _ALPHATEST_ON _TEXTURESET_TARGETS _USEDISTANCEDISSOLVE
+  m_ShaderKeywords: _USE_NOISE
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: 2450
-  stringTagMap:
-    RenderType: TransparentCutout
+  stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
@@ -39,10 +38,6 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _CubemapAsset_3811a4838c3e4a94bb50417046ec64f3_Out_0:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -58,10 +53,6 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _Emission:
-        m_Texture: {fileID: 2800000, guid: b1f6ca371a000b846b0abf0df0412335, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _EmissionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -71,7 +62,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 04af44ae3d1bd8e4aa1fe81e182ef169, type: 3}
+        m_Texture: {fileID: 2800000, guid: 6344bf96fbda94141a525046d088fb23, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -90,12 +81,8 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _Texture2DAsset_4f38e793ace7425ab55b7a0ed47010d6_Out_0:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Texture2D_Array:
-        m_Texture: {fileID: 18700000, guid: c20004db87ee21a4dbe852a7f7aa0e00, type: 3}
+    - _Texture2D:
+        m_Texture: {fileID: 2800000, guid: eee4233f2dae2404da84a8c2e0bee9f3, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -112,35 +99,36 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AlphaClip: 1
-    - _Alpha_Clip: 0.5
-    - _Appear_Distance: 8
-    - _Base_Color_Strength: 1
+    - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
     - _CastShadows: 1
-    - _Color_Strength: 10
+    - _ClipDistance: 0.1
+    - _ClipDistance_1: 0
     - _Cull: 2
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
-    - _Dissolve_Power: 0.5
-    - _Dissolve_Range: 0.15
     - _DstBlend: 0
+    - _Float: -9.54
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossinessSource: 0
     - _GlossyReflections: 1
-    - _Highlight_Multiply: 1
-    - _Highlight_Power: 1
+    - _GridLineWidth: 0.45
+    - _GridPower: 10
+    - _GridStrength: 1.5
+    - _GridTiling: 2
     - _Metallic: 0
     - _Mode: 0
+    - _NoiseStrength: 0.5
     - _Normal_Strength: 1
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _Rotation: 180
+    - _Rotation: 0
+    - _Scale: 1
     - _Shininess: 0
     - _Smoothness: 0.5
     - _SmoothnessSource: 0
@@ -149,23 +137,20 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _Surface: 0
-    - _TEXTURESET: 0
-    - _TextureIndex: 0
-    - _USEDISTANCEDISSOLVE: 1
+    - _USE_DISTANCE_DISSOLVE: 0
+    - _USE_NOISE: 1
     - _UVSec: 0
-    - _WorkflowMode: 1
     - _ZTest: 4
     - _ZWrite: 1
     - _ZWriteControl: 0
     m_Colors:
-    - _BaseColor: {r: 0.7075472, g: 0.7075472, b: 0.7075472, a: 1}
-    - _Base_Color: {r: 1, g: 1, b: 1, a: 0}
-    - _CenterPosition: {r: 0, g: 0, b: 0, a: 0}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _Color_1: {r: 1, g: 1, b: 1, a: 0}
-    - _DissolveColor: {r: 3.979057, g: 0.3141361, b: 0, a: 1}
+    - _BaseColor: {r: 0.15, g: 0.15, b: 0.15, a: 1}
+    - _Color: {r: 0.05, g: 0.05, b: 0.05, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _Rotation_Axis: {r: 1, g: 0, b: 0, a: 0}
+    - _GridLineColor: {r: 0.89411765, g: 1.4980392, b: 1.2156863, a: 1}
+    - _MinMaxScale: {r: 0.65, g: 1, b: 0, a: 0}
+    - _Rotation_Axis: {r: 0, g: 0, b: 1, a: 0}
     - _SpecColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
-    - _Tiling: {r: 1, g: 1, b: 0, a: 0}
+    - _WallsScale: {r: 3.1, g: 3.1, b: 5.1, a: 0.1}
+    - _WallsSmallScale: {r: 4.1, g: 4.1, b: 5.1, a: 0.1}
   m_BuildTextureStacks: []

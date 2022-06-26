@@ -65,31 +65,15 @@ public class TransitionController : MonoBehaviour
             await EnvironmentController.Instance.LoadEnvironmentAsync();
         }
 
-        foreach (var data in _transitionDatas)
+        if (!SettingsManager.GetSetting(SettingsManager.REDUCEMOTION, false))
         {
-            data.AnimController.SetTrigger("Change");
-        }
-
-        await UniTask.Delay(TimeSpan.FromSeconds(_longestClipTime));
-        /*for (var f = 0f; f < _longestClipTime; f += Time.deltaTime * _transitionSpeed)
-        {
-            /*while (!FocusTracker.Instance.IsFocused && !_cancellationToken.IsCancellationRequested)
-            {
-                await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
-            }#1#
             foreach (var data in _transitionDatas)
             {
-                data.AnimController.SampleAnimation(data.GameObj, f);
+                data.AnimController.SetTrigger("Change");
             }
 
-            /*_sourceMaterial.SetFloat(_propertyID,
-                Mathf.Lerp(startingValue, _targetValue, _transitionCurve.Evaluate(f)));#1#
-            await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
-            if (_cancellationToken.IsCancellationRequested)
-            {
-                return;
-            }
-        }*/
+            await UniTask.Delay(TimeSpan.FromSeconds(_longestClipTime));
+        }
 
         GameStateManager.Instance.SetState(_resumedState);
         _transitionCompleted?.Invoke();
