@@ -34,6 +34,9 @@
         },
         {
             "m_Id": "363c8a26195c435b95627d16841ef9fd"
+        },
+        {
+            "m_Id": "9614c4473f6e415d8016c6969a8bea77"
         }
     ],
     "m_Dropdowns": [],
@@ -279,6 +282,9 @@
         },
         {
             "m_Id": "263fbcf9e76c4d96a2aebc2880509827"
+        },
+        {
+            "m_Id": "2d9fac8c7e344d878ee6f7ba2390eda7"
         }
     ],
     "m_GroupDatas": [],
@@ -553,6 +559,20 @@
         {
             "m_OutputSlot": {
                 "m_Node": {
+                    "m_Id": "2d9fac8c7e344d878ee6f7ba2390eda7"
+                },
+                "m_SlotId": 0
+            },
+            "m_InputSlot": {
+                "m_Node": {
+                    "m_Id": "f0a79bb476804bee804e07bd8f0bfe27"
+                },
+                "m_SlotId": 1
+            }
+        },
+        {
+            "m_OutputSlot": {
+                "m_Node": {
                     "m_Id": "2ffe6a80c72a451584000d9939c43e20"
                 },
                 "m_SlotId": 2
@@ -811,7 +831,7 @@
             },
             "m_InputSlot": {
                 "m_Node": {
-                    "m_Id": "f0a79bb476804bee804e07bd8f0bfe27"
+                    "m_Id": "2d9fac8c7e344d878ee6f7ba2390eda7"
                 },
                 "m_SlotId": 1
             }
@@ -1653,6 +1673,30 @@
     "m_StageCapability": 3,
     "m_Value": {
         "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    },
+    "m_DefaultValue": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    }
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.DynamicVectorMaterialSlot",
+    "m_ObjectId": "0178fe52c32446f8b7a4aea1987ebc9b",
+    "m_Id": 2,
+    "m_DisplayName": "Off",
+    "m_SlotType": 0,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "Off",
+    "m_StageCapability": 3,
+    "m_Value": {
+        "x": 1.0,
         "y": 0.0,
         "z": 0.0,
         "w": 0.0
@@ -3399,6 +3443,47 @@
         "w": 0.0
     },
     "m_Labels": []
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.KeywordNode",
+    "m_ObjectId": "2d9fac8c7e344d878ee6f7ba2390eda7",
+    "m_Group": {
+        "m_Id": ""
+    },
+    "m_Name": "Dithering",
+    "m_DrawState": {
+        "m_Expanded": true,
+        "m_Position": {
+            "serializedVersion": "2",
+            "x": 765.0,
+            "y": 1009.0,
+            "width": 208.0,
+            "height": 302.0
+        }
+    },
+    "m_Slots": [
+        {
+            "m_Id": "a09c0ac17722485088f2be3be00c8ef7"
+        },
+        {
+            "m_Id": "9c1ba0d93c574dd2b4b028ef4c15643e"
+        },
+        {
+            "m_Id": "0178fe52c32446f8b7a4aea1987ebc9b"
+        }
+    ],
+    "synonyms": [],
+    "m_Precision": 0,
+    "m_PreviewExpanded": false,
+    "m_PreviewMode": 0,
+    "m_CustomColors": {
+        "m_SerializableColors": []
+    },
+    "m_Keyword": {
+        "m_Id": "9614c4473f6e415d8016c6969a8bea77"
+    }
 }
 
 {
@@ -7139,6 +7224,9 @@
             "m_Id": "9e195f9e54bf4784a420e15636c323af"
         },
         {
+            "m_Id": "9614c4473f6e415d8016c6969a8bea77"
+        },
+        {
             "m_Id": "363c8a26195c435b95627d16841ef9fd"
         }
     ]
@@ -7490,6 +7578,30 @@
 }
 
 {
+    "m_SGVersion": 1,
+    "m_Type": "UnityEditor.ShaderGraph.ShaderKeyword",
+    "m_ObjectId": "9614c4473f6e415d8016c6969a8bea77",
+    "m_Guid": {
+        "m_GuidSerialized": "09fbf5aa-c7d9-49e5-aae3-2b209ebb8f0b"
+    },
+    "m_Name": "Dithering",
+    "m_DefaultRefNameVersion": 1,
+    "m_RefNameGeneratedByDisplayName": "Dithering",
+    "m_DefaultReferenceName": "_DITHERING",
+    "m_OverrideReferenceName": "",
+    "m_GeneratePropertyBlock": true,
+    "m_UseCustomSlotLabel": false,
+    "m_CustomSlotLabel": "",
+    "m_KeywordType": 0,
+    "m_KeywordDefinition": 0,
+    "m_KeywordScope": 0,
+    "m_KeywordStages": 63,
+    "m_Entries": [],
+    "m_Value": 0,
+    "m_IsEditable": true
+}
+
+{
     "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.DynamicVectorMaterialSlot",
     "m_ObjectId": "96e708a6263d45bba1c55cf056018978",
@@ -7672,6 +7784,30 @@
     "m_Value": 0.5,
     "m_DefaultValue": 0.0,
     "m_Labels": []
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.DynamicVectorMaterialSlot",
+    "m_ObjectId": "9c1ba0d93c574dd2b4b028ef4c15643e",
+    "m_Id": 1,
+    "m_DisplayName": "On",
+    "m_SlotType": 0,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "On",
+    "m_StageCapability": 3,
+    "m_Value": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    },
+    "m_DefaultValue": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    }
 }
 
 {
@@ -7926,6 +8062,30 @@
         "e31": 0.0,
         "e32": 0.0,
         "e33": 1.0
+    }
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.DynamicVectorMaterialSlot",
+    "m_ObjectId": "a09c0ac17722485088f2be3be00c8ef7",
+    "m_Id": 0,
+    "m_DisplayName": "Dithering",
+    "m_SlotType": 1,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "Out",
+    "m_StageCapability": 3,
+    "m_Value": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    },
+    "m_DefaultValue": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
     }
 }
 
