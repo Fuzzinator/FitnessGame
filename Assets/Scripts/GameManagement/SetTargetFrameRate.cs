@@ -15,7 +15,7 @@ public class SetTargetFrameRate : MonoBehaviour
         var headset = OVRPlugin.GetSystemHeadsetType();
 
         OVRPlugin.systemDisplayFrequency = headset != OVRPlugin.SystemHeadset.Oculus_Quest ? 90 : 72;
-
+        OVRPlugin.occlusionMesh = true;
         //OVRPlugin.fixedFoveatedRenderingLevel = OVRPlugin.FixedFoveatedRenderingLevel.Medium;
 #endif
     }

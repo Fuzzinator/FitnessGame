@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.XR.Interaction.Toolkit.UI;
 
 public class MainMenuUIController : BaseGameStateListener
 {
@@ -9,10 +11,11 @@ public class MainMenuUIController : BaseGameStateListener
 
     [SerializeField]
     private Canvas _canvas;
+
     [SerializeField]
-    private CanvasGroup[] _pages;
+    private MenuPage[] _menuPages;
     
-    private CanvasGroup _activeCanvasGroup;
+    private MenuPage _activeMenuPage;
     
     private List<MonoBehaviour> _requestSources = new List<MonoBehaviour>();
 
@@ -30,7 +33,7 @@ public class MainMenuUIController : BaseGameStateListener
 
     private void Start()
     {
-        _activeCanvasGroup = _pages[0];
+        _activeMenuPage = _menuPages[0];
         SetActivePage(0);
     }
     
@@ -54,21 +57,21 @@ public class MainMenuUIController : BaseGameStateListener
 
     public void SetActivePage(int targetPage)
     {
-        SetActivePage(_pages[targetPage]);
+        SetActivePage(_menuPages[targetPage]);
     }
 
-    private void SetActivePage(CanvasGroup targetGroup)
+    private void SetActivePage(MenuPage targetPage)
     {
-        foreach (var group in _pages)
+        foreach (var page in _menuPages)
         {
-            if (group != targetGroup)
+            if (page != targetPage)
             {
-                group.SetGroupState(0, false);
+                page.SetActive(0, false);
             }
             else
             {
-                group.SetGroupState(1, true);
-                _activeCanvasGroup = group;
+                page.SetActive(1, true);
+                _activeMenuPage = page;
             }
         }
     }
@@ -119,11 +122,11 @@ public class MainMenuUIController : BaseGameStateListener
             return;
         }
         
-        if (_activeCanvasGroup == null)
+        if (_activeMenuPage.IsValid)
         {
-            _activeCanvasGroup = _pages[0];
+            _activeMenuPage = _menuPages[0];
         }
-        _activeCanvasGroup.SetGroupState(1, true);
+        _activeMenuPage.SetActive(1, true);
     }
     
     private void DisableUI()
@@ -133,11 +136,59 @@ public class MainMenuUIController : BaseGameStateListener
             return;
         }
         
-        if (_activeCanvasGroup == null)
+        if (_activeMenuPage.IsValid)
         {
-            _activeCanvasGroup = _pages[0];
+            _activeMenuPage = _menuPages[0];
         }
-        _activeCanvasGroup.SetGroupState(.5f, false);
+        _activeMenuPage.SetActive(.5f, false, true);
     }
 
+
+    [Serializable]
+    private struct MenuPage
+    {
+        [SerializeField]
+        private CanvasGroup _group;
+
+        [SerializeField]
+        private Canvas _canvas;
+
+        [SerializeField]
+        private GraphicRaycaster _graphicRaycaster;
+        
+        [SerializeField]
+        private TrackedDeviceGraphicRaycaster _trackedDeviceRaycaster;
+
+        public bool IsValid => _group != null && _canvas != null;
+
+        public void SetActive(float alpha, bool enabled)
+        {
+            _group.SetGroupState(alpha,enabled);
+            _graphicRaycaster.enabled = enabled;
+            _trackedDeviceRaycaster.enabled = enabled;
+            _canvas.enabled = enabled;
+        }
+        
+        public void SetActive(float alpha,bool enabled, bool canvasEnabled)
+        {
+            _group.SetGroupState(alpha,enabled);
+            _graphicRaycaster.enabled = enabled;
+            _trackedDeviceRaycaster.enabled = enabled;
+            _canvas.enabled = canvasEnabled;
+        }
+
+        
+        public static bool operator ==(MenuPage page1, MenuPage page2)
+        {
+            return page1._canvas == page2._canvas &&
+                   page1._group == page2._group &&
+                   page1._graphicRaycaster == page2._graphicRaycaster &&
+                   page1._trackedDeviceRaycaster == page2._trackedDeviceRaycaster;
+        }
+
+        public static bool operator !=(MenuPage page1, MenuPage page2)
+        {
+            return !(page1 == page2);
+        }
+    }
 }
