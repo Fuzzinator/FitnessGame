@@ -8,9 +8,11 @@ public class SettingsManager : MonoBehaviour
 {
     [SerializeField]
     private AudioMixer _mixer;
+
     public static SettingsManager Instance { get; private set; }
 
-    private static float[] _volumes = new float[3]; 
+    private static float[] _volumes = new float[3];
+
     #region Const Strings
 
     private const string MASTERVOLUME = "MasterVolume";
@@ -19,13 +21,15 @@ public class SettingsManager : MonoBehaviour
 
     private const string MENUMUSICVOLUME = "MenuMusicVolume";
     private const string MENUSFXVOLUME = "MenuSFXVolume";
-    
+
     public const string LEFTGLOVEOFFSET = "LeftGloveOffset";
     public const string LEFTGLOVEROTOFFSET = "LeftGloveRotationOffset";
     public const string RIGHTGLOVEOFFSET = "RightGloveOffset";
     public const string RIGHTGLOVEROTOFFSET = "RightGloveRotationOffset";
 
     public const string REDUCEMOTION = "ReduceMotion";
+
+    private const string FPSSETTING = "TargetFrameRate";
 
     private static readonly string[] _volumeNames = new[] {MASTERVOLUME, MUSICVOLUME, SFXVOLUME};
 
@@ -46,6 +50,7 @@ public class SettingsManager : MonoBehaviour
     private void Start()
     {
         SetAudioSettings();
+        SetTargetFPS();
     }
 
     #region Audio Settings
@@ -60,7 +65,7 @@ public class SettingsManager : MonoBehaviour
     public void SetVolumeMixer(VolumeMixer mixer, float value, bool autoSave = false)
     {
         _volumes[(int) mixer] = value;
-        
+
         var convertedValue = value == 0 ? -80 : Mathf.Log10(value) * 20;
         switch (mixer)
         {
@@ -112,6 +117,36 @@ public class SettingsManager : MonoBehaviour
     #endregion
 
 
+    private void SetTargetFPS(FPSSetting defaultValue = FPSSetting.Unset)
+    {
+#if UNITY_ANDROID
+        if (defaultValue == FPSSetting.Unset)
+        {
+            defaultValue = GetFPSSetting();
+        }
+
+        var actualTarget = defaultValue switch
+        {
+            FPSSetting._72 => 72f,
+            FPSSetting._90 => 90f,
+            FPSSetting._120 => 120f,
+            _ => 72f
+        };
+
+        OVRPlugin.systemDisplayFrequency = actualTarget;
+        OVRPlugin.occlusionMesh = true;
+        
+#elif UNITY_STANDALONE_WIN
+        Application.targetFrameRate = defaultValue switch
+        {
+            FPSSetting._72 => 72,
+            FPSSetting._90 => 90,
+            FPSSetting._120 => 120,
+            _ => 72
+        };
+#endif
+    }
+
     public static float GetFloatSetting(string settingName, float defaultValue = 1f)
     {
         return ES3.Load(settingName, defaultValue);
@@ -127,9 +162,26 @@ public class SettingsManager : MonoBehaviour
         ES3.Save(settingName, value);
     }
 
-    public static T GetSetting<T>(string settingName, T defaultValue) where T :struct
+    public static T GetSetting<T>(string settingName, T defaultValue) where T : struct
     {
         return ES3.Load(settingName, defaultValue);
+    }
+
+    public static void SetFPSSetting(int value)
+    {
+        SetSetting(FPSSETTING, value);
+        Instance.SetTargetFPS((FPSSetting) value);
+    }
+
+    public static FPSSetting GetFPSSetting()
+    {
+#if UNITY_ANDROID
+        var headset = OVRPlugin.GetSystemHeadsetType();
+
+        return GetSetting(FPSSETTING,
+            (headset == OVRPlugin.SystemHeadset.Oculus_Quest ? FPSSetting._72 : FPSSetting._90));
+#endif
+        return FPSSetting._90;
     }
 }
 
@@ -138,4 +190,12 @@ public enum VolumeMixer
     Master = 0,
     Music = 1,
     SFX = 2
+}
+
+public enum FPSSetting
+{
+    Unset = -1,
+    _72 = 0,
+    _90 = 1,
+    _120 = 2
 }

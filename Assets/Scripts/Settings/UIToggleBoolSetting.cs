@@ -19,29 +19,34 @@ public class UIToggleBoolSetting : MonoBehaviour, ISaver
    [SerializeField]
    private SettingsDisplay _settingsDisplay;
 
+   private bool _currentValue;
+   
    private const string ON = "On";
    private const string OFF = "Off";
    
    private void OnEnable()
    {
-      var setting = SettingsManager.GetSetting(_settingName, _defaultValue);
-      _toggle.isOn = setting;
-      _text.SetText(setting?ON:OFF);
+      Revert();
    }
 
    public void ToggleSet(bool isOn)
    {
-      _text.SetText(isOn?ON:OFF);
-      _settingsDisplay.ChangeWasMade(this);
+      if (_currentValue != isOn)
+      {
+         _currentValue = isOn;
+         _text.SetText(isOn?ON:OFF);
+         _settingsDisplay.ChangeWasMade(this);
+      }
    }
 
    public void Save()
    {
-      SettingsManager.SetSetting(_settingName, _toggle.isOn);
+      SettingsManager.SetSetting(_settingName, _currentValue);
    }
 
    public void Revert()
    {
-      _toggle.isOn = SettingsManager.GetSetting(_settingName, _defaultValue);
+      _currentValue = SettingsManager.GetSetting(_settingName, _defaultValue);
+      _toggle.isOn = _currentValue;
    }
 }

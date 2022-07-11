@@ -167,6 +167,7 @@ public class MainMenuUIController : BaseGameStateListener
             _graphicRaycaster.enabled = enabled;
             _trackedDeviceRaycaster.enabled = enabled;
             _canvas.enabled = enabled;
+            _group.gameObject.SetActive(enabled);
         }
         
         public void SetActive(float alpha,bool enabled, bool canvasEnabled)
@@ -175,6 +176,7 @@ public class MainMenuUIController : BaseGameStateListener
             _graphicRaycaster.enabled = enabled;
             _trackedDeviceRaycaster.enabled = enabled;
             _canvas.enabled = canvasEnabled;
+            _group.gameObject.SetActive(canvasEnabled);
         }
 
         

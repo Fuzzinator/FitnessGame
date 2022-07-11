@@ -17,6 +17,8 @@ public class UpdatePlayerHeightDisplay : MonoBehaviour, ISaver
     private bool _pressed;
 
     private CancellationToken _cancellationToken;
+
+    private const string METERS = "<size=50%> Meters<size/>";
     
     private void Start()
     {
@@ -76,7 +78,7 @@ public class UpdatePlayerHeightDisplay : MonoBehaviour, ISaver
             var height = Mathf.Round(_setHeight * 1000f) / 1000f;
             //var heightAsDouble = Math.Round((double)height, 2);
             sb.Append(height);
-            
+            sb.Append(METERS);
             _currentText.SetText(sb);
         }
     }
