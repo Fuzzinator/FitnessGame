@@ -139,6 +139,10 @@ public class ChoreographySequencer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (EnvironmentControlManager.Instance != null)
+        {
+            UpdateTargetsAndObstacles();
+        }
         var thisTransform = transform;
         _formationHolderPool = new PoolManager(_formationHolderPrefab, thisTransform);
         _jabPool = new PoolManager(_jabTarget, thisTransform);
@@ -176,6 +180,19 @@ public class ChoreographySequencer : MonoBehaviour
     private void OnDestroy()
     {
         _tweenPool.CompleteAllActive();
+    }
+
+    private void UpdateTargetsAndObstacles()
+    {
+        var assets = EnvironmentControlManager.Instance.ActiveEnvironmentContainer;
+        _jabTarget = assets.JabTarget;
+        _leftHookTarget = assets.HookLeftTarget;
+        _rightHookTarget = assets.HookRightTarget;
+        _uppercutTarget = assets.UppercutTarget;
+        _baseBlockTarget = assets.BlockTarget;
+        _baseObstacle = assets.DuckObstacle;
+        _leftObstacle = assets.DodgeLeftObstacle;
+        _rightObstacle = assets.DodgeRightObstacle;
     }
 
     private void GameStateListener(GameState oldState, GameState newState)

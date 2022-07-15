@@ -30,7 +30,7 @@ public class SetGlobalTextures : MonoBehaviour
         Shader.SetGlobalTexture(ENVNORMALTEXTURES, _environmentNormalTextures);*/
     }
 
-    private void Start()
+    /*private void Start()
     {
         foreach (var set in _textureSets)
         {
@@ -42,8 +42,8 @@ public class SetGlobalTextures : MonoBehaviour
             Shader.SetGlobalTexture(set.Name, set.Texture);
         }
         /*Shader.SetGlobalTexture(ENVTEXTURES, _environmentTextures);
-        Shader.SetGlobalTexture(ENVNORMALTEXTURES, _environmentNormalTextures);*/
-    }
+        Shader.SetGlobalTexture(ENVNORMALTEXTURES, _environmentNormalTextures);#1#
+    }*/
 
     private void OnDestroy()
     {
@@ -58,31 +58,5 @@ public class SetGlobalTextures : MonoBehaviour
         }
         /*Shader.SetGlobalTexture(ENVTEXTURES, null);
         Shader.SetGlobalTexture(ENVNORMALTEXTURES, null);*/
-    }
-
-    [System.Serializable]
-    private struct TextureSet
-    {
-        [SerializeField]
-        private string _textureName;
-
-        [SerializeField]
-        private Texture2D _texture;
-
-        public string Name => _textureName;
-        public Texture2D Texture => _texture;
-    }
-    
-    [System.Serializable]
-    private struct TextureArraySet
-    {
-        [SerializeField]
-        private string _textureArrayName;
-
-        [SerializeField]
-        private Texture2DArray _textureArray;
-
-        public string Name => _textureArrayName;
-        public Texture2DArray Texture => _textureArray;
     }
 }

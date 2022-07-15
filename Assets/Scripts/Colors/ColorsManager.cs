@@ -32,7 +32,7 @@ public class ColorsManager : MonoBehaviour
     [SerializeField]
     private Color _centerEnvironment;
 
-    [FormerlySerializedAs("_texture2DArray")] [SerializeField]
+    [SerializeField]
     private Texture2DArray _targetTexturesArray;
 
     [SerializeField]
@@ -57,6 +57,13 @@ public class ColorsManager : MonoBehaviour
 
     private void OnValidate()
     {
+        UpdateTextureSets();
+    }
+
+    public void SetAndUpdateTextureSets(Texture2DArray targetTextures, Texture2DArray obstacleTextures)
+    {
+        _targetTexturesArray = targetTextures;
+        _obstacleTexturesArray = obstacleTextures;
         UpdateTextureSets();
     }
 

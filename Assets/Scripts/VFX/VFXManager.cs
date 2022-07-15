@@ -26,6 +26,10 @@ public class VFXManager : MonoBehaviour
 
     private void Start()
     {
+        if (EnvironmentControlManager.Instance != null)
+        {
+            _normalHitPrefab = EnvironmentControlManager.Instance.ActiveEnvironmentContainer.BaseHitVFX;
+        }
         _normalHitPool = new PoolManager(_normalHitPrefab, transform, 20);
     }
 
@@ -35,6 +39,11 @@ public class VFXManager : MonoBehaviour
         {
             Instance = null;
         }
+    }
+
+    public static void SetNormalHitPrefab(BaseHitVFX hitVFX)
+    {
+        Instance._normalHitPrefab = hitVFX;
     }
 
     public static BaseHitVFX GetBaseHitVFX

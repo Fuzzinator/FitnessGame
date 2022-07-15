@@ -54,9 +54,16 @@ public class EnvironmentController : MonoBehaviour
     {
         LoadEnvironmentAsync().Forget();
     }
-    
+
     public async UniTask LoadEnvironmentAsync()
     {
+        if (EnvironmentControlManager.Instance != null)
+        {
+            await UniTask.WaitWhile(() => EnvironmentControlManager.Instance.LoadingEnvironmentContainer,
+                cancellationToken: _cancellationToken);
+            _targetSceneName = EnvironmentControlManager.Instance.ActiveEnvironmentContainer.EnvironmentName;
+        }
+
         if (string.IsNullOrWhiteSpace(_targetSceneName))
         {
             _sceneLoadOperation = null;
@@ -78,7 +85,7 @@ public class EnvironmentController : MonoBehaviour
             await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
         }
     }*/
-    
+
     public void FinishSceneLoad()
     {
         if (_sceneLoadOperation == null)

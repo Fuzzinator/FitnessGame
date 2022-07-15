@@ -194,7 +194,7 @@ GameObject:
   - component: {fileID: 811981823}
   - component: {fileID: 811981825}
   - component: {fileID: 811981826}
-  - component: {fileID: 811981829}
+  - component: {fileID: 811981827}
   m_Layer: 0
   m_Name: Game Manager
   m_TagString: Untagged
@@ -307,7 +307,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _mixer: {fileID: 24100000, guid: 48260934faeb6d3489ec0d3b43b3e7db, type: 2}
---- !u!114 &811981829
+--- !u!114 &811981827
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -316,9 +316,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 811981819}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 55c5513b5dd2cdb438fbb7dd4c9a0070, type: 3}
+  m_Script: {fileID: 11500000, guid: 6a563dc84fd5a9743b410c08ed382d28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _availableReferences: []
 --- !u!1 &943962901
 GameObject:
   m_ObjectHideFlags: 0
@@ -727,7 +728,5 @@ MonoBehaviour:
   _leftEnvironment: {r: 0, g: 0, b: 0, a: 0}
   _rightEnvironment: {r: 0, g: 0, b: 0, a: 0}
   _centerEnvironment: {r: 0, g: 0, b: 0, a: 0}
-  _targetTexturesArray: {fileID: 18700000, guid: c20004db87ee21a4dbe852a7f7aa0e00,
-    type: 3}
-  _obstacleTexturesArray: {fileID: 18700000, guid: 321156ac5d4f49243bd1d3b14fc8843c,
-    type: 3}
+  _targetTexturesArray: {fileID: 0}
+  _obstacleTexturesArray: {fileID: 0}

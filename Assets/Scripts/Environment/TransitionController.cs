@@ -57,7 +57,7 @@ public class TransitionController : MonoBehaviour
     private async UniTaskVoid RunTransition()
     {
         await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
-
+        
         //var startingValue = _sourceMaterial.GetFloat(_propertyID);
         _transitionStarted?.Invoke();
         if (EnvironmentController.Instance != null)

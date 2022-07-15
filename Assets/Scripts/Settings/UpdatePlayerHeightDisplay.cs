@@ -18,7 +18,7 @@ public class UpdatePlayerHeightDisplay : MonoBehaviour, ISaver
 
     private CancellationToken _cancellationToken;
 
-    private const string METERS = "<size=50%> Meters<size/>";
+    private const string METERS = "<size=50%> Meters</size>";
     
     private void Start()
     {
