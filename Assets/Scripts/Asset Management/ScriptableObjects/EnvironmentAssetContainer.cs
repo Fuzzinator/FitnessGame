@@ -21,6 +21,12 @@ public class EnvironmentAssetContainer : ScriptableObject
     private TextureArraySet[] _globalTextureArraySets;
 
     [SerializeField]
+    private Collider _leftGlove;
+
+    [SerializeField]
+    private Collider _rightGlove;
+    
+    [SerializeField]
     private BaseTarget _jabTarget;
 
     [SerializeField]
@@ -52,6 +58,9 @@ public class EnvironmentAssetContainer : ScriptableObject
     public Texture2DArray ObstacleTextures => _obstacleTextures;
     public TextureSet[] GlobalTextureSets => _globalTextureSets;
     public TextureArraySet[] GlobalTextureArraySets => _globalTextureArraySets;
+
+    public Collider LeftGlove => _leftGlove;
+    public Collider RightGlove => _rightGlove;
     public BaseTarget JabTarget => _jabTarget;
     public BaseTarget HookLeftTarget => _hookLeftTarget;
     public BaseTarget HookRightTarget => _hookRightTarget;

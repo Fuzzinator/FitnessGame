@@ -75,18 +75,13 @@ public class Hand : BaseGameStateListener
         _cancellationToken = this.GetCancellationTokenOnDestroy();
     }
 
-    private async void OnEnable()
+    private void OnEnable()
     {
         enabled = true;
         UpdateDevices();
         
         SetOffset();
-        await TrackDirAndSpeed(_cancellationToken).SuppressCancellationThrow();
-        if (_cancellationToken.IsCancellationRequested)
-        {
-            return;
-        }
-        
+        TrackDirAndSpeed(_cancellationToken).Forget();
     }
 
     private void OnDisable()
@@ -167,6 +162,11 @@ public class Hand : BaseGameStateListener
 
     private void SetOffset()
     {
+        if (_glove == null)
+        {
+            return;
+        }
+        
         GloveOffset = _assignedHand switch
         {
             HitSideType.Left => SettingsManager.GetSetting(SettingsManager.LEFTGLOVEOFFSET, Vector3.zero),
@@ -179,6 +179,13 @@ public class Hand : BaseGameStateListener
             HitSideType.Right => SettingsManager.GetSetting(SettingsManager.RIGHTGLOVEROTOFFSET, Quaternion.identity),
             _ => GloveRotationOffset
         };
+    }
+
+    public void SetAndSpawnGlove(Collider newGlove)
+    {
+        _collider = Instantiate(newGlove, transform);
+        _glove = _collider.transform;
+        SetOffset();
     }
     
     public void UnparentGlove()
