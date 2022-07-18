@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cysharp.Text;
 using EnhancedUI.EnhancedScroller;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace UI.Scrollers.Playlists
 {
@@ -13,15 +13,23 @@ namespace UI.Scrollers.Playlists
         [SerializeField]
         private TextMeshProUGUI _playlistName;
 
-        [SerializeField] 
-        private Image _invalidIndicator;
         private Playlist _playlist;
 
+        private const string INVALID = "<sprite index=1>";
+        
         public void SetData(Playlist playlist)
         {
             _playlist = playlist;
-            _playlistName.SetText(playlist.PlaylistName);
-            _invalidIndicator.enabled = !_playlist.isValid;
+            using (var sb = ZString.CreateStringBuilder(true))
+            {
+                if (!_playlist.isValid)
+                {
+                    sb.Append(INVALID);
+                }
+                sb.Append(_playlist.PlaylistName);
+                
+                _playlistName.SetText(sb);
+            }
         }
 
         public void SetActivePlaylist()

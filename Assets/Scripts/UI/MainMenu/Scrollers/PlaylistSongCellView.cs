@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using Cysharp.Text;
 using Cysharp.Threading.Tasks;
 using EnhancedUI.EnhancedScroller;
 using GameModeManagement;
@@ -14,33 +15,41 @@ namespace UI.Scrollers.Playlists
     public class PlaylistSongCellView : EnhancedScrollerCellView, HighlightableCellView
     {
         [SerializeField]
-        private TextMeshProUGUI _songName;
-
-        [SerializeField]
-        private TextMeshProUGUI _songDifficulty;
-
-        [FormerlySerializedAs("_beatsPerMinute")] [SerializeField]
-        private TextMeshProUGUI _songLength;
+        [FormerlySerializedAs("_songName")] 
+        private TextMeshProUGUI _songDetails;
 
         [SerializeField]
         private Image _highlight;
-        [SerializeField]
-        private Image _invalidIndicator;
 
         public Image HighlightImage => _highlight;
+        
+        private const string INVALID = "<sprite index=1>";
+        private const string SONGINFOFORMAT =
+            "<align=center>{0}</style>\n<size=50%>{1}<line-indent=15%>{2}</size></align>";
 
         public void SetData(PlaylistItem playlist)
         {
-            _songName?.SetText(playlist.SongName);
-            _songDifficulty?.SetText(playlist.Difficulty);
-            _songLength?.SetText(playlist.TargetGameMode.GetDisplayName());
-            SetInvalidIndicator(playlist).Forget();
+            UpdateDisplay(playlist).Forget();
         }
         
-        private async UniTaskVoid SetInvalidIndicator(PlaylistItem item)
+        private async UniTaskVoid UpdateDisplay(PlaylistItem playlistItem)
         {
-            var isValid = await PlaylistValidator.IsValid(item);
-            _invalidIndicator.gameObject.SetActive(!isValid);
+            var isValid = await PlaylistValidator.IsValid(playlistItem);
+            if (_songDetails == null)
+            {
+                return;
+            }
+            
+            using (var sb = ZString.CreateStringBuilder(true))
+            {
+                if (!isValid)
+                {
+                    sb.Append(INVALID);
+                }
+                sb.AppendFormat(SONGINFOFORMAT, playlistItem.SongName, playlistItem.Difficulty, playlistItem.TargetGameMode.GetDisplayName());
+
+                _songDetails.SetText(sb);
+            }
         }
 
         public void SetHighlight(bool on)

@@ -29,14 +29,6 @@ public class PauseMenuUIController : BaseGameStateListener
         base.OnDisable();
     }
 
-    protected override void OnEnable()
-    {
-    }
-
-    protected override void OnDisable()
-    {
-    }
-
     protected override async void GameStateListener(GameState oldState, GameState newState)
     {
         if (_skipUI || !gameObject.activeInHierarchy)

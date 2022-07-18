@@ -15,7 +15,6 @@ namespace UI.Scrollers.Playlists
     public class InGamePlaylistSongCellView : EnhancedScrollerCellView, HighlightableCellView
     {
         [SerializeField]
-        [FormerlySerializedAs("_songName")] 
         private TextMeshProUGUI _songDetails;
 
         private const string INVALIDINDICATOR = "<size=400%><sprite index= 0></size>";
@@ -52,8 +51,7 @@ namespace UI.Scrollers.Playlists
                 }
                 sb.AppendFormat(SONGINFOFORMAT, playlistItem.SongName, playlistItem.Difficulty, playlistItem.TargetGameMode.GetDisplayName());
 
-                var buffer = sb.AsArraySegment();
-                _songDetails.SetCharArray(buffer.Array, buffer.Offset, buffer.Count);
+                _songDetails.SetText(sb);
             }
         }
     }

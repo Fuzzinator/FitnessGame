@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 84a92b25f83d49b9bc132d206b370281, type: 3}
-  m_Name: Play_Minimap_Icon_Warning
+  m_Name: Invalid Icon Red
   m_EditorClassIdentifier: 
-  hashCode: -684106395
-  material: {fileID: 2436254035101113078}
+  hashCode: 1683206633
+  material: {fileID: 8702410239930554772}
   materialHashCode: 0
   m_Version: 1.1.0
   m_FaceInfo:
@@ -37,33 +37,54 @@ MonoBehaviour:
     m_StrikethroughOffset: 0
     m_StrikethroughThickness: 0
     m_TabWidth: 0
-  spriteSheet: {fileID: 2800000, guid: 92317040b37b0489da5a78f40e834c72, type: 3}
+  spriteSheet: {fileID: 2800000, guid: 606546b7b3a75fe4f9af13fcbbe402b8, type: 3}
   m_SpriteCharacterTable:
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 0
     m_Scale: 1
-    m_Name: Play_Minimap_Icon_Warning
-    m_HashCode: -684106395
+    m_Name: Invalid Icon Red
+    m_HashCode: 1683206633
+  - m_ElementType: 2
+    m_Unicode: 65534
+    m_GlyphIndex: 1
+    m_Scale: 1
+    m_Name: Invalid Icon Red
+    m_HashCode: 1683206633
   m_SpriteGlyphTable:
   - m_Index: 0
     m_Metrics:
-      m_Width: 124
-      m_Height: 121
-      m_HorizontalBearingX: -62
-      m_HorizontalBearingY: 60.5
-      m_HorizontalAdvance: 124
+      m_Width: 64
+      m_Height: 64
+      m_HorizontalBearingX: 0
+      m_HorizontalBearingY: 43
+      m_HorizontalAdvance: 67.9
     m_GlyphRect:
       m_X: 0
       m_Y: 0
-      m_Width: 124
-      m_Height: 121
-    m_Scale: 1
+      m_Width: 64
+      m_Height: 64
+    m_Scale: 2
     m_AtlasIndex: 0
-    sprite: {fileID: 21300000, guid: 92317040b37b0489da5a78f40e834c72, type: 3}
+    sprite: {fileID: 21300000, guid: 606546b7b3a75fe4f9af13fcbbe402b8, type: 3}
+  - m_Index: 1
+    m_Metrics:
+      m_Width: 64
+      m_Height: 64
+      m_HorizontalBearingX: -60
+      m_HorizontalBearingY: 30
+      m_HorizontalAdvance: 0
+    m_GlyphRect:
+      m_X: 0
+      m_Y: 0
+      m_Width: 64
+      m_Height: 64
+    m_Scale: 2.4
+    m_AtlasIndex: 0
+    sprite: {fileID: 21300000, guid: 606546b7b3a75fe4f9af13fcbbe402b8, type: 3}
   spriteInfoList: []
   fallbackSpriteAssets: []
---- !u!21 &2436254035101113078
+--- !u!21 &8702410239930554772
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 1
@@ -83,7 +104,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 92317040b37b0489da5a78f40e834c72, type: 3}
+        m_Texture: {fileID: 2800000, guid: 606546b7b3a75fe4f9af13fcbbe402b8, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []

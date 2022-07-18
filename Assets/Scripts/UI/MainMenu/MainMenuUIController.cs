@@ -10,9 +10,6 @@ public class MainMenuUIController : BaseGameStateListener
     public static MainMenuUIController Instance { get; private set; }
 
     [SerializeField]
-    private Canvas _canvas;
-
-    [SerializeField]
     private MenuPage[] _menuPages;
     
     private MenuPage _activeMenuPage;
@@ -37,14 +34,16 @@ public class MainMenuUIController : BaseGameStateListener
         SetActivePage(0);
     }
     
-    private void OnEnable()
+    protected override void OnEnable()
     {
-        UIStateManager.Instance.RequestEnableInteraction(_canvas);
+        base.OnEnable();
+        UIStateManager.Instance.RequestEnableInteraction(_activeMenuPage.TargetCanvas);
     }
 
-    private void OnDisable()
+    protected override void OnDisable()
     {
-        UIStateManager.Instance.RequestDisableInteraction(_canvas);
+        base.OnDisable();
+        UIStateManager.Instance.RequestDisableInteraction(_activeMenuPage.TargetCanvas);
     }
     
     private void OnDestroy()
@@ -122,7 +121,7 @@ public class MainMenuUIController : BaseGameStateListener
             return;
         }
         
-        if (_activeMenuPage.IsValid)
+        if (!_activeMenuPage.IsValid)
         {
             _activeMenuPage = _menuPages[0];
         }
@@ -136,7 +135,7 @@ public class MainMenuUIController : BaseGameStateListener
             return;
         }
         
-        if (_activeMenuPage.IsValid)
+        if (!_activeMenuPage.IsValid)
         {
             _activeMenuPage = _menuPages[0];
         }
@@ -160,7 +159,7 @@ public class MainMenuUIController : BaseGameStateListener
         private TrackedDeviceGraphicRaycaster _trackedDeviceRaycaster;
 
         public bool IsValid => _group != null && _canvas != null;
-
+        public Canvas TargetCanvas => _canvas;
         public void SetActive(float alpha, bool enabled)
         {
             _group.SetGroupState(alpha,enabled);

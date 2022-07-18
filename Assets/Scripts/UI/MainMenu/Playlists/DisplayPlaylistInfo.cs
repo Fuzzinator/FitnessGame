@@ -22,6 +22,8 @@ namespace UI.Scrollers.Playlists
         TextMeshProUGUI _playlistTitle;
 
         [SerializeField] 
+        TextMeshProUGUI _playlistName;
+        [SerializeField] 
         private TextMeshProUGUI _playlistLength;
         [SerializeField] 
         private TextMeshProUGUI _playlistRecordScore;
@@ -59,11 +61,13 @@ namespace UI.Scrollers.Playlists
 
         public async UniTaskVoid ShowInfo()
         {
-            _playlistTitleCard.interactable = PlaylistManager.Instance.CurrentPlaylist.isValid;
-            _playlistTitle.SetText(PlaylistManager.Instance.CurrentPlaylist.PlaylistName);
-            _playlistLength.SetText(PlaylistManager.Instance.CurrentPlaylist.ReadableLength);
-            _editButton.gameObject.SetActive(PlaylistManager.Instance.CurrentPlaylist.IsCustomPlaylist);
-            _deleteButton.gameObject.SetActive(PlaylistManager.Instance.CurrentPlaylist.IsCustomPlaylist);
+            var currentPlaylist = PlaylistManager.Instance.CurrentPlaylist;
+            _playlistTitleCard.interactable = currentPlaylist.isValid;
+            _playlistTitle.SetText(currentPlaylist.PlaylistName);
+            _playlistName.SetText(currentPlaylist.PlaylistName);
+            _playlistLength.SetText(currentPlaylist.ReadableLength);
+            _editButton.gameObject.SetActive(currentPlaylist.IsCustomPlaylist);
+            _deleteButton.gameObject.SetActive(currentPlaylist.IsCustomPlaylist);
             _scrollerController.ReloadScroller();
 
             var playlistRecord = await GetPlaylistRecord();

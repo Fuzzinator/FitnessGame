@@ -58,7 +58,7 @@ public class EnvironmentControlManager : MonoBehaviour
     {
         _availableReferences.Clear();
 
-        await Addressables.LoadAssetsAsync<AddressableEnvAssetRef>(ADDRESSABLELABEL, async asset =>
+        await Addressables.LoadAssetsAsync<AddressableEnvAssetRef>(ADDRESSABLELABEL, asset =>
         {
             if (asset == null)
             {
