@@ -47,6 +47,27 @@ public struct DifficultyInfo
 
     public float BeatOffset => _noteJumpStartBeatOffset;
 
+    public DifficultyEnum DifficultyAsEnum
+    {
+        get
+        {
+            switch (true)
+            {
+                case var b when _difficultyRank <= EASY:
+                    return DifficultyEnum.Easy;
+                    break;
+                case var b when _difficultyRank <= NORMAL:
+                    return DifficultyEnum.Normal;
+                case var b when _difficultyRank <= HARD:
+                    return DifficultyEnum.Hard;
+                case var b when _difficultyRank <= EXPERT:
+                    return DifficultyEnum.Expert;
+            }
+
+            return DifficultyEnum.INVALID;
+        }
+    }
+
     //[SerializeField]
     //private float _minTargetSpace;
 
@@ -109,5 +130,14 @@ public struct DifficultyInfo
     {
         _beatmapFilename = fileName;
         return this;
+    }
+    
+    public enum DifficultyEnum
+    {
+        INVALID = -1,
+        Easy = 0,
+        Normal = 1,
+        Hard = 2,
+        Expert = 3
     }
 }

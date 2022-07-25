@@ -17,7 +17,7 @@ public class SongInfo
     private const string DIVIDER = ":";
 
     #endregion
-    
+
     public float BeatsPerMinute => _beatsPerMinute;
 
     public string SongName => _songName;
@@ -51,14 +51,16 @@ public class SongInfo
                 {
                     sb.Append(0);
                 }
+
                 sb.Append(minutes);
                 sb.Append(DIVIDER);
                 if (seconds < 10)
                 {
                     sb.Append(0);
                 }
+
                 sb.Append(seconds);
-                
+
                 //var buffer = sb.AsArraySegment();
                 return sb.ToString();
             }
@@ -338,7 +340,9 @@ public class SongInfo
         [SerializeField]
         private GameMode _mapGameMode;
 
-        public GameMode MapGameMode => _mapGameMode;
+        public GameMode MapGameMode =>
+            _mapGameMode == GameMode.Unset ? _beatmapCharacteristicName.GetGameMode() : _mapGameMode;
+
         public DifficultyInfo[] DifficultyInfos => _difficultyBeatmaps;
 
         public string BeatMapName

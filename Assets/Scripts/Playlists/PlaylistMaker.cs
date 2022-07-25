@@ -83,6 +83,24 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         return new PlaylistItem(songInfo.SongName, songInfo.fileLocation, difficulty, songInfo.isCustomSong, gameMode, songInfo);
     }
 
+    public void AddPlaylistItem(PlaylistItem item)
+    {
+        _playlistItems.Add(item);
+        _playlistItemsUpdated?.Invoke();
+    }
+
+    public void RemovePlaylistItem(PlaylistItem item)
+    {
+        if (!_playlistItems.Contains(item))
+        {
+            Debug.LogWarning("Playlist not contained but trying to remove it. This shouldnt happen.");
+            return;
+        }
+        
+        _playlistItems.Remove(item);
+        _playlistItemsUpdated?.Invoke();
+    }
+
     public void AppendPlaylistItems(PlaylistItem item)
     {
         if (_playlistItems.Contains(item))

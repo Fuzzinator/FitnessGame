@@ -24,14 +24,17 @@ namespace UI.Scrollers.Playlists
         private TextMeshProUGUI _songLength;
 
         [SerializeField]
-        private SongDifficultyScrollerController _difficultyScroller;
+        private SetAndShowSongOptions _songOptions;//private SongDifficultyScrollerController _difficultyScroller;
 
         [SerializeField]
         private Button _deleteButton;
 
         private SongInfo _currentSongInfo;
 
-        private GameMode _selectedGameMode;
+        private void OnEnable()
+        {
+            ClearDisplayedInfo();
+        }
 
         public void UpdateDisplayedInfo(SongInfo info)
         {
@@ -40,7 +43,8 @@ namespace UI.Scrollers.Playlists
             _songAuthor.SetText(info.SongAuthorName);
             _levelAuthor.SetText(info.LevelAuthorName);
             _songLength.SetText(info.ReadableLength);
-            _difficultyScroller.UpdateDifficultyOptions(info, info.DifficultySets, _selectedGameMode);
+            _songOptions.UpdateDifficultyOptions(info, info.DifficultySets);
+            //_difficultyScroller.UpdateDifficultyOptions(info, info.DifficultySets, _selectedGameMode);
             _deleteButton.gameObject.SetActive(info.isCustomSong);
         }
 
@@ -51,14 +55,9 @@ namespace UI.Scrollers.Playlists
             _songAuthor.SetText(string.Empty);
             _levelAuthor.SetText(string.Empty);
             _songLength.SetText(string.Empty);
-            _difficultyScroller.UpdateDifficultyOptions(_currentSongInfo, Array.Empty<SongInfo.DifficultySet>(),
-                GameMode.Normal);
+            _songOptions.HideOptions();
+            //_difficultyScroller.UpdateDifficultyOptions(_currentSongInfo, Array.Empty<SongInfo.DifficultySet>(),GameMode.Normal);
             _deleteButton.gameObject.SetActive(false);
-        }
-
-        public void SetTargetGameMode(int gameMode)
-        {
-            _selectedGameMode = (GameMode) gameMode;
         }
     }
 }
