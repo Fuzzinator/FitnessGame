@@ -75,21 +75,20 @@ public class Hand : BaseGameStateListener
         _cancellationToken = this.GetCancellationTokenOnDestroy();
     }
 
-    protected override void OnEnable()
+    private void OnEnable()
     {
-        base.OnEnable();
-        enabled = true;
+        //enabled = true;
         UpdateDevices();
         
         SetOffset();
         TrackDirAndSpeed(_cancellationToken).Forget();
     }
 
-    protected override  void OnDisable()
+    /*protected override  void OnDisable()
     {
         base.OnDisable();
         enabled = false;
-    }
+    }*/
 
     protected override void GameStateListener(GameState oldState, GameState newState)
     {

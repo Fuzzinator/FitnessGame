@@ -11,6 +11,7 @@ public class UIStateManager : MonoBehaviour
     private UIInteractionRegister _leftHand;
     private UIInteractionRegister _rightHand;
 
+    public bool enable = false;
     public static bool InteractionEnabled { get; private set; }
 
     private void Awake()
@@ -111,6 +112,7 @@ public class UIStateManager : MonoBehaviour
             _rightHand.SetInteractionState(on);
         }
 
+        enable = on;
         InteractionEnabled = on;
     }
 }

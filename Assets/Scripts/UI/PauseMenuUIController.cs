@@ -21,12 +21,12 @@ public class PauseMenuUIController : BaseGameStateListener
 
     private void Start()
     {
-        base.OnEnable();
+        AddListener();
     }
 
     private void OnDestroy()
     {
-        base.OnDisable();
+        RemoveListener();
     }
 
     protected override async void GameStateListener(GameState oldState, GameState newState)

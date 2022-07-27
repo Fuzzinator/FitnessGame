@@ -33,16 +33,9 @@ public class MainMenuUIController : BaseGameStateListener
         _activeMenuPage = _menuPages[0];
         SetActivePage(0);
     }
-    
-    protected override void OnEnable()
-    {
-        base.OnEnable();
-        UIStateManager.Instance.RequestEnableInteraction(_activeMenuPage.TargetCanvas);
-    }
 
-    protected override void OnDisable()
+    private void OnDisable()
     {
-        base.OnDisable();
         UIStateManager.Instance.RequestDisableInteraction(_activeMenuPage.TargetCanvas);
     }
     
@@ -66,11 +59,13 @@ public class MainMenuUIController : BaseGameStateListener
             if (page != targetPage)
             {
                 page.SetActive(0, false);
+                UIStateManager.Instance.RequestDisableInteraction(page.TargetCanvas);
             }
             else
             {
                 page.SetActive(1, true);
                 _activeMenuPage = page;
+                UIStateManager.Instance.RequestEnableInteraction(_activeMenuPage.TargetCanvas);
             }
         }
     }

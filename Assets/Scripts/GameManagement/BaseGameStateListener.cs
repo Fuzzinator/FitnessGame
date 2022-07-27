@@ -5,12 +5,22 @@ using UnityEngine;
 public abstract class BaseGameStateListener : MonoBehaviour
 {
     
-    protected virtual void OnEnable()
+    private void OnEnable()
+    {
+        AddListener();
+    }
+
+    private void OnDisable()
+    {
+        RemoveListener();
+    }
+
+    protected void AddListener()
     {
         GameStateManager.Instance.gameStateChanged.AddListener(GameStateListener);
     }
 
-    protected virtual void OnDisable()
+    protected void RemoveListener()
     {
         GameStateManager.Instance.gameStateChanged.RemoveListener(GameStateListener);
     }
