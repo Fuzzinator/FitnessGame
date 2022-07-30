@@ -300,8 +300,22 @@ namespace BeatSaverSharp
                 return null;
             return await response.ReadAsByteArrayAsync();//.ConfigureAwait(false);
         }
+        
+        internal async UniTask<UnityEngine.AudioClip> GetPlayablePreview(BeatmapVersion version, CancellationToken token = default)
+        {
+            var uwr = UnityEngine.Networking.UnityWebRequestMultimedia.GetAudioClip(version.PreviewURL, UnityEngine.AudioType.MPEG);
+            ((UnityEngine.Networking.DownloadHandlerAudioClip) uwr.downloadHandler).streamAudio = true;
+            await uwr.SendWebRequest().WithCancellation(token);
 
-#endregion
+            if (uwr.isDone && uwr.result == UnityEngine.Networking.UnityWebRequest.Result.Success)
+            {
+                return UnityEngine.Networking.DownloadHandlerAudioClip.GetContent(uwr);
+            }
+
+            return null;
+        }
+
+        #endregion
 
         private void ProcessCache()
         {

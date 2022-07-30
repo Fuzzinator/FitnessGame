@@ -23,18 +23,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="39c8e4b5-5816-4073-86c0-257352c63bc5" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.FitnessGame/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.FitnessGame/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/AddressableAssetsData/link.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/AddressableAssetsData/link.xml.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/Arena Lines.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/Arena Lines.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Plugins/BeatSaverSharp/BeatSaver.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/BeatSaverSharp/BeatSaver.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Plugins/BeatSaverSharp/Models/BeatmapVersion.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/BeatSaverSharp/Models/BeatmapVersion.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Plugins/BeatSaverSharp/SearchTextFilterOption.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/BeatSaverSharp/SearchTextFilterOption.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Prefabs/UI/Available Song Info Cell View.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/UI/Available Song Info Cell View.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/UI/BeatSaver Song Cell View.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/UI/BeatSaver Song Cell View.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/UI/Download Songs Canvas.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/UI/Download Songs Canvas.prefab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Main Menu.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Main Menu.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Controllers/Hand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Controllers/Hand.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/GameManagement/BaseGameStateListener.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/GameManagement/BaseGameStateListener.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/Interaction/UIStateManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/Interaction/UIStateManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/MainMenuUIController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/MainMenuUIController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/BeatSaverIntegration/BeatSaverPageController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/BeatSaverIntegration/BeatSaverPageController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/Scrollers/BeatSaverSongCellView.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/Scrollers/BeatSaverSongCellView.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/Scrollers/SongInfoCellView.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/Scrollers/SongInfoCellView.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/PauseMenuUIController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/PauseMenuUIController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -59,7 +57,9 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ad50157ee00e45cdb3c8bd67012f8804157200/ef/f34a68eb/Material.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/3bc904c0712249f9a23be55df096c3c3fc00/61/2a435958/AudioMixer.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Runtime/UI/Core/Graphic.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/MainMenuUIController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ad50157ee00e45cdb3c8bd67012f8804157200/00/7f2535fe/ShaderPropertyFlags.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Art/Shaders/SoftRectangle.cginc" root0="FORCE_HIGHLIGHTING" />
     <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
@@ -166,7 +166,9 @@
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.cysharp.zstring@634ed94bdd/Utf16ValueStringBuilder.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Runtime/EventSystem/ExecuteEvents.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.xr.interaction.toolkit@1.0.0-pre.8/Runtime/Interaction/XRInteractionManager.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/Playlists/DisplayNewPlaylistInfo.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ad50157ee00e45cdb3c8bd67012f8804157200/ca/418d85a4/Transform.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/73a61a142f31425aba3c6269da8d19ba11b80/97/9a1b4750/ZipArchiveEntry.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/31c0f51ac5a24a22ba784db24f4ba02346a800/26/ff431fed/List`1.cs" root0="SKIP_HIGHLIGHTING" />
@@ -378,7 +380,7 @@
       <workItem from="1657829994606" duration="13725000" />
       <workItem from="1657998235185" duration="18946000" />
       <workItem from="1658599638660" duration="884000" />
-      <workItem from="1658605266415" duration="30743000" />
+      <workItem from="1658605266415" duration="42294000" />
     </task>
     <servers />
   </component>
@@ -406,323 +408,10 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/de1f8ef4975b4eacbeb0accc1b22c9b02a000/9e/2768652d/TweenManager.cs</url>
-          <line>122</line>
-          <properties documentPath="C:\Users\fuzzi\AppData\Roaming\JetBrains\Rider2021.3\resharper-host\DecompilerCache\decompiler\de1f8ef4975b4eacbeb0accc1b22c9b02a000\9e\2768652d\TweenManager.cs" initialLine="122" containingFunctionPresentation="method 'GetSequence'">
-            <startOffsets>
-              <option value="6199" />
-            </startOffsets>
-            <endOffsets>
-              <option value="6252" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="301" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <condition expression="set.DifficultyInfos == null" language="C#" />
-          <url>file://$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/Scrollers/SongDifficultyScrollerController.cs</url>
-          <line>31</line>
-          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\UI\MainMenu\Scrollers\SongDifficultyScrollerController.cs" initialLine="31" containingFunctionPresentation="method 'GetNumberOfCells'">
-            <startOffsets>
-              <option value="977" />
-            </startOffsets>
-            <endOffsets>
-              <option value="1013" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="308" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Scripts/Choreography/Choreography.cs</url>
-          <line>374</line>
-          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\Choreography\Choreography.cs" initialLine="319" containingFunctionPresentation="constructor 'AddObstaclesJob'">
-            <startOffsets>
-              <option value="11758" />
-            </startOffsets>
-            <endOffsets>
-              <option value="11781" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="349" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Scripts/SongInfo/SongInfo.cs</url>
-          <line>287</line>
-          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\SongInfo\SongInfo.cs" initialLine="264" containingFunctionPresentation="method 'AsyncCreateNewDifficultyFile'">
-            <startOffsets>
-              <option value="8725" />
-            </startOffsets>
-            <endOffsets>
-              <option value="8802" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="364" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Scripts/SongInfo/SongInfo.cs</url>
-          <line>320</line>
-          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\SongInfo\SongInfo.cs" initialLine="297" containingFunctionPresentation="method 'AsyncCreateNewDifficultyFile'">
-            <startOffsets>
-              <option value="10009" />
-            </startOffsets>
-            <endOffsets>
-              <option value="10028" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="378" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Scripts/Choreography/Choreography.cs</url>
-          <line>195</line>
-          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\Choreography\Choreography.cs" initialLine="193" containingFunctionPresentation="method 'AddRotationEventsAsync'">
-            <startOffsets>
-              <option value="6104" />
-            </startOffsets>
-            <endOffsets>
-              <option value="6141" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="400" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Scripts/SongInfo/SongInfo.cs</url>
-          <line>303</line>
-          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\SongInfo\SongInfo.cs" initialLine="281" containingFunctionPresentation="method 'AsyncCreateNewDifficultyFile'">
-            <startOffsets>
-              <option value="9285" />
-            </startOffsets>
-            <endOffsets>
-              <option value="9344" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="401" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Scripts/Asset Management/CustomSongsManager.cs</url>
-          <line>112</line>
-          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\Asset Management\CustomSongsManager.cs" initialLine="112" containingFunctionPresentation="method 'DeleteCustomSong'">
-            <startOffsets>
-              <option value="3585" />
-            </startOffsets>
-            <endOffsets>
-              <option value="3642" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="402" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Scripts/Pooling/PoolManager.cs</url>
-          <line>27</line>
-          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\Pooling\PoolManager.cs" initialLine="26" containingFunctionPresentation="method 'GetNewPoolable'">
-            <startOffsets>
-              <option value="789" />
-            </startOffsets>
-            <endOffsets>
-              <option value="818" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="491" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Scripts/InfoSaving/PlayerStatsFileManager.cs</url>
-          <line>104</line>
-          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\InfoSaving\PlayerStatsFileManager.cs" initialLine="104" containingFunctionPresentation="lambda expression inside method 'RecordValue'">
-            <startOffsets>
-              <option value="2961" />
-            </startOffsets>
-            <endOffsets>
-              <option value="2991" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="504" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Scripts/Editor/CreateCustomMipMaps.cs</url>
-          <line>45</line>
-          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\Editor\CreateCustomMipMaps.cs" initialLine="45" containingFunctionPresentation="method 'OnGUI'">
-            <startOffsets>
-              <option value="1807" />
-            </startOffsets>
-            <endOffsets>
-              <option value="1849" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="508" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <condition expression="subIndex&lt;0 || subIndex&gt;_materials[index].materials.Count-1" language="C#" />
-          <url>file://$PROJECT_DIR$/Assets/Scripts/Colors/MaterialsManager.cs</url>
-          <line>60</line>
-          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\Colors\MaterialsManager.cs" initialLine="60" containingFunctionPresentation="method 'GetMaterial'">
-            <startOffsets>
-              <option value="1281" />
-            </startOffsets>
-            <endOffsets>
-              <option value="1335" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="516" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Scripts/Settings/UpdatePlayerHeightDisplay.cs</url>
-          <line>92</line>
-          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\Settings\UpdatePlayerHeightDisplay.cs" initialLine="90" containingFunctionPresentation="method 'Revert'">
-            <startOffsets>
-              <option value="2378" />
-            </startOffsets>
-            <endOffsets>
-              <option value="2417" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="522" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Scripts/UI/InGame/UpdateScoreDisplay.cs</url>
-          <line>59</line>
-          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\UI\InGame\UpdateScoreDisplay.cs" initialLine="59" containingFunctionPresentation="method 'UpdateToNewestScore'">
-            <startOffsets>
-              <option value="1501" />
-            </startOffsets>
-            <endOffsets>
-              <option value="1538" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="540" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Library/PackageCache/com.unity.textmeshpro@3.0.6/Scripts/Runtime/TMP_Text.cs</url>
-          <line>4198</line>
-          <properties documentPath="D:\Projects\FitnessGame\Library\PackageCache\com.unity.textmeshpro@3.0.6\Scripts\Runtime\TMP_Text.cs" initialLine="4198" containingFunctionPresentation="method 'CalculatePreferredValues'">
-            <startOffsets>
-              <option value="166094" />
-            </startOffsets>
-            <endOffsets>
-              <option value="166235" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="542" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/Songs/SetAndShowSongOptions.cs</url>
-          <line>132</line>
-          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\UI\MainMenu\Songs\SetAndShowSongOptions.cs" initialLine="121" containingFunctionPresentation="method 'SetSelectedType'">
-            <startOffsets>
-              <option value="3641" />
-            </startOffsets>
-            <endOffsets>
-              <option value="3697" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="545" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/Songs/SetAndShowSongOptions.cs</url>
-          <line>151</line>
-          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\UI\MainMenu\Songs\SetAndShowSongOptions.cs" initialLine="146" containingFunctionPresentation="method 'SetSelectedDifficulty'">
-            <startOffsets>
-              <option value="4086" />
-            </startOffsets>
-            <endOffsets>
-              <option value="4139" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="550" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/Songs/SetAndShowSongOptions.cs</url>
-          <line>41</line>
-          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\UI\MainMenu\Songs\SetAndShowSongOptions.cs" initialLine="41" containingFunctionPresentation="method 'UpdateAvailableGameModes'">
-            <startOffsets>
-              <option value="1065" />
-            </startOffsets>
-            <endOffsets>
-              <option value="1114" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="551" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/Songs/SetAndShowSongOptions.cs</url>
-          <line>48</line>
-          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\UI\MainMenu\Songs\SetAndShowSongOptions.cs" initialLine="48" containingFunctionPresentation="method 'UpdateAvailableGameModes'">
-            <startOffsets>
-              <option value="1266" />
-            </startOffsets>
-            <endOffsets>
-              <option value="1314" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="552" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/Scrollers/PlaylistSongInfoCellView.cs</url>
-          <line>32</line>
-          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\UI\MainMenu\Scrollers\PlaylistSongInfoCellView.cs" initialLine="32" containingFunctionPresentation="method 'SetDataAsync'">
-            <startOffsets>
-              <option value="916" />
-            </startOffsets>
-            <endOffsets>
-              <option value="976" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="553" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/Scrollers/PlaylistSongInfoCellView.cs</url>
-          <line>26</line>
-          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\UI\MainMenu\Scrollers\PlaylistSongInfoCellView.cs" initialLine="26" containingFunctionPresentation="method 'SetData'">
-            <startOffsets>
-              <option value="738" />
-            </startOffsets>
-            <endOffsets>
-              <option value="759" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="554" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Scripts/UI/PauseMenuUIController.cs</url>
-          <line>60</line>
-          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\UI\PauseMenuUIController.cs" initialLine="60" containingFunctionPresentation="method 'EnableUI'">
-            <startOffsets>
-              <option value="1366" />
-            </startOffsets>
-            <endOffsets>
-              <option value="1433" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="560" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Scripts/NotificationSystem/Notification.cs</url>
-          <line>87</line>
-          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\NotificationSystem\Notification.cs" initialLine="87" containingFunctionPresentation="method 'OnEnable'">
-            <startOffsets>
-              <option value="2158" />
-            </startOffsets>
-            <endOffsets>
-              <option value="2216" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="561" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Scripts/Input/KeyboardManager.cs</url>
-          <line>47</line>
-          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\Input\KeyboardManager.cs" initialLine="47" containingFunctionPresentation="method 'ActivateKeyboard'">
-            <startOffsets>
-              <option value="1065" />
-            </startOffsets>
-            <endOffsets>
-              <option value="1135" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="562" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <condition expression="canvas == null" language="C#" />
           <url>file://$PROJECT_DIR$/Assets/Scripts/UI/Interaction/UIStateManager.cs</url>
           <line>78</line>
-          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\UI\Interaction\UIStateManager.cs" initialLine="77" containingFunctionPresentation="method 'RequestEnableInteraction'">
+          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\UI\Interaction\UIStateManager.cs" initialLine="78" containingFunctionPresentation="method 'RequestEnableInteraction'">
             <startOffsets>
               <option value="1757" />
             </startOffsets>
@@ -730,46 +419,20 @@
               <option value="1788" />
             </endOffsets>
           </properties>
-          <option name="timeStamp" value="565" />
+          <option name="timeStamp" value="570" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Scripts/UI/Interaction/UIInteractionRegister.cs</url>
-          <line>18</line>
-          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\UI\Interaction\UIInteractionRegister.cs" initialLine="18" containingFunctionPresentation="method 'SetInteractionState'">
+          <url>file://$PROJECT_DIR$/Assets/Scripts/BeatSaverIntegration/BeatSaverPageController.cs</url>
+          <line>223</line>
+          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\BeatSaverIntegration\BeatSaverPageController.cs" initialLine="219" containingFunctionPresentation="method 'SearchAsync'">
             <startOffsets>
-              <option value="500" />
+              <option value="5622" />
             </startOffsets>
             <endOffsets>
-              <option value="501" />
+              <option value="5703" />
             </endOffsets>
           </properties>
-          <option name="timeStamp" value="566" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Scripts/UI/Interaction/UIStateManager.cs</url>
-          <line>103</line>
-          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\UI\Interaction\UIStateManager.cs" initialLine="103" containingFunctionPresentation="method 'SetInteractionState'">
-            <startOffsets>
-              <option value="2256" />
-            </startOffsets>
-            <endOffsets>
-              <option value="2257" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="568" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Scripts/UI/Interaction/UIStateManager.cs</url>
-          <line>90</line>
-          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\UI\Interaction\UIStateManager.cs" initialLine="90" containingFunctionPresentation="method 'RequestDisableInteraction'">
-            <startOffsets>
-              <option value="2004" />
-            </startOffsets>
-            <endOffsets>
-              <option value="2005" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="569" />
+          <option name="timeStamp" value="571" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

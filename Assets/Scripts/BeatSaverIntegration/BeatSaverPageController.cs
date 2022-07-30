@@ -4,12 +4,14 @@ using System.Threading;
 using BeatSaverSharp;
 using BeatSaverSharp.Models;
 using BeatSaverSharp.Models.Pages;
+using Cysharp.Text;
 using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UI.Scrollers.BeatsaverIntegraton;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 public class BeatSaverPageController : MonoBehaviour
 {
@@ -19,14 +21,17 @@ public class BeatSaverPageController : MonoBehaviour
     [SerializeField]
     private GameObject _showLoadingObject;
 
+    [SerializeField]
+    private TMP_InputField _inputField;
+    
     [Header("Info Cards")]
     [SerializeField]
     private GameObject _infoCardHolder;
 
-    [SerializeField]
-    private TextMeshProUGUI _songName;
+    [FormerlySerializedAs("_songName")] [SerializeField]
+    private TextMeshProUGUI _songDetails;
 
-    [SerializeField]
+    /*[SerializeField]
     private TextMeshProUGUI _songAuthor;
 
     [SerializeField]
@@ -39,7 +44,7 @@ public class BeatSaverPageController : MonoBehaviour
     private TextMeshProUGUI _songScore;
 
     [SerializeField]
-    private TextMeshProUGUI _uploadDate;
+    private TextMeshProUGUI _uploadDate;*/
 
     [SerializeField]
     private TextMeshProUGUI _mapDifficulties;
@@ -52,6 +57,9 @@ public class BeatSaverPageController : MonoBehaviour
 
     [SerializeField]
     private LoadingDisplaysController _loadingDisplays;
+
+    [SerializeField]
+    private AudioSource _audioSource;
 
     private Page _activePage;
 
@@ -66,6 +74,9 @@ public class BeatSaverPageController : MonoBehaviour
     private List<string> _downloadingIds = new List<string>();
 
     private const int MINUTE = 60;
+
+    private const string SONGINFOFORMAT =
+        "<voffset=10>Song Name:           {0}\nSong Author:<line-indent=1>         {1}<line-indent=0>\nLevel Author:<line-indent=1>         {2}<line-indent=0>\nSong Length:         <line-indent=1>{3}:{4}<line-indent=0>\nSong Score:          <line-indent=1> {5}<line-indent=0>\nUpload Date:         <line-indent=2>{6}<line-indent=0>";
 
     private void Start()
     {
@@ -83,12 +94,37 @@ public class BeatSaverPageController : MonoBehaviour
         _levelFileManagement = new LevelFileManagement(directory);
     }
 
+    private void OnDisable()
+    {
+        if (_audioSource != null && _audioSource.isPlaying)
+        {
+            _audioSource.Stop();
+        }
+    }
+
     #region Webcalls
 
     public void RequestLatest()
     {
         _showLoadingObject.SetActive(true);
         RequestLatestAsync().Forget();
+    }
+
+    public void RequestHighestRated()
+    {
+        _showLoadingObject.SetActive(true);
+        var rating = SearchTextFilterOption.Rating;
+        rating.Query = _inputField.text;
+        
+        SearchAsync(rating).Forget();
+    }
+
+    public void RequestMostRelevant()
+    {
+        _showLoadingObject.SetActive(true);
+        var relevance = SearchTextFilterOption.Relevance;
+        relevance.Query = _inputField.text;
+        SearchAsync(relevance).Forget();
     }
 
     public void RequestNextPage()
@@ -131,12 +167,15 @@ public class BeatSaverPageController : MonoBehaviour
         SearchAsync(options).Forget();
     }
 
-    public void RequestHighestRated()
+    public void RequestPlaySongAudio()
     {
-        _showLoadingObject.SetActive(true);
-        RequestHighestRatedAsync().Forget();
+        if (_activeBeatmap == null)
+        {
+            return;
+        }
+        PlaySongAudioAsync().Forget();
     }
-
+    
     public void DownloadSong()
     {
         if (_activeBeatmap == null)
@@ -149,6 +188,10 @@ public class BeatSaverPageController : MonoBehaviour
 
     private async UniTaskVoid RequestLatestAsync()
     {
+        if (_beatSaver == null)
+        {
+            await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
+        }
         var request = await _beatSaver.LatestBeatmaps(token: _cancellationToken);
         if (request == null)
         {
@@ -156,34 +199,6 @@ public class BeatSaverPageController : MonoBehaviour
         }
 
         _activePage = request;
-        await UpdateData();
-    }
-
-    private async UniTaskVoid RequestHighestRatedAsync()
-    {
-        var searchOptions = new SearchTextFilterOption(string.Empty)
-        {
-            SortOrder = SortingOptions.Rating,
-        };
-        try
-        {
-            var request = await _beatSaver.SearchBeatmaps(searchOptions, token: _cancellationToken);
-            if (request == null)
-            {
-                return;
-            }
-
-            _activePage = request;
-        }
-        catch (Exception e)
-        {
-            await UniTask.SwitchToMainThread(_cancellationToken);
-            
-            Debug.LogError(e);
-            _showLoadingObject.SetActive(false);
-            return;
-        }
-
         await UpdateData();
     }
 
@@ -210,17 +225,55 @@ public class BeatSaverPageController : MonoBehaviour
         await UpdateData();
     }
 
-    private async UniTaskVoid SearchAsync(SearchTextFilterOption option)
+    private async UniTask SearchAsync(SearchTextFilterOption option)
     {
-        _activePage = await _beatSaver.SearchBeatmaps(option, token: _cancellationToken);
-        if (_activePage == null)
+        try
         {
+            if (_beatSaver == null)
+            {
+                await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
+            }
+            var request = await _beatSaver.SearchBeatmaps(option, token: _cancellationToken);
+            if (request == null)
+            {
+                return;
+            }
+
+            _activePage = request;
+        }
+        catch (Exception e)
+        {
+            await UniTask.SwitchToMainThread(_cancellationToken);
+            
+            Debug.LogError(e);
+            _showLoadingObject.SetActive(false);
             return;
         }
 
         await UpdateData();
     }
 
+    private async UniTaskVoid PlaySongAudioAsync()
+    {
+        if (_audioSource.isPlaying)
+        {
+            _audioSource.Stop();
+            return;
+        }
+        
+        var audioClip = await _activeBeatmap.LatestVersion.GetPlayablePreview(_cancellationToken);
+        if (audioClip == null)
+        {
+            NotificationManager.RequestNotification(new Notification.NotificationVisuals("Preview failed."));
+            Debug.LogError("Preview Failed");
+            return;
+        }
+        
+        await UniTask.DelayFrame(1);
+        _audioSource.clip = audioClip;
+        _audioSource.Play();
+    }
+    
     private async UniTaskVoid DownloadSongAsync()
     {
         var folderName =
@@ -285,6 +338,10 @@ public class BeatSaverPageController : MonoBehaviour
 
     private async UniTaskVoid UpdateUI()
     {
+        if (_audioSource.isPlaying)
+        {
+            _audioSource.Stop();
+        }
         if (_activeBeatmap == null)
         {
             _infoCardHolder.SetActive(false);
@@ -292,14 +349,24 @@ public class BeatSaverPageController : MonoBehaviour
         }
 
         _infoCardHolder.SetActive(true);
-        _songName.SetText(_activeBeatmap.Metadata.SongName);
-        _songAuthor.SetText(_activeBeatmap.Metadata.SongAuthorName);
-        _levelAuthor.SetText(_activeBeatmap.Metadata.LevelAuthorName);
+        
         var minutes = _activeBeatmap.Metadata.Duration / MINUTE;
         var seconds = _activeBeatmap.Metadata.Duration % MINUTE;
-        _levelLength.SetText($"{minutes}:{seconds}");
-        _songScore.SetText($"{_activeBeatmap.Stats.Score * 100}");
-        _uploadDate.SetText(_activeBeatmap.Uploaded.ToShortDateString());
+        
+        using (var sb = ZString.CreateStringBuilder(true))
+        {
+            sb.AppendFormat(SONGINFOFORMAT, 
+                _activeBeatmap.Metadata.SongName, 
+                _activeBeatmap.Metadata.SongAuthorName, 
+                _activeBeatmap.Metadata.LevelAuthorName,
+                minutes,
+                seconds,
+                _activeBeatmap.Stats.Score * 100,
+                _activeBeatmap.Uploaded.ToShortDateString());
+
+            _songDetails.SetText(sb);
+        }
+        
         var difficultyNames = new string[_activeBeatmap.LatestVersion.Difficulties.Count];
         for (var i = 0; i < difficultyNames.Length; i++)
         {
@@ -312,8 +379,11 @@ public class BeatSaverPageController : MonoBehaviour
             difficultyNames[i] = difficulty;
         }
 
-        _mapDifficulties.SetText(string.Join(", ", difficultyNames));
-
+        using (var sb = ZString.CreateStringBuilder(true))
+        {
+            sb.AppendJoin(", ", difficultyNames);
+            _mapDifficulties.SetText(sb);
+        }
 
         var imageBytes = await _activeBeatmap.LatestVersion.DownloadCoverImage(token: _cancellationToken);
         if (imageBytes != null)

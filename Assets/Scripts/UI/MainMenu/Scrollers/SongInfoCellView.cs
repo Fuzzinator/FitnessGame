@@ -12,7 +12,7 @@ namespace UI.Scrollers.Playlists
 {
     public class SongInfoCellView : EnhancedScrollerCellView
     {
-        [FormerlySerializedAs("_songName")] [SerializeField]
+        [SerializeField]
         private TextMeshProUGUI _songDetails;
 
         [SerializeField]

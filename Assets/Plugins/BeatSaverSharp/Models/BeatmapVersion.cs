@@ -105,6 +105,11 @@ namespace BeatSaverSharp.Models
         {
             return Client.DownloadPreview(this, token, progress);
         }
+        
+        public UniTask<UnityEngine.AudioClip> GetPlayablePreview(CancellationToken token = default)
+        {
+            return Client.GetPlayablePreview(this, token);
+        }
 
         // Equality Methods
 

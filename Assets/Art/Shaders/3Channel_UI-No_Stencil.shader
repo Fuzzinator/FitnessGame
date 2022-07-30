@@ -1,21 +1,10 @@
-Shader "Custom/UI/3Channel_Stencil"
+Shader "Custom/UI/3Channel_No_Stencil"
 {
     Properties
     {
         _Red_Channel_Color("Red Channel Color", Color) = (1, 1, 1, 1)
         _Green_Channel_PrimaryColor("Green Channel PrimaryColor", Color) = (1, 1, 1, 1)
         _BlueAccentColor("BlueAccentColor", Color) = (1, 1, 1, 1)
-        [HideInInspector][NoScaleOffset]unity_Lightmaps("unity_Lightmaps", 2DArray) = "" {}
-        [HideInInspector][NoScaleOffset]unity_LightmapsInd("unity_LightmapsInd", 2DArray) = "" {}
-        [HideInInspector][NoScaleOffset]unity_ShadowMasks("unity_ShadowMasks", 2DArray) = "" {}
-
-        [HideInInspector]_StencilComp ("Stencil Comparison", Float) = 8
-        [HideInInspector]_Stencil ("Stencil ID", Float) = 0
-        [HideInInspector]_StencilOp ("Stencil Operation", Float) = 0
-        [HideInInspector]_StencilWriteMask ("Stencil Write Mask", Float) = 255
-        [HideInInspector]_StencilReadMask ("Stencil Read Mask", Float) = 255
-
-        _ColorMask ("Color Mask", Float) = 15
     }
     SubShader
     {
@@ -29,17 +18,8 @@ Shader "Custom/UI/3Channel_Stencil"
             "ShaderGraphTargetId"=""
         }
 
-        ColorMask [_ColorMask]
         Pass
         {
-            Stencil
-            {
-                Ref [_Stencil]
-                Comp [_StencilComp]
-                Pass [_StencilOp]
-                ReadMask [_StencilReadMask]
-                WriteMask [_StencilWriteMask]
-            }
             Name "Sprite Unlit"
             Tags
             {
