@@ -132,7 +132,6 @@ public class SongInfoFilesReader : MonoBehaviour
             }
 
             var item = JsonUtility.FromJson<SongInfo>(asset.text);
-            item.DifficultySets[0].TryRemoveExpertPlus();
             item.isCustomSong = false;
 
             availableSongs.Add(item);

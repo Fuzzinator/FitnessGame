@@ -151,6 +151,26 @@ public class SongInfo
         var difficultySet = new DifficultySet();
         var hasRotationSet = false;
         var rotationSet = new DifficultySet();
+        
+        /*List<DifficultySet> difficultySets = null;
+        foreach (var set in _difficultyBeatmapSets)
+        {
+            if (set.DifficultyInfos != null)
+            {
+                continue;
+            }
+
+            madeChange = true;
+            
+            difficultySets ??= new List<DifficultySet>(_difficultyBeatmapSets);//if difficultySets == null, make new list and add array
+
+            difficultySets.Remove(set);
+        }
+        if (difficultySets != null)
+        {
+            _difficultyBeatmapSets = difficultySets.ToArray();
+        }*/
+        
         for (var i = 0; i < _difficultyBeatmapSets.Length; i++)
         {
             var mapName = _difficultyBeatmapSets[i].BeatMapName;
@@ -341,13 +361,13 @@ public class SongInfo
         private GameMode _mapGameMode;
 
         public GameMode MapGameMode =>
-            _mapGameMode == GameMode.Unset ? _beatmapCharacteristicName.GetGameMode() : _mapGameMode;
+            _mapGameMode == GameMode.Unset ? BeatMapName.GetGameMode() : _mapGameMode;
 
         public DifficultyInfo[] DifficultyInfos => _difficultyBeatmaps;
 
         public string BeatMapName
         {
-            get { return _beatmapCharacteristicName ?? GameMode.Normal.GetDifficultySetName(); }
+            get { return _beatmapCharacteristicName ?? GameMode.Unset.GetDifficultySetName(); }
         }
 
         public void SetMapGameMode(GameMode gameMode)
@@ -457,6 +477,7 @@ public class SongInfo
         public bool TryRemoveExpertPlus()
         {
             var removed = false;
+
             if (_difficultyBeatmaps.Length - 1 > -1 &&
                 _difficultyBeatmaps[^1].DifficultyRank >= DifficultyInfo.EXPERTPLUS) // ^1 is the last in array
             {

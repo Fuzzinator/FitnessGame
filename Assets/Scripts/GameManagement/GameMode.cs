@@ -24,6 +24,7 @@ namespace GameModeManagement
     {
         #region DifficultySetName String Const
 
+        private const string UNSET = "Unset";
         private const string NORMAL = "Standard";
         private const string JABSONLY = "NoArrows";
         private const string ONEHANDED = "OneSaber";
@@ -34,6 +35,7 @@ namespace GameModeManagement
         private const string NOOBSTACLES = "NoObstacles";
         private const string LAWLESS = "Lawless";
         
+        private const string DISPLAYUNSET = "Unset";
         private const string DISPLAYNORMAL = "Standard";
         private const string DISPLAYJABSONLY = "Jabs Only";
         private const string DISPLAYONEHANDED = "One Handed";
@@ -48,7 +50,7 @@ namespace GameModeManagement
 
         private static readonly string[] _difficultySetNames = new[]
         {
-            NORMAL,
+            UNSET,
             NORMAL,
             JABSONLY,
             ONEHANDED,
@@ -62,7 +64,7 @@ namespace GameModeManagement
 
         private static readonly string[] _difficultySetDisplayNames = new[]
         {
-            DISPLAYNORMAL,
+            DISPLAYUNSET,
             DISPLAYNORMAL,
             DISPLAYJABSONLY,
             DISPLAYONEHANDED,
@@ -86,9 +88,12 @@ namespace GameModeManagement
         
         public static GameMode GetGameMode(this string gameModeName)
         {
-            var gameMode = GameMode.Unset;
+            GameMode gameMode;
             switch (true)
             {
+                case true when UNSET.Equals(gameModeName, StringComparison.InvariantCultureIgnoreCase):
+                    gameMode = GameMode.Unset;
+                    break;
                 case true when NORMAL.Equals(gameModeName, StringComparison.InvariantCultureIgnoreCase):
                     gameMode = GameMode.Normal;
                     break;
