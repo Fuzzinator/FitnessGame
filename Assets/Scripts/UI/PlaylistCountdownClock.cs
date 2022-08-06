@@ -21,8 +21,10 @@ public class PlaylistCountdownClock : MonoBehaviour
 
 
     private const int MINUTE = 60;
-    private const string DIVIDER = ":";
-    
+
+    private const string STRINGFORMAT = "<mspace=.65em>{0:00}:{1:00}</mspace>";
+    //private const string DIVIDER = ":";
+
     private CancellationTokenSource _source;
 
     private void OnEnable()
@@ -53,9 +55,9 @@ public class PlaylistCountdownClock : MonoBehaviour
         UpdateDisplay();
 
         var token = this.GetCancellationTokenOnDestroy();
-        
+
         RunClock(token).Forget();
-        
+
         await RunDisplayUpdate(token).SuppressCancellationThrow();
     }
 
@@ -78,22 +80,12 @@ public class PlaylistCountdownClock : MonoBehaviour
 
     private void UpdateDisplay()
     {
-        var minutes = (int)Mathf.Floor(_timeRemaining / MINUTE);
-        var seconds = (int)Mathf.Floor(_timeRemaining % MINUTE);
+        var minutes = (int) Mathf.Floor(_timeRemaining / MINUTE);
+        var seconds = (int) Mathf.Floor(_timeRemaining % MINUTE);
 
         using (var sb = ZString.CreateStringBuilder(true))
         {
-            if (minutes < 10)
-            {
-                sb.Append(0);
-            }
-            sb.Append(minutes);
-            sb.Append(DIVIDER);
-            if (seconds < 10)
-            {
-                sb.Append(0);
-            }
-            sb.Append(seconds);
+            sb.AppendFormat(STRINGFORMAT, minutes, seconds);
 
             _minutesText.SetText(sb);
         }
@@ -101,7 +93,7 @@ public class PlaylistCountdownClock : MonoBehaviour
 
     public void SongFailedToLoad()
     {
-        _timeRemaining-= PlaylistManager.Instance.CurrentItem.SongInfo.SongLength;
+        _timeRemaining -= PlaylistManager.Instance.CurrentItem.SongInfo.SongLength;
         UpdateDisplay();
     }
 
@@ -164,6 +156,7 @@ public class PlaylistCountdownClock : MonoBehaviour
                 {
                     continue;
                 }
+
                 UpdateDisplay();
             }
             catch (Exception e) when (e is OperationCanceledException)
