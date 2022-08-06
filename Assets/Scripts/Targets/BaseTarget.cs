@@ -30,6 +30,9 @@ public class BaseTarget : MonoBehaviour, IPoolable
     [SerializeField]
     protected float _minHitSpeed = 1f;
 
+    [SerializeField]
+    private SetTargetHighlightColor _highlightColorSetter;
+    
     protected bool _wasHit = false;
 
     protected IValidHit[] _validHitEffects;
@@ -148,5 +151,6 @@ public class BaseTarget : MonoBehaviour, IPoolable
         parentFormation = holder;
         OptimalHitPoint = hitPoint;
         _setMaterial.Initialize(hitSideType);
+        _highlightColorSetter?.Initialize();
     }
 }
