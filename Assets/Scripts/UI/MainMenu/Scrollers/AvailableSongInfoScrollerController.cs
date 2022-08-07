@@ -29,7 +29,7 @@ namespace UI.Scrollers.Playlists
             return cellView;
         }
 
-        public void SetActiveInfo(SongInfo info)
+        public virtual void SetActiveInfo(SongInfo info)
         {
             _displaySongInfo.UpdateDisplayedInfo(info);
             PlaylistMaker.Instance.SetActiveItem(info);

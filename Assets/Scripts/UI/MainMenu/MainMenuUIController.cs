@@ -141,6 +141,9 @@ public class MainMenuUIController : BaseGameStateListener
     [Serializable]
     private struct MenuPage
     {
+        #if UNITY_EDITOR
+        public string name;
+        #endif
         [SerializeField]
         private CanvasGroup _group;
 

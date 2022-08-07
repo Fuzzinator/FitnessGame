@@ -78,6 +78,15 @@ public struct Playlist
         isValid = true;
     }
 
+    public Playlist(PlaylistItem singleSong)
+    {
+        _playlistName = singleSong.SongName;
+        _items = new[] {singleSong};
+        _isCustomPlaylist = singleSong.IsCustomSong;
+        _length = singleSong.SongInfo.SongLength;
+        isValid = true;
+    }
+
     public void SetPlaylistName(string name)
     {
         _playlistName = name;

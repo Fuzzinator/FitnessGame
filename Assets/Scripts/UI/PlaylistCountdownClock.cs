@@ -22,7 +22,7 @@ public class PlaylistCountdownClock : MonoBehaviour
 
     private const int MINUTE = 60;
 
-    private const string STRINGFORMAT = "<mspace=.65em>{0:00}:{1:00}</mspace>";
+    private const string STRINGFORMAT = "{0:00}:{1:00}";//"<mspace=.65em>{0:00}:{1:00}</mspace>";
     //private const string DIVIDER = ":";
 
     private CancellationTokenSource _source;

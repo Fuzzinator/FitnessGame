@@ -109,4 +109,10 @@ public class PlaylistManager : MonoBehaviour
         _currentItem = new PlaylistItem();
         _currentPlaylist = new Playlist();
     }
+
+    public void SetTempSongPlaylist(PlaylistItem playlistItem)
+    {
+        var tempPlaylist = new Playlist(playlistItem);
+        CurrentPlaylist = tempPlaylist;
+    }
 }

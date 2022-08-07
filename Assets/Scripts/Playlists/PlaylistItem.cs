@@ -53,6 +53,16 @@ public struct PlaylistItem
         _songInfo = info;
     }
 
+    public PlaylistItem(SongInfo songInfo, string difficulty, GameMode gameMode)
+    {
+        _songName = songInfo.SongName;
+        _fileLocation = songInfo.fileLocation;
+        _difficulty = difficulty;
+        _isCustomSong = songInfo.isCustomSong;
+        _gameMode = gameMode;
+        _songInfo = songInfo;
+    }
+    
     public string Difficulty => _difficulty;
 
     private static bool StringMatches(string string1, string string2)

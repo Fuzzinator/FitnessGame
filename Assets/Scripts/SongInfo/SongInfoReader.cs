@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using GameModeManagement;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
@@ -20,6 +21,9 @@ public class SongInfoReader : MonoBehaviour
 
     [SerializeField]
     private DifficultyInfo _difficultyInfo;
+
+    [SerializeField]
+    private GameMode _gameMode;
 
     public UnityEvent<PlaylistItem> finishedLoadingSongInfo = new UnityEvent<PlaylistItem>();
 
@@ -160,11 +164,12 @@ public class SongInfoReader : MonoBehaviour
         info = json;
         songInfo = JsonUtility.FromJson<SongInfo>(json);
         _difficultyInfo = songInfo.TryGetActiveDifficultyInfo(item.Difficulty, item.TargetGameMode);
+        _gameMode = item.TargetGameMode;
     }
 
     public string GetSongFullName()
     {
-        return $"{songInfo.SongName}-{songInfo.fileLocation}-{songInfo.SongLength}";
+        return GetFullSongName(songInfo, _difficultyInfo.Difficulty, _gameMode);
     }
 
     public AudioClip GetCurrentSong()
@@ -175,5 +180,10 @@ public class SongInfoReader : MonoBehaviour
     private void SubscribeToPlaylistUpdating()
     {
         PlaylistManager.Instance.playlistItemUpdated.AddListener(LoadJson);
+    }
+
+    public static string GetFullSongName(SongInfo info, string difficulty, GameMode gameMode)
+    {
+        return $"{info.SongName}-{difficulty}-{gameMode}-{info.fileLocation}-{info.SongLength}";
     }
 }

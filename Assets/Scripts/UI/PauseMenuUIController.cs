@@ -19,6 +19,11 @@ public class PauseMenuUIController : BaseGameStateListener
     [SerializeField]
     private TransitionController _transitionController;
 
+    private void Awake()
+    {
+        _useOnEnableDisable = false;
+    }
+
     private void Start()
     {
         AddListener();

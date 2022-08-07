@@ -23,6 +23,9 @@ namespace InfoSaving
         private static string _songFolder;
         private static string _playlistFolder;
 
+        private static bool _accessingSongRecords;
+        private static bool _accessingPlaylistRecords;
+
         private static string Path
         {
             get
@@ -75,25 +78,41 @@ namespace InfoSaving
         public static async UniTask<bool> RecordSongValue<T>(string key, T value, CancellationToken token)
         {
             EnsurePath();
-            return await RecordValue(key, value, SongFolder, token);
+            await UniTask.WaitWhile(() => _accessingSongRecords, cancellationToken: token);
+            _accessingSongRecords = true;
+            var returnValue = await RecordValue(key, value, SongFolder, token);
+            _accessingSongRecords = false;
+            return returnValue;
         }
 
         public static async UniTask<object> GetSongValue<T>(string key, CancellationToken token)
         {
             EnsurePath();
-            return await GetValue<T>(key, SongFolder, token);
+            await UniTask.WaitWhile(() => _accessingSongRecords, cancellationToken: token);
+            _accessingSongRecords = true;
+            var returnValue= await GetValue<T>(key, SongFolder, token);
+            _accessingSongRecords = false;
+            return returnValue;
         }
 
         public static async UniTask<object> GetPlaylistValue<T>(string key, CancellationToken token)
         {
             EnsurePath();
-            return await GetValue<T>(key, PlaylistFolder, token);
+            await UniTask.WaitWhile(() => _accessingPlaylistRecords, cancellationToken: token);
+            _accessingPlaylistRecords = true;
+            var returnValue = await GetValue<T>(key, PlaylistFolder, token);
+            _accessingPlaylistRecords = false;
+            return returnValue;
         }
 
         public static async UniTask RecordPlaylistValue<T>(string key, T value, CancellationToken token)
         {
             EnsurePath();
+            
+            await UniTask.WaitWhile(() => _accessingPlaylistRecords, cancellationToken: token);
+            _accessingPlaylistRecords = true;
             await RecordValue(key, value, PlaylistFolder, token);
+            _accessingPlaylistRecords = false;
         }
 
         private static async UniTask<bool> RecordValue<T>(string key, T value, string folder, CancellationToken token)

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using GameModeManagement;
+using UI;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,6 +19,11 @@ public class SetAndShowSongOptions : MonoBehaviour
     private ToggleGroup _difficultyToggleGroup;
     [SerializeField]
     private Toggle[] _typeDifficultyToggles;
+
+    [SerializeField]
+    private DisplaySongRecords _songRecordsDisplay;
+    public string SelectedDifficulty => _selectedDifficulty;
+    public GameMode SelectedGameMode => _activeDifficultySet.MapGameMode;
     
     private SongInfo _songInfo;
     private SongInfo.DifficultySet[] _difficultySets;
@@ -170,6 +176,7 @@ public class SetAndShowSongOptions : MonoBehaviour
         }
 
         _selectedDifficulty = _activeDifficultySet.DifficultyInfos[dificultyID].Difficulty;
+        _songRecordsDisplay.RefreshDisplay();
     }
 
     private int GetToggleID(Toggle toggle, Toggle[] togglesArray)
@@ -193,6 +200,15 @@ public class SetAndShowSongOptions : MonoBehaviour
         {
             var playlistItem = PlaylistMaker.GetPlaylistItem(_songInfo, _selectedDifficulty, _activeDifficultySet.MapGameMode);
             PlaylistMaker.Instance.AddPlaylistItem(playlistItem);
+        }
+    }
+
+    public void PlayIndividualSong()
+    {
+        if (PlaylistManager.Instance != null)
+        {
+            var playlistItem = new PlaylistItem(_songInfo, _selectedDifficulty, _activeDifficultySet.MapGameMode);
+            PlaylistManager.Instance.SetTempSongPlaylist(playlistItem);
         }
     }
 }
