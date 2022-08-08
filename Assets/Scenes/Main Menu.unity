@@ -8648,6 +8648,7 @@ GameObject:
   - component: {fileID: 317559083}
   - component: {fileID: 317559081}
   - component: {fileID: 317559084}
+  - component: {fileID: 317559085}
   m_Layer: 5
   m_Name: UI
   m_TagString: Untagged
@@ -8752,6 +8753,20 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   _playlistLength: {fileID: 453948264}
+--- !u!114 &317559085
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 317559079}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6430d0cade419894ebd970efb7e1c967, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _textField: {fileID: 1692356546}
+  _debugCanvas: {fileID: 2065833220}
 --- !u!1001 &322211549
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -39446,7 +39461,6 @@ GameObject:
   - component: {fileID: 1641227327}
   - component: {fileID: 1641227330}
   - component: {fileID: 1641227329}
-  - component: {fileID: 1641227328}
   m_Layer: 5
   m_Name: Fake Log
   m_TagString: Untagged
@@ -39476,19 +39490,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1641227328
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1641227326}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6430d0cade419894ebd970efb7e1c967, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _textField: {fileID: 1692356546}
 --- !u!114 &1641227329
 MonoBehaviour:
   m_ObjectHideFlags: 0

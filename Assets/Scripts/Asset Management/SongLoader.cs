@@ -61,6 +61,11 @@ public class SongLoader
         {
             return null;
         }
+        catch (Exception e) when (e is not OperationCanceledException)
+        {
+            Debug.LogError($"failed to get audio clip\n {e.Message}");
+            return null;
+        }
     }
 
     public async UniTask<AudioClip> LoadBuiltInSong(SongInfo item, CancellationToken cancellationToken)
