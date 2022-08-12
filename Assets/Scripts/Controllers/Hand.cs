@@ -20,6 +20,7 @@ public class Hand : BaseGameStateListener
     public Collider MyCollider => _collider;
 
     public HitSideType AssignedHand => _assignedHand;
+
     public Vector3 GloveOffset
     {
         get => _glove.localPosition;
@@ -147,7 +148,7 @@ public class Hand : BaseGameStateListener
 
             var position = transform.position;
             
-            _previousDirections[_index] = position - _previousPosition;
+            _previousDirections[_index] = Vector3.Normalize(position - _previousPosition);
             _previousSpeeds[_index] = Vector3.Distance(position, _previousPosition)/Time.unscaledDeltaTime;
             
             if (_index + 1 < _previousDirections.Length)
@@ -182,6 +183,14 @@ public class Hand : BaseGameStateListener
         };
     }
 
+    public bool IsSwinging()
+    {
+        return true;
+        //TODO Come back to this someday and figure it out
+        var worldForward = _glove.TransformDirection(_glove.forward);
+        return Vector3.Dot(worldForward, MovementDirection) > .75f;
+    }
+    
     public void SetAndSpawnGlove(Collider newGlove)
     {
         _collider = Instantiate(newGlove, transform);

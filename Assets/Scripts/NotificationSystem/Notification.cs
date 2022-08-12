@@ -189,7 +189,7 @@ public class Notification : MonoBehaviour, IPoolable
 
         if (_disableUI)
         {
-            MainMenuUIController.Instance.RequestEnableUI(this);
+            MainMenuUIController.Instance?.RequestEnableUI(this);
         }
 
         _disableUI = true;

@@ -12,9 +12,21 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
     private bool _updatingPlaylistRecord;
     private CancellationToken _cancellationToken;
 
+    private string _currentSongName;
+    private bool _previousRecordExists = false;
+    private SongAndPlaylistRecord _previousRecord;
+
     private void Start()
     {
         _cancellationToken = this.GetCancellationTokenOnDestroy();
+    }
+
+    public void SongStarted()
+    {
+        if (PlaylistManager.Instance.CurrentIndex >= PlaylistManager.Instance.CurrentPlaylist.Items.Length - 1)
+        {
+            GetPreviousRecord();
+        }
     }
 
     public void SongCompleted()
@@ -26,25 +38,35 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
         }
     }
 
+    private async UniTaskVoid GetPreviousRecord()
+    {
+        while (_updatingSongRecord || _updatingPlaylistRecord)
+        {
+            await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
+        }
+        _currentSongName = SongInfoReader.Instance.GetSongFullName();
+        _previousRecordExists = await PlayerStatsFileManager.SongKeyExists(_currentSongName);
+        if (!_previousRecordExists)
+        {
+            return;
+        }
+        _previousRecord =
+            (SongAndPlaylistRecord) await PlayerStatsFileManager.GetSongValue<SongAndPlaylistRecord>(_currentSongName,
+                _cancellationToken);
+    }
+
     public async UniTaskVoid SaveSongStats()
     {
-        var songFullName = SongInfoReader.Instance.GetSongFullName();
-        while (_updatingSongRecord)
+        while (_updatingSongRecord || _updatingPlaylistRecord)
         {
             await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
         }
 
-
         ulong songScore;
         int bestStreak;
-        var exists = await PlayerStatsFileManager.SongKeyExists(songFullName);
-        if (exists)
+        if (_previousRecordExists)
         {
-            var oldRecord =
-                (SongAndPlaylistRecord) await PlayerStatsFileManager.GetSongValue<SongAndPlaylistRecord>(songFullName,
-                    _cancellationToken);
-
-            if (!ShouldUpdateFile(oldRecord, false, out songScore, out bestStreak))
+            if (!ShouldUpdateFile(_previousRecord, false, out songScore, out bestStreak))
             {
                 return;
             }
@@ -57,14 +79,14 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
 
         var newRecord = new SongAndPlaylistRecord(songScore, bestStreak);
         _updatingSongRecord = true;
-        await PlayerStatsFileManager.RecordSongValue(songFullName, newRecord, _cancellationToken);
+        await PlayerStatsFileManager.RecordSongValue(_currentSongName, newRecord, _cancellationToken);
         _updatingSongRecord = false;
     }
 
     public async UniTaskVoid SavePlaylistStats()
     {
         var playlist = PlaylistManager.Instance.CurrentPlaylist;
-        while (_updatingPlaylistRecord)
+        while (_updatingSongRecord || _updatingPlaylistRecord)
         {
             await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
         }
@@ -105,7 +127,7 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
 
         var newScoreHigher = oldRecord.Score < songScore;
         var newStreakHigher = oldRecord.Streak < bestStreak;
-        
+
         if (!newScoreHigher && !newStreakHigher)
         {
             return false;

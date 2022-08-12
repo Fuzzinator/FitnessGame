@@ -45,6 +45,16 @@ public class BaseTarget : MonoBehaviour, IPoolable
 
     private int _nameLayer;
 
+    #if UNITY_EDITOR
+    private void OnDrawGizmos()
+    {
+        var color = Gizmos.color;
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(Vector3.zero, _optimalHitDirection);
+        Gizmos.color = color;
+    }
+#endif
+    
     public void Initialize()
     {
         _validHitEffects = GetComponents<IValidHit>();
@@ -133,14 +143,15 @@ public class BaseTarget : MonoBehaviour, IPoolable
 
     protected bool IsValidDirection(Collision other, Hand hand, out float impactDotProd, out float dirDotProd)
     {
-        var handDirection = Vector3.Normalize(transform.InverseTransformDirection(hand.MovementDirection));
+        var handDirection = transform.InverseTransformDirection(hand.MovementDirection);
+        var isSwinging = hand.IsSwinging();
         impactDotProd = Vector3.Dot(-handDirection, _optimalHitDirection);
         var collisionDirection = Vector3.Normalize(other.GetContact(0).point - transform.position);
         dirDotProd = Vector3.Dot(collisionDirection, _optimalHitDirection);
 #if UNITY_EDITOR
-        return true;
+        return isSwinging; //true;
 #else
-        return impactDotProd > _minMaxAllowance.x && hand.MovementSpeed>_minHitSpeed;
+        return isSwinging && impactDotProd > _minMaxAllowance.x && hand.MovementSpeed>_minHitSpeed;
 #endif
     }
 

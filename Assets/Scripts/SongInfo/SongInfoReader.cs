@@ -78,7 +78,7 @@ public class SongInfoReader : MonoBehaviour
 
     public void LoadJson(PlaylistItem item)
     {
-        AsyncLoadJson(item).Forget();
+        AsyncLoadJson(item).Forget(); 
     }
 
 

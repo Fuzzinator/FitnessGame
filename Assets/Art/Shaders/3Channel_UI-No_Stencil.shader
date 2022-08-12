@@ -2,6 +2,7 @@ Shader "Custom/UI/3Channel_No_Stencil"
 {
     Properties
     {
+        _MainTex ("Sprite", 2D) = "white" {}
         _Red_Channel_Color("Red Channel Color", Color) = (1, 1, 1, 1)
         _Green_Channel_PrimaryColor("Green Channel PrimaryColor", Color) = (1, 1, 1, 1)
         _BlueAccentColor("BlueAccentColor", Color) = (1, 1, 1, 1)
