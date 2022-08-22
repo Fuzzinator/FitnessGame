@@ -11,13 +11,12 @@ using TimeSpan = System.TimeSpan;
 
 public class Clock : MonoBehaviour
 {
-    [FormerlySerializedAs("_hourText")] [SerializeField]
+    [SerializeField]
     private TextMeshProUGUI _timeText;
 
     public bool use24HourTime = false;
 
-    private const string FORMAT = "{0}:{1}";
-    private const string FORMAT00 = "{0}:{1}{2}";
+    private const string FORMAT = "<mspace=.65em>{0}<mspace=.4em>:</mspace>{1:00} {2}</mspace>";
     
     private const string AM = "AM";
     private const string PM = "PM";
@@ -45,24 +44,16 @@ public class Clock : MonoBehaviour
 
     private void SetClock(out DateTime prevTime)
     {
+        #if UNITY_ANDROID
+        #endif
         var hour = use24HourTime?DateTime.Now.Hour:DateTime.Now.Hour.To12HrFormat();
         var minute = DateTime.Now.Minute;
         using (var sb = ZString.CreateStringBuilder(true))
         {
-            if (minute >= 10)
-            {
-                sb.AppendFormat(FORMAT, hour, minute);
-            }
-            else
-            {
-                
-                sb.AppendFormat(FORMAT00, hour, 0,minute);
-            }
-
-            if (!use24HourTime)
-            {
-                sb.Append(DateTime.Now.Hour < 12 ? AM : PM);
-            }
+            var ampm = use24HourTime ? string.Empty : DateTime.Now.Hour < 12 ? AM : PM;
+            
+            sb.AppendFormat(FORMAT, hour, minute, ampm);
+            
 
             var buffer = sb.AsArraySegment();
             _timeText.SetCharArray(buffer.Array, buffer.Offset, buffer.Count);

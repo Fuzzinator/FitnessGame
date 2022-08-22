@@ -364,7 +364,7 @@ public struct AddObstaclesJob : IJobParallelFor
     private uint _seed;
     private readonly float _bps;
 
-    private const int INTERVAL = 5;
+    private const int INTERVAL = 15;
 
     [DeallocateOnJobCompletion]
     private readonly NativeArray<int> _obstacleOptions;
@@ -376,7 +376,7 @@ public struct AddObstaclesJob : IJobParallelFor
         _notes = sourceNotes;
         _seed = 0 + 118 + 999 + 881 + 999 + 119 + 725;
         _bps = bps;
-        _obstacleOptions = new NativeArray<int>(5, Allocator.TempJob);
+        _obstacleOptions = new NativeArray<int>(15, Allocator.TempJob);
         for (var i = 0; i < _obstacleOptions.Length; i++)
         {
             _obstacleOptions[i] = 2 > i ? 0 : 1;
@@ -409,10 +409,11 @@ public struct AddObstaclesJob : IJobParallelFor
         }
 
         var random = new Unity.Mathematics.Random((uint) (_seed + index));
-        var randValue = random.NextInt(0, _obstacleOptions.Length - 1);
+        var length = _obstacleOptions.Length-1;
+        var randValue = random.NextInt(0, length);
         for (var i = 0; i < INTERVAL; i++)
         {
-            randValue = random.NextInt(0, _obstacleOptions.Length - 1);
+            randValue = random.NextInt(0, length);
         }
 
         var value = (ChoreographyObstacle.ObstacleType) _obstacleOptions[randValue];

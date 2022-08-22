@@ -15,7 +15,7 @@ namespace UI.Scrollers.Playlists
 
         private Playlist _playlist;
 
-        private const string INVALID = "<sprite index=1>";
+        private const string INVALID = "<sprite index=0>";
         
         public void SetData(Playlist playlist)
         {

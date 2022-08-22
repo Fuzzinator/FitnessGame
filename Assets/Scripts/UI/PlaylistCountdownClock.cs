@@ -22,7 +22,9 @@ public class PlaylistCountdownClock : MonoBehaviour
 
     private const int MINUTE = 60;
 
-    private const string STRINGFORMAT = "{0:00}:{1:00}";//"<mspace=.65em>{0:00}:{1:00}</mspace>";
+    private const string DOUBLEDIGITFORMAT = "<mspace=.65em><size=85>{0:00}:{1:00}</size></mspace>";
+    private const string TRIPLEDIGITFORMAT = "<mspace=.65em><size=70>{0:000}:{1:00}</size></mspace>";
+    private const string STRINGFORMAT = "<size={0}>{1:00}:{2:00}</size>";//"<mspace=.65em>{0:00}:{1:00}</mspace>";
     //private const string DIVIDER = ":";
 
     private CancellationTokenSource _source;
@@ -85,7 +87,9 @@ public class PlaylistCountdownClock : MonoBehaviour
 
         using (var sb = ZString.CreateStringBuilder(true))
         {
-            sb.AppendFormat(STRINGFORMAT, minutes, seconds);
+            var format = minutes < 100? DOUBLEDIGITFORMAT: TRIPLEDIGITFORMAT;
+            
+            sb.AppendFormat(format, minutes, seconds);
 
             _minutesText.SetText(sb);
         }

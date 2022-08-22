@@ -23,7 +23,7 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
 
     public void SongStarted()
     {
-        if (PlaylistManager.Instance.CurrentIndex >= PlaylistManager.Instance.CurrentPlaylist.Items.Length - 1)
+        if (PlaylistManager.Instance.CurrentIndex < PlaylistManager.Instance.CurrentPlaylist.Items.Length)
         {
             GetPreviousRecord();
         }

@@ -91,8 +91,17 @@ public class SongInfo
     private float _songTimeOffset;
 
     [SerializeField]
+    private float _previewStartTime;
+
+    [SerializeField]
+    private float _previewDuration;
+    
+    [SerializeField]
     private string _songFilename;
 
+    [SerializeField]
+    private string _coverImageFilename;
+    
     public string fileLocation;
 
     [NonSerialized]
@@ -124,7 +133,7 @@ public class SongInfo
         var setName = mode.GetDifficultySetName();
         if (string.IsNullOrWhiteSpace(setName))
         {
-            Debug.LogError("Difficulty Not Set?");
+            Debug.LogError("Difficulty Not Set\n?");
             return _difficultyBeatmapSets.Length > 0 ? _difficultyBeatmapSets[0] : new DifficultySet();
         }
 
@@ -149,8 +158,11 @@ public class SongInfo
     {
         var madeChange = false;
         var difficultySet = new DifficultySet();
-        var hasRotationSet = false;
-        var rotationSet = new DifficultySet();
+        var has90RotationSet = false;
+        var has360RotationSet = false;
+        var createdRotationSet = false;
+        var rotation90Set = new DifficultySet();
+        var rotation360Set = new DifficultySet();
         
         /*List<DifficultySet> difficultySets = null;
         foreach (var set in _difficultyBeatmapSets)
@@ -190,8 +202,17 @@ public class SongInfo
 
                 if (_difficultyBeatmapSets[i].MapGameMode is GameMode.Degrees90 or GameMode.Degrees360)
                 {
-                    hasRotationSet = true;
-                    rotationSet = _difficultyBeatmapSets[i];
+                    if (_difficultyBeatmapSets[i].MapGameMode is GameMode.Degrees90)
+                    {
+                        has90RotationSet = true;
+                        rotation90Set = _difficultyBeatmapSets[i];
+                    }
+
+                    if (_difficultyBeatmapSets[i].MapGameMode is GameMode.Degrees360)
+                    {
+                        has360RotationSet = true;
+                        rotation360Set = _difficultyBeatmapSets[i];
+                    }
                 }
             }
         }
@@ -245,10 +266,13 @@ public class SongInfo
                         case GameMode.OneHanded:
                             break;
                         case GameMode.Degrees90:
-                        case GameMode.Degrees360:
-                            if (hasRotationSet)
+                            if (has90RotationSet)
                             {
-                                _difficultyBeatmapSets[i] = rotationSet;
+                                _difficultyBeatmapSets[i] = rotation90Set;
+                            }
+                            else if (createdRotationSet)
+                            {
+                                _difficultyBeatmapSets[i] = rotation360Set;
                             }
                             else
                             {
@@ -257,8 +281,31 @@ public class SongInfo
                                         token);
 
                                 _difficultyBeatmapSets[i].SetFileName(newFileName);
-                                rotationSet = _difficultyBeatmapSets[i];
-                                hasRotationSet = true;
+                                rotation90Set = _difficultyBeatmapSets[i];
+                                has90RotationSet = true;
+                                createdRotationSet = true;
+                            }
+
+                            break;
+                        case GameMode.Degrees360:
+                            if (has360RotationSet)
+                            {
+                                _difficultyBeatmapSets[i] = rotation360Set;
+                            }
+                            else if (createdRotationSet)
+                            {
+                                _difficultyBeatmapSets[i] = rotation90Set;
+                            }
+                            else
+                            {
+                                newFileName =
+                                    await AsyncCreateNewDifficultyFile(difficultySet.DifficultyInfos[^1], gameMode,
+                                        token);
+
+                                _difficultyBeatmapSets[i].SetFileName(newFileName);
+                                rotation360Set = _difficultyBeatmapSets[i];
+                                has360RotationSet = true;
+                                createdRotationSet = true;
                             }
 
                             break;
@@ -361,7 +408,7 @@ public class SongInfo
         private GameMode _mapGameMode;
 
         public GameMode MapGameMode =>
-            _mapGameMode == GameMode.Unset ? BeatMapName.GetGameMode() : _mapGameMode;
+            _mapGameMode == GameMode.Unset ? _mapGameMode = BeatMapName.GetGameMode() : _mapGameMode;
 
         public DifficultyInfo[] DifficultyInfos => _difficultyBeatmaps;
 
