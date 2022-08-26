@@ -176,7 +176,7 @@ public class SetAndShowSongOptions : MonoBehaviour
         }
 
         _selectedDifficulty = _activeDifficultySet.DifficultyInfos[dificultyID].Difficulty;
-        _songRecordsDisplay.RefreshDisplay();
+        _songRecordsDisplay?.RefreshDisplay();
     }
 
     private int GetToggleID(Toggle toggle, Toggle[] togglesArray)

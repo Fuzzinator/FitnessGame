@@ -67,6 +67,10 @@ public class SongInfo
         }
     }
 
+    public string Genre => _genre;
+
+    public string Attribution => _attribution;
+
     public DifficultySet[] DifficultySets => _difficultyBeatmapSets;
 
     [SerializeField]
@@ -95,13 +99,13 @@ public class SongInfo
 
     [SerializeField]
     private float _previewDuration;
-    
+
     [SerializeField]
     private string _songFilename;
 
     [SerializeField]
     private string _coverImageFilename;
-    
+
     public string fileLocation;
 
     [NonSerialized]
@@ -109,6 +113,12 @@ public class SongInfo
 
     [SerializeField]
     private float _songLength;
+
+    [SerializeField]
+    private string _genre;
+
+    [SerializeField]
+    private string _attribution;
 
     [SerializeField]
     private DifficultySet[] _difficultyBeatmapSets;
@@ -139,13 +149,13 @@ public class SongInfo
 
         foreach (var beatMapSet in _difficultyBeatmapSets)
         {
-            if (beatMapSet.BeatMapName == null)
+            if (beatMapSet.BeatMapName != null)
             {
-            }
-
-            if (beatMapSet.BeatMapName.Equals(setName, StringComparison.InvariantCultureIgnoreCase))
-            {
-                return beatMapSet;
+                if (beatMapSet.MapGameMode == mode ||
+                    beatMapSet.BeatMapName.Equals(setName, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return beatMapSet;
+                }
             }
         }
 
@@ -163,7 +173,7 @@ public class SongInfo
         var createdRotationSet = false;
         var rotation90Set = new DifficultySet();
         var rotation360Set = new DifficultySet();
-        
+
         /*List<DifficultySet> difficultySets = null;
         foreach (var set in _difficultyBeatmapSets)
         {
@@ -182,7 +192,7 @@ public class SongInfo
         {
             _difficultyBeatmapSets = difficultySets.ToArray();
         }*/
-        
+
         for (var i = 0; i < _difficultyBeatmapSets.Length; i++)
         {
             var mapName = _difficultyBeatmapSets[i].BeatMapName;

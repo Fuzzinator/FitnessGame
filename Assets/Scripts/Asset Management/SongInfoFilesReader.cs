@@ -117,7 +117,7 @@ public class SongInfoFilesReader : MonoBehaviour
     {
         MainMenuUIController.Instance.RequestDisableUI(this);
         await CustomSongsManager.DeleteCustomSong(targetSongInfo);
-        _displaySongInfo.ClearDisplayedInfo();
+        //_displaySongInfo.ClearDisplayedInfo();
         PlaylistMaker.Instance.SetActiveItem(new SongInfo());
         MainMenuUIController.Instance.RequestEnableUI(this);
     }
@@ -130,7 +130,6 @@ public class SongInfoFilesReader : MonoBehaviour
             {
                 return;
             }
-
             var item = JsonUtility.FromJson<SongInfo>(asset.text);
             item.isCustomSong = false;
 

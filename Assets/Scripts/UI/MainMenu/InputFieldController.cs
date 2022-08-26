@@ -22,6 +22,11 @@ public class InputFieldController : MonoBehaviour
         EditTextField().Forget();
     }
 
+    public virtual void ClearTextField()
+    {
+        _inputField.text = string.Empty;
+    }
+    
     protected virtual async UniTask EditTextField()
     {
         var keyboard = KeyboardManager.Instance.ActivateKeyboard(_inputField, _defaultText);

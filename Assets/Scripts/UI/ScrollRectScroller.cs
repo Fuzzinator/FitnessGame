@@ -46,10 +46,15 @@ public class ScrollRectScroller : MonoBehaviour
 
     private async UniTask AsyncScroll(float value)
     {
-        //var rectHeight = _scrollRect.content.rect.height;
-        //value /= _scrollRect.content.childCount;//(rectHeight * value) / rectHeight;
-        
-        value /= _scroller.NumberOfCells;
+        if (_scroller == null)
+        {
+            /*var rectHeight = _scrollRect.content.rect.height;
+            value = (rectHeight * value) / rectHeight;*/
+        }
+        else
+        {
+            value /= _scroller.NumberOfCells;
+        }
         while (_scroll)
         {
             await UniTask.DelayFrame(1);
