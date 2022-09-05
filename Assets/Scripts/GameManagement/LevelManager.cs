@@ -18,6 +18,8 @@ public class LevelManager : MonoBehaviour
     public UnityEvent prepForNextSong = new UnityEvent();
     public UnityEvent levelLoadFailed = new UnityEvent();
 
+    public UnityEvent restartingLevel = new UnityEvent();
+
     [SerializeField]
     private int _delayLength = 5;
 
@@ -108,6 +110,12 @@ public class LevelManager : MonoBehaviour
         {
             Instance = null;
         }
+    }
+
+    public void Restart()
+    {
+        restartingLevel?.Invoke();
+        LoadLevel();
     }
 
     public void LoadLevel()

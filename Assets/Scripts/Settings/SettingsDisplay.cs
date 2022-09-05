@@ -4,14 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SettingsDisplay : MonoBehaviour
+public class SettingsDisplay : UIMenuController
 {
     public static SettingsDisplay Instance { get; private set; }
-    [SerializeField]
-    private List<Toggle> _toggles;
-
-    [SerializeField]
-    private CanvasGroup[] _settingsPages;
 
     [SerializeField]
     private CanvasGroup _mainPages;
@@ -25,10 +20,6 @@ public class SettingsDisplay : MonoBehaviour
     [SerializeField]
     private Button _saveButton;
     
-    private CanvasGroup _activePage;
-
-    private Toggle _activeToggle;
-
     private readonly List<ISaver> _activeSavers = new List<ISaver>();
     
     private static bool _changeMade;
@@ -55,30 +46,18 @@ public class SettingsDisplay : MonoBehaviour
         }
     }
 
-    private void Start()
+    protected override void Start()
     {
-        if (_settingsPages == null || _settingsPages.Length < 1)
-        {
-            return;
-        }
-        
-        _activePage = _settingsPages[0];
-        _activePage.SetGroupState(1, true);
-        var canvas = GetComponent<Canvas>();
-        canvas.worldCamera = Head.Instance.HeadCamera;
+        base.Start();
         gameObject.SetActive(false);
     }
 
-    public void Activate()
+    public override void Activate()
     {
-        gameObject.SetActive(true);
         _mainPages.SetGroupState(true);
-        for (var i = 0; i < _toggles.Count; i++)
-        {
-            _toggles[i].isOn = i == 0;
-        }
-        SetActivePage(0);
+        base.Activate();
     }
+    
 
     public void CheckForChangesAndDisable()
     {
@@ -102,32 +81,6 @@ public class SettingsDisplay : MonoBehaviour
         _activeSavers.Add(saver);
     }
 
-    public void PageToggleChanged(Toggle toggle)
-    {
-        if (!toggle.isOn)
-        {
-            return;
-        }
-
-        _activeToggle = toggle;
-        SetActivePage(_toggles.IndexOf(toggle));
-    }
-
-    public void SetActivePage(int pageNumber)
-    {
-        if (pageNumber >= _settingsPages.Length)
-        {
-            return;
-        }
-
-        if (_activePage != null)
-        {
-            _activePage.SetGroupState(0, false);
-        }
-
-        _activePage = _settingsPages[pageNumber];
-        _activePage.SetGroupState(1, true);
-    }
 
     public void DiscardChanges()
     {

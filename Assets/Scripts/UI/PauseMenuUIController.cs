@@ -79,7 +79,7 @@ public class PauseMenuUIController : BaseGameStateListener
 
     public void Restart()
     {
-        LevelManager.Instance.LoadLevel();
+        LevelManager.Instance.Restart();
         ResumeGame();
     }
 

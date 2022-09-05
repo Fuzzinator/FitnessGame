@@ -6861,7 +6861,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh270564
+  m_Name: pb_Mesh313584
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -7226,7 +7226,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.01
-  far clip plane: 35
+  far clip plane: 3500
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -9053,6 +9053,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 26562287}
+        m_TargetAssemblyTypeName: ChoreographySequencer, Assembly-CSharp
+        m_MethodName: FinishSequenceRestart
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   playLevel:
     m_PersistentCalls:
       m_Calls:
@@ -9236,6 +9248,21 @@ MonoBehaviour:
       - m_Target: {fileID: 217837868}
         m_TargetAssemblyTypeName: PlaylistCountdownClock, Assembly-CSharp
         m_MethodName: SongFailedToLoad
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  restartingLevel:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 26562287}
+        m_TargetAssemblyTypeName: ChoreographySequencer, Assembly-CSharp
+        m_MethodName: SequenceRestart
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -15718,6 +15745,8 @@ MonoBehaviour:
     _coverImageFilename: 
     fileLocation: 
     _songLength: 0
+    _genre: 
+    _attribution: 
     _difficultyBeatmapSets: []
   _difficultyInfo:
     _difficulty: 
@@ -16575,7 +16604,7 @@ PrefabInstance:
     - target: {fileID: 8478822547246551076, guid: 36cd4176249ef924cb4492fc602059d5,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2.961
+      value: 2.916
       objectReference: {fileID: 0}
     - target: {fileID: 8478822547246551076, guid: 36cd4176249ef924cb4492fc602059d5,
         type: 3}
@@ -16626,6 +16655,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Settings Window
+      objectReference: {fileID: 0}
+    - target: {fileID: 8478822547246551103, guid: 36cd4176249ef924cb4492fc602059d5,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8587712778168317828, guid: 36cd4176249ef924cb4492fc602059d5,
         type: 3}

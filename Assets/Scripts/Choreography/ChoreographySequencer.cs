@@ -93,6 +93,7 @@ public class ChoreographySequencer : MonoBehaviour
 
     private float _currentRotation = 0;
     private const float MAX90ROTATION = 45;
+    private const string LEFTHANDED = "LeftHanded";
 
     private CancellationToken _cancellationToken;
 
@@ -119,6 +120,7 @@ public class ChoreographySequencer : MonoBehaviour
     private UnityEvent<int> _stanceUpdated = new UnityEvent<int>();
 
     private bool _sequenceUnstartedOrFinished = true;
+    private bool _resetting;
     
     private Dictionary<float, ActiveLaneIndicator> _laneIndicators = new Dictionary<float, ActiveLaneIndicator>(20);
     public bool SequenceRunning { get; private set; }
@@ -169,6 +171,7 @@ public class ChoreographySequencer : MonoBehaviour
 
     private void OnEnable()
     {
+        SetStartingFooting();
         GameStateManager.Instance.gameStateChanged.AddListener(GameStateListener);
     }
 
@@ -176,7 +179,7 @@ public class ChoreographySequencer : MonoBehaviour
     {
         GameStateManager.Instance.gameStateChanged.RemoveListener(GameStateListener);
     }
-
+    
     private void OnDestroy()
     {
         _tweenPool.CompleteAllActive();
@@ -215,6 +218,12 @@ public class ChoreographySequencer : MonoBehaviour
 
             PauseChoreography();
         }
+    }
+
+    private void SetStartingFooting()
+    {
+        var leftHanded = SettingsManager.GetSetting(LEFTHANDED, false);
+        _currentStance = leftHanded ? HitSideType.Left : HitSideType.Right;
     }
 
     public void InitializeSequence()
@@ -429,6 +438,16 @@ public class ChoreographySequencer : MonoBehaviour
         _currentRotation = 0;
     }
 
+    public void SequenceRestart()
+    {
+        _resetting = true;
+    }
+
+    public void FinishSequenceRestart()
+    {
+        _resetting = false;
+    }
+
     public void PauseChoreography()
     {
         _delayStartTime = Time.time;
@@ -444,7 +463,15 @@ public class ChoreographySequencer : MonoBehaviour
 
     public void SwitchFootPlacement()
     {
-        CurrentStance = _currentStance == HitSideType.Left ? HitSideType.Right : HitSideType.Left;
+        if (_resetting)
+        {
+            var leftHanded = SettingsManager.GetSetting(LEFTHANDED, false);
+            CurrentStance = leftHanded ? HitSideType.Left : HitSideType.Right;
+        }
+        else
+        {
+            CurrentStance = _currentStance == HitSideType.Left ? HitSideType.Right : HitSideType.Left;
+        }
     }
 
     public void RotateSpawnSource(float angle)

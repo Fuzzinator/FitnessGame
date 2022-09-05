@@ -9,7 +9,7 @@ public class NotificationManager : MonoBehaviour
 
     [SerializeField]
     private Notification _notificationPrefab;
-    
+
     [Header("Positions")]
     [SerializeField]
     private Transform _basePosition;
@@ -34,8 +34,15 @@ public class NotificationManager : MonoBehaviour
     private void Start()
     {
         _notificationPoolManager = new PoolManager(_notificationPrefab, transform);
+        var headHeight = GlobalSettings.UserHeight;
+        if (headHeight > 0)
+        {
+            UpdateNotificationHeight(headHeight);
+        }
+
+        GlobalSettings.UserHeightChanged.AddListener(UpdateNotificationHeight);
     }
-    
+
     public static Notification RequestNotification(Notification.NotificationVisuals visuals,
         Action button1Pressed = null, Action button2Pressed = null, Action button3Pressed = null)
     {
@@ -85,5 +92,12 @@ public class NotificationManager : MonoBehaviour
             () => { LevelManager.Instance.LoadNextSong(); },
             () => { ActiveSceneManager.Instance.LoadMainMenu(); }
         );
+    }
+
+    private void UpdateNotificationHeight(float newHeight)
+    {
+        var oldPos = _basePosition.position;
+        var newPos = new Vector3(oldPos.x, newHeight, oldPos.z);
+        _basePosition.position = newPos;
     }
 }

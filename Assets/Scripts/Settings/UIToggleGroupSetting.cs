@@ -1,0 +1,70 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class UIToggleGroupSetting : MonoBehaviour, ISaver
+{
+    [SerializeField]
+    private string _settingName;
+    
+    [SerializeField]
+    protected Toggle[] _toggles;
+
+    [SerializeField]
+    protected SettingsDisplay _settingsDisplay;
+
+    protected int _currentValue;
+    protected int _index;
+    private void OnEnable()
+    {
+        Revert();
+    }
+    
+    public virtual void ToggleSet(Toggle selectedToggle)
+    {
+        if (!selectedToggle.isOn)
+        {
+            return;
+        }
+        
+        _index = -1;
+        for (var i = 0; i < _toggles.Length; i++)
+        {
+            if (_toggles[i] == selectedToggle)
+            {
+                _index = i;
+                break;
+            }
+        }
+        
+        if (_currentValue != _index)
+        {
+            _currentValue = _index;
+            _settingsDisplay.ChangeWasMade(this);
+        }
+    }
+    public virtual void Save()
+    {
+        SettingsManager.SetSetting(_settingName, _currentValue);
+    }
+    
+    public virtual void Revert()
+    {
+        GetDefaultValue();
+        SetActiveToggle();
+    }
+
+    protected void SetActiveToggle()
+    {
+        if (_currentValue < _toggles.Length)
+        {
+            _toggles[_currentValue].isOn = true;
+        }
+    }
+    
+    protected void GetDefaultValue()
+    {
+        _currentValue = SettingsManager.GetSetting(_settingName, _currentValue);
+    }
+}

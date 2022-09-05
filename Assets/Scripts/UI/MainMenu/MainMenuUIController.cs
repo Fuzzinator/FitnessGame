@@ -16,6 +16,10 @@ public class MainMenuUIController : BaseGameStateListener
     
     private List<MonoBehaviour> _requestSources = new List<MonoBehaviour>();
 
+    public int MenuPageCount => _menuPages.Length;
+
+    private bool _activePageSet = false;
+    
     private void Awake()
     {
         if (Instance == null || Instance.gameObject == null)
@@ -30,7 +34,11 @@ public class MainMenuUIController : BaseGameStateListener
 
     private void Start()
     {
-        _activeMenuPage = _menuPages[0];
+        if (_activePageSet)
+        {
+            return;
+        }
+        
         SetActivePage(0);
     }
 
@@ -65,6 +73,7 @@ public class MainMenuUIController : BaseGameStateListener
             {
                 page.SetActive(1, true);
                 _activeMenuPage = page;
+                _activePageSet = true;
                 UIStateManager.Instance.RequestEnableInteraction(_activeMenuPage.TargetCanvas);
             }
         }

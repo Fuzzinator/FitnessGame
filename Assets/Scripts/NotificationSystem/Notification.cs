@@ -5,6 +5,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Notification : MonoBehaviour, IPoolable
@@ -155,6 +156,11 @@ public class Notification : MonoBehaviour, IPoolable
             MainMenuUIController.Instance.RequestDisableUI(this);
         }
 
+        if (visuals.hideOnSceneChange)
+        {
+            SceneManager.activeSceneChanged += ReturnOnSceneChange;
+        }
+        
         if (_autoTimeOutTime <= 0)
         {
             return;
@@ -165,12 +171,20 @@ public class Notification : MonoBehaviour, IPoolable
         ReturnToPool();
     }
 
+    private void ReturnOnSceneChange(Scene current, Scene newScene)
+    {
+        SceneManager.activeSceneChanged -= ReturnOnSceneChange;
+        ReturnToPool();
+    }
+
     public void ReturnToPool()
     {
-        if (this == null)
+        if (this == null || IsPooled)
         {
             return;
         }
+        
+        SceneManager.activeSceneChanged -= ReturnOnSceneChange;
         
         _message.SetText(string.Empty);
         _button1Txt.SetText(string.Empty);
@@ -227,9 +241,10 @@ public class Notification : MonoBehaviour, IPoolable
         public bool disableUI;
         public float autoTimeOutTime;
         public bool popUp;
+        public bool hideOnSceneChange;
 
         public NotificationVisuals(string message, string header = "", string button1Txt = "", string button2Txt = "",
-            string button3Txt = "", bool disableUI = true, float autoTimeOutTime = 0f, bool popUp = false)
+            string button3Txt = "", bool disableUI = true, float autoTimeOutTime = 0f, bool popUp = false, bool hideOnSceneChange = true)
         {
             this.header = header;
             this.message = message;
@@ -239,6 +254,7 @@ public class Notification : MonoBehaviour, IPoolable
             this.disableUI = disableUI;
             this.autoTimeOutTime = autoTimeOutTime;
             this.popUp = popUp;
+            this.hideOnSceneChange = hideOnSceneChange;
         }
     }
 }

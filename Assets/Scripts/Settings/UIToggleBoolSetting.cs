@@ -47,6 +47,7 @@ public class UIToggleBoolSetting : MonoBehaviour, ISaver
    public void Revert()
    {
       _currentValue = SettingsManager.GetSetting(_settingName, _defaultValue);
-      _toggle.isOn = _currentValue;
+      _toggle.SetIsOnWithoutNotify(_currentValue);
+      _text.SetText(_currentValue?ON:OFF);
    }
 }
