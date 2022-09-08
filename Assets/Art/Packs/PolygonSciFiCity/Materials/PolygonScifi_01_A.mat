@@ -27,7 +27,7 @@ Material:
   m_LightmapFlags: 1
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 3000
   stringTagMap:
     RenderType: Transparent
   disabledShaderPasses:
@@ -113,6 +113,9 @@ Material:
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DirtAmount: 0.889
+    - _Disperse: 0
+    - _Dissolve: 0
+    - _Distort: 0
     - _DstBlend: 10
     - _FallOff: 8.19
     - _Float: 2.58
@@ -120,6 +123,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.2
     - _GlossyReflections: 1
+    - _Height: 0.92
     - _Line_Speed: 0.1
     - _Metallic: 0
     - _Mode: 0
@@ -128,6 +132,8 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _SmoothnessTextureChannel: 0
+    - _Spawn_Glow_Strength: 3.35
+    - _Spawn_Height: 2
     - _SpecularHighlights: 1
     - _SrcBlend: 5
     - _Surface: 1
@@ -142,4 +148,5 @@ Material:
     - _EmissionColor: {r: 0.5, g: 0.5, b: 0.5, a: 0}
     - _Fresnel_Color: {r: 3.1611187, g: 6.6428976, b: 12.075474, a: 0.39607844}
     - _Hologram_Line_Tiling: {r: 1, g: 3, b: 0, a: 0}
+    - _Spawn_Color: {r: 31.999996, g: 10.554973, b: 3.183246, a: 0}
   m_BuildTextureStacks: []

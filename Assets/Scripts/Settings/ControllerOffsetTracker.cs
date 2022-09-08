@@ -32,8 +32,8 @@ public class ControllerOffsetTracker : MonoBehaviour, ISaver
     private Quaternion _rightRotationOffset;
 
     private CancellationToken _cancellationToken;
-
-
+    
+    
     private void Start()
     {
         _cancellationToken = this.GetCancellationTokenOnDestroy();
@@ -52,6 +52,7 @@ public class ControllerOffsetTracker : MonoBehaviour, ISaver
 #else
         _leftStartPos = HandTracker.LeftHand.GloveOffset;
         _rightStartPos = HandTracker.RightHand.GloveOffset;
+        
 #endif
     }
 
@@ -147,8 +148,8 @@ public class ControllerOffsetTracker : MonoBehaviour, ISaver
     {
         SettingsManager.SetSetting(SettingsManager.LEFTGLOVEOFFSET, _leftOffset);
         SettingsManager.SetSetting(SettingsManager.RIGHTGLOVEOFFSET, _rightOffset);
-        SettingsManager.SetSetting(SettingsManager.LEFTGLOVEROTOFFSET, _leftOffset);
-        SettingsManager.SetSetting(SettingsManager.RIGHTGLOVEROTOFFSET, _rightOffset);
+        SettingsManager.SetSetting(SettingsManager.LEFTGLOVEROTOFFSET, _leftRotationOffset);
+        SettingsManager.SetSetting(SettingsManager.RIGHTGLOVEROTOFFSET, _rightRotationOffset);
     }
 
     public void ResetLeftController()
