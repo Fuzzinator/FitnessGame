@@ -1,5 +1,8 @@
 using System.Collections.Generic;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using EnhancedUI.EnhancedScroller;
+using Oculus.Platform.Samples.VrHoops;
 using UnityEngine;
 using StringComparison = System.StringComparison;
 
@@ -12,6 +15,14 @@ namespace UI.Scrollers.Playlists
 
         private List<SongInfo> _songInfos = new List<SongInfo>();
 
+        public CancellationToken CancellationToken { get; private set; }
+
+        protected override void Start()
+        {
+            CancellationToken = gameObject.GetCancellationTokenOnDestroy();
+            base.Start();
+        }
+        
         public override int GetNumberOfCells(EnhancedScroller scroller)
         {
             if (string.IsNullOrWhiteSpace(_searchKey) && _songInfos.Count == 0 || _songInfos.Count == 0)

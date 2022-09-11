@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cysharp.Text;
+using GameModeManagement;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Random = System.Random;
@@ -16,8 +17,31 @@ public struct Playlist
     [SerializeField]
     private float _length;
 
-    private const string DIVIDER = ":";
+
+    [FormerlySerializedAs("items")] [SerializeField]
+    private PlaylistItem[] _items;
+
+    public PlaylistItem[] Items => _items;
+
+    [SerializeField]
+    private bool _isCustomPlaylist;
+
+    [SerializeField]
+    private GameMode _gameMode;
+
+    [SerializeField]
+    private DifficultyInfo.DifficultyEnum _difficulty;
+    
+    [NonSerialized]
+    public bool isValid;
+    
+    public bool IsCustomPlaylist => _isCustomPlaylist;
     public float Length => _length;
+    public string PlaylistName => _playlistName;
+
+    public GameMode GameModeOverride => _gameMode;
+
+    public DifficultyInfo.DifficultyEnum DifficultyEnum => _difficulty;
 
     public string ReadableLength
     {
@@ -45,24 +69,12 @@ public struct Playlist
         }
     }
 
-    public string PlaylistName => _playlistName;
-
-    [FormerlySerializedAs("items")] [SerializeField]
-    private PlaylistItem[] _items;
-
-    public PlaylistItem[] Items => _items;
-
-    [SerializeField]
-    private bool _isCustomPlaylist;
-
-    [NonSerialized]
-    public bool isValid;
-    
-    public bool IsCustomPlaylist => _isCustomPlaylist;
 
     private const int MINUTE = 60;
+    private const string DIVIDER = ":";
 
-    public Playlist(List<PlaylistItem> items, string playlistName = null, bool isCustomPlaylist = true)
+    public Playlist(List<PlaylistItem> items, GameMode gameMode, DifficultyInfo.DifficultyEnum difficulty, 
+                    string playlistName = null, bool isCustomPlaylist = true)
     {
         _playlistName = string.IsNullOrWhiteSpace(playlistName)
             ? $"{DateTime.Now:yyyy-MM-dd} - {DateTime.Now:hh-mm}"
@@ -75,6 +87,9 @@ public struct Playlist
             _length += item.SongInfo.SongLength;
         }
 
+        _gameMode = gameMode;
+        _difficulty = difficulty;
+        
         isValid = true;
     }
 
@@ -84,6 +99,8 @@ public struct Playlist
         _items = new[] {singleSong};
         _isCustomPlaylist = singleSong.IsCustomSong;
         _length = singleSong.SongInfo.SongLength;
+        _gameMode = GameMode.Unset;
+        _difficulty = DifficultyInfo.DifficultyEnum.INVALID;
         isValid = true;
     }
 
@@ -96,7 +113,18 @@ public struct Playlist
     {
         _items.Shuffle();
     }
-    
+
+
+    public void SetGameMode(GameMode mode)
+    {
+        _gameMode = mode;
+    }
+
+    public void SetDifficulty(DifficultyInfo.DifficultyEnum difficultyEnum)
+    {
+        _difficulty = difficultyEnum;
+    }
+
     public enum SortingMethod
     {
         None = 0,

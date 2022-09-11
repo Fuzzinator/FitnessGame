@@ -92,8 +92,9 @@ public class SongInfoFilesReader : MonoBehaviour
     private async UniTask UpdateAvailableSongs()
     {
         availableSongs.Clear();
-        await GetBuiltInSongs();
-        await CustomSongsManager.GetCustomSongs(_cancellationSource);
+        void AddSongs(SongInfo info) => availableSongs.Add(info);
+        await AssetManager.GetBuiltInSongs(_labelReference, AddSongs);
+        await AssetManager.GetCustomSongs(_cancellationSource);
         SortSongs();
         _songsUpdated?.Invoke();
     }
@@ -122,20 +123,7 @@ public class SongInfoFilesReader : MonoBehaviour
         MainMenuUIController.Instance.RequestEnableUI(this);
     }
 
-    private async UniTask GetBuiltInSongs()
-    {
-        await Addressables.LoadAssetsAsync<TextAsset>(_labelReference, asset =>
-        {
-            if (asset == null)
-            {
-                return;
-            }
-            var item = JsonUtility.FromJson<SongInfo>(asset.text);
-            item.isCustomSong = false;
-
-            availableSongs.Add(item);
-        });
-    }
+    
 
     public void SetSortMethod(SongInfo.SortingMethod method)
     {

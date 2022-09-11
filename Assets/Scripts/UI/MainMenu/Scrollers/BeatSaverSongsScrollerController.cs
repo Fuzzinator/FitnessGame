@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using BeatSaverSharp.Models;
+using Cysharp.Threading.Tasks;
 using EnhancedUI.EnhancedScroller;
 using UI.Scrollers.Playlists;
 using UnityEngine;
@@ -12,6 +14,14 @@ namespace UI.Scrollers.BeatsaverIntegraton
     {
         private BeatSaverPageController _pageController;
         private IReadOnlyList<Beatmap> _beatmaps;
+
+        public CancellationToken CancellationToken { get; private set; }
+
+        protected override void Start()
+        {
+            CancellationToken = gameObject.GetCancellationTokenOnDestroy();
+            base.Start();
+        }
 
         public void SetPageController(BeatSaverPageController controller)
         {

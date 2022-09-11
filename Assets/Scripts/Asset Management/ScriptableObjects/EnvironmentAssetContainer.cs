@@ -22,7 +22,7 @@ public class EnvironmentAssetContainer : ScriptableObject
 
     [SerializeField]
     private Collider _leftGlove;
-
+    
     [SerializeField]
     private Collider _rightGlove;
     

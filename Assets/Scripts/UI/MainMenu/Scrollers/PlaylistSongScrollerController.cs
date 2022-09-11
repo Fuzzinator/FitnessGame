@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using EnhancedUI.EnhancedScroller;
 using UnityEngine;
 
@@ -9,6 +11,14 @@ namespace UI.Scrollers.Playlists
     public class PlaylistSongScrollerController : ScrollerController
     {
         public bool highlightActiveItem = false;
+
+        private CancellationToken _cancellationToken;
+        
+        protected override void Start()
+        {
+            _cancellationToken = gameObject.GetCancellationTokenOnDestroy();
+            base.Start();
+        }
 
         private void OnEnable()
         {
@@ -41,6 +51,7 @@ namespace UI.Scrollers.Playlists
             if (cellView is HighlightableCellView highlightableCellView)
             {
                 highlightableCellView.SetData(PlaylistManager.Instance.CurrentPlaylist.Items[dataIndex]);
+                highlightableCellView.CancellationToken = _cancellationToken;
                 if (highlightActiveItem && dataIndex == 0)
                 {
                     if (PlaylistManager.Instance.CurrentIndex == 0)

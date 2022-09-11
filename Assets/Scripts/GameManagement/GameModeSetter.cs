@@ -8,6 +8,9 @@ public class GameModeSetter : MonoBehaviour
 {
     [SerializeField]
     private GameMode _targetMode;
+
+    [SerializeField]
+    private DifficultyInfo.DifficultyEnum _targetDifficulty;
     
     public void SetGameMode(int mode)
     {
@@ -21,12 +24,23 @@ public class GameModeSetter : MonoBehaviour
 
     public void SetGameMode(GameMode mode)
     {
-        if (GameManager.Instance == null)
+        if (PlaylistManager.Instance == null)
         {
             return;
         }
-        GameManager.Instance.SetGameMode(mode);
+        PlaylistManager.Instance.CurrentPlaylist.SetGameMode(mode);
     }
+
+    public void SetDifficulty(int difficulty)
+    {
+        PlaylistManager.Instance.CurrentPlaylist.SetDifficulty(DifficultyInfo.GetDifficultyAsEnum(difficulty));
+    }
+
+    public void SetDifficultyWithTarget()
+    {
+        PlaylistManager.Instance.CurrentPlaylist.SetDifficulty(_targetDifficulty);
+    }
+    
 }
 
 }

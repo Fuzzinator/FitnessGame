@@ -15,7 +15,6 @@ public class SongInfo
 
     private const int MINUTE = 60;
     private const string DIVIDER = ":";
-
     #endregion
 
     public float BeatsPerMinute => _beatsPerMinute;
@@ -70,6 +69,8 @@ public class SongInfo
     public string Genre => _genre;
 
     public string Attribution => _attribution;
+
+    public string ImageFilename => _coverImageFilename;
 
     public DifficultySet[] DifficultySets => _difficultyBeatmapSets;
 
@@ -130,6 +131,21 @@ public class SongInfo
         {
             var info = difficulties.DifficultyInfos[j];
             if (info.Difficulty == difficulty)
+            {
+                return info;
+            }
+        }
+
+        return new DifficultyInfo();
+    }
+
+    public DifficultyInfo TryGetActiveDifficultyInfo(DifficultyInfo.DifficultyEnum difficulty, GameMode gameMode)
+    {
+        var difficulties = GetBeatMapSet(gameMode);
+        for (var j = 0; j < difficulties.DifficultyInfos.Length; j++)
+        {
+            var info = difficulties.DifficultyInfos[j];
+            if (info.DifficultyAsEnum == difficulty)
             {
                 return info;
             }
@@ -397,7 +413,22 @@ public class SongInfo
 
         return newFileName;
     }
+    
+    public async UniTask<Texture2D> LoadImage(CancellationToken token)
+    {
+        Texture2D image;
+        if (isCustomSong)
+        {
+            image = await AssetManager.LoadCustomSongImage(fileLocation, this, token);
+        }
+        else
+        {
+            image = await AssetManager.LoadBuiltInSongImage(this, token);
+        }
 
+        return image;
+    }
+    
     [Serializable]
     public struct DifficultySet
     {

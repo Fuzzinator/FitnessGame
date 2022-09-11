@@ -17,6 +17,8 @@ public class Hand : BaseGameStateListener
     [SerializeField]
     private Transform _glove;
 
+    private Renderer _gloveRenderer;
+    
     public Collider MyCollider => _collider;
 
     public HitSideType AssignedHand => _assignedHand;
@@ -194,8 +196,16 @@ public class Hand : BaseGameStateListener
     public void SetAndSpawnGlove(Collider newGlove)
     {
         _collider = Instantiate(newGlove, transform);
+
+        _collider.TryGetComponent(out _gloveRenderer);
         _glove = _collider.transform;
+        SetGloveColor();
         SetOffset();
+    }
+
+    private void SetGloveColor()
+    {
+        _gloveRenderer.sharedMaterial.color = ColorsManager.Instance.GetAppropriateColor(_assignedHand, true);
     }
     
     public void UnparentGlove()

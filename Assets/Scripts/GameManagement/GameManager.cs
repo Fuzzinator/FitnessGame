@@ -13,8 +13,6 @@ public class GameManager : MonoBehaviour
     private InputManager _inputManager;
 
     public bool GameIsPaused { get; private set; }
-    
-    public GameMode CurrentGameMode { get; private set; }
 
     #region Const Strings
 
@@ -74,10 +72,5 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 1;
         GameIsPaused = false;
-    }
-
-    public void SetGameMode(GameMode mode)
-    {
-        CurrentGameMode = mode;
     }
 }

@@ -163,8 +163,24 @@ public class SongInfoReader : MonoBehaviour
     {
         info = json;
         songInfo = JsonUtility.FromJson<SongInfo>(json);
-        _difficultyInfo = songInfo.TryGetActiveDifficultyInfo(item.Difficulty, item.TargetGameMode);
-        _gameMode = item.TargetGameMode;
+        var playlist = PlaylistManager.Instance.CurrentPlaylist;
+        if (playlist.GameModeOverride == GameMode.Unset)
+        {
+            _gameMode = item.TargetGameMode;
+        }
+        else
+        {
+            _gameMode = playlist.GameModeOverride;
+        }
+
+        if (playlist.DifficultyEnum == DifficultyInfo.DifficultyEnum.INVALID)
+        {
+            _difficultyInfo = songInfo.TryGetActiveDifficultyInfo(item.Difficulty, item.TargetGameMode);
+        }
+        else
+        {
+            _difficultyInfo = songInfo.TryGetActiveDifficultyInfo(playlist.DifficultyEnum, _gameMode);
+        }
     }
 
     public string GetSongFullName()

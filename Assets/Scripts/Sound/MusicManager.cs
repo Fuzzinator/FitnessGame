@@ -28,8 +28,6 @@ public class MusicManager : BaseGameStateListener
     private bool _musicPaused = false;
     private bool _applicationPaused = false;
 
-    private SongLoader _songLoader;
-
     private float _previousTime = 0;
     
     private bool IsPlayingOrPaused => _musicAudioSource.isPlaying || _musicPaused || _applicationPaused;
@@ -71,8 +69,6 @@ public class MusicManager : BaseGameStateListener
     {
         _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
         _cancellationToken = this.GetCancellationTokenOnDestroy();
-
-        _songLoader = new SongLoader();
     }
 
     private void OnDestroy()
@@ -108,11 +104,11 @@ public class MusicManager : BaseGameStateListener
 
         if (item.IsCustomSong)
         {
-            audioClip = await _songLoader.LoadCustomSong(item.FileLocation, item.SongInfo, _cancellationSource.Token);
+            audioClip = await AssetManager.LoadCustomSong(item.FileLocation, item.SongInfo, _cancellationSource.Token);
         }
         else
         {
-            audioClip = await _songLoader.LoadBuiltInSong(item.SongInfo, _cancellationSource.Token);
+            audioClip = await AssetManager.LoadBuiltInSong(item.SongInfo, _cancellationSource.Token);
         }
 
 

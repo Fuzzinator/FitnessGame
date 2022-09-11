@@ -28,6 +28,11 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     [SerializeField]
     private UnityEvent<Playlist> _newPlaylistCreated = new UnityEvent<Playlist>();
 
+    [SerializeField]
+    private GameMode _gameMode = GameMode.Unset;
+
+    [SerializeField]
+    private DifficultyInfo.DifficultyEnum _difficulty = DifficultyInfo.DifficultyEnum.INVALID;
     public List<PlaylistItem> PlaylistItems => _playlistItems;
 
     private bool _editMode = false;
@@ -77,7 +82,6 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     {
         _activeItem = info;
     }
-
     public static PlaylistItem GetPlaylistItem(SongInfo songInfo, string difficulty, GameMode gameMode)
     {
         return new PlaylistItem(songInfo.SongName, songInfo.fileLocation, difficulty, songInfo.isCustomSong, gameMode, songInfo);
@@ -148,7 +152,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         }
 
         _playlistName = _playlistName.RemoveIllegalIOCharacters();
-        var newPlaylist = new Playlist(_playlistItems, _playlistName);
+        var newPlaylist = new Playlist(_playlistItems, _gameMode, _difficulty, _playlistName);
         if (string.IsNullOrWhiteSpace(_playlistName))
         {
             _playlistName = newPlaylist.PlaylistName;

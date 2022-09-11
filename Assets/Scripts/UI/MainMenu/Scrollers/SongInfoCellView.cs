@@ -1,7 +1,6 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using System.Threading;
 using Cysharp.Text;
+using Cysharp.Threading.Tasks;
 using EnhancedUI.EnhancedScroller;
 using TMPro;
 using UnityEngine;
@@ -13,6 +12,9 @@ namespace UI.Scrollers.Playlists
     public class SongInfoCellView : EnhancedScrollerCellView
     {
         [SerializeField]
+        private Image _songArt;
+        
+        [SerializeField]
         private TextMeshProUGUI _songDetails;
 
         [SerializeField]
@@ -20,9 +22,10 @@ namespace UI.Scrollers.Playlists
 
         private SongInfo _songInfo;
         private AvailableSongInfoScrollerController _controller;
+        private CancellationToken _cancellationToken;
         
         private const string SONGINFOFORMAT =
-            "<align=center>{0}</style>\n<size=50%>{1}<line-indent=15%>{2}<line-indent=15%>{3}</size></align>";
+            "<align=left>{0}</style>\n<size=50%>{1}<line-indent=15%>{2}<line-indent=15%>{3}</size></align>";
 
         private void OnValidate()
         {
@@ -47,11 +50,25 @@ namespace UI.Scrollers.Playlists
 
                 _songDetails.SetText(sb);
             }
+
+            _cancellationToken = controller.CancellationToken;
+            GetAndSetImage().Forget();
         }
 
         public void SetActiveSongInfo()
         {
             _controller.SetActiveInfo(_songInfo);
+        }
+
+        public async UniTaskVoid GetAndSetImage()
+        {
+            var image = await _songInfo.LoadImage(_cancellationToken);
+            if (image == null)
+            {
+                _songArt.sprite = null;
+            }
+            var newSprite = Sprite.Create(image, new Rect(0,0, image.width, image.height), Vector2.one *.5f, 100f);
+            _songArt.sprite = newSprite;
         }
     }
 }

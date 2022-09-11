@@ -19,7 +19,7 @@ namespace UI.Scrollers.Playlists
 
         protected string _searchKey = string.Empty;
 
-        private void Start()
+        protected virtual void Start()
         {
             _scroller.Delegate = this;
             //_scroller.ReloadData();

@@ -47,29 +47,19 @@ public struct DifficultyInfo
 
     public float BeatOffset => _noteJumpStartBeatOffset;
 
-    public DifficultyEnum DifficultyAsEnum
+    public DifficultyEnum DifficultyAsEnum => GetDifficultyAsEnum(_difficultyRank);
+
+    public static DifficultyEnum GetDifficultyAsEnum(int difficulty)
     {
-        get
+        return true switch
         {
-            switch (true)
-            {
-                case var b when _difficultyRank <= EASY:
-                    return DifficultyEnum.Easy;
-                    break;
-                case var b when _difficultyRank <= NORMAL:
-                    return DifficultyEnum.Normal;
-                case var b when _difficultyRank <= HARD:
-                    return DifficultyEnum.Hard;
-                case var b when _difficultyRank <= EXPERT:
-                    return DifficultyEnum.Expert;
-            }
-
-            return DifficultyEnum.INVALID;
-        }
+            var b when difficulty <= EASY => DifficultyEnum.Easy,
+            var b when difficulty <= NORMAL => DifficultyEnum.Normal,
+            var b when difficulty <= HARD => DifficultyEnum.Hard,
+            var b when difficulty <= EXPERT => DifficultyEnum.Expert,
+            _ => DifficultyEnum.INVALID
+        };
     }
-
-    //[SerializeField]
-    //private float _minTargetSpace;
 
     public float MinTargetSpace
     {

@@ -71,7 +71,18 @@ public class ChoreographyReader : MonoBehaviour
 
     private async UniTaskVoid AsyncLoadJson(PlaylistItem item)
     {
-        _difficultyInfo = item.SongInfo.TryGetActiveDifficultyInfo(item.Difficulty, item.TargetGameMode);
+        var playlist = PlaylistManager.Instance.CurrentPlaylist;
+        var gameMode = playlist.GameModeOverride == GameMode.Unset ? item.TargetGameMode : playlist.GameModeOverride;
+        
+        if (playlist.DifficultyEnum == DifficultyInfo.DifficultyEnum.INVALID)
+        {
+            _difficultyInfo = item.SongInfo.TryGetActiveDifficultyInfo(item.Difficulty, item.TargetGameMode);
+        }
+        else
+        {
+            _difficultyInfo = item.SongInfo.TryGetActiveDifficultyInfo(playlist.DifficultyEnum, gameMode);
+        }
+        
         if (_cancellationSource.IsCancellationRequested)
         {
             _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
@@ -103,10 +114,12 @@ public class ChoreographyReader : MonoBehaviour
     private void GetChoreographSequenceables()
     {
         _sequenceables.Clear();
+
+        var playlistGameMode = PlaylistManager.Instance.CurrentPlaylist.GameModeOverride;
         
-        var targetGameMode = PlaylistManager.Instance.OverrideGameMode
-            ? GameManager.Instance.CurrentGameMode
-            :PlaylistManager.Instance.CurrentItem.TargetGameMode;
+        var targetGameMode = playlistGameMode == GameMode.Unset
+            ? PlaylistManager.Instance.CurrentItem.TargetGameMode
+            :playlistGameMode;
 
         var notes = Notes;
         var obstacles = Obstacles;

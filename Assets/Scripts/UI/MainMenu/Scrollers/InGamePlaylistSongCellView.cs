@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Threading;
 using Cysharp.Text;
 using Cysharp.Threading.Tasks;
 using EnhancedUI.EnhancedScroller;
@@ -25,6 +26,8 @@ namespace UI.Scrollers.Playlists
         [SerializeField]
         private Image _highlight;
         public Image HighlightImage => _highlight;
+        
+        public CancellationToken CancellationToken { get; set; }
 
         public void SetData(PlaylistItem playlistItem)
         {

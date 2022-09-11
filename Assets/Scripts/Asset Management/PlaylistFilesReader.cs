@@ -25,19 +25,7 @@ public class PlaylistFilesReader : MonoBehaviour
     private UnityEvent _playlistsUpdated = new UnityEvent();
 
     public Playlist.SortingMethod CurrentSortingMethod => _sortingMethod;
-    #region Const Strings
-
-#if UNITY_ANDROID && !UNITY_EDITOR
-    private const string ANDROIDPATHSTART = "file://";
-    private const string PLAYLISTSFOLDER = "/Resources/Playlists/";
-#elif UNITY_EDITOR
-    private const string UNITYEDITORLOCATION = "/LocalCustomSongs/Playlists/";
-#endif
-
-    private const string PLAYLISTEXTENSION = ".txt";
-
-    #endregion
-
+    
     private void Awake()
     {
         if (Instance == null)
@@ -73,71 +61,15 @@ public class PlaylistFilesReader : MonoBehaviour
     private async UniTask UpdateAvailablePlaylists()
     {
         availablePlaylists.Clear();
-        await GetBuiltInPlaylists();
-        await GetCustomPlaylists();
+        void AddPlaylist(Playlist playlist) => availablePlaylists.Add(playlist);
+        await AssetManager.GetBuiltInPlaylists(_labelReference.labelString, AddPlaylist);
+        await AssetManager.GetCustomPlaylists(AddPlaylist);
+        
         SortPlaylists();
         _playlistsUpdated?.Invoke();
         //availablePlaylists = GetCustomPlaylists();
     }
-
-    private async UniTask GetBuiltInPlaylists()
-    {
-        await Addressables.LoadAssetsAsync<TextAsset>(_labelReference.labelString, async asset =>
-        {
-            if (asset == null)
-            {
-                return;
-            }
-
-            var playlist = JsonUtility.FromJson<Playlist>(asset.text);
-            playlist.isValid = await PlaylistValidator.IsValid(playlist);//This is a temporary solution.
-            //if (isValid)
-            //{
-                availablePlaylists.Add(playlist);
-            //}
-        });
-    }
-
-    private async UniTask GetCustomPlaylists()
-    {
-#if UNITY_ANDROID && !UNITY_EDITOR
-        var path = $"{Application.persistentDataPath}{PLAYLISTSFOLDER}";
-        /*if (!Permission.HasUserAuthorizedPermission(Permission.ExternalStorageRead))
-        {
-            Permission.RequestUserPermission(Permission.ExternalStorageRead);
-        }*/
-#elif UNITY_EDITOR
-            var dataPath = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/'));
-            var path = $"{dataPath}{UNITYEDITORLOCATION}";
-#endif
-        if (!Directory.Exists(path))
-        {
-            Directory.CreateDirectory(path);
-        }
-
-        var info = new DirectoryInfo(path);
-        var files = info.GetFiles();
-
-        foreach (var file in files)
-        {
-            if (file.Extension == PLAYLISTEXTENSION)
-            {
-                var streamReader = new StreamReader(file.FullName);
-                var reading = streamReader.ReadToEndAsync();
-                await reading;
-                var playlist = JsonUtility.FromJson<Playlist>(reading.Result);
-                
-                streamReader.Close();
-                
-                playlist.isValid = await PlaylistValidator.IsValid(playlist);
-                //if (playlist.isValid)
-                //{
-                    availablePlaylists.Add(playlist);
-                //}
-            }
-        }
-    }
-
+    
     public void AddNewPlaylist(Playlist playlist)
     {
         var existingPlaylist = availablePlaylists.Find((i) => i.PlaylistName == playlist.PlaylistName);

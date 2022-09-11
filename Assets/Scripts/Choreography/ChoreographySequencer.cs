@@ -476,9 +476,11 @@ public class ChoreographySequencer : MonoBehaviour
 
     public void RotateSpawnSource(float angle)
     {
-        var targetGameMode = PlaylistManager.Instance.OverrideGameMode
-            ? GameManager.Instance.CurrentGameMode
-            : PlaylistManager.Instance.CurrentItem.TargetGameMode;
+        var playlistGameMode = PlaylistManager.Instance.CurrentPlaylist.GameModeOverride;
+        
+        var targetGameMode = playlistGameMode == GameMode.Unset
+            ? PlaylistManager.Instance.CurrentItem.TargetGameMode
+            :playlistGameMode;
 
         if (targetGameMode == GameMode.Degrees90 &&
             Mathf.Abs(_currentRotation + angle) > MAX90ROTATION)
