@@ -51,22 +51,22 @@ public static class CustomSongsManager
 
 
     public static async UniTask<float> TryGetSongLength(SongInfo info,
-        CancellationTokenSource cancellationSource, bool customSong = true)
+        CancellationToken token, bool customSong = true)
     {
         UniTask<AudioClip> clipRequest;
         if (customSong)
         {
-            clipRequest = AssetManager.LoadCustomSong(info.fileLocation, info, cancellationSource.Token);
+            clipRequest = AssetManager.LoadCustomSong(info.fileLocation, info, token);
         }
         else
         {
-            clipRequest = AssetManager.LoadBuiltInSong(info, cancellationSource.Token);
+            clipRequest = AssetManager.LoadBuiltInSong(info, token);
         }
 
         var audioClip = await clipRequest;
         if (audioClip == null)
         {
-            if (!cancellationSource.IsCancellationRequested)
+            if (!token.IsCancellationRequested)
             {
                 Debug.LogError($"Failed to load {info.SongName}");
             }

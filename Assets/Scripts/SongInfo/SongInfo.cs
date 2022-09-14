@@ -15,6 +15,7 @@ public class SongInfo
 
     private const int MINUTE = 60;
     private const string DIVIDER = ":";
+
     #endregion
 
     public float BeatsPerMinute => _beatsPerMinute;
@@ -123,6 +124,8 @@ public class SongInfo
 
     [SerializeField]
     private DifficultySet[] _difficultyBeatmapSets;
+
+    private Sprite _songArt;
 
     public DifficultyInfo TryGetActiveDifficultyInfo(string difficulty, GameMode gameMode)
     {
@@ -413,22 +416,36 @@ public class SongInfo
 
         return newFileName;
     }
-    
-    public async UniTask<Texture2D> LoadImage(CancellationToken token)
+
+    public async UniTask<Sprite> LoadImage(CancellationToken token)
     {
+        if (_songArt != null)
+        {
+            return _songArt;
+        }
+
         Texture2D image;
         if (isCustomSong)
         {
-            image = await AssetManager.LoadCustomSongImage(fileLocation, this, token);
+            image = await /*UniTask.RunOnThreadPool(() => */AssetManager.LoadCustomSongImage(fileLocation, this, token)/*,
+                cancellationToken: token)*/;
         }
         else
         {
+            await UniTask.SwitchToMainThread(token);
             image = await AssetManager.LoadBuiltInSongImage(this, token);
         }
 
-        return image;
+        if (image == null)
+        {
+            return null;
+        }
+        
+        _songArt = Sprite.Create(image, new Rect(0,0, image.width, image.height),
+            Vector2.one *.5f, 100f);
+        return _songArt;
     }
-    
+
     [Serializable]
     public struct DifficultySet
     {

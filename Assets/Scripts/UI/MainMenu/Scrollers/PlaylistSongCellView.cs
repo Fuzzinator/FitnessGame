@@ -17,8 +17,9 @@ namespace UI.Scrollers.Playlists
     {
         [SerializeField]
         private Image _songImage;
+
         [SerializeField]
-        [FormerlySerializedAs("_songName")] 
+        [FormerlySerializedAs("_songName")]
         private TextMeshProUGUI _songDetails;
 
         [SerializeField]
@@ -29,13 +30,15 @@ namespace UI.Scrollers.Playlists
         public CancellationToken CancellationToken { get; set; }
 
         private const string INVALID = "<sprite index=1>";
-        private const string SONGINFOFORMAT = "<align=left>{0}</style>\n<size=50%>{1}<line-indent=15%>{2}</size></align>";
+
+        private const string SONGINFOFORMAT =
+            "<align=left>{0}</style>\n<size=50%>{1}<line-indent=15%>{2}</size></align>";
 
         public void SetData(PlaylistItem playlist)
         {
             UpdateDisplay(playlist).Forget();
         }
-        
+
         private async UniTaskVoid UpdateDisplay(PlaylistItem playlistItem)
         {
             var isValid = await PlaylistValidator.IsValid(playlistItem);
@@ -43,7 +46,7 @@ namespace UI.Scrollers.Playlists
             {
                 return;
             }
-            
+
             using (var sb = ZString.CreateStringBuilder(true))
             {
                 if (!isValid)
@@ -55,8 +58,9 @@ namespace UI.Scrollers.Playlists
                 {
                     _songDetails.margin = Vector4.one;
                 }
-                sb.AppendFormat(SONGINFOFORMAT, playlistItem.SongName, playlistItem.Difficulty, 
-                            playlistItem.TargetGameMode.GetDisplayName());
+
+                sb.AppendFormat(SONGINFOFORMAT, playlistItem.SongName, playlistItem.Difficulty,
+                    playlistItem.TargetGameMode.GetDisplayName());
 
                 _songDetails.SetText(sb);
             }
@@ -65,24 +69,20 @@ namespace UI.Scrollers.Playlists
             {
                 return;
             }
-            GetAndSetImage(playlistItem.SongInfo).Forget();
+
+            UniTask.RunOnThreadPool(() => GetAndSetImage(playlistItem.SongInfo), cancellationToken: CancellationToken);
         }
 
         public void SetHighlight(bool on)
         {
             _highlight.enabled = on;
         }
-        
+
         public async UniTaskVoid GetAndSetImage(SongInfo info)
         {
-            var image = await info.LoadImage(CancellationToken);
-            if (image == null)
-            {
-                _songImage.sprite = null;
-            }
-            var newSprite = Sprite.Create(image, new Rect(0,0, image.width, image.height),
-                                     Vector2.one *.5f, 100f);
-            _songImage.sprite = newSprite;
+             var sprite = await info.LoadImage(CancellationToken);
+            await UniTask.SwitchToMainThread(CancellationToken);
+            _songImage.sprite = sprite;
         }
     }
 }

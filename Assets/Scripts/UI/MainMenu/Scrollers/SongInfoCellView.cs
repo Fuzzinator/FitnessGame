@@ -13,7 +13,7 @@ namespace UI.Scrollers.Playlists
     {
         [SerializeField]
         private Image _songArt;
-        
+
         [SerializeField]
         private TextMeshProUGUI _songDetails;
 
@@ -23,7 +23,7 @@ namespace UI.Scrollers.Playlists
         private SongInfo _songInfo;
         private AvailableSongInfoScrollerController _controller;
         private CancellationToken _cancellationToken;
-        
+
         private const string SONGINFOFORMAT =
             "<align=left>{0}</style>\n<size=50%>{1}<line-indent=15%>{2}<line-indent=15%>{3}</size></align>";
 
@@ -42,9 +42,9 @@ namespace UI.Scrollers.Playlists
             var readableLength = info.ReadableLength;
             using (var sb = ZString.CreateStringBuilder(true))
             {
-                sb.AppendFormat(SONGINFOFORMAT, 
-                    info.SongName, 
-                    info.SongAuthorName, 
+                sb.AppendFormat(SONGINFOFORMAT,
+                    info.SongName,
+                    info.SongAuthorName,
                     info.LevelAuthorName,
                     readableLength);
 
@@ -52,7 +52,7 @@ namespace UI.Scrollers.Playlists
             }
 
             _cancellationToken = controller.CancellationToken;
-            GetAndSetImage().Forget();
+            UniTask.RunOnThreadPool(() => GetAndSetImage().Forget(), cancellationToken: _cancellationToken);
         }
 
         public void SetActiveSongInfo()
@@ -62,13 +62,9 @@ namespace UI.Scrollers.Playlists
 
         public async UniTaskVoid GetAndSetImage()
         {
-            var image = await _songInfo.LoadImage(_cancellationToken);
-            if (image == null)
-            {
-                _songArt.sprite = null;
-            }
-            var newSprite = Sprite.Create(image, new Rect(0,0, image.width, image.height), Vector2.one *.5f, 100f);
-            _songArt.sprite = newSprite;
+            var sprite = await _songInfo.LoadImage(_cancellationToken);
+            await UniTask.SwitchToMainThread(_cancellationToken);
+            _songArt.sprite = sprite;
         }
     }
 }

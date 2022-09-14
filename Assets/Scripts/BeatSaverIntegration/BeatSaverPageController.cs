@@ -315,7 +315,8 @@ public class BeatSaverPageController : MonoBehaviour
             _downloadButton.interactable = true;
         }
 
-        await SongInfoFilesReader.Instance.UpdateSongs();
+        await SongInfoFilesReader.Instance.LoadNewSong(folderName);
+        //await SongInfoFilesReader.Instance.UpdateSongs();
         PlaylistFilesReader.Instance.RefreshPlaylistsValidStates().Forget();
     }
 

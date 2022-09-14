@@ -133,7 +133,10 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     {
         if (_playlistItems == null || _playlistItems.Count == 0)
         {
-            Debug.LogError("Cannot create empty playlist");
+            //Debug.LogError("Cannot create empty playlist");
+            var visuals = new Notification.NotificationVisuals("Cannot create empty playlist", "Failed to Save",
+                autoTimeOutTime: 2.5f, popUp: true);
+            NotificationManager.RequestNotification(visuals);
             return;
         }
 #if UNITY_ANDROID && !UNITY_EDITOR
@@ -206,6 +209,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         _newPlaylistCreated?.Invoke(newPlaylist);
         _playlistItems.Clear();
         SetPlaylistName(NEWPLAYLISTNAME);
+        PlaylistManager.Instance.CurrentPlaylist = newPlaylist;
     }
 
     public float GetLength()
