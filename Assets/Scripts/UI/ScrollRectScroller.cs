@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using EnhancedUI.EnhancedScroller;
 using UnityEngine;
@@ -46,15 +43,15 @@ public class ScrollRectScroller : MonoBehaviour
 
     private async UniTask AsyncScroll(float value)
     {
-        if (_scroller == null)
-        {
-            /*var rectHeight = _scrollRect.content.rect.height;
-            value = (rectHeight * value) / rectHeight;*/
-        }
+        /*if (_scroller == null)
+        {*/
+            var rectHeight = _scrollRect.content.rect.height;
+            value /= rectHeight;
+        /*}
         else
         {
             value /= _scroller.NumberOfCells;
-        }
+        }*/
         while (_scroll)
         {
             await UniTask.DelayFrame(1);

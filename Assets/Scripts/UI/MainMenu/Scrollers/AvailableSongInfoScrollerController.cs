@@ -55,7 +55,7 @@ namespace UI.Scrollers.Playlists
             }
             else
             {
-                foreach (var songInfo in SongInfoFilesReader.Instance.availableSongs)
+                foreach (var songInfo in /*System.Runtime.InteropServices.CollectionsMarshal.AsSpan(*/SongInfoFilesReader.Instance.availableSongs)
                 {
                     if (songInfo.SongName.Contains(_searchKey, StringComparison.InvariantCultureIgnoreCase) ||
                         songInfo.SongAuthorName.Contains(_searchKey, StringComparison.InvariantCultureIgnoreCase) ||

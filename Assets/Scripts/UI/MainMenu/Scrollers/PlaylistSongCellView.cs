@@ -70,7 +70,8 @@ namespace UI.Scrollers.Playlists
                 return;
             }
 
-            UniTask.RunOnThreadPool(() => GetAndSetImage(playlistItem.SongInfo), cancellationToken: CancellationToken);
+            GetAndSetImage(playlistItem.SongInfo).Forget();
+            //UniTask.RunOnThreadPool(() =>  cancellationToken: CancellationToken);
         }
 
         public void SetHighlight(bool on)
@@ -81,7 +82,7 @@ namespace UI.Scrollers.Playlists
         public async UniTaskVoid GetAndSetImage(SongInfo info)
         {
              var sprite = await info.LoadImage(CancellationToken);
-            await UniTask.SwitchToMainThread(CancellationToken);
+            //await UniTask.SwitchToMainThread(CancellationToken);
             _songImage.sprite = sprite;
         }
     }

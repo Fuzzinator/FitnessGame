@@ -52,7 +52,8 @@ namespace UI.Scrollers.Playlists
             }
 
             _cancellationToken = controller.CancellationToken;
-            UniTask.RunOnThreadPool(() => GetAndSetImage().Forget(), cancellationToken: _cancellationToken);
+            GetAndSetImage().Forget();
+            //UniTask.RunOnThreadPool(() => , cancellationToken: _cancellationToken);
         }
 
         public void SetActiveSongInfo()
@@ -63,7 +64,7 @@ namespace UI.Scrollers.Playlists
         public async UniTaskVoid GetAndSetImage()
         {
             var sprite = await _songInfo.LoadImage(_cancellationToken);
-            await UniTask.SwitchToMainThread(_cancellationToken);
+            //await UniTask.SwitchToMainThread(_cancellationToken);
             _songArt.sprite = sprite;
         }
     }

@@ -427,12 +427,12 @@ public class SongInfo
         Texture2D image;
         if (isCustomSong)
         {
-            image = await /*UniTask.RunOnThreadPool(() => */AssetManager.LoadCustomSongImage(fileLocation, this, token)/*,
-                cancellationToken: token)*/;
+            image = await UniTask.RunOnThreadPool(() => AssetManager.LoadCustomSongImage(fileLocation, this, token),
+                cancellationToken: token);
         }
         else
         {
-            await UniTask.SwitchToMainThread(token);
+            //await UniTask.SwitchToMainThread(token);
             image = await AssetManager.LoadBuiltInSongImage(this, token);
         }
 
