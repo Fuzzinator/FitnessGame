@@ -427,8 +427,7 @@ public class SongInfo
         Texture2D image;
         if (isCustomSong)
         {
-            image = await UniTask.RunOnThreadPool(() => AssetManager.LoadCustomSongImage(fileLocation, this, token),
-                cancellationToken: token);
+            image = await AssetManager.LoadCustomSongImage(fileLocation, this, token);
         }
         else
         {

@@ -13,15 +13,15 @@ public class SettingsDisplay : UIMenuController
 
     [SerializeField]
     private CanvasGroup _popUpPage;
-    
+
     [SerializeField]
     private CanvasGroup _confirmChangesPage;
-    
+
     [SerializeField]
     private Button _saveButton;
-    
+
     private readonly List<ISaver> _activeSavers = new List<ISaver>();
-    
+
     private static bool _changeMade;
 
     public bool ChangeMade
@@ -52,12 +52,22 @@ public class SettingsDisplay : UIMenuController
         gameObject.SetActive(false);
     }
 
+    private void OnEnable()
+    {
+        AddListener();
+    }
+
+    private void OnDisable()
+    {
+        RemoveListener();
+    }
+
     public override void Activate()
     {
         _mainPages.SetGroupState(true);
         base.Activate();
     }
-    
+
 
     public void CheckForChangesAndDisable()
     {
@@ -70,7 +80,7 @@ public class SettingsDisplay : UIMenuController
             gameObject.SetActive(false);
         }
     }
-    
+
     public void ChangeWasMade(ISaver saver)
     {
         ChangeMade = true;
@@ -78,6 +88,7 @@ public class SettingsDisplay : UIMenuController
         {
             return;
         }
+
         _activeSavers.Add(saver);
     }
 
@@ -88,17 +99,18 @@ public class SettingsDisplay : UIMenuController
         {
             saver.Revert();
         }
-        
+
         _activeSavers.Clear();
         ChangeMade = false;
     }
-    
+
     public void SaveChanges()
     {
         foreach (var saver in _activeSavers)
         {
             saver.Save();
         }
+
         _activeSavers.Clear();
         ChangeMade = false;
     }
@@ -106,23 +118,50 @@ public class SettingsDisplay : UIMenuController
     public void SetPopUp(bool isOn)
     {
         _mainPages.SetGroupState(!isOn);
-        
+
         _confirmChangesPage.SetGroupState(false);
         _confirmChangesPage.gameObject.SetActive(false);
-        
+
         _popUpPage.SetGroupState(isOn);
         _popUpPage.gameObject.SetActive(isOn);
     }
 
     public void SetSaveScreen(bool isOn)
     {
-        
         _mainPages.SetGroupState(!isOn);
-        
+
         _popUpPage.SetGroupState(false);
         _popUpPage.gameObject.SetActive(false);
-        
+
         _confirmChangesPage.SetGroupState(isOn);
         _confirmChangesPage.gameObject.SetActive(isOn);
+    }
+
+
+    protected void AddListener()
+    {
+        GameStateManager.Instance.gameStateChanged.AddListener(GameStateListener);
+    }
+
+    protected void RemoveListener()
+    {
+        GameStateManager.Instance.gameStateChanged.RemoveListener(GameStateListener);
+    }
+
+    protected void GameStateListener(GameState oldState, GameState newState)
+    {
+        switch (newState)
+        {
+            case GameState.Playing:
+            case GameState.InMainMenu:
+                if (oldState == GameState.Paused)
+                {
+                    DiscardChanges();
+                    SetPopUp(false);
+                    SetSaveScreen(false);
+                }
+
+                break;
+        }
     }
 }

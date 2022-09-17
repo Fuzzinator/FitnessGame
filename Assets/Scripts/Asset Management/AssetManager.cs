@@ -140,8 +140,8 @@ public class AssetManager : MonoBehaviour
             Debug.LogWarning("User did not give permissions cannot access custom files");
             return null;
         }
-        /*try
-        {*/
+        try
+        {
 #if UNITY_ANDROID && !UNITY_EDITOR
             var path = $"{DataPath}{SONGSFOLDER}{parentDirectory}/{info.ImageFilename}";
 #elif UNITY_EDITOR
@@ -166,7 +166,7 @@ public class AssetManager : MonoBehaviour
             var texture = new Texture2D(2, 2);
             texture.LoadImage(bytes);
             return texture;
-        /*}
+        }
         catch (Exception e) when (e is OperationCanceledException)
         {
             return null;
@@ -175,7 +175,7 @@ public class AssetManager : MonoBehaviour
         {
             Debug.LogError($"Failed to load image\n {e.Message}");
             return null;
-        }*/
+        }
     }
 
     public static async UniTask<Texture2D> LoadBuiltInSongImage(SongInfo item, CancellationToken cancellationToken)
