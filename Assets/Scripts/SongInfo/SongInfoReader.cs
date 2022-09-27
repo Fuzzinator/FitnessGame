@@ -173,7 +173,7 @@ public class SongInfoReader : MonoBehaviour
             _gameMode = playlist.GameModeOverride;
         }
 
-        if (playlist.DifficultyEnum == DifficultyInfo.DifficultyEnum.INVALID)
+        if (playlist.DifficultyEnum == DifficultyInfo.DifficultyEnum.Unset)
         {
             _difficultyInfo = songInfo.TryGetActiveDifficultyInfo(item.Difficulty, item.TargetGameMode);
         }

@@ -21,12 +21,23 @@ public class UIToggleBoolSetting : MonoBehaviour, ISaver
 
    private bool _currentValue;
    
+   public bool SaveRequested { get; set; }
+   
    private const string ON = "On";
    private const string OFF = "Off";
    
    private void OnEnable()
    {
       Revert();
+      SaveRequested = false;
+   }
+
+   private void OnDisable()
+   {
+      if (!SaveRequested)
+      {
+         Revert();
+      }
    }
 
    public void ToggleSet(bool isOn)
@@ -36,12 +47,15 @@ public class UIToggleBoolSetting : MonoBehaviour, ISaver
          _currentValue = isOn;
          _text.SetText(isOn?ON:OFF);
          _settingsDisplay.ChangeWasMade(this);
+         
+         SaveRequested = true;
       }
    }
 
    public void Save()
    {
       SettingsManager.SetSetting(_settingName, _currentValue);
+      SaveRequested = false;
    }
 
    public void Revert()
@@ -49,5 +63,6 @@ public class UIToggleBoolSetting : MonoBehaviour, ISaver
       _currentValue = SettingsManager.GetSetting(_settingName, _defaultValue);
       _toggle.SetIsOnWithoutNotify(_currentValue);
       _text.SetText(_currentValue?ON:OFF);
+      SaveRequested = false;
    }
 }

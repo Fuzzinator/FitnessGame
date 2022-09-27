@@ -125,6 +125,7 @@ public class SongInfoFilesReader : MonoBehaviour
 
     public async UniTask LoadNewSong(string songFolderName)
     {
+        
         var songInfo = await AssetManager.TryGetSingleCustomSong(songFolderName, _cancellationSource.Token);
         if (songInfo != null)
         {

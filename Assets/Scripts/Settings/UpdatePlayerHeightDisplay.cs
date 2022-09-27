@@ -17,9 +17,24 @@ public class UpdatePlayerHeightDisplay : MonoBehaviour, ISaver
     private bool _pressed;
 
     private CancellationToken _cancellationToken;
+    
+    public bool SaveRequested { get; set; }
 
     private const string METERS = "<size=50%> Meters</size>";
-    
+
+    private void OnEnable()
+    {
+        SaveRequested = false;
+    }
+
+    private void OnDisable()
+    {
+        if (!SaveRequested)
+        {
+            Revert();
+        }
+    }
+
     private void Start()
     {
         _cancellationToken = this.GetCancellationTokenOnDestroy();
@@ -39,6 +54,8 @@ public class UpdatePlayerHeightDisplay : MonoBehaviour, ISaver
         _setHeight = Head.Instance.transform.position.y;
         _settingsDisplay.ChangeWasMade(this);
         UpdateDisplay();
+        
+        SaveRequested = true;
     }
 
     public void StartUpdating(float increment)
@@ -86,11 +103,13 @@ public class UpdatePlayerHeightDisplay : MonoBehaviour, ISaver
     public void Save()
     {
         GlobalSettings.UserHeight = _setHeight;
+        SaveRequested = false;
     }
 
     public void Revert()
     {
         _setHeight = GlobalSettings.UserHeight;
         UpdateDisplay();
+        SaveRequested = false;
     }
 }

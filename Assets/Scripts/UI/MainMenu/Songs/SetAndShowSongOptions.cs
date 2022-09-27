@@ -89,7 +89,7 @@ public class SetAndShowSongOptions : MonoBehaviour
         var lowest = 10;
         for (var i = 0; i < _activeDifficultySet.DifficultyInfos.Length; i++)
         {
-            var difficulty = (int)_activeDifficultySet.DifficultyInfos[i].DifficultyAsEnum;
+            var difficulty = (int)_activeDifficultySet.DifficultyInfos[i].DifficultyAsEnum -1;
 
             if (difficulty< lowest)
             {
@@ -161,7 +161,7 @@ public class SetAndShowSongOptions : MonoBehaviour
         var dificultyID = -1;
         for (var i = 0; i < _activeDifficultySet.DifficultyInfos.Length; i++)
         {
-            var difficulty = (int)_activeDifficultySet.DifficultyInfos[i].DifficultyAsEnum;
+            var difficulty = (int)_activeDifficultySet.DifficultyInfos[i].DifficultyAsEnum -1;
             if (difficulty == toggleID)
             {
                 dificultyID = i;

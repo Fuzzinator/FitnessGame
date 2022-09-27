@@ -53,11 +53,12 @@ public struct DifficultyInfo
     {
         return true switch
         {
+            var b when difficulty <= 0 => DifficultyEnum.Unset,
             var b when difficulty <= EASY => DifficultyEnum.Easy,
             var b when difficulty <= NORMAL => DifficultyEnum.Normal,
             var b when difficulty <= HARD => DifficultyEnum.Hard,
             var b when difficulty <= EXPERT => DifficultyEnum.Expert,
-            _ => DifficultyEnum.INVALID
+            _ => DifficultyEnum.Unset
         };
     }
 
@@ -101,6 +102,15 @@ public struct DifficultyInfo
 
     #endregion
 
+    private DifficultyInfo(DifficultyInfo info, string newFileName)
+    {
+        _difficulty = info._difficulty;
+        _difficultyRank = info._difficultyRank;
+        _beatmapFilename = newFileName;
+        _noteJumpMovementSpeed = info._noteJumpMovementSpeed;
+        _noteJumpStartBeatOffset = info._noteJumpStartBeatOffset;
+    }
+    
     public DifficultyInfo SetDifficulty(string difficultyName, int difficultyRank, bool downScale)
     {
         _difficulty = difficultyName;
@@ -116,18 +126,17 @@ public struct DifficultyInfo
         return this;
     }
 
-    public DifficultyInfo SetFileName(string fileName)
+    public static DifficultyInfo SetFileName( DifficultyInfo source, string fileName)
     {
-        _beatmapFilename = fileName;
-        return this;
+        return new DifficultyInfo(source,fileName);
     }
     
     public enum DifficultyEnum
     {
-        INVALID = -1,
-        Easy = 0,
-        Normal = 1,
-        Hard = 2,
-        Expert = 3
+        Unset = 0,
+        Easy = 1,
+        Normal = 2,
+        Hard = 3,
+        Expert = 4
     }
 }

@@ -33,6 +33,7 @@ public class ControllerOffsetTracker : MonoBehaviour, ISaver
 
     private CancellationToken _cancellationToken;
     
+    public bool SaveRequested { get; set; }
     
     private void Start()
     {
@@ -46,6 +47,8 @@ public class ControllerOffsetTracker : MonoBehaviour, ISaver
         InputManager.Instance.MainInput[LEFTGRIPRELEASED].performed += LeftGripReleased;
         InputManager.Instance.MainInput[RIGHTGRIPRELEASED].performed += RightGripReleased;
 
+        SaveRequested = false;
+        
 #if UNITY_EDITOR
         _leftStartPos = HandTracker.LeftEditorHand.GloveOffset;
         _rightStartPos = HandTracker.RightEditorHand.GloveOffset;
@@ -63,6 +66,11 @@ public class ControllerOffsetTracker : MonoBehaviour, ISaver
         InputManager.Instance.MainInput[RIGHTGRIPPRESSED].performed -= RightGripPressed;
         InputManager.Instance.MainInput[LEFTGRIPRELEASED].performed -= LeftGripReleased;
         InputManager.Instance.MainInput[RIGHTGRIPRELEASED].performed -= RightGripReleased;
+
+        if (!SaveRequested)
+        {
+            Revert();
+        }
     }
 
     private void LeftGripPressed(InputAction.CallbackContext obj)
@@ -130,18 +138,14 @@ public class ControllerOffsetTracker : MonoBehaviour, ISaver
 
     public void Finish()
     {
+        SaveRequested = true;
         SettingsDisplay.Instance.ChangeWasMade(this);
     }
 
     public void CancelChanges()
     {
-#if UNITY_EDITOR
-        HandTracker.LeftEditorHand.GloveOffset = _leftStartPos;
-        HandTracker.RightEditorHand.GloveOffset = _rightStartPos;
-#else
-        HandTracker.LeftHand.GloveOffset = _leftStartPos;
-        HandTracker.RightHand.GloveOffset = _rightStartPos;
-#endif
+        SaveRequested = false;
+        Revert();
     }
 
     public void Save()
@@ -150,6 +154,7 @@ public class ControllerOffsetTracker : MonoBehaviour, ISaver
         SettingsManager.SetSetting(SettingsManager.RIGHTGLOVEOFFSET, _rightOffset);
         SettingsManager.SetSetting(SettingsManager.LEFTGLOVEROTOFFSET, _leftRotationOffset);
         SettingsManager.SetSetting(SettingsManager.RIGHTGLOVEROTOFFSET, _rightRotationOffset);
+        SaveRequested = false;
     }
 
     public void ResetLeftController()
@@ -214,5 +219,6 @@ public class ControllerOffsetTracker : MonoBehaviour, ISaver
         HandTracker.LeftHand.GloveRotationOffset = _leftRotationOffset;
         HandTracker.RightHand.GloveRotationOffset = _rightRotationOffset;
 #endif
+        SaveRequested = false;
     }
 }

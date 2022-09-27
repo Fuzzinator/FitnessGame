@@ -129,5 +129,7 @@ namespace GameModeManagement
 
             return gameMode;
         }
+
+        public static string[] DifficultyDisplayNames => _difficultySetNames;
     }
 }

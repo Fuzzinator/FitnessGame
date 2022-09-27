@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Events;
 
 public class EnvironmentControlManager : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class EnvironmentControlManager : MonoBehaviour
     [SerializeField]
     private List<AddressableEnvAssetRef> _availableReferences = new List<AddressableEnvAssetRef>();
 
+    public UnityEvent availableReferencesUpdated = new UnityEvent();
 
     private int _targetEnvironmentIndex = 0;
 
@@ -36,7 +38,12 @@ public class EnvironmentControlManager : MonoBehaviour
 
     private void Start()
     {
-        GetBuiltInEnvironments().Forget();
+        UpdateEnvironments().Forget();
+    }
+
+    private async UniTaskVoid UpdateEnvironments()
+    {
+        await GetBuiltInEnvironments();
     }
 
     public void SetTargetEnvironmentIndex(int index)
@@ -47,6 +54,8 @@ public class EnvironmentControlManager : MonoBehaviour
     public void LoadSelection()
     {
         LoadEnvironmentData(_targetEnvironmentIndex);
+        
+        availableReferencesUpdated?.Invoke();
     }
 
     private void LoadEnvironmentData(int index)

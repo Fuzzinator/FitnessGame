@@ -25,7 +25,7 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
     {
         if (PlaylistManager.Instance.CurrentIndex < PlaylistManager.Instance.CurrentPlaylist.Items.Length)
         {
-            GetPreviousRecord();
+            GetPreviousRecord().Forget();
         }
     }
 

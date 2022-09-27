@@ -7,7 +7,7 @@ public class UIToggleGroupSetting : MonoBehaviour, ISaver
 {
     [SerializeField]
     private string _settingName;
-    
+
     [SerializeField]
     protected Toggle[] _toggles;
 
@@ -16,18 +16,22 @@ public class UIToggleGroupSetting : MonoBehaviour, ISaver
 
     protected int _currentValue;
     protected int _index;
+
+    public bool SaveRequested { get; set; }
+
     private void OnEnable()
     {
         Revert();
+        SaveRequested = false;
     }
-    
+
     public virtual void ToggleSet(Toggle selectedToggle)
     {
         if (!selectedToggle.isOn)
         {
             return;
         }
-        
+
         _index = -1;
         for (var i = 0; i < _toggles.Length; i++)
         {
@@ -37,22 +41,26 @@ public class UIToggleGroupSetting : MonoBehaviour, ISaver
                 break;
             }
         }
-        
+
         if (_currentValue != _index)
         {
             _currentValue = _index;
             _settingsDisplay.ChangeWasMade(this);
+            SaveRequested = true;
         }
     }
+
     public virtual void Save()
     {
         SettingsManager.SetSetting(_settingName, _currentValue);
+        SaveRequested = false;
     }
-    
+
     public virtual void Revert()
     {
         GetDefaultValue();
         SetActiveToggle();
+        SaveRequested = false;
     }
 
     protected void SetActiveToggle()
@@ -62,7 +70,7 @@ public class UIToggleGroupSetting : MonoBehaviour, ISaver
             _toggles[_currentValue].isOn = true;
         }
     }
-    
+
     protected void GetDefaultValue()
     {
         _currentValue = SettingsManager.GetSetting(_settingName, _currentValue);

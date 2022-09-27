@@ -110,7 +110,6 @@ public class SongInfo
 
     public string fileLocation;
 
-    [NonSerialized]
     public bool isCustomSong;
 
     [SerializeField]
@@ -192,25 +191,6 @@ public class SongInfo
         var createdRotationSet = false;
         var rotation90Set = new DifficultySet();
         var rotation360Set = new DifficultySet();
-
-        /*List<DifficultySet> difficultySets = null;
-        foreach (var set in _difficultyBeatmapSets)
-        {
-            if (set.DifficultyInfos != null)
-            {
-                continue;
-            }
-
-            madeChange = true;
-            
-            difficultySets ??= new List<DifficultySet>(_difficultyBeatmapSets);//if difficultySets == null, make new list and add array
-
-            difficultySets.Remove(set);
-        }
-        if (difficultySets != null)
-        {
-            _difficultyBeatmapSets = difficultySets.ToArray();
-        }*/
 
         for (var i = 0; i < _difficultyBeatmapSets.Length; i++)
         {
@@ -603,8 +583,7 @@ public class SongInfo
             var beatmaps = new DifficultyInfo[_difficultyBeatmaps.Length];
             for (var i = 0; i < _difficultyBeatmaps.Length; i++)
             {
-                beatmaps[i] = _difficultyBeatmaps[i];
-                beatmaps[i] = beatmaps[i].SetFileName(fileName);
+                beatmaps[i] = DifficultyInfo.SetFileName(_difficultyBeatmaps[i], fileName);
             }
 
             _difficultyBeatmaps = beatmaps;

@@ -8,35 +8,23 @@ public class ColorsManager : MonoBehaviour
 {
     public static ColorsManager Instance { get; private set; }
 
-    [Header("Controllers & Notes")]
     [SerializeField]
-    private Color _leftController;
-
-    [SerializeField]
-    private Color _rightController;
-
-    [SerializeField]
-    private Color _blockColor;
-
-    [SerializeField]
-    private Color _obstacleColor;
-
-    [Space]
-    [Header("Environment")]
-    [SerializeField]
-    private Color _leftEnvironment;
-
-    [SerializeField]
-    private Color _rightEnvironment;
-
-    [SerializeField]
-    private Color _centerEnvironment;
-
+    private ColorSet _currentColorSet = ColorSet.Default;
+    
     [SerializeField]
     private Texture2DArray _targetTexturesArray;
 
     [SerializeField]
     private Texture2DArray _obstacleTexturesArray;
+
+    private ColorSet[] _colorSets;
+    private int _customColorCount;
+    #region Const Vars
+
+    private const string CUSTOMCOLORSETCOUNT = "CustomColorSetCount";
+    private const string CUSTOMCOLORSETNUMBERX = "CustomColorSetNumber:";
+    
+    #endregion
     
     private void Awake()
     {
@@ -53,6 +41,7 @@ public class ColorsManager : MonoBehaviour
     private void Start()
     {
         UpdateTextureSets();
+        GetColorSets();
     }
 
     private void OnValidate()
@@ -77,10 +66,79 @@ public class ColorsManager : MonoBehaviour
     {
         return hitSide switch
         {
-            HitSideType.Left => isNote?_leftController:_leftEnvironment,
-            HitSideType.Right => isNote?_rightController:_rightEnvironment,
-            HitSideType.Block =>  isNote?_blockColor:_centerEnvironment,
+            HitSideType.Left => isNote?_currentColorSet.LeftController:_currentColorSet.LeftEnvironment,
+            HitSideType.Right => isNote?_currentColorSet.RightController:_currentColorSet.RightEnvironment,
+            HitSideType.Block =>  isNote?_currentColorSet.BlockColor:_currentColorSet.CenterEnvironment,
+            HitSideType.Unused => _currentColorSet.ObstacleColor,
             _ => Color.white
         };
+    }
+    
+    private void GetColorSets()
+    {
+        _customColorCount = SettingsManager.GetSetting(CUSTOMCOLORSETCOUNT, 0);
+        _colorSets = new ColorSet[_customColorCount];
+        for (var i = 0; i < _customColorCount; i++)
+        {
+            _colorSets[i] = SettingsManager.GetSetting($"{CUSTOMCOLORSETNUMBERX}{i}", ColorSet.Default);
+        }
+    }
+
+    [Serializable]
+    public struct ColorSet
+    {
+        [Header("Controllers & Notes Colors")]
+        [SerializeField]
+        private Color _leftController;
+
+        [SerializeField]
+        private Color _rightController;
+
+        [SerializeField]
+        private Color _blockColor;
+
+        [SerializeField]
+        private Color _obstacleColor;
+
+        [Space]
+        [Header("Environment Colors: Currently Unsed")]
+        [SerializeField]
+        private Color _leftEnvironment;
+
+        [SerializeField]
+        private Color _rightEnvironment;
+
+        [SerializeField]
+        private Color _centerEnvironment;
+
+        public Color LeftController => _leftController;
+        public Color RightController => _rightController;
+        public Color BlockColor => _blockColor;
+        public Color ObstacleColor => _obstacleColor;
+
+        public Color LeftEnvironment => _leftEnvironment;
+        public Color RightEnvironment => _rightEnvironment;
+        public Color CenterEnvironment => _centerEnvironment;
+
+        public ColorSet(Color leftController, Color rightController, Color blockColor, Color obstacleColor,
+            Color leftEnv, Color rightEnv, Color centerEnv)
+        {
+            _leftController = leftController;
+            _rightController = rightController;
+            _blockColor = blockColor;
+            _obstacleColor = obstacleColor;
+            _leftEnvironment = leftEnv;
+            _rightEnvironment = rightEnv;
+            _centerEnvironment = centerEnv;
+        }
+        
+        public static readonly ColorSet Default = new (
+            new Color(.1125f, .5374f, .75f),
+            new Color(.75f, .1125f, .1125f),
+            new Color(.1921f, .749f, .1137f),
+            new Color(0f, .949f, 1f),
+            new Color(),
+            new Color(),
+            new Color());
     }
 }

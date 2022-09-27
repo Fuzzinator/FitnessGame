@@ -4,20 +4,26 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class UIEnvironmentSetter : MonoBehaviour
+public class UIEnvironmentSetter : UIDropdownSetter
 {
-    [SerializeField]
-    private TMP_Dropdown _dropdownField;
-
-    private void Start()
+    private void OnEnable()
     {
         if (EnvironmentControlManager.Instance != null)
         {
             UpdateDropDownOptions();
+            EnvironmentControlManager.Instance.availableReferencesUpdated.AddListener(UpdateDropDownOptions);
         }
     }
 
-    public void SetDropdownOption(int value)
+    private void OnDisable()
+    {
+        if (EnvironmentControlManager.Instance != null)
+        {
+            EnvironmentControlManager.Instance.availableReferencesUpdated.RemoveListener(UpdateDropDownOptions);
+        }
+    }
+
+    public override void SetDropdownOption(int value)
     {
         if (EnvironmentControlManager.Instance != null)
         {
@@ -25,7 +31,7 @@ public class UIEnvironmentSetter : MonoBehaviour
         }
     }
 
-    private void UpdateDropDownOptions()
+    protected override void UpdateDropDownOptions()
     {
         var listOfOptions = EnvironmentControlManager.Instance.GetNewAvailableEnvironmentsList();
         _dropdownField.ClearOptions();

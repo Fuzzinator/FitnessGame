@@ -17,8 +17,7 @@ public struct Playlist
     [SerializeField]
     private float _length;
 
-
-    [FormerlySerializedAs("items")] [SerializeField]
+    [SerializeField]
     private PlaylistItem[] _items;
 
     public PlaylistItem[] Items => _items;
@@ -69,10 +68,9 @@ public struct Playlist
         }
     }
 
-
     private const int MINUTE = 60;
     private const string DIVIDER = ":";
-
+    
     public Playlist(List<PlaylistItem> items, GameMode gameMode, DifficultyInfo.DifficultyEnum difficulty, 
                     string playlistName = null, bool isCustomPlaylist = true)
     {
@@ -100,7 +98,7 @@ public struct Playlist
         _isCustomPlaylist = singleSong.IsCustomSong;
         _length = singleSong.SongInfo.SongLength;
         _gameMode = GameMode.Unset;
-        _difficulty = DifficultyInfo.DifficultyEnum.INVALID;
+        _difficulty = DifficultyInfo.DifficultyEnum.Unset;
         isValid = true;
     }
 
@@ -113,7 +111,6 @@ public struct Playlist
     {
         _items.Shuffle();
     }
-
 
     public void SetGameMode(GameMode mode)
     {

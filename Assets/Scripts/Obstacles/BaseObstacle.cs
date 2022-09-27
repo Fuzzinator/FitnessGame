@@ -6,13 +6,15 @@ using UnityEngine.Events;
 
 public class BaseObstacle : MonoBehaviour, IPoolable
 {
+    [SerializeField]
+    private SetRendererMaterial _setRendererMaterial;
     public PoolManager MyPoolManager { get; set; }
 
     public bool IsPooled { get; set; }
 
     public void Initialize()
     {
-        
+        _setRendererMaterial.Initialize(HitSideType.Unused);
     }
     public void ReturnToPool()
     {

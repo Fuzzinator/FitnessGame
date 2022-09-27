@@ -22,6 +22,8 @@ public class AudioSliderController : MonoBehaviour, ISaver
     private Slider _slider;
 
     private float _setVolume;
+    
+    public bool SaveRequested { get; set;}
 
     #region Const Strings
 
@@ -29,6 +31,8 @@ public class AudioSliderController : MonoBehaviour, ISaver
 
     #endregion
 
+   
+    
     private void Start()
     {
         _setVolume = SettingsManager.Instance.GetVolumeMixer(_mixerType);
@@ -37,18 +41,30 @@ public class AudioSliderController : MonoBehaviour, ISaver
     private void OnEnable()
     {
         _slider.value = SettingsManager.Instance.GetVolumeMixer(_mixerType);
+        
+        SaveRequested = false;
     }
-
+    
+    private void OnDisable()
+    {
+        if (!SaveRequested)
+        {
+            Revert();
+        }
+    }
+    
     public void ApplyChange()
     {
         SettingsManager.Instance.SetVolumeMixer(_mixerType, _slider.value);
         _settingsDisplay.ChangeWasMade(this);
+        SaveRequested = true;
 
     }
 
     public void Save()
     {
         SettingsManager.SetSetting(SettingsManager.GetVolumeMixerName(_mixerType), _slider.value);
+        SaveRequested = false;
     }
 
     public void Revert()
@@ -56,6 +72,7 @@ public class AudioSliderController : MonoBehaviour, ISaver
         _slider.value = SettingsManager.GetSetting(SettingsManager.GetVolumeMixerName(_mixerType), 1f);
         
         SettingsManager.Instance.SetVolumeMixer(_mixerType, _slider.value);
+        SaveRequested = false;
     }
 
 public void OnChangeSlider(float value)

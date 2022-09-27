@@ -140,6 +140,7 @@ public class AssetManager : MonoBehaviour
             Debug.LogWarning("User did not give permissions cannot access custom files");
             return null;
         }
+
         try
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
@@ -247,7 +248,7 @@ public class AssetManager : MonoBehaviour
             }
         }
     }
-    
+
     public static async UniTask GetBuiltInPlaylists(string label, Action<Playlist> playlistLoaded)
     {
         await Addressables.LoadAssetsAsync<TextAsset>(label, async asset =>
@@ -262,7 +263,7 @@ public class AssetManager : MonoBehaviour
             playlistLoaded?.Invoke(playlist);
         });
     }
-    
+
     public static async UniTask GetBuiltInSongs(AssetLabelReference label, Action<SongInfo> songLoaded)
     {
         await Addressables.LoadAssetsAsync<TextAsset>(label, asset =>
@@ -321,14 +322,14 @@ public class AssetManager : MonoBehaviour
         var path = $"{Application.persistentDataPath}{SONGSFOLDER}/{fileLocation}";
 #elif UNITY_EDITOR
         var dataPath = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/'));
-        var path = $"{dataPath}{EDITORCUSTOMSONGFOLDER}/{fileLocation}";
+        var path = $"{dataPath}{EDITORCUSTOMSONGFOLDER}{fileLocation}";
 #endif
         if (!Directory.Exists(path))
         {
             Directory.CreateDirectory(path);
         }
 
-        return await GetSingleCustomSong(fileLocation, token);
+        return await GetSingleCustomSong(path, token);
     }
 
     public static async UniTask<SongInfo> GetSingleCustomSong(string fileLocation, CancellationToken token)
@@ -361,8 +362,11 @@ public class AssetManager : MonoBehaviour
                     updatedMaps = true;
                 }
 
-
-                item.isCustomSong = true;
+                if(!item.isCustomSong)
+                {
+                    item.isCustomSong = true;
+                    updatedMaps = true;
+                }
                 if (item.SongLength < 1)
                 {
                     var songLength = await CustomSongsManager.TryGetSongLength(item, token);
@@ -370,7 +374,11 @@ public class AssetManager : MonoBehaviour
                     updatedMaps = true;
                 }
 
-                updatedMaps = await item.UpdateDifficultySets(token);
+                var madeChange = await item.UpdateDifficultySets(token);
+                if (madeChange)
+                {
+                    updatedMaps = true;
+                }
 
                 if (updatedMaps)
                 {
@@ -380,6 +388,7 @@ public class AssetManager : MonoBehaviour
                         await streamWriter.WriteAsync(JsonUtility.ToJson(item));
                     }
                 }
+
                 return item;
             }
         }

@@ -32,7 +32,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     private GameMode _gameMode = GameMode.Unset;
 
     [SerializeField]
-    private DifficultyInfo.DifficultyEnum _difficulty = DifficultyInfo.DifficultyEnum.INVALID;
+    private DifficultyInfo.DifficultyEnum _difficulty = DifficultyInfo.DifficultyEnum.Unset;
     public List<PlaylistItem> PlaylistItems => _playlistItems;
 
     private bool _editMode = false;

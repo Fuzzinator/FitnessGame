@@ -157,7 +157,8 @@ MonoBehaviour:
     _length: 0
     _items: []
     _isCustomPlaylist: 0
-  _overrideGameMode: 0
+    _gameMode: 0
+    _difficulty: 0
   playlistItemUpdated:
     m_PersistentCalls:
       m_Calls: []
@@ -321,6 +322,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _availableReferences: []
+  availableReferencesUpdated:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &943962901
 GameObject:
   m_ObjectHideFlags: 0
@@ -549,6 +553,8 @@ MonoBehaviour:
   _textureArraySets:
   - _textureArrayName: _TargetTextures
     _textureArray: {fileID: 18700000, guid: c20004db87ee21a4dbe852a7f7aa0e00, type: 3}
+  - _textureArrayName: _ObstacleTextures
+    _textureArray: {fileID: 18700000, guid: 321156ac5d4f49243bd1d3b14fc8843c, type: 3}
 --- !u!4 &1160219337
 Transform:
   m_ObjectHideFlags: 0
@@ -752,7 +758,11 @@ MonoBehaviour:
       isNote: 1
   - shouldInstance: 0
     hitSideType: 2
-    materials: []
+    materials:
+    - material: {fileID: 2100000, guid: d5be44c6e53cf44498f31b81f0e40a12, type: 2}
+      isNote: 0
+    - material: {fileID: 2100000, guid: b1b683a8fc064f14d8f6b4ab181880cd, type: 2}
+      isNote: 0
   - shouldInstance: 0
     hitSideType: 3
     materials:
@@ -770,12 +780,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49d1ecaf8d6e4ca459f3fb865af287b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _leftController: {r: 0.11249998, g: 0.5374999, b: 0.75, a: 1}
-  _rightController: {r: 0.75, g: 0.11249998, b: 0.11249998, a: 1}
-  _blockColor: {r: 0.19215687, g: 0.7490196, b: 0.11372549, a: 1}
-  _obstacleColor: {r: 0.5882353, g: 0.7294118, b: 0.7372549, a: 1}
-  _leftEnvironment: {r: 0, g: 0, b: 0, a: 0}
-  _rightEnvironment: {r: 0, g: 0, b: 0, a: 0}
-  _centerEnvironment: {r: 0, g: 0, b: 0, a: 0}
+  _currentColorSet:
+    _leftController: {r: 0.1125, g: 0.5374, b: 0.75, a: 1}
+    _rightController: {r: 0.75, g: 0.1125, b: 0.1125, a: 1}
+    _blockColor: {r: 0.1921, g: 0.749, b: 0.1137, a: 1}
+    _obstacleColor: {r: 0, g: 0.949, b: 1, a: 1}
+    _leftEnvironment: {r: 0, g: 0, b: 0, a: 0}
+    _rightEnvironment: {r: 0, g: 0, b: 0, a: 0}
+    _centerEnvironment: {r: 0, g: 0, b: 0, a: 0}
   _targetTexturesArray: {fileID: 0}
   _obstacleTexturesArray: {fileID: 0}

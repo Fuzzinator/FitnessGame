@@ -38,12 +38,12 @@ public class PlaylistManager : MonoBehaviour
         set
         {
             _currentPlaylist = value;
-            currentPlaylistUpdated?.Invoke(_currentIndex);
+            currentPlaylistUpdated?.Invoke(value);
         }
     }
     
     public UnityEvent<PlaylistItem> playlistItemUpdated = new UnityEvent<PlaylistItem>();
-    public UnityEvent<int> currentPlaylistUpdated = new UnityEvent<int>();
+    public UnityEvent<Playlist> currentPlaylistUpdated = new UnityEvent<Playlist>();
 
     private int _currentIndex = 0;
 

@@ -74,7 +74,7 @@ public class ChoreographyReader : MonoBehaviour
         var playlist = PlaylistManager.Instance.CurrentPlaylist;
         var gameMode = playlist.GameModeOverride == GameMode.Unset ? item.TargetGameMode : playlist.GameModeOverride;
         
-        if (playlist.DifficultyEnum == DifficultyInfo.DifficultyEnum.INVALID)
+        if (playlist.DifficultyEnum == DifficultyInfo.DifficultyEnum.Unset)
         {
             _difficultyInfo = item.SongInfo.TryGetActiveDifficultyInfo(item.Difficulty, item.TargetGameMode);
         }
