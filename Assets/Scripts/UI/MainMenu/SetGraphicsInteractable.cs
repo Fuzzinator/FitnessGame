@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(CanvasRenderer))]
 public class SetGraphicsInteractable : Graphic
 {
     [SerializeField]
@@ -26,6 +27,11 @@ public class SetGraphicsInteractable : Graphic
     private Graphic[] _graphics;
     
     private bool _groupsEnabled = false;
+    
+    #if UNITY_EDITOR
+    [SerializeField]
+    private bool _changeSelectables;
+#endif
 
     private bool EnabledByCanvasGroup => !_parentGroup || _parentGroup.interactable;
 #if UNITY_EDITOR
@@ -52,6 +58,22 @@ public class SetGraphicsInteractable : Graphic
         {
             _graphics = _parentGroup.GetComponentsInChildren<Graphic>();
         }
+
+        color = new Color(0, 0, 0, 0);
+        raycastTarget = false;
+        
+#if UNITY_EDITOR
+        if (_changeSelectables)
+        {
+            var selectables = _parentGroup.GetComponentsInChildren<Selectable>();
+            foreach (var selectable in selectables)
+            {
+                var colors = selectable.colors;
+                colors.disabledColor = _disabledColor;
+                selectable.colors = colors;
+            }
+        }
+#endif
     }
 #endif
     protected override void OnCanvasGroupChanged()
@@ -109,6 +131,7 @@ namespace CustomEditors
         private SerializedProperty _fadeDurationProperty;
         private SerializedProperty _parentGroupProperty;
         private SerializedProperty _graphicsProperty;
+        private SerializedProperty _changeSelectablesProperty;
         
         private const string INTERACTABLE = "_interactable";
         private const string INTERACTABLECOLOR = "_interactableColor";
@@ -116,6 +139,7 @@ namespace CustomEditors
         private const string FADEDURATION = "_fadeDuration";
         private const string PARENTGROUP = "_parentGroup";
         private const string GRAPHICS = "_graphics";
+        private const string CHANGESELECTABLES = "_changeSelectables";
 
         private void Awake()
         {
@@ -125,6 +149,7 @@ namespace CustomEditors
             _fadeDurationProperty = serializedObject.FindProperty(FADEDURATION);
             _parentGroupProperty = serializedObject.FindProperty(PARENTGROUP);
             _graphicsProperty = serializedObject.FindProperty(GRAPHICS);
+            _changeSelectablesProperty = serializedObject.FindProperty(CHANGESELECTABLES);
         }
 
         public override void OnInspectorGUI()
@@ -135,6 +160,8 @@ namespace CustomEditors
             EditorGUILayout.PropertyField(_fadeDurationProperty);
             EditorGUILayout.PropertyField(_parentGroupProperty);
             EditorGUILayout.PropertyField(_graphicsProperty);
+            GUILayout.Space(10);
+            EditorGUILayout.PropertyField(_changeSelectablesProperty);
             serializedObject.ApplyModifiedProperties();
         }
     }

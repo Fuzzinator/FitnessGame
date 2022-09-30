@@ -36,12 +36,13 @@ public class CustomPlaylistsManager : MonoBehaviour
     {
         var playlist = PlaylistManager.Instance.CurrentPlaylist.PlaylistName;
         
+        PlaylistFilesReader.Instance.RemovePlaylist(PlaylistManager.Instance.CurrentPlaylist);
         DeletePlaylist(playlist);
         
         PlaylistManager.Instance.CurrentPlaylist = new Playlist();
     }
 
-    public void DeletePlaylist(string playlistName, bool notify = true)
+    public void DeletePlaylist(string playlistName)
     {
 #if UNITY_ANDROID && !UNITY_EDITOR
         var path = $"{Application.persistentDataPath}{PLAYLISTSFOLDER}";
@@ -54,11 +55,5 @@ public class CustomPlaylistsManager : MonoBehaviour
         {
             File.Delete(path);
         }
-
-        if (!notify)
-        {
-            return;
-        }
-        PlaylistFilesReader.Instance.UpdatePlaylists().Forget();
     }
 }

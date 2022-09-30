@@ -37,8 +37,6 @@ public static class CustomSongsManager
     
     public static async UniTask DeleteCustomSong(SongInfo info)
     {
-        
-        SongInfoFilesReader.Instance.availableSongs.Remove(info);
         var path = $"{Path}/{info.fileLocation}";
         if (!Directory.Exists(path))
         {
@@ -46,7 +44,6 @@ public static class CustomSongsManager
         }
 
         await UniTask.RunOnThreadPool(() => Directory.Delete(path, true));
-        await SongInfoFilesReader.Instance.UpdateSongs();
     }
 
 

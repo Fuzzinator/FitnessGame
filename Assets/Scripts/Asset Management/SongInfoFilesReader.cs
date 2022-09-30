@@ -117,6 +117,10 @@ public class SongInfoFilesReader : MonoBehaviour
     private async UniTaskVoid ConfirmDeleteSong(SongInfo targetSongInfo)
     {
         MainMenuUIController.Instance.RequestDisableUI(this);
+        
+        availableSongs.Remove(targetSongInfo);
+        _songsUpdated?.Invoke();
+        
         await CustomSongsManager.DeleteCustomSong(targetSongInfo);
         //_displaySongInfo.ClearDisplayedInfo();
         PlaylistMaker.Instance.SetActiveItem(new SongInfo());

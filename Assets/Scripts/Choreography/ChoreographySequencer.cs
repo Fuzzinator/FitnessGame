@@ -269,7 +269,7 @@ public class ChoreographySequencer : MonoBehaviour
         formationTransform.position = _formationStart.position;
         formationTransform.rotation = _formationStart.rotation;
 
-        var tweenSpeed = _meterDistance * 10 / SongInfoReader.Instance.NoteSpeed;
+        var tweenSpeed = SongInfoReader.Instance.NoteSpeed / _meterDistance * 10;
 
 
         formationHolder.SetUp(this, formation, nextFormationIndex, _optimalStrikePoint.position, _currentRotation);

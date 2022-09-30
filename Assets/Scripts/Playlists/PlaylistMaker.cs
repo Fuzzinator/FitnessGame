@@ -167,7 +167,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
             if (_originalName != _playlistName && File.Exists($"{path}{_originalName}.txt"))
             {
                 PlaylistFilesReader.Instance.RemovePlaylistByName(_originalName);
-                CustomPlaylistsManager.Instance.DeletePlaylist(_originalName, false);
+                CustomPlaylistsManager.Instance.DeletePlaylist(_originalName);
             }
         }
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Serialization;
 
 public class ColorsManager : MonoBehaviour
@@ -19,6 +20,12 @@ public class ColorsManager : MonoBehaviour
 
     private ColorSet[] _colorSets;
     private int _customColorCount;
+
+    public UnityEvent<ColorSet> activeColorSetUpdated = new UnityEvent<ColorSet>();
+
+    public ColorSet ActiveColorSet => _currentColorSet;
+    public ColorSet[] AvailableColorSets => _colorSets;
+    
     #region Const Vars
 
     private const string CUSTOMCOLORSETCOUNT = "CustomColorSetCount";
@@ -77,11 +84,23 @@ public class ColorsManager : MonoBehaviour
     private void GetColorSets()
     {
         _customColorCount = SettingsManager.GetSetting(CUSTOMCOLORSETCOUNT, 0);
-        _colorSets = new ColorSet[_customColorCount];
+        _colorSets = new ColorSet[_customColorCount+1];
+        _colorSets[0] = ColorSet.Default;
         for (var i = 0; i < _customColorCount; i++)
         {
-            _colorSets[i] = SettingsManager.GetSetting($"{CUSTOMCOLORSETNUMBERX}{i}", ColorSet.Default);
+            _colorSets[i+1] = SettingsManager.GetSetting($"{CUSTOMCOLORSETNUMBERX}{i}", ColorSet.Default);
         }
+    }
+
+    public bool IsActiveColorSet(ColorSet colorSet)
+    {
+        return _currentColorSet == colorSet;
+    }
+
+    public void SetActiveColorSet(ColorSet colorSet)
+    {
+        _currentColorSet = colorSet;
+        activeColorSetUpdated?.Invoke(colorSet);
     }
 
     [Serializable]
@@ -130,6 +149,33 @@ public class ColorsManager : MonoBehaviour
             _leftEnvironment = leftEnv;
             _rightEnvironment = rightEnv;
             _centerEnvironment = centerEnv;
+        }
+
+        public static bool operator ==(ColorSet a, ColorSet b)
+        {
+            return a._leftController == b._leftController &&
+                   a._rightController == b._rightController &&
+                   a._blockColor == b._blockColor &&
+                   a._obstacleColor == b._obstacleColor &&
+                   a._leftEnvironment == b._leftEnvironment &&
+                   a._rightEnvironment == b._rightEnvironment &&
+                   a._centerEnvironment == b._centerEnvironment;
+        }
+
+        public static bool operator !=(ColorSet a, ColorSet b)
+        {
+            return a._leftController != b._leftController ||
+                a._rightController != b._rightController ||
+                a._blockColor != b._blockColor ||
+                a._obstacleColor != b._obstacleColor ||
+                a._leftEnvironment != b._leftEnvironment ||
+                a._rightEnvironment != b._rightEnvironment ||
+                a._centerEnvironment != b._centerEnvironment;
+        }
+
+        public static bool Equal(ColorSet a, ColorSet b)
+        {
+            return a == b;
         }
         
         public static readonly ColorSet Default = new (

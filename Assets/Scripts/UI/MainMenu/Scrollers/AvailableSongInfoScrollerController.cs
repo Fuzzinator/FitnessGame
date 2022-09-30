@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using EnhancedUI.EnhancedScroller;
-using Oculus.Platform.Samples.VrHoops;
 using UnityEngine;
 using StringComparison = System.StringComparison;
 

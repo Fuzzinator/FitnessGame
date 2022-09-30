@@ -83,6 +83,12 @@ public class PlaylistFilesReader : MonoBehaviour
         }
         _playlistsUpdated?.Invoke();
     }
+
+    public void RemovePlaylist(Playlist playlist)
+    {
+        availablePlaylists.Remove(playlist);
+        _playlistsUpdated?.Invoke();
+    }
     
     public void SetSortMethod(Playlist.SortingMethod method)
     {
@@ -124,6 +130,7 @@ public class PlaylistFilesReader : MonoBehaviour
             if (availablePlaylists[i].PlaylistName == playlistName)
             {
                 availablePlaylists.RemoveAt(i);
+                _playlistsUpdated?.Invoke();
                 break;
             }
         }
