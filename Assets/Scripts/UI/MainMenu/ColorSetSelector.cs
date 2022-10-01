@@ -20,26 +20,28 @@ namespace UI
         private void OnEnable()
         {
             _controller.Refresh();
+            ColorsManager.Instance.availableColorSetsUpdated.AddListener(_controller.Refresh);
         }
 
         private void OnDisable()
         {
             RequestCloseSetEditor();
+            ColorsManager.Instance.availableColorSetsUpdated.RemoveListener(_controller.Refresh);
         }
 
-        public void SetActiveColorSet(ColorSet set)
+        public void SetActiveColorSet(ColorSet set, int index)
         {
-            ColorsManager.Instance.SetActiveColorSet(set);
+            ColorsManager.Instance.SetActiveColorSet(set, index);
         }
 
-        public void RequestOpenSetEditor(ColorSet set)
+        public void RequestOpenSetEditor(ColorSet set, int index)
         {
-            
+            _colorSetEditor.RequestShowEditor(set, index);
         }
 
         public void RequestCloseSetEditor()
         {
-            
+            _colorSetEditor.CloseEditor();
         }
     }
 }

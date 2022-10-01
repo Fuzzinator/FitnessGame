@@ -1233,6 +1233,8 @@ namespace EnhancedUI.EnhancedScroller
         /// </summary>
         private SmallList<EnhancedScrollerCellView> _activeCellViews = new SmallList<EnhancedScrollerCellView>();
 
+        public SmallList<EnhancedScrollerCellView> ActiveCells => _activeCellViews;
+
         /// <summary>
         /// The index of the first cell view that is being displayed
         /// </summary>

@@ -122,9 +122,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 6792649122609581316}
-        m_TargetAssemblyTypeName: EnhancedUI.EnhancedScroller.EnhancedScrollerCellView,
-          Assembly-CSharp-firstpass
-        m_MethodName: RefreshCellView
+        m_TargetAssemblyTypeName: UI.Scrollers.ColorSetCellView, Assembly-CSharp
+        m_MethodName: RequestOpenSetEditor
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -278,6 +277,7 @@ MonoBehaviour:
   _rightColor: {fileID: 1629397404616881991}
   _blockColor: {fileID: 1629397402651650323}
   _obstacleColor: {fileID: 1629397404666206964}
+  _editButton: {fileID: 1629397402638198011}
 --- !u!114 &1629397403005240679
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -302,7 +302,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 0}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 0}
     m_DisabledColor: {r: 0.1, g: 0.1, b: 0.1, a: 0.9019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1

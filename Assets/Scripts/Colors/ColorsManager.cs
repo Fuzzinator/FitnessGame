@@ -18,18 +18,29 @@ public class ColorsManager : MonoBehaviour
     [SerializeField]
     private Texture2DArray _obstacleTexturesArray;
 
-    private ColorSet[] _colorSets;
+    private List<ColorSet> _colorSets = new List<ColorSet>();
     private int _customColorCount;
 
     public UnityEvent<ColorSet> activeColorSetUpdated = new UnityEvent<ColorSet>();
-
-    public ColorSet ActiveColorSet => _currentColorSet;
-    public ColorSet[] AvailableColorSets => _colorSets;
+    public UnityEvent availableColorSetsUpdated = new UnityEvent();
+    
+    public ColorSet ActiveColorSet
+    {
+        get => _currentColorSet;
+        private set
+        {
+            _currentColorSet = value;
+            activeColorSetUpdated?.Invoke(value);
+        }
+    }
+    public List<ColorSet> AvailableColorSets => _colorSets;
+    public int ActiveSetIndex { get; private set; }
     
     #region Const Vars
 
     private const string CUSTOMCOLORSETCOUNT = "CustomColorSetCount";
     private const string CUSTOMCOLORSETNUMBERX = "CustomColorSetNumber:";
+    private const string ACTIVECOLORSETINDEX = "ActiveColorSetIndex";
     
     #endregion
     
@@ -84,12 +95,32 @@ public class ColorsManager : MonoBehaviour
     private void GetColorSets()
     {
         _customColorCount = SettingsManager.GetSetting(CUSTOMCOLORSETCOUNT, 0);
-        _colorSets = new ColorSet[_customColorCount+1];
-        _colorSets[0] = ColorSet.Default;
+        _colorSets.Clear();
+        _colorSets.Add(ColorSet.Default);
         for (var i = 0; i < _customColorCount; i++)
         {
-            _colorSets[i+1] = SettingsManager.GetSetting($"{CUSTOMCOLORSETNUMBERX}{i}", ColorSet.Default);
+            _colorSets.Add(SettingsManager.GetSetting($"{CUSTOMCOLORSETNUMBERX}{i}", ColorSet.Default));
         }
+
+        ActiveSetIndex = SettingsManager.GetSetting(ACTIVECOLORSETINDEX, 0);
+        SetActiveColorSet(ActiveSetIndex);
+        availableColorSetsUpdated?.Invoke();
+    }
+
+    public int AddColorSet(ColorSet colorSet)
+    {
+        _colorSets.Add(colorSet);
+        availableColorSetsUpdated?.Invoke();
+        SaveColorSet(colorSet, AvailableColorSets.Count - 2);
+        SettingsManager.SetSetting(CUSTOMCOLORSETCOUNT, AvailableColorSets.Count-1);
+        return _colorSets.Count - 1;
+    }
+
+    public void UpdateColorSet(ColorSet colorSet, int index)
+    {
+        _colorSets[index+1] = colorSet;
+        availableColorSetsUpdated?.Invoke();
+        SaveColorSet(colorSet, index);
     }
 
     public bool IsActiveColorSet(ColorSet colorSet)
@@ -97,10 +128,23 @@ public class ColorsManager : MonoBehaviour
         return _currentColorSet == colorSet;
     }
 
-    public void SetActiveColorSet(ColorSet colorSet)
+    public void SetActiveColorSet(ColorSet colorSet, int index)
     {
-        _currentColorSet = colorSet;
-        activeColorSetUpdated?.Invoke(colorSet);
+        ActiveSetIndex = index;
+        ActiveColorSet = colorSet;
+        
+        SettingsManager.SetSetting(ACTIVECOLORSETINDEX, index);
+    }
+
+    private void SetActiveColorSet(int index)
+    {
+        ActiveSetIndex = index;
+        ActiveColorSet = _colorSets[index];
+    }
+
+    private void SaveColorSet(ColorSet colorSet, int index)
+    {
+        SettingsManager.SetSetting($"{CUSTOMCOLORSETNUMBERX}{index}", colorSet);
     }
 
     [Serializable]
@@ -149,6 +193,17 @@ public class ColorsManager : MonoBehaviour
             _leftEnvironment = leftEnv;
             _rightEnvironment = rightEnv;
             _centerEnvironment = centerEnv;
+        }
+        
+        public ColorSet(Color leftController, Color rightController, Color blockColor, Color obstacleColor)
+        {
+            _leftController = leftController;
+            _rightController = rightController;
+            _blockColor = blockColor;
+            _obstacleColor = obstacleColor;
+            _leftEnvironment = Color.black;
+            _rightEnvironment = Color.black;
+            _centerEnvironment = Color.black;
         }
 
         public static bool operator ==(ColorSet a, ColorSet b)
