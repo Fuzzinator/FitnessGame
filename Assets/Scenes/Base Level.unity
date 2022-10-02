@@ -3185,7 +3185,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -8308,6 +8308,12 @@ Transform:
   m_Father: {fileID: 1329272266}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1046371132 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8478822547246551103, guid: 36cd4176249ef924cb4492fc602059d5,
+    type: 3}
+  m_PrefabInstance: {fileID: 3425952266622659365}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1059342540
 GameObject:
   m_ObjectHideFlags: 0
@@ -10106,6 +10112,26 @@ PrefabInstance:
       propertyPath: _transitionController
       value: 
       objectReference: {fileID: 1533983659}
+    - target: {fileID: 6940222843148010249, guid: cd5ab7f78e411bb48abfa7a064ad26be,
+        type: 3}
+      propertyPath: _pauseMenuClosed.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6940222843148010249, guid: cd5ab7f78e411bb48abfa7a064ad26be,
+        type: 3}
+      propertyPath: _pauseMenuClosed.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6940222843148010249, guid: cd5ab7f78e411bb48abfa7a064ad26be,
+        type: 3}
+      propertyPath: _pauseMenuClosed.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1046371132}
+    - target: {fileID: 6940222843148010249, guid: cd5ab7f78e411bb48abfa7a064ad26be,
+        type: 3}
+      propertyPath: _pauseMenuClosed.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 6942267195493193756, guid: cd5ab7f78e411bb48abfa7a064ad26be,
         type: 3}
       propertyPath: m_Name
@@ -10226,7 +10252,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1265932328
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16690,7 +16716,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 3425952266622659365}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1046371132}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ea60622bb1ae6114ea12417361dc7777, type: 3}

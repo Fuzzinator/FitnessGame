@@ -33,7 +33,7 @@ namespace UI
                 return;
             }
 
-            PlaylistManager.Instance.CurrentPlaylist.SetDifficulty((DifficultyInfo.DifficultyEnum) value);
+            PlaylistManager.Instance.SetDifficulty((DifficultyInfo.DifficultyEnum) value);
         }
 
 

@@ -159,6 +159,7 @@ public class SettingsDisplay : UIMenuController
                     DiscardChanges();
                     SetPopUp(false);
                     SetSaveScreen(false);
+                    gameObject.SetActive(false);
                 }
 
                 break;

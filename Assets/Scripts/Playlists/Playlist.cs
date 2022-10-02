@@ -102,6 +102,28 @@ public struct Playlist
         isValid = true;
     }
 
+    public Playlist(Playlist sourcePlaylist, DifficultyInfo.DifficultyEnum difficultyEnum)
+    {
+        _playlistName = sourcePlaylist.PlaylistName;
+        _items = sourcePlaylist.Items;
+        _isCustomPlaylist = sourcePlaylist.IsCustomPlaylist;
+        _length = sourcePlaylist.Length;
+        _gameMode = sourcePlaylist.GameModeOverride;
+        _difficulty = difficultyEnum;
+        isValid = true;
+    }
+    
+    public Playlist(Playlist sourcePlaylist, GameMode gameMode)
+    {
+        _playlistName = sourcePlaylist.PlaylistName;
+        _items = sourcePlaylist.Items;
+        _isCustomPlaylist = sourcePlaylist.IsCustomPlaylist;
+        _length = sourcePlaylist.Length;
+        _gameMode = gameMode;
+        _difficulty = sourcePlaylist.DifficultyEnum;
+        isValid = true;
+    }
+
     public void SetPlaylistName(string name)
     {
         _playlistName = name;

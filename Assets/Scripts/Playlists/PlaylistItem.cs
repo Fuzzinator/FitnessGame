@@ -21,6 +21,9 @@ public struct PlaylistItem
     private string _difficulty;
 
     [SerializeField]
+    private DifficultyInfo.DifficultyEnum _difficultyEnum;
+
+    [SerializeField]
     private bool _isCustomSong;
 
     public bool IsCustomSong => _isCustomSong;
@@ -42,7 +45,7 @@ public struct PlaylistItem
         set => _songInfo = value;
     }
 
-    public PlaylistItem(string songName, string fileLocation, string difficulty, bool isCustomSong, GameMode gameMode,
+    public PlaylistItem(string songName, string fileLocation, string difficulty, DifficultyInfo.DifficultyEnum difficultyEnum, bool isCustomSong, GameMode gameMode,
         SongInfo info)
     {
         _songName = songName;
@@ -51,9 +54,10 @@ public struct PlaylistItem
         _isCustomSong = isCustomSong;
         _gameMode = gameMode;
         _songInfo = info;
+        _difficultyEnum = difficultyEnum;
     }
 
-    public PlaylistItem(SongInfo songInfo, string difficulty, GameMode gameMode)
+    public PlaylistItem(SongInfo songInfo, string difficulty,DifficultyInfo.DifficultyEnum difficultyEnum, GameMode gameMode)
     {
         _songName = songInfo.SongName;
         _fileLocation = songInfo.fileLocation;
@@ -61,9 +65,11 @@ public struct PlaylistItem
         _isCustomSong = songInfo.isCustomSong;
         _gameMode = gameMode;
         _songInfo = songInfo;
+        _difficultyEnum = difficultyEnum;
     }
     
     public string Difficulty => _difficulty;
+    public DifficultyInfo.DifficultyEnum DifficultyEnum => _difficultyEnum;
 
     private static bool StringMatches(string string1, string string2)
     {

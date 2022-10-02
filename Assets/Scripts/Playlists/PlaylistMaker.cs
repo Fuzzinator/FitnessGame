@@ -82,9 +82,9 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     {
         _activeItem = info;
     }
-    public static PlaylistItem GetPlaylistItem(SongInfo songInfo, string difficulty, GameMode gameMode)
+    public static PlaylistItem GetPlaylistItem(SongInfo songInfo, string difficulty, DifficultyInfo.DifficultyEnum difficultyEnum, GameMode gameMode)
     {
-        return new PlaylistItem(songInfo.SongName, songInfo.fileLocation, difficulty, songInfo.isCustomSong, gameMode, songInfo);
+        return new PlaylistItem(songInfo.SongName, songInfo.fileLocation, difficulty, difficultyEnum, songInfo.isCustomSong, gameMode, songInfo);
     }
 
     public void AddPlaylistItem(PlaylistItem item)

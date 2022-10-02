@@ -34,7 +34,7 @@ namespace UI
                 return;
             }
 
-            PlaylistManager.Instance.CurrentPlaylist.SetGameMode((GameMode) value);
+            PlaylistManager.Instance.SetGameMode((GameMode) value);
         }
 
         protected override void UpdateDropDownOptions()

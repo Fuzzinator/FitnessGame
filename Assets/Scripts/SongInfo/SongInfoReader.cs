@@ -34,6 +34,8 @@ public class SongInfoReader : MonoBehaviour
     public float NoteSpeed => _difficultyInfo.MovementSpeed;
     public float BeatsPerMinute => songInfo.BeatsPerMinute;
 
+    public GameMode CurrentGameMode => _gameMode;
+
     #region Const Strings
 
 #if UNITY_ANDROID && !UNITY_EDITOR
@@ -78,7 +80,7 @@ public class SongInfoReader : MonoBehaviour
 
     public void LoadJson(PlaylistItem item)
     {
-        AsyncLoadJson(item).Forget(); 
+        AsyncLoadJson(item).Forget();
     }
 
 
@@ -173,14 +175,14 @@ public class SongInfoReader : MonoBehaviour
             _gameMode = playlist.GameModeOverride;
         }
 
-        if (playlist.DifficultyEnum == DifficultyInfo.DifficultyEnum.Unset)
-        {
-            _difficultyInfo = songInfo.TryGetActiveDifficultyInfo(item.Difficulty, item.TargetGameMode);
-        }
-        else
-        {
-            _difficultyInfo = songInfo.TryGetActiveDifficultyInfo(playlist.DifficultyEnum, _gameMode);
-        }
+        var targetDifficulty = playlist.DifficultyEnum == DifficultyInfo.DifficultyEnum.Unset
+            ? item.DifficultyEnum
+            : playlist.DifficultyEnum;
+        var targetGameMode = playlist.GameModeOverride == GameMode.Unset
+            ? item.TargetGameMode
+            : playlist.GameModeOverride;
+
+        _difficultyInfo = songInfo.TryGetActiveDifficultyInfo(targetDifficulty, targetGameMode);
     }
 
     public string GetSongFullName()

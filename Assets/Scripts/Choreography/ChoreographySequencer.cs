@@ -282,7 +282,7 @@ public class ChoreographySequencer : MonoBehaviour
 
         var beatsTime = 60 / SongInfoReader.Instance.BeatsPerMinute;
         var time = (Time.time - (_songStartTime + _pauseOffset));
-        var timeToPoint = _optimalPointDistance / SongInfoReader.Instance.NoteSpeed;
+        var timeToPoint = _optimalPointDistance / tweenSpeed;
 
         var delay = Mathf.Max(0, (formation.Time * beatsTime) - time - timeToPoint);
 

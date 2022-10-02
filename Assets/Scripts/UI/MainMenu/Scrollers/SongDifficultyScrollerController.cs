@@ -52,7 +52,7 @@ namespace UI.Scrollers.Playlists
         {
             if (PlaylistMaker.Instance != null)
             {
-                var playlistItem = PlaylistMaker.GetPlaylistItem(_songInfo, difficulty.Difficulty, gameMode);
+                var playlistItem = PlaylistMaker.GetPlaylistItem(_songInfo, difficulty.Difficulty, difficulty.DifficultyAsEnum, gameMode);
                 PlaylistMaker.Instance.AppendPlaylistItems(playlistItem);
             }
         }

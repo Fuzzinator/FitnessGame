@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using GameModeManagement;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -93,12 +94,6 @@ public class PlaylistManager : MonoBehaviour
         CurrentItem = _currentPlaylist.Items[_currentIndex];
     }
 
-    /*public void ResetCurrentPlaylist()
-    {
-        _currentIndex = 0;
-        SetFirstPlaylistItem();
-    }*/
-
     public void FullReset()
     {
         _currentIndex = 0;
@@ -110,5 +105,15 @@ public class PlaylistManager : MonoBehaviour
     {
         var tempPlaylist = new Playlist(playlistItem);
         CurrentPlaylist = tempPlaylist;
+    }
+
+    public void SetDifficulty(DifficultyInfo.DifficultyEnum difficultyEnum)
+    {
+        _currentPlaylist = new Playlist(_currentPlaylist, difficultyEnum);
+    }
+
+    public void SetGameMode(GameMode gameMode)
+    {
+        _currentPlaylist = new Playlist(_currentPlaylist, gameMode);
     }
 }

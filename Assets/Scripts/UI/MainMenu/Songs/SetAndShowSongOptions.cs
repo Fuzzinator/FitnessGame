@@ -23,12 +23,14 @@ public class SetAndShowSongOptions : MonoBehaviour
     [SerializeField]
     private DisplaySongRecords _songRecordsDisplay;
     public string SelectedDifficulty => _selectedDifficulty;
+    public DifficultyInfo.DifficultyEnum DifficultyAsEnum => _difficultyEnum;
     public GameMode SelectedGameMode => _activeDifficultySet.MapGameMode;
     
     private SongInfo _songInfo;
     private SongInfo.DifficultySet[] _difficultySets;
     private SongInfo.DifficultySet _activeDifficultySet;
     private string _selectedDifficulty;
+    private DifficultyInfo.DifficultyEnum _difficultyEnum;
 
     public void UpdateDifficultyOptions(SongInfo songInfo, SongInfo.DifficultySet[] difficultySets)
     {
@@ -176,6 +178,7 @@ public class SetAndShowSongOptions : MonoBehaviour
         }
 
         _selectedDifficulty = _activeDifficultySet.DifficultyInfos[dificultyID].Difficulty;
+       _difficultyEnum = _activeDifficultySet.DifficultyInfos[dificultyID].DifficultyAsEnum;
         _songRecordsDisplay?.RefreshDisplay();
     }
 
@@ -198,7 +201,7 @@ public class SetAndShowSongOptions : MonoBehaviour
     {
         if (PlaylistMaker.Instance != null)
         {
-            var playlistItem = PlaylistMaker.GetPlaylistItem(_songInfo, _selectedDifficulty, _activeDifficultySet.MapGameMode);
+            var playlistItem = PlaylistMaker.GetPlaylistItem(_songInfo, _selectedDifficulty, _difficultyEnum, _activeDifficultySet.MapGameMode);
             PlaylistMaker.Instance.AddPlaylistItem(playlistItem);
         }
     }
@@ -207,7 +210,7 @@ public class SetAndShowSongOptions : MonoBehaviour
     {
         if (PlaylistManager.Instance != null)
         {
-            var playlistItem = new PlaylistItem(_songInfo, _selectedDifficulty, _activeDifficultySet.MapGameMode);
+            var playlistItem = new PlaylistItem(_songInfo, _selectedDifficulty, _difficultyEnum, _activeDifficultySet.MapGameMode);
             PlaylistManager.Instance.SetTempSongPlaylist(playlistItem);
         }
     }
