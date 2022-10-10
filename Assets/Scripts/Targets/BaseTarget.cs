@@ -43,6 +43,8 @@ public class BaseTarget : MonoBehaviour, IPoolable
 
     public FormationHolder parentFormation { get; protected set; }
 
+    public SetRendererMaterial RendererSetter => _setMaterial;
+
     private int _nameLayer;
 
     #if UNITY_EDITOR

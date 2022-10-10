@@ -52,7 +52,7 @@ namespace UI.Scrollers.Playlists
                 {
                     sb.Append(INVALIDINDICATOR);
                 }
-                sb.AppendFormat(SONGINFOFORMAT, playlistItem.SongName, playlistItem.Difficulty, playlistItem.TargetGameMode.GetDisplayName());
+                sb.AppendFormat(SONGINFOFORMAT, playlistItem.SongName, playlistItem.Difficulty, playlistItem.TargetGameMode.Readable());
 
                 _songDetails.SetText(sb);
             }

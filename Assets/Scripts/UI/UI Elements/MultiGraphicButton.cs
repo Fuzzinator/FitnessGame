@@ -7,12 +7,12 @@ using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-namespace MyNamespace
+namespace UI
 {
     public class MultiGraphicButton : Selectable, IPointerClickHandler, ISubmitHandler
     {
         [SerializeField]
-        private Graphic[] _graphics;
+        private Graphic[] _graphics = Array.Empty<Graphic>();
 
         [Serializable]
         public class ButtonClickedEvent : UnityEvent
@@ -155,14 +155,14 @@ namespace MyNamespace
             }
         }
 
-        private void StartColorTween(Color targetColor, bool instant)
+        protected void StartColorTween(Color targetColor, bool instant)
         {
-            foreach (var targetGraphic in _graphics)
+            for (var i = 0; i < _graphics.Length; i++)
             {
-                if (targetGraphic == null)
+                var graphic = _graphics[i];
+                if (graphic == null)
                     return;
-
-                targetGraphic.CrossFadeColor(targetColor, instant ? 0f : colors.fadeDuration, true, true);
+                graphic.CrossFadeColor(targetColor, instant ? 0f : colors.fadeDuration, true, true);
             }
         }
         private void DoSpriteSwap(Sprite newSprite)

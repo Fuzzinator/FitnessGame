@@ -8,9 +8,13 @@ public class ActiveTargetManager : MonoBehaviour
 {
     public static ActiveTargetManager Instance { get; private set; }
     
-    public List<BaseTarget> activeTargets;
+    public List<BaseTarget> activeTargets = new List<BaseTarget>();
     public UnityEvent<BaseTarget> newActiveTarget = new UnityEvent<BaseTarget>();
     public UnityEvent<BaseTarget> targetDeactivated = new UnityEvent<BaseTarget>();
+
+    public List<BaseObstacle> activeObstacles = new List<BaseObstacle>();
+    public UnityEvent<BaseObstacle> newActiveObstacle = new UnityEvent<BaseObstacle>();
+    public UnityEvent<BaseObstacle> obstacleDeactivated = new UnityEvent<BaseObstacle>();
     private void Awake()
     {
         if (Instance == null)
@@ -33,5 +37,17 @@ public class ActiveTargetManager : MonoBehaviour
     {
         activeTargets.Remove(target);
         targetDeactivated?.Invoke(target);
+    }
+
+    public void AddActiveObstacle(BaseObstacle obstacle)
+    {
+        activeObstacles.Add(obstacle);
+        newActiveObstacle?.Invoke(obstacle);
+    }
+
+    public void RemoveActiveObstacle(BaseObstacle obstacle)
+    {
+        activeObstacles.Remove(obstacle);
+        obstacleDeactivated?.Invoke(obstacle);
     }
 }

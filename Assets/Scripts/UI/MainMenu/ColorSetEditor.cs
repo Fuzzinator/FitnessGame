@@ -68,6 +68,7 @@ namespace UI
         public void CloseEditor()
         {
             _parentCanvasGroup.interactable = true;
+            SaveChanges();
             gameObject.SetActive(false);
         }
 

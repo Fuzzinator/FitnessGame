@@ -325,6 +325,7 @@ public class ChoreographySequencer : MonoBehaviour
             obstacleTransform.localRotation = quaternion.identity;
 
             obstacle.gameObject.SetActive(true);
+            ActiveTargetManager.Instance.AddActiveObstacle(obstacle);
 
             if (formationHolder.children == null)
             {

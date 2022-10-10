@@ -17,6 +17,8 @@ public class SetRendererMaterial : MonoBehaviour
     [SerializeField]
     private int _textureIndex;
 
+    public Renderer[] Renderers => _targetRenderers;
+
     public void Initialize(HitSideType type)
     {
         SetMaterial(type);
@@ -31,4 +33,5 @@ public class SetRendererMaterial : MonoBehaviour
             renderer.sharedMaterial = MaterialsManager.Instance.GetMaterial(index, subIndex);
         }
     }
+    
 }

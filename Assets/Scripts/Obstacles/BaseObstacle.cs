@@ -10,6 +10,7 @@ public class BaseObstacle : MonoBehaviour, IPoolable
     private SetRendererMaterial _setRendererMaterial;
     public PoolManager MyPoolManager { get; set; }
 
+    public SetRendererMaterial RendererSetter => _setRendererMaterial;
     public bool IsPooled { get; set; }
 
     public void Initialize()
@@ -23,7 +24,7 @@ public class BaseObstacle : MonoBehaviour, IPoolable
         {
             transform.SetParent(MyPoolManager.poolParent);
         }
-
+        ActiveTargetManager.Instance.RemoveActiveObstacle(this);
         MyPoolManager.ReturnToPool(this);
     }
 }

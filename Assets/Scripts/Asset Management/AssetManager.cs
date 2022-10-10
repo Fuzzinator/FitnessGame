@@ -152,7 +152,7 @@ public class AssetManager : MonoBehaviour
 #endif
             if (!File.Exists(path))
             {
-                Debug.LogError($"No image found at\"{path}\"");
+                Debug.LogWarning($"No image found at\"{path}\"");
                 return null;
             }
 
@@ -190,7 +190,7 @@ public class AssetManager : MonoBehaviour
             var texture = request.Result;
             if (texture == null)
             {
-                Debug.LogError("Failed to load local resource file");
+                Debug.LogError($"Failed to load local resource file for {item.SongName}");
                 return null;
             }
 
@@ -230,21 +230,29 @@ public class AssetManager : MonoBehaviour
 
         foreach (var file in files)
         {
-            if (file.Extension == PLAYLISTEXTENSION)
+            try
             {
-                var streamReader = new StreamReader(file.FullName);
-                var reading = streamReader.ReadToEndAsync();
-                await reading;
-                var playlist = JsonUtility.FromJson<Playlist>(reading.Result);
+                if (file.Extension == PLAYLISTEXTENSION)
+                {
+                    var streamReader = new StreamReader(file.FullName);
+                    var reading = streamReader.ReadToEndAsync();
+                    await reading;
+                    var playlist = JsonUtility.FromJson<Playlist>(reading.Result);
 
-                streamReader.Close();
+                    streamReader.Close();
 
-                playlist.isValid = await PlaylistValidator.IsValid(playlist);
-                playlistLoaded?.Invoke(playlist);
-                //if (playlist.isValid)
-                //{
-                //availablePlaylists.Add(playlist);
-                //}
+                    playlist.isValid = await PlaylistValidator.IsValid(playlist);
+                    playlistLoaded?.Invoke(playlist);
+                    //if (playlist.isValid)
+                    //{
+                    //availablePlaylists.Add(playlist);
+                    //}
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"{e.Message}\n{e.StackTrace}");
+                throw;
             }
         }
     }
@@ -334,65 +342,78 @@ public class AssetManager : MonoBehaviour
 
     public static async UniTask<SongInfo> GetSingleCustomSong(string fileLocation, CancellationToken token)
     {
-        var info = new DirectoryInfo(fileLocation);
-        var files = info.GetFiles();
-        foreach (var file in files)
+        try
         {
-            if (file == null)
+
+            var info = new DirectoryInfo(fileLocation);
+            var files = info.GetFiles();
+            foreach (var file in files)
             {
-                return null;
-            }
-
-            if (string.Equals(file.Name, SONGINFONAME, StringComparison.InvariantCultureIgnoreCase)
-                || string.Equals(file.Name, ALTSONGINFONAME, StringComparison.InvariantCultureIgnoreCase))
-            {
-                var streamReader = new StreamReader(file.FullName);
-                var result = await streamReader.ReadToEndAsync().AsUniTask()
-                    .AttachExternalCancellation(token);
-
-                var item = JsonUtility.FromJson<SongInfo>(result);
-
-                streamReader.Close();
-
-
-                var updatedMaps = false;
-                if (file.Directory != null)
+                if (file == null)
                 {
-                    item.fileLocation = file.Directory.Name;
-                    updatedMaps = true;
+                    return null;
                 }
 
-                if(!item.isCustomSong)
+                if (string.Equals(file.Name, SONGINFONAME, StringComparison.InvariantCultureIgnoreCase)
+                    || string.Equals(file.Name, ALTSONGINFONAME, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    item.isCustomSong = true;
-                    updatedMaps = true;
-                }
-                if (item.SongLength < 1)
-                {
-                    var songLength = await CustomSongsManager.TryGetSongLength(item, token);
-                    item.SongLength = songLength;
-                    updatedMaps = true;
-                }
+                    var streamReader = new StreamReader(file.FullName);
+                    var result = await streamReader.ReadToEndAsync().AsUniTask()
+                        .AttachExternalCancellation(token);
 
-                var madeChange = await item.UpdateDifficultySets(token);
-                if (madeChange)
-                {
-                    updatedMaps = true;
-                }
+                    var item = JsonUtility.FromJson<SongInfo>(result);
 
-                if (updatedMaps)
-                {
-                    await UniTask.DelayFrame(2, cancellationToken: token);
-                    using (var streamWriter = new StreamWriter(file.FullName))
+                    streamReader.Close();
+                    if (item == null)
                     {
-                        await streamWriter.WriteAsync(JsonUtility.ToJson(item));
+                        Debug.LogWarning($"Failed to read song info in {info.Name}. It is likely corrupted");
+                        return null;
                     }
-                }
 
-                return item;
+                    var updatedMaps = false;
+                    if (file.Directory != null)
+                    {
+                        item.fileLocation = file.Directory.Name;
+                        updatedMaps = true;
+                    }
+
+                    if (!item.isCustomSong)
+                    {
+                        item.isCustomSong = true;
+                        updatedMaps = true;
+                    }
+
+                    if (item.SongLength < 1)
+                    {
+                        var songLength = await CustomSongsManager.TryGetSongLength(item, token);
+                        item.SongLength = songLength;
+                        updatedMaps = true;
+                    }
+
+                    var madeChange = await item.UpdateDifficultySets(token);
+                    if (madeChange)
+                    {
+                        updatedMaps = true;
+                    }
+
+                    if (updatedMaps)
+                    {
+                        await UniTask.DelayFrame(2, cancellationToken: token);
+                        using (var streamWriter = new StreamWriter(file.FullName))
+                        {
+                            await streamWriter.WriteAsync(JsonUtility.ToJson(item));
+                        }
+                    }
+
+                    return item;
+                }
             }
         }
-
+        catch (Exception e)
+        {
+            Debug.LogError($"{e.Message}\n{e.StackTrace}");
+        }
+        
         return null;
     }
 }

@@ -23,7 +23,8 @@ Material:
   m_Name: Target-Sci-Fi
   m_Shader: {fileID: -6465566751694194690, guid: 484375f57bc0ac74f86bba3b66c843ab,
     type: 3}
-  m_ShaderKeywords: _ALPHATEST_ON _TEXTURESET_TARGETS _USEDISTANCEDISSOLVE
+  m_ShaderKeywords: _ALPHATEST_ON _SHOWNOTES _TEXTURESET_TARGETS _USEDISTANCEDISSOLVE
+    _USEDISTANCEOFFSET
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -138,10 +139,13 @@ Material:
     - _Normal_Strength: 1
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _Position_Change_Distance: 2.5
+    - _Position_Change_Range: 10
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Rotation: 180
+    - _SHOWNOTES: 1
     - _Shininess: 0
     - _Smoothness: 0.5
     - _SmoothnessSource: 0
@@ -153,6 +157,7 @@ Material:
     - _TEXTURESET: 0
     - _TextureIndex: 1
     - _USEDISTANCEDISSOLVE: 1
+    - _USEDISTANCEOFFSET: 1
     - _UVSec: 0
     - _WorkflowMode: 1
     - _ZTest: 4
@@ -166,6 +171,7 @@ Material:
     - _Color_1: {r: 1, g: 1, b: 1, a: 0}
     - _DissolveColor: {r: 3.979057, g: 0.3141361, b: 0, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _Position_Change: {r: 0, g: 1, b: 0, a: 0}
     - _Rotation_Axis: {r: 1, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
     - _Tiling: {r: 1, g: 1, b: 0, a: 0}

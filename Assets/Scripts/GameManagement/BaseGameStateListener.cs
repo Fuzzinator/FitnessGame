@@ -21,12 +21,12 @@ public abstract class BaseGameStateListener : MonoBehaviour
         }
     }
 
-    protected void AddListener()
+    protected virtual void AddListener()
     {
         GameStateManager.Instance.gameStateChanged.AddListener(GameStateListener);
     }
 
-    protected void RemoveListener()
+    protected virtual void RemoveListener()
     {
         GameStateManager.Instance.gameStateChanged.RemoveListener(GameStateListener);
     }

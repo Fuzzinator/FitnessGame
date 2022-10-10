@@ -6,7 +6,7 @@ namespace UI.Scrollers.Playlists
 {
     public class AvailablePlaylistsScrollerController : ScrollerController
     {
-        private List<Playlist> _playlists = new List<Playlist>();
+        protected List<Playlist> _playlists = new List<Playlist>();
         public override int GetNumberOfCells(EnhancedScroller scroller)
         {
             if (string.IsNullOrWhiteSpace(_searchKey) && _playlists.Count == 0 || _playlists.Count == 0)

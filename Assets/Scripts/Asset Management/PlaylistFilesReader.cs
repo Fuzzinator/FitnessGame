@@ -63,6 +63,7 @@ public class PlaylistFilesReader : MonoBehaviour
         availablePlaylists.Clear();
         void AddPlaylist(Playlist playlist) => availablePlaylists.Add(playlist);
         await AssetManager.GetBuiltInPlaylists(_labelReference.labelString, AddPlaylist);
+        _playlistsUpdated?.Invoke();
         await AssetManager.GetCustomPlaylists(AddPlaylist);
         
         SortPlaylists();

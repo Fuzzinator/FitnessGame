@@ -32,7 +32,7 @@ namespace UI.Scrollers.Playlists
         private const string INVALID = "<sprite index=1>";
 
         private const string SONGINFOFORMAT =
-            "<align=left>{0}</style>\n<size=50%>{1}<line-indent=15%>{2}</size></align>";
+            "{0}</style>\n<size=50%>{1}<line-indent=15%>{2}</size>";
 
         public void SetData(PlaylistItem playlist)
         {
@@ -60,7 +60,7 @@ namespace UI.Scrollers.Playlists
                 }
 
                 sb.AppendFormat(SONGINFOFORMAT, playlistItem.SongName, playlistItem.Difficulty,
-                    playlistItem.TargetGameMode.GetDisplayName());
+                    playlistItem.TargetGameMode.Readable());
 
                 _songDetails.SetText(sb);
             }

@@ -8,11 +8,14 @@ namespace UI.Scrollers.Playlists
 {
     public class ScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
     {
+        #if UNITY_EDITOR
+        public string scriptIdentifier;
+        #endif
         [SerializeField]
         protected EnhancedScroller _scroller;
 
         [SerializeField]
-        private EnhancedScrollerCellView _cellViewPrefab;
+        protected EnhancedScrollerCellView _cellViewPrefab;
 
         [SerializeField]
         private float _cellViewSize = 100f;

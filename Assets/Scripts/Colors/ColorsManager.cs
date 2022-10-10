@@ -113,7 +113,7 @@ public class ColorsManager : MonoBehaviour
         availableColorSetsUpdated?.Invoke();
         SaveColorSet(colorSet, AvailableColorSets.Count - 2);
         SettingsManager.SetSetting(CUSTOMCOLORSETCOUNT, AvailableColorSets.Count-1);
-        return _colorSets.Count - 1;
+        return _colorSets.Count - 2;
     }
 
     public void UpdateColorSet(ColorSet colorSet, int index)

@@ -9,7 +9,7 @@ namespace UI
 {
     public class ColorSetSelector : MonoBehaviour
     {
-        [SerializeField]
+        [SerializeField, CustomAttributes.Expandable]
         private AvailableColorSetsScrollerController _controller;
 
         [SerializeField]

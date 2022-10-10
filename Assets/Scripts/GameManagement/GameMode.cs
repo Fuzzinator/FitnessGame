@@ -81,7 +81,7 @@ namespace GameModeManagement
             return _difficultySetNames[(int)gameMode];
         }
         
-        public static string GetDisplayName(this GameMode gameMode)
+        public static string Readable(this GameMode gameMode)
         {
             return _difficultySetDisplayNames[(int) gameMode];
         }

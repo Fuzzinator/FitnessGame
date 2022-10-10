@@ -140,3 +140,25 @@ public struct DifficultyInfo
         Expert = 4
     }
 }
+
+public static class EnumExtensions
+{
+    private static string UNSET = "Unset";
+    private static string EASY = "Easy";
+    private static string NORMAL = "Normal";
+    private static string HARD = "Hard";
+    private static string EXPERT = "Expert";
+
+    public static string Readable(this DifficultyInfo.DifficultyEnum difficultyEnum)
+    {
+        return difficultyEnum switch
+        {
+            DifficultyInfo.DifficultyEnum.Unset => UNSET,
+            DifficultyInfo.DifficultyEnum.Easy => EASY,
+            DifficultyInfo.DifficultyEnum.Normal => NORMAL,
+            DifficultyInfo.DifficultyEnum.Hard => HARD,
+            DifficultyInfo.DifficultyEnum.Expert => EXPERT,
+            _ => ""
+        };
+    }
+}

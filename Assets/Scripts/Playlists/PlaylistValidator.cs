@@ -90,7 +90,7 @@ public static class PlaylistValidator
             }
             else
             {
-                Debug.LogError("Failed to read song info");
+                Debug.LogWarning($"Failed to read song info for {item.SongName}");
             }
         }
         else
