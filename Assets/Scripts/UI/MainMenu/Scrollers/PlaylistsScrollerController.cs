@@ -54,5 +54,33 @@ namespace UI.Scrollers.Playlists
         {
             _uiController.SetActivePage(_viewPlaylistPageIndex);
         }
+        
+        protected override void SetDataFromFilter()
+        {
+            _playlists.Clear();
+            if (string.IsNullOrWhiteSpace(_searchKey))
+            {
+                foreach (var playlist in PlaylistFilesReader.Instance.availablePlaylists)
+                {
+                    if (!playlist.isValid)
+                    {
+                        continue;
+                    }
+                    _playlists.Add(playlist);
+                }
+            }
+            else
+            {
+                foreach (var playlist in PlaylistFilesReader.Instance.availablePlaylists)
+                {
+                    if (playlist.PlaylistName.Contains(_searchKey, StringComparison.InvariantCultureIgnoreCase) ||
+                        (string.Equals(_searchKey, "custom", StringComparison.InvariantCultureIgnoreCase) &&
+                         playlist.IsCustomPlaylist) && playlist.isValid)
+                    {
+                        _playlists.Add(playlist);
+                    }
+                }
+            }
+        }
     }
 }

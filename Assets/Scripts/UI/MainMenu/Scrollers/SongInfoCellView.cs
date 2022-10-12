@@ -56,6 +56,11 @@ namespace UI.Scrollers.Playlists
             //UniTask.RunOnThreadPool(() => , cancellationToken: _cancellationToken);
         }
 
+        public void QuickAddToPlaylist()
+        {
+            _controller.QuickAddToPlaylist(_songInfo);
+        }
+
         public void SetActiveSongInfo()
         {
             _controller.SetActiveInfo(_songInfo);

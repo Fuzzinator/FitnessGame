@@ -38,6 +38,8 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     private bool _editMode = false;
 
     public string PlaylistName => _playlistName;
+    public GameMode CurrentGameMode => _gameMode;
+    public DifficultyInfo.DifficultyEnum Difficulty => _difficulty;
     private string _playlistName;
     private string _originalName;
 
@@ -256,6 +258,9 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         {
             _originalName = playlist.PlaylistName;
             _playlistName = playlist.PlaylistName;
+            _difficulty = playlist.DifficultyEnum;
+            _gameMode = playlist.GameModeOverride;
+            
             _playlistItems.Clear();
 
             foreach (var item in playlist.Items)
@@ -271,7 +276,19 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
             _playlistName = string.Empty;
             _playlistItems.Clear();
             _playlistItemsUpdated?.Invoke();
+            _gameMode = GameMode.Unset;
+            _difficulty = DifficultyInfo.DifficultyEnum.Unset;
         }
+    }
+
+    public void SetDifficulty(DifficultyInfo.DifficultyEnum difficultyEnum)
+    {
+        _difficulty = difficultyEnum;
+    }
+
+    public void SetGameMode(GameMode gameMode)
+    {
+        _gameMode = gameMode;
     }
 
     public void Report(float value)

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using EnhancedUI.EnhancedScroller;
+using GameModeManagement;
 using UnityEngine;
 using StringComparison = System.StringComparison;
 
@@ -39,9 +40,15 @@ namespace UI.Scrollers.Playlists
             return cellView;
         }
 
+        public void QuickAddToPlaylist(SongInfo info)
+        {
+            var playlistItem = PlaylistMaker.GetPlaylistItem(info, DifficultyInfo.DifficultyEnum.Normal.Readable(), DifficultyInfo.DifficultyEnum.Normal, GameMode.Normal);
+            PlaylistMaker.Instance.AddPlaylistItem(playlistItem);
+        }
+
         public virtual void SetActiveInfo(SongInfo info)
         {
-            _displaySongInfo.UpdateDisplayedInfo(info);
+            _displaySongInfo.RequestDisplay(info);
             PlaylistMaker.Instance.SetActiveItem(info);
         }
         

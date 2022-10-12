@@ -13,8 +13,6 @@ namespace UI.Scrollers.Playlists
 {
     public class DisplayPlaylistInfo : MonoBehaviour
     {
-        public static DisplayPlaylistInfo Instance { get; private set; }
-
         [SerializeField] 
         private CanvasGroup _playlistTitleCard;
 
@@ -40,16 +38,15 @@ namespace UI.Scrollers.Playlists
 
         private CancellationToken _cancellationToken;
 
-        private void Awake()
+        private void OnEnable()
         {
-            if (Instance == null)
-            {
-                Instance = this;
-            }
-            else
-            {
-                Destroy(this);
-            }
+            PlaylistManager.Instance.currentPlaylistUpdated.AddListener(RequestShowInfo);
+            ShowInfo().Forget();
+        }
+
+        private void OnDisable()
+        {
+            PlaylistManager.Instance.currentPlaylistUpdated.RemoveListener(RequestShowInfo);
         }
 
         private void Start()
@@ -59,6 +56,11 @@ namespace UI.Scrollers.Playlists
             _playlistTitleCard.interactable = PlaylistManager.Instance.CurrentPlaylist.isValid;
         }
 
+        public void RequestShowInfo(Playlist playlist)
+        {
+            ShowInfo().Forget();
+        }
+        
         public async UniTaskVoid ShowInfo()
         {
             var currentPlaylist = PlaylistManager.Instance.CurrentPlaylist;

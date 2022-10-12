@@ -12,6 +12,9 @@ namespace UI.Scrollers.Playlists
     public class DisplaySongInfo : MonoBehaviour
     {
         [SerializeField]
+        private CanvasGroup _canvasGroup;
+        
+        [SerializeField]
         private TextMeshProUGUI _songName;
 
         [SerializeField]
@@ -31,12 +34,25 @@ namespace UI.Scrollers.Playlists
 
         private SongInfo _currentSongInfo;
 
-        private void OnEnable()
+        public void RequestDisplay(SongInfo info)
+        {
+            _canvasGroup.interactable = false;
+            gameObject.SetActive(true);
+            UpdateDisplayedInfo(info);
+        }
+
+        public void RequestCloseDisplay()
+        {
+            _canvasGroup.interactable = true;
+            gameObject.SetActive(false);
+        }
+        
+        private void OnDisable()
         {
             ClearDisplayedInfo();
         }
 
-        public void UpdateDisplayedInfo(SongInfo info)
+        private void UpdateDisplayedInfo(SongInfo info)
         {
             _currentSongInfo = info;
             _songName.SetText(info.SongName);
@@ -48,7 +64,7 @@ namespace UI.Scrollers.Playlists
             _deleteButton.gameObject.SetActive(info.isCustomSong);
         }
 
-        public void ClearDisplayedInfo()
+        private void ClearDisplayedInfo()
         {
             _currentSongInfo = new SongInfo();
             _songName.SetText(string.Empty);

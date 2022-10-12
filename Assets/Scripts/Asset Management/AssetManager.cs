@@ -402,6 +402,7 @@ public class AssetManager : MonoBehaviour
                         using (var streamWriter = new StreamWriter(file.FullName))
                         {
                             await streamWriter.WriteAsync(JsonUtility.ToJson(item));
+                            streamWriter.Close();
                         }
                     }
 

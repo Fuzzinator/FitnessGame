@@ -76,7 +76,7 @@ public class ChoreographyReader : MonoBehaviour
         
         if (playlist.DifficultyEnum == DifficultyInfo.DifficultyEnum.Unset)
         {
-            _difficultyInfo = item.SongInfo.TryGetActiveDifficultyInfo(item.Difficulty, item.TargetGameMode);
+            _difficultyInfo = item.SongInfo.TryGetActiveDifficultyInfo(item.DifficultyEnum, item.TargetGameMode);
         }
         else
         {

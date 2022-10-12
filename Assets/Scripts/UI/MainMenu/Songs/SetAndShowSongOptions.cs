@@ -89,6 +89,7 @@ public class SetAndShowSongOptions : MonoBehaviour
         }
         
         var lowest = 10;
+        var hasCurrentID = -1;
         for (var i = 0; i < _activeDifficultySet.DifficultyInfos.Length; i++)
         {
             var difficulty = (int)_activeDifficultySet.DifficultyInfos[i].DifficultyAsEnum -1;
@@ -97,12 +98,27 @@ public class SetAndShowSongOptions : MonoBehaviour
             {
                 lowest = difficulty;
             }
+
+            if (_activeDifficultySet.DifficultyInfos[i].DifficultyAsEnum == _difficultyEnum)
+            {
+                hasCurrentID = difficulty;
+            }
+            
             _typeDifficultyToggles[difficulty].gameObject.SetActive(true);
         }
 
         _difficultyToggleGroup.gameObject.SetActive(true);
-        _typeDifficultyToggles[lowest].SetIsOnWithoutNotify(true);
-        SetSelectedDifficulty(_typeDifficultyToggles[lowest]);
+
+        if (hasCurrentID > 0)
+        {
+            _typeDifficultyToggles[hasCurrentID].SetIsOnWithoutNotify(true);
+            SetSelectedDifficulty(_typeDifficultyToggles[hasCurrentID]);
+        }
+        else
+        {
+            _typeDifficultyToggles[lowest].SetIsOnWithoutNotify(true);
+            SetSelectedDifficulty(_typeDifficultyToggles[lowest]);
+        }
     }
     
     public void SetSelectedType(Toggle toggle)

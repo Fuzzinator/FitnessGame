@@ -117,7 +117,7 @@ public static class PlaylistValidator
 
     private static async UniTask<bool> AsyncCheckChoreography(PlaylistItem item)
     {
-        var difficultyInfo = item.SongInfo.TryGetActiveDifficultyInfo(item.Difficulty, item.TargetGameMode);
+        var difficultyInfo = item.SongInfo.TryGetActiveDifficultyInfo(item.DifficultyEnum, item.TargetGameMode);
         if (item.IsCustomSong)
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
