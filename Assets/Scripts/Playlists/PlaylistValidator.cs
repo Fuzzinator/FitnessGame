@@ -41,7 +41,17 @@ public static class PlaylistValidator
     
     public static async UniTask<bool> IsValid(PlaylistItem item)
     {
-        var songInfo = await AsyncLoadSongInfo(item);
+        SongInfo songInfo = null; //await AsyncLoadSongInfo(item);
+
+        foreach (var info in SongInfoFilesReader.Instance.availableSongs)
+        {
+            if (info == item)
+            {
+                songInfo = info;
+                break;
+            }
+        }
+        
         if (songInfo == null)
         {
             return false;

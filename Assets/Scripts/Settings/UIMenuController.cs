@@ -21,6 +21,7 @@ public class UIMenuController : MonoBehaviour
         
         _activePage = _settingsPages[0];
         _activePage.SetGroupState(1, true);
+        _activePage.gameObject.SetActive(true);
         var canvas = GetComponent<Canvas>();
         canvas.worldCamera = Head.Instance.HeadCamera;
     }
@@ -45,10 +46,12 @@ public class UIMenuController : MonoBehaviour
         if (_activePage != null)
         {
             _activePage.SetGroupState(0, false);
+            _activePage.gameObject.SetActive(false);
         }
 
         _activePage = _settingsPages[pageNumber];
         _activePage.SetGroupState(1, true);
+        _activePage.gameObject.SetActive(true);
     }
     
     

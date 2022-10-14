@@ -38,7 +38,7 @@ public class PlaylistFilesReader : MonoBehaviour
         }
     }
 
-    private void OnEnable()
+    public void RequestPlaylistsUpdate()
     {
         UpdatePlaylists().Forget();
     }

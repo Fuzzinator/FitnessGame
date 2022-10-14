@@ -90,7 +90,12 @@ public class SongInfoFilesReader : MonoBehaviour
     private async UniTask UpdateAvailableSongs()
     {
         availableSongs.Clear();
-        void AddSongs(SongInfo info) => availableSongs.Add(info);
+        void AddSongs(SongInfo info)
+        {
+            availableSongs.Add(info);
+            _songAdded?.Invoke(info);
+        }
+
         await AssetManager.GetBuiltInSongs(_labelReference, AddSongs);
         await AssetManager.GetCustomSongs(AddSongs,_cancellationSource);
         SortSongs();

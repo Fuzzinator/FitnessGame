@@ -608,4 +608,15 @@ public class SongInfo
         SongLength = 5,
         InverseSongLength = 6
     }
+
+    public static bool operator ==(SongInfo info, PlaylistItem item)
+    {
+        return info.SongName == item.SongName && info.fileLocation == item.FileLocation &&
+               info.isCustomSong == item.IsCustomSong;
+    }
+
+    public static bool operator !=(SongInfo info, PlaylistItem item)
+    {
+        return !(info == item);
+    }
 }

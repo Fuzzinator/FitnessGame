@@ -3354,7 +3354,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!225 &56661806
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -10876,7 +10876,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 308304930}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 712381631}
+        m_TargetAssemblyTypeName: RequestNotification, Assembly-CSharp
+        m_MethodName: Request
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &308304930
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19986,7 +19998,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 16815.08}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &523355592
 MonoBehaviour:
@@ -25414,13 +25426,14 @@ GameObject:
   m_Component:
   - component: {fileID: 712381629}
   - component: {fileID: 712381630}
+  - component: {fileID: 712381631}
   m_Layer: 5
   m_Name: Tutorial
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &712381629
 RectTransform:
   m_ObjectHideFlags: 0
@@ -25457,6 +25470,23 @@ CanvasGroup:
   m_Interactable: 0
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
+--- !u!114 &712381631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 712381628}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd4a5ae8de052b14bb6a3b32bc14d852, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _headerText: Feature Unavailable
+  _bodyText: This feature is currently in development. Keep and eye out for updates
+    so you dont miss when features become available!
+  _buttonText: Okay
+  _disableUI: 1
 --- !u!1 &713894402
 GameObject:
   m_ObjectHideFlags: 0
@@ -34789,6 +34819,24 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1017806878}
+        m_TargetAssemblyTypeName: PlaylistFilesReader, Assembly-CSharp
+        m_MethodName: RequestPlaylistsUpdate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _songAdded:
+    m_PersistentCalls:
+      m_Calls: []
+  _songRemoved:
+    m_PersistentCalls:
+      m_Calls: []
   _displaySongInfo: {fileID: 0}
 --- !u!114 &1017806880
 MonoBehaviour:
@@ -52501,7 +52549,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh781940
+  m_Name: pb_Mesh921614
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -53881,7 +53929,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1648446262
 RectTransform:
   m_ObjectHideFlags: 0
@@ -62685,7 +62733,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1954255078
 RectTransform:
   m_ObjectHideFlags: 0

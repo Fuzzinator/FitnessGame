@@ -285,7 +285,6 @@ public class AssetManager : MonoBehaviour
             item.isCustomSong = false;
 
             songLoaded?.Invoke(item);
-            //availableSongs.Add(item);
         });
     }
 
