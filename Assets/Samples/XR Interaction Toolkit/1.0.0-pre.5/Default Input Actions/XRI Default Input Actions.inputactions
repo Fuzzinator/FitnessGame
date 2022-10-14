@@ -1104,6 +1104,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Left Joystick",
+                    "type": "Value",
+                    "id": "a17d0a42-685b-4ff1-8d9a-95aa7d09f88f",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -1271,6 +1280,17 @@
                     "action": "LeftGripReleased",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2adbf3d8-9122-4831-9ea5-a7ee4dbff6f5",
+                    "path": "<XRController>{LeftHand}/Primary2DAxis",
+                    "interactions": "",
+                    "processors": "StickDeadzone",
+                    "groups": "Continuous Move",
+                    "action": "Left Joystick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -1340,6 +1360,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Right Joystick",
+                    "type": "Value",
+                    "id": "3c127e6b-bb43-4a7e-b8f1-57913f162065",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -1505,6 +1534,17 @@
                     "processors": "",
                     "groups": "Generic XR Controller",
                     "action": "RightGripReleased",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "aa112547-19be-43cf-a759-6795c9af5d2a",
+                    "path": "<XRController>{RightHand}/primary2DAxis",
+                    "interactions": "",
+                    "processors": "StickDeadzone",
+                    "groups": "Continuous Move",
+                    "action": "Right Joystick",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

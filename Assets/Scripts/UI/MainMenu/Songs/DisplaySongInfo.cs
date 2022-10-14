@@ -36,15 +36,22 @@ namespace UI.Scrollers.Playlists
 
         public void RequestDisplay(SongInfo info)
         {
-            _canvasGroup.interactable = false;
-            gameObject.SetActive(true);
+            if (_canvasGroup != null)
+            {
+                _canvasGroup.interactable = false;
+                gameObject.SetActive(true);
+            }
+
             UpdateDisplayedInfo(info);
         }
 
         public void RequestCloseDisplay()
         {
-            _canvasGroup.interactable = true;
-            gameObject.SetActive(false);
+            if (_canvasGroup != null)
+            {
+                _canvasGroup.interactable = true;
+                gameObject.SetActive(false);
+            }
         }
         
         private void OnDisable()

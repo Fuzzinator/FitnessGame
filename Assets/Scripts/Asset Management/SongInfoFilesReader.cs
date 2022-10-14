@@ -1,16 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
 using System.Threading;
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
-using GameModeManagement;
 using UI.Scrollers.Playlists;
-using Unity.Burst;
-using Unity.Collections;
-using Unity.Jobs;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 #if UNITY_ANDROID && !UNITY_EDITOR
@@ -37,6 +29,12 @@ public class SongInfoFilesReader : MonoBehaviour
     [SerializeField]
     private UnityEvent _songsUpdated = new UnityEvent();
 
+    [SerializeField]
+    private UnityEvent<SongInfo> _songAdded = new UnityEvent<SongInfo>();
+
+    [SerializeField]
+    private UnityEvent<SongInfo> _songRemoved = new UnityEvent<SongInfo>();
+    
     [Header("UI Thingy")]
     [SerializeField]
     private DisplaySongInfo _displaySongInfo;
@@ -119,6 +117,7 @@ public class SongInfoFilesReader : MonoBehaviour
         MainMenuUIController.Instance.RequestDisableUI(this);
         
         availableSongs.Remove(targetSongInfo);
+        _songRemoved?.Invoke(targetSongInfo);
         _songsUpdated?.Invoke();
         
         await CustomSongsManager.DeleteCustomSong(targetSongInfo);
@@ -134,6 +133,7 @@ public class SongInfoFilesReader : MonoBehaviour
         if (songInfo != null)
         {
             availableSongs.Add(songInfo);
+            _songAdded?.Invoke(songInfo);
             SortSongs();
             _songsUpdated?.Invoke();
         }

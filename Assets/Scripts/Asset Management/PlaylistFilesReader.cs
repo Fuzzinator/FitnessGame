@@ -61,14 +61,17 @@ public class PlaylistFilesReader : MonoBehaviour
     private async UniTask UpdateAvailablePlaylists()
     {
         availablePlaylists.Clear();
-        void AddPlaylist(Playlist playlist) => availablePlaylists.Add(playlist);
+        void AddPlaylist(Playlist playlist)
+        {
+            availablePlaylists.Add(playlist);
+            _playlistsUpdated?.Invoke();
+        }
+
         await AssetManager.GetBuiltInPlaylists(_labelReference.labelString, AddPlaylist);
-        _playlistsUpdated?.Invoke();
         await AssetManager.GetCustomPlaylists(AddPlaylist);
         
         SortPlaylists();
         _playlistsUpdated?.Invoke();
-        //availablePlaylists = GetCustomPlaylists();
     }
     
     public void AddNewPlaylist(Playlist playlist)

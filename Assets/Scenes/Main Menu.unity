@@ -6294,6 +6294,7 @@ GameObject:
   - component: {fileID: 153473043}
   - component: {fileID: 153473042}
   - component: {fileID: 153473041}
+  - component: {fileID: 153473044}
   m_Layer: 5
   m_Name: Scroll View
   m_TagString: Untagged
@@ -6336,6 +6337,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _scrollRect: {fileID: 153473042}
   _scroller: {fileID: 0}
+  _scrollSpeed: 2
 --- !u!114 &153473042
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6374,6 +6376,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 153473039}
   m_CullTransparentMesh: 1
+--- !u!114 &153473044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 153473039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 153473041}
+          m_TargetAssemblyTypeName: ScrollRectScroller, Assembly-CSharp
+          m_MethodName: SubscribeToJoystick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 153473041}
+          m_TargetAssemblyTypeName: ScrollRectScroller, Assembly-CSharp
+          m_MethodName: UnsubscribeFromJoystick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1001 &157007108
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14232,6 +14279,7 @@ GameObject:
   - component: {fileID: 331492876}
   - component: {fileID: 331492875}
   - component: {fileID: 331492874}
+  - component: {fileID: 331492880}
   m_Layer: 5
   m_Name: Playlist Song Scroller 2
   m_TagString: Untagged
@@ -14286,6 +14334,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _scrollRect: {fileID: 331492878}
   _scroller: {fileID: 331492873}
+  _scrollSpeed: 2
 --- !u!114 &331492875
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14388,6 +14437,51 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -20}
   m_SizeDelta: {x: -5, y: -45}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &331492880
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 331492872}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 331492874}
+          m_TargetAssemblyTypeName: ScrollRectScroller, Assembly-CSharp
+          m_MethodName: SubscribeToJoystick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 331492874}
+          m_TargetAssemblyTypeName: ScrollRectScroller, Assembly-CSharp
+          m_MethodName: UnsubscribeFromJoystick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &333330672
 GameObject:
   m_ObjectHideFlags: 0
@@ -15012,7 +15106,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _searchField: {fileID: 346980469}
-  _scrollerController: {fileID: 1716144658}
+  _scrollerController: {fileID: 1716144662}
 --- !u!114 &346980469
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17820,6 +17914,18 @@ MonoBehaviour:
       - m_Target: {fileID: 512704686}
         m_TargetAssemblyTypeName: SetAndShowSongOptions, Assembly-CSharp
         m_MethodName: AddSelectedPlaylistItem
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 497241966}
+        m_TargetAssemblyTypeName: UI.Scrollers.Playlists.DisplaySongInfo, Assembly-CSharp
+        m_MethodName: RequestCloseDisplay
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -20957,6 +21063,18 @@ MonoBehaviour:
       - m_Target: {fileID: 1017806879}
         m_TargetAssemblyTypeName: SongInfoFilesReader, Assembly-CSharp
         m_MethodName: TryDeleteSong
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 497241966}
+        m_TargetAssemblyTypeName: UI.Scrollers.Playlists.DisplaySongInfo, Assembly-CSharp
+        m_MethodName: RequestCloseDisplay
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -25427,6 +25545,7 @@ GameObject:
   - component: {fileID: 716376368}
   - component: {fileID: 716376367}
   - component: {fileID: 716376366}
+  - component: {fileID: 716376370}
   m_Layer: 5
   m_Name: Scroll View
   m_TagString: Untagged
@@ -25448,6 +25567,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _scrollRect: {fileID: 716376367}
   _scroller: {fileID: 0}
+  _scrollSpeed: 2
 --- !u!114 &716376367
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25507,6 +25627,51 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 17.50001}
   m_SizeDelta: {x: 0, y: -35}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &716376370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 716376365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 716376366}
+          m_TargetAssemblyTypeName: ScrollRectScroller, Assembly-CSharp
+          m_MethodName: SubscribeToJoystick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 716376366}
+          m_TargetAssemblyTypeName: ScrollRectScroller, Assembly-CSharp
+          m_MethodName: UnsubscribeFromJoystick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &718961714
 GameObject:
   m_ObjectHideFlags: 0
@@ -27239,6 +27404,26 @@ PrefabInstance:
       propertyPath: m_RootOrder
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 1950472793941555517, guid: 0a78f42969aaff74eb063b367f045548,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 400
+      objectReference: {fileID: 0}
+    - target: {fileID: 1950472793941555517, guid: 0a78f42969aaff74eb063b367f045548,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 1950472793941555517, guid: 0a78f42969aaff74eb063b367f045548,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -180
+      objectReference: {fileID: 0}
+    - target: {fileID: 1950472793941555517, guid: 0a78f42969aaff74eb063b367f045548,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -850
+      objectReference: {fileID: 0}
     - target: {fileID: 2776921219909756460, guid: 0a78f42969aaff74eb063b367f045548,
         type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_FloatArgument
@@ -27414,6 +27599,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_RootOrder
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5313518645104041752, guid: 0a78f42969aaff74eb063b367f045548,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -120
+      objectReference: {fileID: 0}
+    - target: {fileID: 5313518645104041752, guid: 0a78f42969aaff74eb063b367f045548,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -765
       objectReference: {fileID: 0}
     - target: {fileID: 5313518645747180189, guid: 0a78f42969aaff74eb063b367f045548,
         type: 3}
@@ -27656,7 +27851,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 789226860}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 789226866}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9c1b74f910281224a8cae6d8e4fc1f43, type: 3}
@@ -27680,6 +27875,69 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ba9655b4e6fe3d449d867d298b147b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &789226865 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4302666231407549471, guid: 0a78f42969aaff74eb063b367f045548,
+    type: 3}
+  m_PrefabInstance: {fileID: 789226860}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 789226866}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adec7a50bc973874ba497d3b39b89a28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &789226866 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5313518644250520180, guid: 0a78f42969aaff74eb063b367f045548,
+    type: 3}
+  m_PrefabInstance: {fileID: 789226860}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &789226867
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 789226866}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 789226865}
+          m_TargetAssemblyTypeName: ScrollRectScroller, Assembly-CSharp
+          m_MethodName: SubscribeToJoystick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 789226865}
+          m_TargetAssemblyTypeName: ScrollRectScroller, Assembly-CSharp
+          m_MethodName: UnsubscribeFromJoystick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!223 &789226868 stripped
 Canvas:
   m_CorrespondingSourceObject: {fileID: 789226868, guid: 0a78f42969aaff74eb063b367f045548,
@@ -29156,6 +29414,7 @@ GameObject:
   - component: {fileID: 827783839}
   - component: {fileID: 827783838}
   - component: {fileID: 827783837}
+  - component: {fileID: 827783843}
   m_Layer: 5
   m_Name: Dual Playlist DIsplay Scroller
   m_TagString: Untagged
@@ -29241,6 +29500,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _scrollRect: {fileID: 827783842}
   _scroller: {fileID: 827783841}
+  _scrollSpeed: 2
 --- !u!222 &827783840
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -29312,6 +29572,51 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &827783843
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 827783835}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 827783839}
+          m_TargetAssemblyTypeName: ScrollRectScroller, Assembly-CSharp
+          m_MethodName: SubscribeToJoystick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 827783839}
+          m_TargetAssemblyTypeName: ScrollRectScroller, Assembly-CSharp
+          m_MethodName: UnsubscribeFromJoystick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &831607516
 GameObject:
   m_ObjectHideFlags: 0
@@ -32186,7 +32491,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 2038769564}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 2038769567}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9c1b74f910281224a8cae6d8e4fc1f43, type: 3}
@@ -33844,7 +34149,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 2006677657759695534}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 2006677657759695538}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9c1b74f910281224a8cae6d8e4fc1f43, type: 3}
@@ -35207,6 +35512,7 @@ GameObject:
   - component: {fileID: 1028989299}
   - component: {fileID: 1028989298}
   - component: {fileID: 1028989302}
+  - component: {fileID: 1028989304}
   m_Layer: 5
   m_Name: Playlist Song Scroller
   m_TagString: Untagged
@@ -35333,6 +35639,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _scrollRect: {fileID: 1028989303}
   _scroller: {fileID: 1028989301}
+  _scrollSpeed: 2
 --- !u!114 &1028989303
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -35363,6 +35670,51 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1028989304
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1028989296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1028989302}
+          m_TargetAssemblyTypeName: ScrollRectScroller, Assembly-CSharp
+          m_MethodName: SubscribeToJoystick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1028989302}
+          m_TargetAssemblyTypeName: ScrollRectScroller, Assembly-CSharp
+          m_MethodName: UnsubscribeFromJoystick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &1034748356
 GameObject:
   m_ObjectHideFlags: 0
@@ -37976,6 +38328,7 @@ GameObject:
   - component: {fileID: 1079850458}
   - component: {fileID: 1079850462}
   - component: {fileID: 1079850461}
+  - component: {fileID: 1079850463}
   m_Layer: 5
   m_Name: Playlist Scroller
   m_TagString: Untagged
@@ -38059,6 +38412,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _scrollRect: {fileID: 1079850459}
   _scroller: {fileID: 1079850452}
+  _scrollSpeed: 2
 --- !u!114 &1079850459
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38132,6 +38486,51 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 0
+--- !u!114 &1079850463
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1079850451}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1079850458}
+          m_TargetAssemblyTypeName: ScrollRectScroller, Assembly-CSharp
+          m_MethodName: SubscribeToJoystick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1079850458}
+          m_TargetAssemblyTypeName: ScrollRectScroller, Assembly-CSharp
+          m_MethodName: UnsubscribeFromJoystick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &1080761753
 GameObject:
   m_ObjectHideFlags: 0
@@ -46666,6 +47065,7 @@ GameObject:
   - component: {fileID: 1400155082}
   - component: {fileID: 1400155081}
   - component: {fileID: 1400155087}
+  - component: {fileID: 1400155089}
   m_Layer: 5
   m_Name: Available Songs Scroller
   m_TagString: Untagged
@@ -46792,6 +47192,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _scrollRect: {fileID: 1400155088}
   _scroller: {fileID: 1400155084}
+  _scrollSpeed: 2
 --- !u!114 &1400155088
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -46822,6 +47223,51 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1400155089
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1400155079}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1400155087}
+          m_TargetAssemblyTypeName: ScrollRectScroller, Assembly-CSharp
+          m_MethodName: SubscribeToJoystick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1400155087}
+          m_TargetAssemblyTypeName: ScrollRectScroller, Assembly-CSharp
+          m_MethodName: UnsubscribeFromJoystick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &1403126889
 GameObject:
   m_ObjectHideFlags: 0
@@ -52055,7 +52501,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh353192
+  m_Name: pb_Mesh781940
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -52715,6 +53161,69 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1607220306 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3627185152697247107, guid: 8c0fab8e43588b940be7c85e531e532b,
+    type: 3}
+  m_PrefabInstance: {fileID: 1607220302}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1607220307}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adec7a50bc973874ba497d3b39b89a28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &1607220307 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3627185152697247111, guid: 8c0fab8e43588b940be7c85e531e532b,
+    type: 3}
+  m_PrefabInstance: {fileID: 1607220302}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1607220308
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1607220307}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1607220306}
+          m_TargetAssemblyTypeName: ScrollRectScroller, Assembly-CSharp
+          m_MethodName: SubscribeToJoystick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1607220306}
+          m_TargetAssemblyTypeName: ScrollRectScroller, Assembly-CSharp
+          m_MethodName: UnsubscribeFromJoystick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &1612805704
 GameObject:
   m_ObjectHideFlags: 0
@@ -56134,6 +56643,7 @@ GameObject:
   - component: {fileID: 1748907668}
   - component: {fileID: 1748907667}
   - component: {fileID: 1748907666}
+  - component: {fileID: 1748907670}
   m_Layer: 5
   m_Name: Scroll View
   m_TagString: Untagged
@@ -56155,6 +56665,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _scrollRect: {fileID: 1748907667}
   _scroller: {fileID: 0}
+  _scrollSpeed: 2
 --- !u!114 &1748907667
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -56214,6 +56725,51 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 17.50001}
   m_SizeDelta: {x: 0, y: -35}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1748907670
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1748907665}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1748907666}
+          m_TargetAssemblyTypeName: ScrollRectScroller, Assembly-CSharp
+          m_MethodName: SubscribeToJoystick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1748907666}
+          m_TargetAssemblyTypeName: ScrollRectScroller, Assembly-CSharp
+          m_MethodName: UnsubscribeFromJoystick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &1765723330
 GameObject:
   m_ObjectHideFlags: 0
@@ -56718,6 +57274,7 @@ GameObject:
   - component: {fileID: 1781570630}
   - component: {fileID: 1781570629}
   - component: {fileID: 1781570628}
+  - component: {fileID: 1781570634}
   m_Layer: 5
   m_Name: Playlist Scroller
   m_TagString: Untagged
@@ -56803,6 +57360,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _scrollRect: {fileID: 1781570633}
   _scroller: {fileID: 1781570632}
+  _scrollSpeed: 2
 --- !u!222 &1781570631
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -56874,6 +57432,51 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1781570634
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1781570626}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1781570630}
+          m_TargetAssemblyTypeName: ScrollRectScroller, Assembly-CSharp
+          m_MethodName: SubscribeToJoystick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1781570630}
+          m_TargetAssemblyTypeName: ScrollRectScroller, Assembly-CSharp
+          m_MethodName: UnsubscribeFromJoystick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &1782468434
 GameObject:
   m_ObjectHideFlags: 0
@@ -65641,6 +66244,69 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 2038769564}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2038769566 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3627185152697247107, guid: 8c0fab8e43588b940be7c85e531e532b,
+    type: 3}
+  m_PrefabInstance: {fileID: 2038769564}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2038769567}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adec7a50bc973874ba497d3b39b89a28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &2038769567 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3627185152697247111, guid: 8c0fab8e43588b940be7c85e531e532b,
+    type: 3}
+  m_PrefabInstance: {fileID: 2038769564}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2038769568
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2038769567}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2038769566}
+          m_TargetAssemblyTypeName: ScrollRectScroller, Assembly-CSharp
+          m_MethodName: SubscribeToJoystick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2038769566}
+          m_TargetAssemblyTypeName: ScrollRectScroller, Assembly-CSharp
+          m_MethodName: UnsubscribeFromJoystick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &2043037838
 GameObject:
   m_ObjectHideFlags: 0
@@ -66316,6 +66982,7 @@ GameObject:
   - component: {fileID: 2056082819}
   - component: {fileID: 2056082820}
   - component: {fileID: 2056082822}
+  - component: {fileID: 2056082823}
   m_Layer: 5
   m_Name: Songs In Playlist Cards
   m_TagString: Untagged
@@ -66449,6 +67116,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _scrollRect: {fileID: 2056082821}
   _scroller: {fileID: 2056082819}
+  _scrollSpeed: 2
 --- !u!114 &2056082821
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66492,6 +67160,51 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 0
+--- !u!114 &2056082823
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2056082814}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2056082820}
+          m_TargetAssemblyTypeName: ScrollRectScroller, Assembly-CSharp
+          m_MethodName: SubscribeToJoystick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2056082820}
+          m_TargetAssemblyTypeName: ScrollRectScroller, Assembly-CSharp
+          m_MethodName: UnsubscribeFromJoystick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &2063833932
 GameObject:
   m_ObjectHideFlags: 0
@@ -67199,6 +67912,7 @@ GameObject:
   - component: {fileID: 2078188627}
   - component: {fileID: 2078188626}
   - component: {fileID: 2078188625}
+  - component: {fileID: 2078188631}
   m_Layer: 5
   m_Name: All Available Songs Scroller
   m_TagString: Untagged
@@ -67241,6 +67955,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _scrollRect: {fileID: 2078188630}
   _scroller: {fileID: 2078188629}
+  _scrollSpeed: 2
 --- !u!114 &2078188626
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -67355,6 +68070,51 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &2078188631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2078188623}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2078188625}
+          m_TargetAssemblyTypeName: ScrollRectScroller, Assembly-CSharp
+          m_MethodName: SubscribeToJoystick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2078188625}
+          m_TargetAssemblyTypeName: ScrollRectScroller, Assembly-CSharp
+          m_MethodName: UnsubscribeFromJoystick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &2078956382
 GameObject:
   m_ObjectHideFlags: 0
@@ -68801,7 +69561,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 3627185152665376486}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 3627185152665376487}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9c1b74f910281224a8cae6d8e4fc1f43, type: 3}
@@ -69959,6 +70719,69 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 2006677657759695534}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2006677657759695537 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4968748935982677274, guid: 277a0931570757e4aaf622841fc3c9a6,
+    type: 3}
+  m_PrefabInstance: {fileID: 2006677657759695534}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2006677657759695538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adec7a50bc973874ba497d3b39b89a28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &2006677657759695538 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4968748935982677278, guid: 277a0931570757e4aaf622841fc3c9a6,
+    type: 3}
+  m_PrefabInstance: {fileID: 2006677657759695534}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2006677657759695539
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2006677657759695538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2006677657759695537}
+          m_TargetAssemblyTypeName: ScrollRectScroller, Assembly-CSharp
+          m_MethodName: SubscribeToJoystick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2006677657759695537}
+          m_TargetAssemblyTypeName: ScrollRectScroller, Assembly-CSharp
+          m_MethodName: UnsubscribeFromJoystick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1001 &3627185152665376486
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -70085,6 +70908,69 @@ PrefabInstance:
     - {fileID: 3627185152360322951, guid: 8c0fab8e43588b940be7c85e531e532b, type: 3}
     - {fileID: 3627185152360322950, guid: 8c0fab8e43588b940be7c85e531e532b, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 8c0fab8e43588b940be7c85e531e532b, type: 3}
+--- !u!1 &3627185152665376487 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3627185152697247111, guid: 8c0fab8e43588b940be7c85e531e532b,
+    type: 3}
+  m_PrefabInstance: {fileID: 3627185152665376486}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3627185152665376488 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3627185152697247107, guid: 8c0fab8e43588b940be7c85e531e532b,
+    type: 3}
+  m_PrefabInstance: {fileID: 3627185152665376486}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3627185152665376487}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adec7a50bc973874ba497d3b39b89a28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3627185152665376489
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3627185152665376487}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 3627185152665376488}
+          m_TargetAssemblyTypeName: ScrollRectScroller, Assembly-CSharp
+          m_MethodName: SubscribeToJoystick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 3627185152665376488}
+          m_TargetAssemblyTypeName: ScrollRectScroller, Assembly-CSharp
+          m_MethodName: UnsubscribeFromJoystick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!114 &3627185152665376494
 MonoBehaviour:
   m_ObjectHideFlags: 0
