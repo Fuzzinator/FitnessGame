@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UI.Scrollers;
 using UnityEngine;
 using ColorSet = ColorsManager.ColorSet;

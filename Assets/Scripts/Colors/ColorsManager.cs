@@ -94,12 +94,18 @@ public class ColorsManager : MonoBehaviour
     
     private void GetColorSets()
     {
-        _customColorCount = SettingsManager.GetSetting(CUSTOMCOLORSETCOUNT, 0);
         _colorSets.Clear();
-        _colorSets.Add(ColorSet.Default);
-        for (var i = 0; i < _customColorCount; i++)
+        _customColorCount = SettingsManager.GetSetting(CUSTOMCOLORSETCOUNT, 0);
+        if (_customColorCount == 0)
         {
-            _colorSets.Add(SettingsManager.GetSetting($"{CUSTOMCOLORSETNUMBERX}{i}", ColorSet.Default));
+            AddColorSet(ColorSet.Default);
+        }
+        else
+        {
+            for (var i = 0; i < _customColorCount; i++)
+            {
+                _colorSets.Add(SettingsManager.GetSetting($"{CUSTOMCOLORSETNUMBERX}{i}", ColorSet.Default));
+            }
         }
 
         ActiveSetIndex = SettingsManager.GetSetting(ACTIVECOLORSETINDEX, 0);
@@ -111,14 +117,14 @@ public class ColorsManager : MonoBehaviour
     {
         _colorSets.Add(colorSet);
         availableColorSetsUpdated?.Invoke();
-        SaveColorSet(colorSet, AvailableColorSets.Count - 2);
-        SettingsManager.SetSetting(CUSTOMCOLORSETCOUNT, AvailableColorSets.Count-1);
-        return _colorSets.Count - 2;
+        SaveColorSet(colorSet, AvailableColorSets.Count - 1);//
+        SettingsManager.SetSetting(CUSTOMCOLORSETCOUNT, AvailableColorSets.Count);
+        return _colorSets.Count - 1;
     }
 
     public void UpdateColorSet(ColorSet colorSet, int index)
     {
-        _colorSets[index+1] = colorSet;
+        _colorSets[index] = colorSet;
         availableColorSetsUpdated?.Invoke();
         SaveColorSet(colorSet, index);
     }

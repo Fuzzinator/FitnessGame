@@ -47,6 +47,7 @@ public class ScrollRectScroller : MonoBehaviour
     private void OnDestroy()
     {
         _scroll = false;
+        UnsubscribeFromJoystick();
     }
 
     public void SubscribeToJoystick()

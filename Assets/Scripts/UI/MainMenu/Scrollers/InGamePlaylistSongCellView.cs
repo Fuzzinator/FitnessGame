@@ -41,17 +41,17 @@ namespace UI.Scrollers.Playlists
 
         private async UniTaskVoid SetDataAsync(PlaylistItem playlistItem)
         {
-            var isValid = await PlaylistValidator.IsValid(playlistItem);
             if (_songDetails == null)
             {
                 return;
             }
             using (var sb = ZString.CreateStringBuilder(true))
             {
+                /*var isValid = await PlaylistValidator.IsValid(playlistItem);
                 if (!isValid)
                 {
                     sb.Append(INVALIDINDICATOR);
-                }
+                }*/
                 sb.AppendFormat(SONGINFOFORMAT, playlistItem.SongName, playlistItem.Difficulty, playlistItem.TargetGameMode.Readable());
 
                 _songDetails.SetText(sb);

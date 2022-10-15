@@ -34,11 +34,11 @@ namespace UI.Scrollers
             _rightColor.color = colorSet.RightController;
             _blockColor.color = colorSet.BlockColor;
             _obstacleColor.color = colorSet.ObstacleColor;
-            SetHighlight(ColorsManager.Instance.ActiveSetIndex == index+1);
+            SetHighlight(ColorsManager.Instance.ActiveSetIndex == index);
             
             _index = index;
             _controller = controller;
-            _editButton.gameObject.SetActive(index != -1);
+            _editButton.gameObject.SetActive(index != 0);
         }
 
         public void SetHighlight(bool on)

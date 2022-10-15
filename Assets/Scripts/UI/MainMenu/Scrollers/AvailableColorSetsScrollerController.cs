@@ -21,13 +21,13 @@ namespace UI.Scrollers
         public override EnhancedScrollerCellView GetCellView(EnhancedScroller scroller, int dataIndex, int cellIndex)
         {
             var cellView = base.GetCellView(scroller, dataIndex, cellIndex) as ColorSetCellView;
-            cellView.SetData(ColorsManager.Instance.AvailableColorSets[dataIndex], dataIndex-1, this);
+            cellView.SetData(ColorsManager.Instance.AvailableColorSets[dataIndex], dataIndex, this);
             return cellView;
         }
 
         public virtual void SetActiveColorSet(ColorSet info, int index)
         {
-            _colorSetSelector.SetActiveColorSet(info, index+1);
+            _colorSetSelector.SetActiveColorSet(info, index);
         }
 
         public void SetHighlight(ColorSetCellView cellView)
