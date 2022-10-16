@@ -853,13 +853,13 @@ MonoBehaviour:
         m_Calls:
         - m_Target: {fileID: 4968748935982677274}
           m_TargetAssemblyTypeName: ScrollRectScroller, Assembly-CSharp
-          m_MethodName: Scroll
+          m_MethodName: ScrollY
           m_Mode: 4
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
-            m_FloatArgument: -2
+            m_FloatArgument: -1
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
@@ -1332,13 +1332,13 @@ MonoBehaviour:
         m_Calls:
         - m_Target: {fileID: 4968748935982677274}
           m_TargetAssemblyTypeName: ScrollRectScroller, Assembly-CSharp
-          m_MethodName: Scroll
+          m_MethodName: ScrollY
           m_Mode: 4
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
-            m_FloatArgument: 2
+            m_FloatArgument: 1
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
@@ -1771,6 +1771,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _scrollRect: {fileID: 4968748935982677271}
   _scroller: {fileID: 4968748935982677272}
+  _scrollSpeed: 2
 --- !u!114 &4968748935982677275
 MonoBehaviour:
   m_ObjectHideFlags: 0

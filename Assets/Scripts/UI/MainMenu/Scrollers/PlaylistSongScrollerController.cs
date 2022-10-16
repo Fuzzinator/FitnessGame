@@ -26,6 +26,7 @@ namespace UI.Scrollers.Playlists
             {
                 PlaylistManager.Instance.playlistItemUpdated.AddListener(UpdateCellViewHighlight);
             }
+            PlaylistManager.Instance.currentPlaylistUpdated.AddListener(Refresh);
         }
 
         private void OnDisable()
@@ -34,8 +35,14 @@ namespace UI.Scrollers.Playlists
             {
                 PlaylistManager.Instance.playlistItemUpdated.RemoveListener(UpdateCellViewHighlight);
             }
+            PlaylistManager.Instance.currentPlaylistUpdated.RemoveListener(Refresh);
         }
 
+        private void Refresh(Playlist playlist)
+        {
+            Refresh();
+        }
+        
         public override int GetNumberOfCells(EnhancedScroller scroller)
         {
             if (PlaylistManager.Instance != null)

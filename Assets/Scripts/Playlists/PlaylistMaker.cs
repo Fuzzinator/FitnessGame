@@ -33,6 +33,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
 
     [SerializeField]
     private DifficultyInfo.DifficultyEnum _difficulty = DifficultyInfo.DifficultyEnum.Unset;
+
     public List<PlaylistItem> PlaylistItems => _playlistItems;
 
     private bool _editMode = false;
@@ -54,7 +55,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
 
     private const string NEWPLAYLISTNAME = "New Playlist";
     private const string PLAYLISTEXTENSION = ".txt";
-    
+
     private const int MINUTE = 60;
     private const string DIVIDER = ":";
 
@@ -71,7 +72,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
             Destroy(this);
         }
     }
-    
+
     private void OnDestroy()
     {
         if (Instance == this)
@@ -84,9 +85,12 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     {
         _activeItem = info;
     }
-    public static PlaylistItem GetPlaylistItem(SongInfo songInfo, string difficulty, DifficultyInfo.DifficultyEnum difficultyEnum, GameMode gameMode)
+
+    public static PlaylistItem GetPlaylistItem(SongInfo songInfo, string difficulty,
+        DifficultyInfo.DifficultyEnum difficultyEnum, GameMode gameMode)
     {
-        return new PlaylistItem(songInfo.SongName, songInfo.fileLocation, difficulty, difficultyEnum, songInfo.isCustomSong, gameMode, songInfo);
+        return new PlaylistItem(songInfo.SongName, songInfo.fileLocation, difficulty, difficultyEnum,
+            songInfo.isCustomSong, gameMode, songInfo);
     }
 
     public void AddPlaylistItem(PlaylistItem item)
@@ -102,7 +106,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
             Debug.LogWarning("Playlist not contained but trying to remove it. This shouldnt happen.");
             return;
         }
-        
+
         _playlistItems.Remove(item);
         _playlistItemsUpdated?.Invoke();
     }
@@ -131,8 +135,16 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         _playlistName = newName;
     }
 
-    public async void CreatePlaylist()
+    public void CreatePlaylist()
     {
+        CreatePlaylistAsync().Forget();
+    }
+
+    private async UniTaskVoid CreatePlaylistAsync()
+    {
+        var newPlaylist = new Playlist(_playlistItems, _gameMode, _difficulty, _playlistName);
+        PlaylistManager.Instance.CurrentPlaylist = newPlaylist;
+        
         if (_playlistItems == null || _playlistItems.Count == 0)
         {
             //Debug.LogError("Cannot create empty playlist");
@@ -157,7 +169,6 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         }
 
         _playlistName = _playlistName.RemoveIllegalIOCharacters();
-        var newPlaylist = new Playlist(_playlistItems, _gameMode, _difficulty, _playlistName);
         if (string.IsNullOrWhiteSpace(_playlistName))
         {
             _playlistName = newPlaylist.PlaylistName;
@@ -183,7 +194,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
                 filePath = $"{path}{_playlistName}_{index:00}.txt";
                 try
                 {
-                    await UniTask.DelayFrame(1, cancellationToken:cancallationToken);
+                    await UniTask.DelayFrame(1, cancellationToken: cancallationToken);
                 }
                 catch (Exception e) when (e is OperationCanceledException)
                 {
@@ -211,7 +222,6 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         _newPlaylistCreated?.Invoke(newPlaylist);
         _playlistItems.Clear();
         SetPlaylistName(NEWPLAYLISTNAME);
-        PlaylistManager.Instance.CurrentPlaylist = newPlaylist;
     }
 
     public float GetLength()
@@ -228,23 +238,25 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     public string GetReadableLength()
     {
         var length = GetLength();
-        
-        var minutes = (int)Mathf.Floor(length / MINUTE);
-        var seconds = (int)Mathf.Floor(length % MINUTE);
+
+        var minutes = (int) Mathf.Floor(length / MINUTE);
+        var seconds = (int) Mathf.Floor(length % MINUTE);
         using (var sb = ZString.CreateStringBuilder(true))
         {
             if (minutes < 10)
             {
                 sb.Append(0);
             }
+
             sb.Append(minutes);
             sb.Append(DIVIDER);
             if (seconds < 10)
             {
                 sb.Append(0);
             }
+
             sb.Append(seconds);
-            
+
             return sb.ToString();
         }
     }
@@ -260,7 +272,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
             _playlistName = playlist.PlaylistName;
             _difficulty = playlist.DifficultyEnum;
             _gameMode = playlist.GameModeOverride;
-            
+
             _playlistItems.Clear();
 
             foreach (var item in playlist.Items)

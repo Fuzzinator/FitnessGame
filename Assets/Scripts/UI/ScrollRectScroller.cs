@@ -28,7 +28,7 @@ public class ScrollRectScroller : MonoBehaviour
         }
     }
 
-    public void Scroll(float value)
+    public void ScrollY(float value)
     {
         if (_scroll)
         {
@@ -36,7 +36,19 @@ public class ScrollRectScroller : MonoBehaviour
         }
 
         _scroll = true;
-        AsyncScroll(value).Forget();
+        AsyncScrollY(_scrollSpeed * value).Forget();
+    }
+
+    public void ScrollX(float value)
+    {
+        if (_scroll)
+        {
+            return;
+        }
+
+        _scroll = true;
+
+        AsyncScrollX(_scrollSpeed * value).Forget();
     }
 
     public void StopScroll()
@@ -72,18 +84,18 @@ public class ScrollRectScroller : MonoBehaviour
             var rect = _scrollRect.content.rect;
             var rectWidth = rect.width;
             var rectHeight = rect.height;
-            
+
             value.x /= rectWidth;
             value.y /= rectHeight;
 
             value *= -_scrollSpeed;
-            
+
             var xPosition = Mathf.Clamp(_scrollRect.horizontalNormalizedPosition - value.x, 0, 1);
             _scrollRect.horizontalNormalizedPosition = xPosition;
-            
+
             var yPosition = Mathf.Clamp(_scrollRect.verticalNormalizedPosition - value.y, 0, 1);
             _scrollRect.verticalNormalizedPosition = yPosition;
-            
+
             DelayStopScroll().Forget();
         }
     }
@@ -94,7 +106,7 @@ public class ScrollRectScroller : MonoBehaviour
         _scroll = false;
     }
 
-    private async UniTask AsyncScroll(float value)
+    private async UniTask AsyncScrollY(float value)
     {
         var rectHeight = _scrollRect.content.rect.height;
         value /= rectHeight;
@@ -104,6 +116,19 @@ public class ScrollRectScroller : MonoBehaviour
             await UniTask.DelayFrame(1);
             var position = Mathf.Clamp(_scrollRect.verticalNormalizedPosition - value, 0, 1);
             _scrollRect.verticalNormalizedPosition = position;
+        }
+    }
+
+    private async UniTask AsyncScrollX(float value)
+    {
+        var rectWidth = _scrollRect.content.rect.width;
+        value /= rectWidth;
+
+        while (_scroll)
+        {
+            await UniTask.DelayFrame(1);
+            var position = Mathf.Clamp(_scrollRect.horizontalNormalizedPosition - value, 0, 1);
+            _scrollRect.horizontalNormalizedPosition = position;
         }
     }
 }
