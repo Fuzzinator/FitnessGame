@@ -26,14 +26,6 @@
       <change beforePath="$PROJECT_DIR$/.idea/.idea.FitnessGame/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.FitnessGame/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/AddressableAssetsData/link.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/AddressableAssetsData/link.xml.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/UI/Color Set Selector.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/UI/Color Set Selector.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/UI/Download Songs Canvas.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/UI/Download Songs Canvas.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/UI/Playlist Display Object.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/UI/Playlist Display Object.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Main Menu.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Main Menu.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/GameManagement/GameMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/GameManagement/GameMode.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Playlists/PlaylistMaker.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Playlists/PlaylistMaker.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/Scrollers/PlaylistSongScrollerController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/Scrollers/PlaylistSongScrollerController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/ScrollRectScroller.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/ScrollRectScroller.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -113,6 +105,7 @@
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.cysharp.unitask@9e2163616b/Runtime/UniTaskScheduler.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/HitEffects/IMissedHit.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ad50157ee00e45cdb3c8bd67012f8804157200/ab/c77dfe4f/UnityEventBase.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/GameManagement/GameManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Runtime/UI/Core/StencilMaterial.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/GameManagement/FocusTracker.cs" root0="FORCE_HIGHLIGHTING" />
@@ -180,6 +173,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/fd824cfb55004855b9e6d51b008c90e4568778/39/b7f0933b/Char.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/2f54b03e2fc84bf1912cc01519534c53f000/91/3d39902a/InputDevices.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ad50157ee00e45cdb3c8bd67012f8804157200/4c/1117086f/Color.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Scene Management/ActiveSceneManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.addressables@1.19.19/Runtime/ResourceManager/AsyncOperations/AsyncOperationHandle.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/Playlists/KeyboardTextField.cs" root0="FORCE_HIGHLIGHTING" />
@@ -235,6 +229,8 @@
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.cysharp.zstring@634ed94bdd/Utf16/Utf16ValueStringBuilder.AppendFormat.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/InfoSaving/Interfaces/ISaver.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.xr.interaction.toolkit@1.0.0-pre.8/Runtime/UI/TrackedDeviceGraphicRaycaster.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.xr.interaction.toolkit@1.0.0-pre.8/Runtime/UI/XRUIInputModule.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
@@ -291,7 +287,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="XThreadsFramesViewSplitterKey" value="0.54376787" />
+    <property name="XThreadsFramesViewSplitterKey" value="0.538059" />
     <property name="com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File" value="C#" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="rider.run.widget.enabled.cache" value="false" />
@@ -487,6 +483,20 @@
             </endOffsets>
           </properties>
           <option name="timeStamp" value="747" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <condition expression="item.SongName == &quot;Dance&quot;" language="C#" />
+          <url>file://$PROJECT_DIR$/Assets/Scripts/Asset Management/AssetManager.cs</url>
+          <line>186</line>
+          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\Asset Management\AssetManager.cs" initialLine="186" containingFunctionPresentation="method 'LoadBuiltInSongImage'">
+            <startOffsets>
+              <option value="6346" />
+            </startOffsets>
+            <endOffsets>
+              <option value="6452" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="748" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
