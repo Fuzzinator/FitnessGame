@@ -146,17 +146,29 @@ public class LevelManager : MonoBehaviour
 
     public void SetChoreographyLoaded(bool loaded)
     {
+        if (ChoreographyLoaded == loaded)
+        {
+            return;
+        }
         ChoreographyLoaded = loaded;
         _choreographyCompleted = false;
     }
 
     public void SetSongInfoLoaded(bool loaded)
     {
+        if (SongInfoLoaded == loaded)
+        {
+            return;
+        }
         SongInfoLoaded = loaded;
     }
 
     public void SetActualSongLoaded(bool loaded)
     {
+        if (ActualSongLoaded == loaded)
+        {
+            return;
+        }
         ActualSongLoaded = loaded;
         _songCompleted = false;
     }

@@ -27,6 +27,7 @@ public class MusicManager : BaseGameStateListener
     private bool _awaitingSongEnd = false;
     private bool _musicPaused = false;
     private bool _applicationPaused = false;
+    private bool _stopRequested = false;
 
     private float _previousTime = 0;
     
@@ -187,6 +188,10 @@ public class MusicManager : BaseGameStateListener
 
     public void StopMusic()
     {
+        if (_awaitingSongEnd)
+        {
+            _stopRequested = true;
+        }
         _musicAudioSource.Stop();
         _musicPaused = false;
     }
@@ -227,6 +232,7 @@ public class MusicManager : BaseGameStateListener
         {
             var timeSpan = TimeSpan.FromSeconds(.05f);
             _previousTime = -1f;
+            _stopRequested = false;
             while (!IsSongCompleted && IsPlayingOrPaused)//_musicAudioSource.clip.length - _musicAudioSource.time >= .05f && IsPlayingOrPaused)
             {
                 _previousTime = _musicAudioSource.time;
@@ -236,8 +242,10 @@ public class MusicManager : BaseGameStateListener
             _previousTime = -1f;
         }
 
-        if (_cancellationToken.IsCancellationRequested)
+        if (_cancellationToken.IsCancellationRequested || _stopRequested)
         {
+            _awaitingSongEnd = false;
+            _stopRequested = false;
             return;
         }
 
