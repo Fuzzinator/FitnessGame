@@ -175,28 +175,60 @@ public class Choreography
     public async UniTask<Choreography> AddRotationEventsAsync()
     {
         var eventTypes = GetOptionTypes();
-        var events = new NativeArray<ChoreographyEvent>(_events, Allocator.TempJob);
-        var jobHandle = new AddRotationEventsJob(events, eventTypes);
-        try
+        if (_events == null || _events.Length == 0)
         {
-            await jobHandle.Schedule(events.Length, 8);
-        }
-        catch (Exception e)
-        {
-            eventTypes.Dispose();
-            events.Dispose();
-            if (e is not OperationCanceledException)
+            var targetLength = _notes.Length / 20;
+            var events = new NativeArray<ChoreographyEvent>(targetLength, Allocator.TempJob);
+            var notes = new NativeArray<ChoreographyNote>(_notes, Allocator.TempJob);
+            var jobHandle = new CreateNewRotationEventsJob(events, notes, eventTypes);
+            try
             {
-                Debug.LogError(e);
+                await jobHandle.Schedule(events.Length, 8);
+            }
+            catch (Exception e)
+            {
+                eventTypes.Dispose();
+                events.Dispose();
+                notes.Dispose();
+                if (e is not OperationCanceledException)
+                {
+                    Debug.LogError(e);
+                }
+
+                return this;
             }
 
-            return this;
+            _events = jobHandle.Events.ToArray();
+            eventTypes.Dispose();
+            events.Dispose();
+            notes.Dispose();
+        }
+        else
+        {
+            var events = new NativeArray<ChoreographyEvent>(_events, Allocator.TempJob);
+            var jobHandle = new ReplaceRotationEventsJob(events, eventTypes);
+            try
+            {
+                await jobHandle.Schedule(events.Length, 8);
+            }
+            catch (Exception e)
+            {
+                eventTypes.Dispose();
+                events.Dispose();
+                if (e is not OperationCanceledException)
+                {
+                    Debug.LogError(e);
+                }
+
+                return this;
+            }
+
+            _events = jobHandle.Events.ToArray();
+
+            eventTypes.Dispose();
+            events.Dispose();
         }
 
-        _events = jobHandle.Events.ToArray();
-
-        eventTypes.Dispose();
-        events.Dispose();
         return this;
     }
 
@@ -209,7 +241,7 @@ public class Choreography
 
         var obstacles = new NativeArray<ChoreographyObstacle>((_notes.Length / 5) + beatCount, Allocator.TempJob);
         var notes = new NativeArray<ChoreographyNote>(_notes, Allocator.TempJob);
-        var jobHandle = new AddObstaclesJob(obstacles, notes, modifiedBPS); //, _obstacles.Length);
+        var jobHandle = new AddObstaclesJob(obstacles, notes, modifiedBPS);
         try
         {
             await jobHandle.Schedule(obstacles.Length, 8);
@@ -290,7 +322,7 @@ public class Choreography
 }
 
 [BurstCompile]
-public struct AddRotationEventsJob : IJobParallelFor
+public struct ReplaceRotationEventsJob : IJobParallelFor
 {
     public readonly NativeArray<ChoreographyEvent> Events => _events;
     private NativeArray<ChoreographyEvent> _events;
@@ -302,7 +334,7 @@ public struct AddRotationEventsJob : IJobParallelFor
 
     private readonly NativeArray<int> _rotateEventValues;
 
-    public AddRotationEventsJob(NativeArray<ChoreographyEvent> events, NativeArray<int> rotateEventValues)
+    public ReplaceRotationEventsJob(NativeArray<ChoreographyEvent> events, NativeArray<int> rotateEventValues)
     {
         _events = events;
         _rotateEventValues = rotateEventValues;
@@ -316,6 +348,77 @@ public struct AddRotationEventsJob : IJobParallelFor
             var newEvent = new ChoreographyEvent(_events[index].Time, GetEventType(index), GetRotationEvent(index));
             _events[index] = newEvent;
         }
+    }
+
+    private ChoreographyEvent.EventType GetEventType(int index)
+    {
+        if (index + _seed > uint.MaxValue)
+        {
+            index = (int) (index * .5);
+        }
+
+        var random = new Unity.Mathematics.Random((uint) (_seed + index));
+        var randValue = random.NextInt(EARLYROTATION, LATEROTATION);
+        for (var i = 0; i < INTERVAL; i++)
+        {
+            randValue = random.NextInt(EARLYROTATION, LATEROTATION);
+        }
+
+        return (ChoreographyEvent.EventType) randValue;
+    }
+
+    private ChoreographyEvent.RotateEventValue GetRotationEvent(int index)
+    {
+        if (index + _seed > uint.MaxValue)
+        {
+            index = (int) (index * .5);
+        }
+
+        var random = new Unity.Mathematics.Random((uint) (_seed + index));
+        var randValue = random.NextInt(0, _rotateEventValues.Length - 1);
+        for (var i = 0; i < INTERVAL; i++)
+        {
+            randValue = random.NextInt(0, _rotateEventValues.Length - 1);
+        }
+
+        var value = (ChoreographyEvent.RotateEventValue) _rotateEventValues[randValue];
+        return value;
+    }
+}
+
+
+//[BurstCompile]
+public struct CreateNewRotationEventsJob : IJobParallelFor
+{
+    public readonly NativeArray<ChoreographyEvent> Events => _events;
+    private NativeArray<ChoreographyEvent> _events;
+    private uint _seed;
+    private const int INTERVAL = 20;
+
+    private const int EARLYROTATION = 14;
+    private const int LATEROTATION = 15;
+
+    private readonly NativeArray<int> _rotateEventValues;
+    private readonly NativeArray<ChoreographyNote> _notes;
+
+    public CreateNewRotationEventsJob(NativeArray<ChoreographyEvent> events, NativeArray<ChoreographyNote> notes,
+        NativeArray<int> rotateEventValues)
+    {
+        _events = events;
+        _notes = notes;
+        _rotateEventValues = rotateEventValues;
+        _seed = 0 + 118 + 999 + 881 + 999 + 119 + 725;
+    }
+
+    public void Execute(int index)
+    {
+        var targetIndex = index * INTERVAL;
+        if (targetIndex >= _notes.Length)
+        {
+            return;
+        }
+        var newEvent = new ChoreographyEvent(_notes[index*INTERVAL].Time, GetEventType(index), GetRotationEvent(index));
+        _events[index] = newEvent;
     }
 
     private ChoreographyEvent.EventType GetEventType(int index)
@@ -409,7 +512,7 @@ public struct AddObstaclesJob : IJobParallelFor
         }
 
         var random = new Unity.Mathematics.Random((uint) (_seed + index));
-        var length = _obstacleOptions.Length-1;
+        var length = _obstacleOptions.Length - 1;
         var randValue = random.NextInt(0, length);
         for (var i = 0; i < INTERVAL; i++)
         {

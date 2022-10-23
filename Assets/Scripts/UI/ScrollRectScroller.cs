@@ -70,6 +70,10 @@ public class ScrollRectScroller : MonoBehaviour
 
     public void UnsubscribeFromJoystick()
     {
+        if (InputManager.Instance == null)
+        {
+            return;
+        }
         InputManager.Instance.MainInput[LEFTJOYSTICKMOVING].performed -= JoystickScroll;
         InputManager.Instance.MainInput[RIGHTJOYSTICKMOVING].performed -= JoystickScroll;
     }

@@ -63,6 +63,8 @@ namespace UI.Scrollers.Playlists
         
         public async UniTaskVoid ShowInfo()
         {
+            await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
+            
             var currentPlaylist = PlaylistManager.Instance.CurrentPlaylist;
             _playlistTitleCard.interactable = currentPlaylist.isValid;
             _playlistTitle.SetText(currentPlaylist.PlaylistName);

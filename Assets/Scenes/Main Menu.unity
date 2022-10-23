@@ -282,7 +282,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &18472623
 GameObject:
@@ -457,7 +457,7 @@ Transform:
   - {fileID: 322211550}
   - {fileID: 975602913}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &19305200
 MonoBehaviour:
@@ -2620,7 +2620,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &26544571
 GameObject:
@@ -3499,7 +3499,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &68141408
 GameObject:
@@ -11477,7 +11477,7 @@ Transform:
   - {fileID: 654637868}
   - {fileID: 2065833221}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &317559081
 MonoBehaviour:
@@ -15796,7 +15796,7 @@ Transform:
   - {fileID: 1186797823}
   - {fileID: 157007109}
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &366741909
 MonoBehaviour:
@@ -16441,7 +16441,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 14
+  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &406945095
 GameObject:
@@ -17744,7 +17744,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &443284766
 GameObject:
@@ -25274,7 +25274,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!114 &705507996
 MonoBehaviour:
@@ -27575,6 +27575,56 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 797228126}
   m_CullTransparentMesh: 1
+--- !u!1 &798225263
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 798225265}
+  - component: {fileID: 798225264}
+  m_Layer: 0
+  m_Name: View Playlist Songs Scroller Controller
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &798225264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 798225263}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 885df4aa56923ea4598dd5327fb472bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scriptIdentifier: 
+  _scroller: {fileID: 331492873}
+  _cellViewPrefab: {fileID: 2743306654725742270, guid: 00ecce9a4531d4549b30aaa3650221d6,
+    type: 3}
+  _cellViewSize: 45
+  highlightActiveItem: 0
+--- !u!4 &798225265
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 798225263}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1716144656}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &800903310
 GameObject:
   m_ObjectHideFlags: 0
@@ -34112,7 +34162,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1017806878
 MonoBehaviour:
@@ -34456,7 +34506,7 @@ GameObject:
   - component: {fileID: 1022927486}
   - component: {fileID: 1022927490}
   m_Layer: 5
-  m_Name: Button
+  m_Name: Shuffle Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -37029,7 +37079,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1060723416
 GameObject:
@@ -37574,6 +37624,85 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1075803683}
   m_CullTransparentMesh: 1
+--- !u!1001 &1076431173
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2620222866049397883, guid: 650c7d6f650b5834aaa645855bcd5641,
+        type: 3}
+      propertyPath: m_Name
+      value: Hit VFX- SciFi Lights
+      objectReference: {fileID: 0}
+    - target: {fileID: 2836518540882313021, guid: 650c7d6f650b5834aaa645855bcd5641,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2836518540882313021, guid: 650c7d6f650b5834aaa645855bcd5641,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.0000002
+      objectReference: {fileID: 0}
+    - target: {fileID: 2836518540882313021, guid: 650c7d6f650b5834aaa645855bcd5641,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.0000002
+      objectReference: {fileID: 0}
+    - target: {fileID: 2836518540882313021, guid: 650c7d6f650b5834aaa645855bcd5641,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.053476334
+      objectReference: {fileID: 0}
+    - target: {fileID: 2836518540882313021, guid: 650c7d6f650b5834aaa645855bcd5641,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.0977801
+      objectReference: {fileID: 0}
+    - target: {fileID: 2836518540882313021, guid: 650c7d6f650b5834aaa645855bcd5641,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.17059043
+      objectReference: {fileID: 0}
+    - target: {fileID: 2836518540882313021, guid: 650c7d6f650b5834aaa645855bcd5641,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.5973335
+      objectReference: {fileID: 0}
+    - target: {fileID: 2836518540882313021, guid: 650c7d6f650b5834aaa645855bcd5641,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2836518540882313021, guid: 650c7d6f650b5834aaa645855bcd5641,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.801993
+      objectReference: {fileID: 0}
+    - target: {fileID: 2836518540882313021, guid: 650c7d6f650b5834aaa645855bcd5641,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2836518540882313021, guid: 650c7d6f650b5834aaa645855bcd5641,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2836518540882313021, guid: 650c7d6f650b5834aaa645855bcd5641,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 106.642
+      objectReference: {fileID: 0}
+    - target: {fileID: 2836518540882313021, guid: 650c7d6f650b5834aaa645855bcd5641,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 650c7d6f650b5834aaa645855bcd5641, type: 3}
 --- !u!1 &1077050949
 GameObject:
   m_ObjectHideFlags: 0
@@ -42329,7 +42458,7 @@ MonoBehaviour:
   _playButton: {fileID: 1060723422}
   _editButton: {fileID: 940284927}
   _deleteButton: {fileID: 1602940832}
-  _scrollerController: {fileID: 1716144657}
+  _scrollerController: {fileID: 798225264}
 --- !u!1 &1275507148
 GameObject:
   m_ObjectHideFlags: 0
@@ -51969,7 +52098,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh1718932
+  m_Name: pb_Mesh2781686
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -52781,7 +52910,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1628100041
 MonoBehaviour:
@@ -55215,7 +55344,6 @@ GameObject:
   - component: {fileID: 1716144658}
   - component: {fileID: 1716144661}
   - component: {fileID: 1716144662}
-  - component: {fileID: 1716144663}
   m_Layer: 0
   m_Name: Scroller Controllers
   m_TagString: Untagged
@@ -55254,8 +55382,9 @@ Transform:
   m_Children:
   - {fileID: 1696952274}
   - {fileID: 1586685265}
+  - {fileID: 798225265}
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1716144657
 MonoBehaviour:
@@ -55346,24 +55475,6 @@ MonoBehaviour:
   _cellViewSize: 45
   _displaySongInfo: {fileID: 1790807269}
   _songRecordsDisplay: {fileID: 972979011}
---- !u!114 &1716144663
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1716144654}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 885df4aa56923ea4598dd5327fb472bf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  scriptIdentifier: 
-  _scroller: {fileID: 331492873}
-  _cellViewPrefab: {fileID: 2743306654725742270, guid: 00ecce9a4531d4549b30aaa3650221d6,
-    type: 3}
-  _cellViewSize: 45
-  highlightActiveItem: 0
 --- !u!1 &1716799029
 GameObject:
   m_ObjectHideFlags: 0
@@ -59313,7 +59424,7 @@ GameObject:
   - component: {fileID: 1857214947}
   - component: {fileID: 1857214946}
   m_Layer: 5
-  m_Name: Button
+  m_Name: Shuffle Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -59328,7 +59439,7 @@ RectTransform:
   m_GameObject: {fileID: 1857214944}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.9993214, y: 0.9993214, z: 0.9993214}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1845798380}
@@ -59425,7 +59536,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1716144657}
+      - m_Target: {fileID: 798225264}
         m_TargetAssemblyTypeName: UI.Scrollers.Playlists.ScrollerController, Assembly-CSharp
         m_MethodName: Refresh
         m_Mode: 1
@@ -64571,7 +64682,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400048, guid: f13349cc09b03d447a26b54d406aaa8e, type: 3}
       propertyPath: m_RootOrder
-      value: 15
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 400048, guid: f13349cc09b03d447a26b54d406aaa8e, type: 3}
       propertyPath: m_LocalPosition.x
@@ -65147,7 +65258,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &2024104559
 AudioSource:
@@ -68742,7 +68853,7 @@ GameObject:
   - component: {fileID: 2113783437}
   - component: {fileID: 2113783441}
   m_Layer: 5
-  m_Name: Button
+  m_Name: Shuffle Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

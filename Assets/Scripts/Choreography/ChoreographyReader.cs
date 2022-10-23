@@ -210,7 +210,8 @@ public class ChoreographyReader : MonoBehaviour
         ISequenceable thisTimeEvent = null;
 
         ISequenceable lastSequenceable = null;
-        float lastRotation = 0f;
+        
+        float lastRotation = -1f;
         var leftSidePriority = 0;
         var leftSideAdd = 0;
         var rightSidePriority = 0;
@@ -268,7 +269,7 @@ public class ChoreographyReader : MonoBehaviour
                     {
                         if (lastTime + minGap < sequenceable.Time)
                         {
-                            lastTime = sequenceable.Time;
+                                lastTime = sequenceable.Time;
                         }
                         else
                         {
@@ -495,6 +496,14 @@ public class ChoreographyReader : MonoBehaviour
                     }
 
                     thisTimeObstacle = obstacle;
+                }
+                else if (sequenceable is ChoreographyEvent chorEvent && thisTimeEvent == null)
+                {
+                    if (lastRotation + minTargetDistance * 5 < sequenceable.Time)
+                    {
+                        thisTimeEvent = sequenceable;
+                        lastRotation = sequenceable.Time;
+                    }
                 }
 
                 lastSequenceable = sequenceable;

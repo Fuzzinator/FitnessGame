@@ -1398,6 +1398,10 @@ namespace EnhancedUI.EnhancedScroller
             // calculate the offsets of each cell view
             _CalculateCellViewOffsets();
 
+            if (_container == null)
+            {
+                Debug.LogError("THis is null", gameObject);
+            }
             // set the size of the active cell view container based on the number of cell views there are and each of their sizes
             if (scrollDirection == ScrollDirectionEnum.Vertical)
                 _container.sizeDelta = new Vector2(0, _cellViewOffsetArray.Last() + padding.top + padding.bottom);

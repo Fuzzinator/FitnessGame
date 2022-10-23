@@ -8,16 +8,17 @@ using UnityEngine;
 public class BaseHitVFX : MonoBehaviour, IPoolable
 {
     [SerializeField]
-    private ParticleSystem _particleSystem;
-    
+    private ParticleSystem[] _particleSystems;
+
     public PoolManager MyPoolManager { get; set; }
 
     public bool IsPooled { get; set; }
+
     private void OnValidate()
     {
-        if (_particleSystem == null)
+        if (_particleSystems == null)
         {
-            TryGetComponent(out _particleSystem);
+            TryGetComponent(out _particleSystems);
         }
     }
 
@@ -27,25 +28,36 @@ public class BaseHitVFX : MonoBehaviour, IPoolable
 
     public void SetParticleColor(Color color)
     {
-        var main = _particleSystem.main;
-        
-        main.startColor = color;
+        foreach (var ps in _particleSystems)
+        {
+            var main = ps.main;
+
+            main.startColor = color;
+        }
     }
-    
+
     public void PlayParticles()
     {
         gameObject.SetActive(true);
-        _particleSystem.Play(true);
+
+        foreach (var ps in _particleSystems)
+        {
+            ps.Play(true);
+        }
     }
 
     private void OnParticleSystemStopped()
     {
         ReturnToPool();
     }
-    
+
     public void ReturnToPool()
     {
-        _particleSystem.Stop(true);
+        foreach (var ps in _particleSystems)
+        {
+            ps.Stop(true);
+        }
+
         gameObject.SetActive(false);
         MyPoolManager.ReturnToPool(this);
     }
