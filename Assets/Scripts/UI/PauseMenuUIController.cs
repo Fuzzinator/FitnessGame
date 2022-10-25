@@ -31,6 +31,7 @@ public class PauseMenuUIController : BaseGameStateListener
 
     private void OnDestroy()
     {
+        DisableUI();
         RemoveListener();
     }
 
@@ -60,13 +61,18 @@ public class PauseMenuUIController : BaseGameStateListener
         }
     }
 
-    private void EnableUI()
+    public void SetSkipUI(bool skip)
+    {
+        _skipUI = skip;
+    }
+
+    public void EnableUI()
     {
         _pauseMenuCanvas.gameObject.SetActive(true);
         UIStateManager.Instance.RequestEnableInteraction(_pauseMenuCanvas);
     }
 
-    private void DisableUI()
+    public void DisableUI()
     {
         _pauseMenuCanvas.gameObject.SetActive(false);
         UIStateManager.Instance.RequestDisableInteraction(_pauseMenuCanvas);

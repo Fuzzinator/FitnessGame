@@ -39,11 +39,12 @@ public class LevelNotificationRequester : MonoBehaviour
             return;
         }
         
-        if (PlaylistManager.Instance.CurrentIndex == PlaylistManager.Instance.CurrentPlaylist.Items.Length - 1)
+        /*if (PlaylistManager.Instance.CurrentIndex == PlaylistManager.Instance.CurrentPlaylist.Items.Length - 1)
         {
             DisplayEndLevelStats();
         }
-        else if(PlaylistManager.Instance.CurrentIndex < PlaylistManager.Instance.CurrentPlaylist.Items.Length - 1)
+        else */
+        if(PlaylistManager.Instance.CurrentIndex < PlaylistManager.Instance.CurrentPlaylist.Items.Length - 1)
         {
             DisplayEndSongStats();
         }

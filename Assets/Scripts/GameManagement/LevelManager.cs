@@ -19,6 +19,7 @@ public class LevelManager : MonoBehaviour
     public UnityEvent levelLoadFailed = new UnityEvent();
 
     public UnityEvent restartingLevel = new UnityEvent();
+    public UnityEvent levelCompleted = new UnityEvent();
 
     [SerializeField]
     private int _delayLength = 5;
@@ -208,7 +209,19 @@ public class LevelManager : MonoBehaviour
     {
         songCompleted?.Invoke();
         await UniTask.DelayFrame(1, cancellationToken:_cancellationToken.Token);
-        prepForNextSong?.Invoke();
+        if (PlaylistManager.Instance == null || PlaylistManager.Instance.CurrentPlaylist.Items == null)
+        {
+            return;
+        }
+        
+        if (PlaylistManager.Instance.CurrentIndex == PlaylistManager.Instance.CurrentPlaylist.Items.Length - 1)
+        {
+            levelCompleted?.Invoke();
+        }
+        else if(PlaylistManager.Instance.CurrentIndex < PlaylistManager.Instance.CurrentPlaylist.Items.Length - 1)
+        {
+            prepForNextSong?.Invoke();
+        }
     }
 
     private async UniTask DelaySongStart(float delayLength)
