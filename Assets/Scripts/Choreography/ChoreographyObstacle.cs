@@ -1,10 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Burst;
 using UnityEngine;
 
 [Serializable]
-public struct ChoreographyObstacle : ISequenceable
+[BurstCompile]
+public struct ChoreographyObstacle// : ISequenceable
 {
     public float Time => _time;
     public float Duration => _duration;

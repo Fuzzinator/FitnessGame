@@ -6,7 +6,7 @@ using UnityEngine;
 
 [Serializable]
 [BurstCompile]
-public struct ChoreographyNote : ISequenceable
+public struct ChoreographyNote// : ISequenceable
 {
     public float Time => _time;
     public int LineIndex => _lineIndex;

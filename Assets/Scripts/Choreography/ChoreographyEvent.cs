@@ -7,7 +7,7 @@ using Random = Unity.Mathematics.Random;
 
 [Serializable]
 [BurstCompile]
-public struct ChoreographyEvent : ISequenceable //First release wont use this probably
+public struct ChoreographyEvent// : ISequenceable //First release wont use this probably
 {
     public float Time => _time;
     public EventType Type => _type;
