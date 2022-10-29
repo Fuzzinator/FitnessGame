@@ -223,7 +223,7 @@ public class ChoreographyReader : MonoBehaviour
         var minTargetDistance = _difficultyInfo.MinTargetSpace;
 
         
-        var tempSequenceables = new NativeArray<ChoreographyFormation>(_sequenceables.Count, Allocator.TempJob);
+        /*var tempSequenceables = new NativeArray<ChoreographyFormation>(_sequenceables.Count, Allocator.TempJob);
         var finalFormations = new NativeList<ChoreographyFormation>(_sequenceables.Count, Allocator.TempJob);
         for (var i = 0; i < _sequenceables.Count; i++)
         {
@@ -243,9 +243,9 @@ public class ChoreographyReader : MonoBehaviour
         }
 
         tempSequenceables.Dispose();
-        finalFormations.Dispose();
+        finalFormations.Dispose();*/
 
-        /*for (var i = 0; i < _sequenceables.Count; i++)
+        for (var i = 0; i < _sequenceables.Count; i++)
         {
             var sequenceable = _sequenceables[i];
             if (lastTime < sequenceable.Time)
@@ -552,20 +552,8 @@ public class ChoreographyReader : MonoBehaviour
 
                 thisSequence = new ChoreographyFormation();
             }
-        }*/
-    }
-
-    /*unsafe NativeArray<ChoreographyFormation> GetNativeFormationArray()
-    {
-        var tempSequenceables = new NativeList<ChoreographyFormation>(_sequenceables.Count, Allocator.TempJob);
-        fixed (void* bufferPointer = _sequenceables)
-        {
-            UnsafeUtility.MemCpy(NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks<ChoreographyFormation>(tempSequenceables), bufferPointer, _sequenceables.Count * (long)UnsafeUtility.SizeOf<ChoreographyFormation>());
-            
         }
-
-        return tempSequenceables;
-    }*/
+    }
 
     [BurstCompile]
     private struct UpdateFormationsJob : IJobFor
