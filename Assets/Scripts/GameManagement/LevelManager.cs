@@ -214,13 +214,11 @@ public class LevelManager : MonoBehaviour
             return;
         }
         
+        prepForNextSong?.Invoke();
+        
         if (PlaylistManager.Instance.CurrentIndex == PlaylistManager.Instance.CurrentPlaylist.Items.Length - 1)
         {
             levelCompleted?.Invoke();
-        }
-        else if(PlaylistManager.Instance.CurrentIndex < PlaylistManager.Instance.CurrentPlaylist.Items.Length - 1)
-        {
-            prepForNextSong?.Invoke();
         }
     }
 
