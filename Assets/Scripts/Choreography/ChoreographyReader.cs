@@ -390,7 +390,7 @@ public class ChoreographyReader : MonoBehaviour
                             }
                         }
 
-                        if (!thisSequence.HasObstacle)
+                        if (thisSequence.HasObstacle)
                         {
                             note = note.SetCutDirection(ChoreographyNote.CutDirection.Jab);
                             note = note.SetLineLayer(ChoreographyNote.LineLayerType.Low);

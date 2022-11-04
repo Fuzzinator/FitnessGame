@@ -30,6 +30,9 @@ public struct Playlist
 
     [SerializeField]
     private DifficultyInfo.DifficultyEnum _difficulty;
+
+    [SerializeField]
+    private string _targetEnvName;
     
     [NonSerialized]
     public bool isValid;
@@ -37,6 +40,8 @@ public struct Playlist
     public bool IsCustomPlaylist => _isCustomPlaylist;
     public float Length => _length;
     public string PlaylistName => _playlistName;
+
+    public string TargetEnvName => _targetEnvName;
 
     public GameMode GameModeOverride => _gameMode;
 
@@ -72,7 +77,7 @@ public struct Playlist
     private const string DIVIDER = ":";
     
     public Playlist(List<PlaylistItem> items, GameMode gameMode, DifficultyInfo.DifficultyEnum difficulty, 
-                    string playlistName = null, bool isCustomPlaylist = true)
+                    string playlistName = null, bool isCustomPlaylist = true, string targetEnvName = null)
     {
         _playlistName = string.IsNullOrWhiteSpace(playlistName)
             ? $"{DateTime.Now:yyyy-MM-dd} - {DateTime.Now:hh-mm}"
@@ -87,11 +92,11 @@ public struct Playlist
 
         _gameMode = gameMode;
         _difficulty = difficulty;
-        
+        _targetEnvName = targetEnvName;
         isValid = true;
     }
 
-    public Playlist(PlaylistItem singleSong)
+    public Playlist(PlaylistItem singleSong, string targetEnvName = null)
     {
         _playlistName = singleSong.SongName;
         _items = new[] {singleSong};
@@ -99,6 +104,19 @@ public struct Playlist
         _length = singleSong.SongInfo.SongLength;
         _gameMode = GameMode.Unset;
         _difficulty = DifficultyInfo.DifficultyEnum.Unset;
+        _targetEnvName = targetEnvName;
+        isValid = true;
+    }
+    
+    public Playlist(Playlist sourcePlaylist, string targetEnvName)
+    {
+        _playlistName = sourcePlaylist.PlaylistName;
+        _items = sourcePlaylist.Items;
+        _isCustomPlaylist = sourcePlaylist.IsCustomPlaylist;
+        _length = sourcePlaylist.Length;
+        _gameMode = sourcePlaylist.GameModeOverride;
+        _difficulty = sourcePlaylist.DifficultyEnum;
+        _targetEnvName = targetEnvName;
         isValid = true;
     }
 
@@ -110,6 +128,7 @@ public struct Playlist
         _length = sourcePlaylist.Length;
         _gameMode = sourcePlaylist.GameModeOverride;
         _difficulty = difficultyEnum;
+        _targetEnvName = sourcePlaylist.TargetEnvName;
         isValid = true;
     }
     
@@ -121,6 +140,7 @@ public struct Playlist
         _length = sourcePlaylist.Length;
         _gameMode = gameMode;
         _difficulty = sourcePlaylist.DifficultyEnum;
+        _targetEnvName = sourcePlaylist.TargetEnvName;
         isValid = true;
     }
 

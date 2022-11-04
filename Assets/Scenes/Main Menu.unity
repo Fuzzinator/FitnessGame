@@ -282,7 +282,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &18472623
 GameObject:
@@ -457,7 +457,7 @@ Transform:
   - {fileID: 322211550}
   - {fileID: 975602913}
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &19305200
 MonoBehaviour:
@@ -2620,7 +2620,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &26544571
 GameObject:
@@ -3499,7 +3499,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &68141408
 GameObject:
@@ -3965,6 +3965,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _targetSceneName: 
+  _sceneReference:
+    m_AssetGUID: 
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
 --- !u!114 &78222456
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11223,7 +11228,19 @@ MonoBehaviour:
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 972979008}
+        m_TargetAssemblyTypeName: UI.EnvironmentSetter, Assembly-CSharp
+        m_MethodName: SetDropdownOption
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_AlphaFadeSpeed: 0.15
 --- !u!114 &314548977
 MonoBehaviour:
@@ -11477,7 +11494,7 @@ Transform:
   - {fileID: 654637868}
   - {fileID: 2065833221}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &317559081
 MonoBehaviour:
@@ -15796,7 +15813,7 @@ Transform:
   - {fileID: 1186797823}
   - {fileID: 157007109}
   m_Father: {fileID: 0}
-  m_RootOrder: 14
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &366741909
 MonoBehaviour:
@@ -16441,7 +16458,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 15
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &406945095
 GameObject:
@@ -17744,7 +17761,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &443284766
 GameObject:
@@ -25274,7 +25291,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!114 &705507996
 MonoBehaviour:
@@ -27185,7 +27202,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!225 &779663773
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -34162,7 +34179,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1017806878
 MonoBehaviour:
@@ -37079,7 +37096,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1060723416
 GameObject:
@@ -37624,85 +37641,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1075803683}
   m_CullTransparentMesh: 1
---- !u!1001 &1076431173
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 2620222866049397883, guid: 650c7d6f650b5834aaa645855bcd5641,
-        type: 3}
-      propertyPath: m_Name
-      value: Hit VFX- SciFi Lights
-      objectReference: {fileID: 0}
-    - target: {fileID: 2836518540882313021, guid: 650c7d6f650b5834aaa645855bcd5641,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2836518540882313021, guid: 650c7d6f650b5834aaa645855bcd5641,
-        type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1.0000002
-      objectReference: {fileID: 0}
-    - target: {fileID: 2836518540882313021, guid: 650c7d6f650b5834aaa645855bcd5641,
-        type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1.0000002
-      objectReference: {fileID: 0}
-    - target: {fileID: 2836518540882313021, guid: 650c7d6f650b5834aaa645855bcd5641,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0.053476334
-      objectReference: {fileID: 0}
-    - target: {fileID: 2836518540882313021, guid: 650c7d6f650b5834aaa645855bcd5641,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.0977801
-      objectReference: {fileID: 0}
-    - target: {fileID: 2836518540882313021, guid: 650c7d6f650b5834aaa645855bcd5641,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0.17059043
-      objectReference: {fileID: 0}
-    - target: {fileID: 2836518540882313021, guid: 650c7d6f650b5834aaa645855bcd5641,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.5973335
-      objectReference: {fileID: 0}
-    - target: {fileID: 2836518540882313021, guid: 650c7d6f650b5834aaa645855bcd5641,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2836518540882313021, guid: 650c7d6f650b5834aaa645855bcd5641,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0.801993
-      objectReference: {fileID: 0}
-    - target: {fileID: 2836518540882313021, guid: 650c7d6f650b5834aaa645855bcd5641,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2836518540882313021, guid: 650c7d6f650b5834aaa645855bcd5641,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2836518540882313021, guid: 650c7d6f650b5834aaa645855bcd5641,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 106.642
-      objectReference: {fileID: 0}
-    - target: {fileID: 2836518540882313021, guid: 650c7d6f650b5834aaa645855bcd5641,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 650c7d6f650b5834aaa645855bcd5641, type: 3}
 --- !u!1 &1077050949
 GameObject:
   m_ObjectHideFlags: 0
@@ -52910,7 +52848,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1628100041
 MonoBehaviour:
@@ -53539,15 +53477,20 @@ MonoBehaviour:
   _textField: {fileID: 1363182199}
   _information: 'This game was created as a solo passion project.
 
+
     Technical
-    writing by Katheryn Collins.
+    writing by Kathryn Collins.
 
-    Everything else except for the songs and music
-    was created by Ben Ricks.
 
-    the attribution for the built in songs is as follows:
+    UI/UX Consulting by Nathan Swenson.
 
-'
+
+    Everything
+    else except for the songs and music was created by Ben Ricks.
+
+
+    The attribution
+    for the built in songs is as follows:'
 --- !u!225 &1648446264
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -55384,7 +55327,7 @@ Transform:
   - {fileID: 1586685265}
   - {fileID: 798225265}
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1716144657
 MonoBehaviour:
@@ -64682,7 +64625,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400048, guid: f13349cc09b03d447a26b54d406aaa8e, type: 3}
       propertyPath: m_RootOrder
-      value: 16
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 400048, guid: f13349cc09b03d447a26b54d406aaa8e, type: 3}
       propertyPath: m_LocalPosition.x
@@ -65258,7 +65201,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &2024104559
 AudioSource:

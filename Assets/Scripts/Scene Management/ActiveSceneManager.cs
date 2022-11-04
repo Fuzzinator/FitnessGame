@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
@@ -41,6 +42,10 @@ public class ActiveSceneManager : MonoBehaviour
     public async void LoadMainMenu()
     {
         await LoadSceneAsync(MAINMENUNAME);
+        if (EnvironmentController.Instance.SceneLoadHandle.IsValid())
+        {
+            Addressables.UnloadSceneAsync(EnvironmentController.Instance.SceneLoadHandle);
+        }
     }
     
     public async void LoadBaseLevel()

@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -14,10 +17,11 @@ public class EnvironmentController : MonoBehaviour
     [SerializeField]
     private string _targetSceneName = SCIFILEVEL;
 
-    //[SerializeField]
-    //private Slider _slider;
+    [SerializeField]
+    private AssetReference _sceneReference;
 
-    private AsyncOperation _sceneLoadOperation;
+    private AsyncOperationHandle<SceneInstance> _sceneInstanceHandle;
+    public AsyncOperationHandle<SceneInstance> SceneLoadHandle => _sceneInstanceHandle;
 
     private CancellationToken _cancellationToken;
 
@@ -61,20 +65,28 @@ public class EnvironmentController : MonoBehaviour
         {
             await UniTask.WaitWhile(() => EnvironmentControlManager.Instance.LoadingEnvironmentContainer,
                 cancellationToken: _cancellationToken);
+            _sceneReference = EnvironmentControlManager.Instance.ActiveEnvironmentContainer.SceneAsset;
             _targetSceneName = EnvironmentControlManager.Instance.ActiveEnvironmentContainer.EnvironmentName;
         }
 
-        if (string.IsNullOrWhiteSpace(_targetSceneName))
+        if (string.IsNullOrWhiteSpace(_targetSceneName) || _sceneReference == null)
         {
-            _sceneLoadOperation = null;
+            _sceneInstanceHandle = new AsyncOperationHandle<SceneInstance>();
             return;
         }
 
-        _sceneLoadOperation = SceneManager.LoadSceneAsync(_targetSceneName, LoadSceneMode.Additive);
+        if (_sceneInstanceHandle.IsValid())
+        {
+            await Addressables.UnloadSceneAsync(_sceneInstanceHandle);
+        }
+        
+        await Addressables.LoadSceneAsync(_sceneReference, LoadSceneMode.Additive, true);
+        _sceneInstanceHandle = new AsyncOperationHandle<SceneInstance>();
+        //_sceneLoadOperation = SceneManager.LoadSceneAsync(_targetSceneName, LoadSceneMode.Additive);
         //LoadTracker().Forget();
         //_sceneLoadOperation.allowSceneActivation = false;
-        await _sceneLoadOperation;
-        _sceneLoadOperation = null;
+        //await _sceneLoadOperation;
+        //_sceneLoadOperation = null;
     }
 
     /*private async UniTaskVoid LoadTracker()
@@ -88,12 +100,21 @@ public class EnvironmentController : MonoBehaviour
 
     public void FinishSceneLoad()
     {
-        if (_sceneLoadOperation == null)
+        if (!_sceneInstanceHandle.IsValid())//_sceneLoadOperation == null)
         {
             return;
         }
 
-        _sceneLoadOperation.allowSceneActivation = true;
+        _sceneInstanceHandle.Result.ActivateAsync();
+    }
+
+    public void UnloadScene()
+    {
+        if (!_sceneInstanceHandle.IsValid())
+        {
+            return;
+        }
+        Addressables.UnloadSceneAsync(_sceneInstanceHandle);
     }
 
     public enum Environments

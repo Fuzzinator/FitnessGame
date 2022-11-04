@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 [CreateAssetMenu(fileName = "New Asset Container", menuName = "ScriptableObjects/Environment Asset Container", order = 1)]
 public class EnvironmentAssetContainer : ScriptableObject
@@ -8,6 +9,9 @@ public class EnvironmentAssetContainer : ScriptableObject
     [SerializeField]
     private string _environmentName;
 
+    [SerializeField]
+    private AssetReference _sceneAsset;
+    
     [SerializeField]
     private Texture2DArray _targetTextures;
 
@@ -54,6 +58,8 @@ public class EnvironmentAssetContainer : ScriptableObject
     private BaseHitVFX _baseHitVFX;
 
     public string EnvironmentName => _environmentName;
+
+    public AssetReference SceneAsset => _sceneAsset;
     public Texture2DArray TargetTextures => _targetTextures;
     public Texture2DArray ObstacleTextures => _obstacleTextures;
     public TextureSet[] GlobalTextureSets => _globalTextureSets;

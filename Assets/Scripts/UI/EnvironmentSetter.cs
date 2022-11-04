@@ -38,7 +38,27 @@ namespace UI
             var listOfOptions = EnvironmentControlManager.Instance.GetNewAvailableEnvironmentsList();
             _dropdownField.ClearOptions();
             _dropdownField.AddOptions(listOfOptions);
-            _dropdownField.value = 0;
+            var index = GetOptionIndex(PlaylistManager.Instance.CurrentPlaylist.TargetEnvName);
+            _dropdownField.SetValueWithoutNotify(index);
+            SetDropdownOption(index);
+        }
+
+        protected virtual int GetOptionIndex(string optionName)
+        {
+            if (string.IsNullOrWhiteSpace(optionName))
+            {
+                return 0;
+            }
+            
+            for (var i = 0; i < _dropdownField.options.Count; i++)
+            {
+                var option = _dropdownField.options[i];
+                if (string.Equals(option.text, optionName, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return i;
+                }
+            }
+            return 0;
         }
     }
 }

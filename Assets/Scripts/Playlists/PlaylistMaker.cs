@@ -43,6 +43,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     public DifficultyInfo.DifficultyEnum Difficulty => _difficulty;
     private string _playlistName;
     private string _originalName;
+    private string _targetEnv;
 
     #region Const Strings
 
@@ -135,6 +136,11 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         _playlistName = newName;
     }
 
+    public void SetTargetEnvironment(string envName)
+    {
+        _targetEnv = envName;
+    }
+
     public void CreatePlaylist()
     {
         CreatePlaylistAsync().Forget();
@@ -142,7 +148,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
 
     private async UniTaskVoid CreatePlaylistAsync()
     {
-        var newPlaylist = new Playlist(_playlistItems, _gameMode, _difficulty, _playlistName);
+        var newPlaylist = new Playlist(_playlistItems, _gameMode, _difficulty, _playlistName, true, _targetEnv);
         PlaylistManager.Instance.CurrentPlaylist = newPlaylist;
         
         if (_playlistItems == null || _playlistItems.Count == 0)

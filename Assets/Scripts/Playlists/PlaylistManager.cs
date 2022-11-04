@@ -107,6 +107,11 @@ public class PlaylistManager : MonoBehaviour
         CurrentPlaylist = tempPlaylist;
     }
 
+    public void SetEnvironment(string envName)
+    {
+        _currentPlaylist = new Playlist(_currentPlaylist, envName);
+    }
+
     public void SetDifficulty(DifficultyInfo.DifficultyEnum difficultyEnum)
     {
         _currentPlaylist = new Playlist(_currentPlaylist, difficultyEnum);
