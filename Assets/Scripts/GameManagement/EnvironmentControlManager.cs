@@ -58,6 +58,33 @@ public class EnvironmentControlManager : MonoBehaviour
         availableReferencesUpdated?.Invoke();
     }
 
+    public void LoadFromString(string sceneName)
+    {
+        var index = GetSceneIndexFromString(sceneName);
+        SetTargetEnvironmentIndex(index);
+        LoadSelection();
+    }
+
+    private int GetSceneIndexFromString(string sceneName)
+    {
+        var index = 0;
+        if (string.IsNullOrWhiteSpace(sceneName))
+        {
+            return index;
+        }
+        for (var i = 0; i < _availableReferences.Count; i++)
+        {
+            var option = _availableReferences[i];
+            if (string.Equals(option.EnvironmentName, sceneName, StringComparison.InvariantCultureIgnoreCase))
+            {
+                index = i;
+                break;
+            }
+        }
+
+        return index;
+    }
+
     private void LoadEnvironmentData(int index)
     {
         LoadEnvironmentDataAsync(index).Forget();
