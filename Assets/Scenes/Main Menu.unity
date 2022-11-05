@@ -27214,7 +27214,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!225 &779663773
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -52686,6 +52686,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 95
+      objectReference: {fileID: 0}
+    - target: {fileID: 3627185153441751181, guid: 8c0fab8e43588b940be7c85e531e532b,
+        type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1644366988}
+    - target: {fileID: 3627185153441751181, guid: 8c0fab8e43588b940be7c85e531e532b,
+        type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetDropdownOption
+      objectReference: {fileID: 0}
+    - target: {fileID: 3627185153441751181, guid: 8c0fab8e43588b940be7c85e531e532b,
+        type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UI.NewPlaylistEnvSetter, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 3627185153478125415, guid: 8c0fab8e43588b940be7c85e531e532b,
         type: 3}
