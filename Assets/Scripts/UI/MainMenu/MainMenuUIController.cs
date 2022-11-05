@@ -71,9 +71,9 @@ public class MainMenuUIController : BaseGameStateListener
             }
             else
             {
-                page.SetActive(1, true);
                 _activeMenuPage = page;
                 _activePageSet = true;
+                page.SetActive(1, true);
                 UIStateManager.Instance.RequestEnableInteraction(_activeMenuPage.TargetCanvas);
             }
         }

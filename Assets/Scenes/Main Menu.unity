@@ -25520,8 +25520,20 @@ MonoBehaviour:
   _headerText: Feature Unavailable
   _bodyText: This feature is currently in development. Keep and eye out for updates
     so you dont miss when features become available!
-  _buttonText: Okay
+  _button1Text: Okay
+  _button2Text: 
+  _button3Text: 
+  _button1Pressed:
+    m_PersistentCalls:
+      m_Calls: []
+  _button2Pressed:
+    m_PersistentCalls:
+      m_Calls: []
+  _button3Pressed:
+    m_PersistentCalls:
+      m_Calls: []
   _disableUI: 1
+  _requestOnEnable: 0
 --- !u!1 &713894402
 GameObject:
   m_ObjectHideFlags: 0
@@ -71206,6 +71218,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5499376564910662142, guid: 0a78f42969aaff74eb063b367f045548,
+        type: 3}
+      propertyPath: _button2Pressed.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 317559081}
     - target: {fileID: 7588806070754100258, guid: 0a78f42969aaff74eb063b367f045548,
         type: 3}
       propertyPath: _audioSource

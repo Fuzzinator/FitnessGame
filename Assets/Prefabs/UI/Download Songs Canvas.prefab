@@ -6688,6 +6688,9 @@ GameObject:
   - component: {fileID: 789226868}
   - component: {fileID: 789226872}
   - component: {fileID: 789226873}
+  - component: {fileID: 5197177870364612304}
+  - component: {fileID: 5499376564910662142}
+  - component: {fileID: 2309919182282995660}
   m_Layer: 5
   m_Name: Download Songs Canvas
   m_TagString: Untagged
@@ -6812,6 +6815,125 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &5197177870364612304
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5313518646000652810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0d3a348619bc9c4e9e46b5a093250ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _settingName: AntiPiracyAcknowledgement
+  _settingTrue:
+    m_PersistentCalls:
+      m_Calls: []
+  _settingFalse:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5499376564910662142}
+        m_TargetAssemblyTypeName: RequestNotification, Assembly-CSharp
+        m_MethodName: Request
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &5499376564910662142
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5313518646000652810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd4a5ae8de052b14bb6a3b32bc14d852, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _headerText: Attention
+  _bodyText: 'Community content songs are not hosted or moderated by 3 Pupper Studios
+    LLC.
+
+    Downloading copyrighted music that you do not have rights to is illegal
+    in most countries.
+
+    Community content however is full of fair use materials
+    which you are free to access without worry.
+
+    By downloading a beatmap you
+    confirm that you have all applicable rights to publish the beatmap.Protection
+    of intellectual property is of utmost importance to us and we ask our users and
+    their authorized agents to do the same.
+
+    It is our policy to do our best
+    to respond to clear notifications of alleged copyright infringement that comply
+    with the United States Digital Millennium Copyright Act ("DMCA") of 1998, the
+    text of which can be found at the U.S. Copyright Office website.
+
+
+
+    By selecting
+    Agree you are confirming that you will not participate in any illegal activity
+    while using Shadow BoXR.'
+  _button1Text: Agree
+  _button2Text: Decline
+  _button3Text: 
+  _button1Pressed:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2309919182282995660}
+        m_TargetAssemblyTypeName: SetBoolSetting, Assembly-CSharp
+        m_MethodName: SetSetting
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+  _button2Pressed:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: MainMenuUIController, Assembly-CSharp
+        m_MethodName: SetActivePage
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _button3Pressed:
+    m_PersistentCalls:
+      m_Calls: []
+  _disableUI: 1
+  _requestOnEnable: 0
+--- !u!114 &2309919182282995660
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5313518646000652810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b461d46bd19f3f438d9031fdf9f0f11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _settingName: AntiPiracyAcknowledgement
 --- !u!1 &5313518646063275518
 GameObject:
   m_ObjectHideFlags: 0
