@@ -33,6 +33,9 @@ public struct Playlist
 
     [SerializeField]
     private string _targetEnvName;
+
+    [SerializeField]
+    private ColorsManager.ColorSet _targetColors;
     
     [NonSerialized]
     public bool isValid;
@@ -46,6 +49,8 @@ public struct Playlist
     public GameMode GameModeOverride => _gameMode;
 
     public DifficultyInfo.DifficultyEnum DifficultyEnum => _difficulty;
+
+    public ColorsManager.ColorSet TargetColors => _targetColors;
 
     public string ReadableLength
     {
@@ -93,6 +98,7 @@ public struct Playlist
         _gameMode = gameMode;
         _difficulty = difficulty;
         _targetEnvName = targetEnvName;
+        _targetColors = ColorsManager.Instance.ActiveColorSet;
         isValid = true;
     }
 
@@ -105,6 +111,7 @@ public struct Playlist
         _gameMode = GameMode.Unset;
         _difficulty = DifficultyInfo.DifficultyEnum.Unset;
         _targetEnvName = targetEnvName;
+        _targetColors = ColorsManager.Instance.ActiveColorSet;
         isValid = true;
     }
     
@@ -117,6 +124,7 @@ public struct Playlist
         _gameMode = sourcePlaylist.GameModeOverride;
         _difficulty = sourcePlaylist.DifficultyEnum;
         _targetEnvName = targetEnvName;
+        _targetColors = ColorsManager.Instance.ActiveColorSet;
         isValid = true;
     }
 
@@ -129,6 +137,7 @@ public struct Playlist
         _gameMode = sourcePlaylist.GameModeOverride;
         _difficulty = difficultyEnum;
         _targetEnvName = sourcePlaylist.TargetEnvName;
+        _targetColors = ColorsManager.Instance.ActiveColorSet;
         isValid = true;
     }
     
@@ -141,6 +150,7 @@ public struct Playlist
         _gameMode = gameMode;
         _difficulty = sourcePlaylist.DifficultyEnum;
         _targetEnvName = sourcePlaylist.TargetEnvName;
+        _targetColors = ColorsManager.Instance.ActiveColorSet;
         isValid = true;
     }
 

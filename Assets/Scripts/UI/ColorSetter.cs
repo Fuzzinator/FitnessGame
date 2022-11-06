@@ -34,17 +34,35 @@ namespace UI
 
         private void OnEnable()
         {
-            UpdateColors(ColorsManager.Instance.ActiveColorSet);
+            //UpdateColors(PlaylistManager.Instance.CurrentPlaylist.TargetColors);//ColorsManager.Instance.ActiveColorSet);
+            UpdateFromPlaylist(PlaylistManager.Instance.CurrentPlaylist);
+            PlaylistManager.Instance.currentPlaylistUpdated.AddListener(UpdateFromPlaylist);
         }
 
         private void OnDisable()
         {
             RequestColorSelector(false);
+            PlaylistManager.Instance.currentPlaylistUpdated.RemoveListener(UpdateFromPlaylist);
         }
 
+        private void UpdateFromPlaylist(Playlist playlist)
+        {
+            var colorSet = new ColorsManager.ColorSet();
+            if (playlist.TargetColors.IsValid)
+            {
+                colorSet = playlist.TargetColors;
+                ColorsManager.Instance.SetColorSetOverride(colorSet);
+            }
+            else
+            {
+                colorSet = ColorsManager.Instance.ActiveColorSet;
+            }
+            
+            UpdateColors(colorSet);
+        }
+        
         private void UpdateColors(ColorsManager.ColorSet colorSet)
         {
-            
             _leftGloveColor.color = colorSet.LeftController;
             _rightGloveColor.color = colorSet.RightController;
             _blockNoteColor.color = colorSet.BlockColor;

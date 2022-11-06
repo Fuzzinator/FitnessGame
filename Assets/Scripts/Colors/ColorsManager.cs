@@ -134,6 +134,20 @@ public class ColorsManager : MonoBehaviour
         return _currentColorSet == colorSet;
     }
 
+    public void SetColorSetOverride(ColorSet colorSet)
+    {
+        var index = _colorSets.IndexOf(colorSet);
+        if (index > 0)
+        {
+            SetActiveColorSet(colorSet, index);
+        }
+        else
+        {
+            ActiveColorSet = colorSet;
+            ActiveSetIndex = -1;
+        }
+    }
+    
     public void SetActiveColorSet(ColorSet colorSet, int index)
     {
         ActiveSetIndex = index;
@@ -180,6 +194,9 @@ public class ColorsManager : MonoBehaviour
         [SerializeField]
         private Color _centerEnvironment;
 
+        [SerializeField]
+        private bool _isValid;
+
         public Color LeftController => _leftController;
         public Color RightController => _rightController;
         public Color BlockColor => _blockColor;
@@ -188,6 +205,8 @@ public class ColorsManager : MonoBehaviour
         public Color LeftEnvironment => _leftEnvironment;
         public Color RightEnvironment => _rightEnvironment;
         public Color CenterEnvironment => _centerEnvironment;
+
+        public bool IsValid => _isValid;
 
         public ColorSet(Color leftController, Color rightController, Color blockColor, Color obstacleColor,
             Color leftEnv, Color rightEnv, Color centerEnv)
@@ -199,6 +218,7 @@ public class ColorsManager : MonoBehaviour
             _leftEnvironment = leftEnv;
             _rightEnvironment = rightEnv;
             _centerEnvironment = centerEnv;
+            _isValid = true;
         }
         
         public ColorSet(Color leftController, Color rightController, Color blockColor, Color obstacleColor)
@@ -210,6 +230,7 @@ public class ColorsManager : MonoBehaviour
             _leftEnvironment = Color.black;
             _rightEnvironment = Color.black;
             _centerEnvironment = Color.black;
+            _isValid = true;
         }
 
         public static bool operator ==(ColorSet a, ColorSet b)
