@@ -1,8 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
-using UnityEngine;
 
 namespace UI
 {
@@ -15,6 +11,8 @@ namespace UI
                 UpdateDropDownOptions();
                 EnvironmentControlManager.Instance.availableReferencesUpdated.AddListener(UpdateDropDownOptions);
             }
+            
+            PlaylistManager.Instance.currentPlaylistUpdated.AddListener(UpdatePlaylist);
         }
 
         private void OnDisable()
@@ -23,6 +21,8 @@ namespace UI
             {
                 EnvironmentControlManager.Instance.availableReferencesUpdated.RemoveListener(UpdateDropDownOptions);
             }
+            
+            PlaylistManager.Instance.currentPlaylistUpdated.RemoveListener(UpdatePlaylist);
         }
 
         public override void SetDropdownOption(int value)
@@ -38,7 +38,17 @@ namespace UI
             var listOfOptions = EnvironmentControlManager.Instance.GetNewAvailableEnvironmentsList();
             _dropdownField.ClearOptions();
             _dropdownField.AddOptions(listOfOptions);
-            var index = GetOptionIndex(PlaylistManager.Instance.CurrentPlaylist.TargetEnvName);
+            SetSelection(PlaylistManager.Instance.CurrentPlaylist.TargetEnvName);
+        }
+
+        private void UpdatePlaylist(Playlist playlist)
+        {
+            SetSelection(playlist.TargetEnvName);
+        }
+
+        private void SetSelection(string envName)
+        {
+            var index = GetOptionIndex(envName);
             _dropdownField.SetValueWithoutNotify(index);
             SetDropdownOption(index);
         }

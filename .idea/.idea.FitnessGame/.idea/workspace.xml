@@ -24,7 +24,8 @@
   <component name="ChangeListManager">
     <list default="true" id="39c8e4b5-5816-4073-86c0-257352c63bc5" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.FitnessGame/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.FitnessGame/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Main Menu.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Main Menu.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/EnvironmentSetter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/EnvironmentSetter.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/Playlists/PlaylistDisplayObject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/MainMenu/Playlists/PlaylistDisplayObject.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -296,10 +297,10 @@
       </option>
       <method v="2" />
     </configuration>
-    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" ignored-value-for-modified-check="2288">
+    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" ignored-value-for-modified-check="21104">
       <option name="allowRunningInParallel" value="false" />
       <option name="listenPortForConnections" value="false" />
-      <option name="pid" value="2288" />
+      <option name="pid" value="21104" />
       <option name="projectPathOnTarget" />
       <option name="selectedOptions">
         <list />
@@ -413,6 +414,7 @@
       <workItem from="1667022080620" duration="4868000" />
       <workItem from="1667682515339" duration="198000" />
       <workItem from="1667682832940" duration="28000" />
+      <workItem from="1667683330018" duration="2799000" />
     </task>
     <servers />
   </component>
@@ -435,5 +437,50 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Assets/Scripts/UI/NewPlaylistEnvSetter.cs</url>
+          <line>12</line>
+          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\UI\NewPlaylistEnvSetter.cs" initialLine="12" containingFunctionPresentation="method 'SetDropdownOption'">
+            <startOffsets>
+              <option value="305" />
+            </startOffsets>
+            <endOffsets>
+              <option value="356" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Assets/Scripts/Playlists/PlaylistMaker.cs</url>
+          <line>150</line>
+          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\Playlists\PlaylistMaker.cs" initialLine="150" containingFunctionPresentation="method 'CreatePlaylistAsync'">
+            <startOffsets>
+              <option value="3783" />
+            </startOffsets>
+            <endOffsets>
+              <option value="3887" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Assets/Scripts/UI/EnvironmentSetter.cs</url>
+          <line>41</line>
+          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\UI\EnvironmentSetter.cs" initialLine="37" containingFunctionPresentation="method 'UpdateDropDownOptions'">
+            <startOffsets>
+              <option value="1272" />
+            </startOffsets>
+            <endOffsets>
+              <option value="1361" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

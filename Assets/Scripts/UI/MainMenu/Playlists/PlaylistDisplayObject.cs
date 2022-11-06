@@ -120,8 +120,8 @@ public class PlaylistDisplayObject : MonoBehaviour
     {
         if (PlaylistManager.Instance != null)
         {
-            _cellView.ViewPlaylist();
             PlaylistManager.Instance.CurrentPlaylist = _playlist;
+            _cellView.ViewPlaylist();
         }
     }
 }
