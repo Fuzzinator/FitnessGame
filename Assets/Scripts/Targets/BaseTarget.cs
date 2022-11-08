@@ -75,11 +75,11 @@ public class BaseTarget : MonoBehaviour, IPoolable
             return;
         }
 
-        if (IsValidDirection(other, hand, out var impactDotProduct, out var dirDotProduct))
+        if (IsValidDirection(other, hand, out var impactDotProduct, out var dirDotProduct, out var handDotProd))
         {
             _wasHit = true;
             var currentDistance = Vector3.Distance(transform.position, OptimalHitPoint);
-            var hitInfo = new HitInfo(impactDotProduct, dirDotProduct, hand, currentDistance,
+            var hitInfo = new HitInfo(impactDotProduct, dirDotProduct, handDotProd, hand, currentDistance,
                 hand.MovementSpeed);
 
             foreach (var hitEffect in _validHitEffects)
@@ -143,17 +143,19 @@ public class BaseTarget : MonoBehaviour, IPoolable
         return hand.AssignedHand == _noteType;
     }
 
-    protected bool IsValidDirection(Collision other, Hand hand, out float impactDotProd, out float dirDotProd)
+    protected bool IsValidDirection(Collision other, Hand hand, out float impactDotProd, out float dirDotProd, out float handDotProd)
     {
         var handDirection = transform.InverseTransformDirection(hand.MovementDirection);
         var isSwinging = hand.IsSwinging();
         impactDotProd = Vector3.Dot(-handDirection, _optimalHitDirection);
         var collisionDirection = Vector3.Normalize(other.GetContact(0).point - transform.position);
         dirDotProd = Vector3.Dot(collisionDirection, _optimalHitDirection);
+        handDotProd = Vector3.Dot(_optimalHitDirection, hand.ForwardDirection);
+        
 #if UNITY_EDITOR
         return isSwinging; //true;
 #else
-        return isSwinging && impactDotProd > _minMaxAllowance.x && hand.MovementSpeed>_minHitSpeed;
+        return isSwinging && impactDotProd > _minMaxAllowance.x && hand.MovementSpeed>_minHitSpeed && handDotProd<-.5f;
 #endif
     }
 

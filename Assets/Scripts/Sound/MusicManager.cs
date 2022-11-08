@@ -27,7 +27,6 @@ public class MusicManager : BaseGameStateListener
     private bool _awaitingSongEnd = false;
     private bool _musicPaused = false;
     private bool _applicationPaused = false;
-    private bool _stopRequested = false;
 
     private float _previousTime = 0;
     
@@ -68,8 +67,8 @@ public class MusicManager : BaseGameStateListener
 
     private void Start()
     {
-        _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
         _cancellationToken = this.GetCancellationTokenOnDestroy();
+        _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(_cancellationToken);
     }
 
     private void OnDestroy()
@@ -160,7 +159,11 @@ public class MusicManager : BaseGameStateListener
             if (SongInfoReader.Instance.songInfo.SongStartDelay > 0)
             {
                 await UniTask.Delay(TimeSpan.FromSeconds(SongInfoReader.Instance.songInfo.SongStartDelay),
-                    cancellationToken: _cancellationToken);
+                    cancellationToken: _cancellationSource.Token);
+                if (_cancellationSource.IsCancellationRequested)
+                {
+                    return;
+                }
             }
 
             _musicAudioSource.Play();
@@ -188,10 +191,7 @@ public class MusicManager : BaseGameStateListener
 
     public void StopMusic()
     {
-        if (_awaitingSongEnd)
-        {
-            _stopRequested = true;
-        }
+        _cancellationSource?.Cancel();
         _musicAudioSource.Stop();
         _musicPaused = false;
     }
@@ -232,24 +232,21 @@ public class MusicManager : BaseGameStateListener
         {
             var timeSpan = TimeSpan.FromSeconds(.05f);
             _previousTime = -1f;
-            _stopRequested = false;
-            while (!IsSongCompleted && IsPlayingOrPaused && !_stopRequested)//_musicAudioSource.clip.length - _musicAudioSource.time >= .05f && IsPlayingOrPaused)
+            while (!IsSongCompleted && IsPlayingOrPaused && !_cancellationSource.IsCancellationRequested)//_musicAudioSource.clip.length - _musicAudioSource.time >= .05f && IsPlayingOrPaused)
             {
                 _previousTime = _musicAudioSource.time;
-                await UniTask.Delay(timeSpan, cancellationToken: _cancellationToken);
+                await UniTask.Delay(timeSpan, cancellationToken: _cancellationSource.Token);
             }
 
             _previousTime = -1f;
         }
 
-        if (_cancellationToken.IsCancellationRequested || _stopRequested)
+        _awaitingSongEnd = false;
+        if (_cancellationSource.IsCancellationRequested)
         {
-            _awaitingSongEnd = false;
-            _stopRequested = false;
             return;
         }
 
-        _awaitingSongEnd = false;
         songFinishedPlaying?.Invoke();
         LevelManager.Instance.SetActualSongCompleted(true);
     }

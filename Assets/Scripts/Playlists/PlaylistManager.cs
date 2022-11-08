@@ -94,6 +94,11 @@ public class PlaylistManager : MonoBehaviour
         CurrentItem = _currentPlaylist.Items[_currentIndex];
     }
 
+    public void Restart()
+    {
+        _currentIndex = -1;
+    }
+    
     public void FullReset()
     {
         _currentIndex = 0;

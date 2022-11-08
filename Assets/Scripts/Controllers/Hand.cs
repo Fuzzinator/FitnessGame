@@ -34,6 +34,8 @@ public class Hand : BaseGameStateListener
         get => _glove.localRotation;
         set => _glove.localRotation = value;
     }
+
+    public Vector3 ForwardDirection => _glove.forward;
     
     public Vector3 MovementDirection
     {
@@ -187,10 +189,10 @@ public class Hand : BaseGameStateListener
 
     public bool IsSwinging()
     {
-        return true;
+        //return true;
         //TODO Come back to this someday and figure it out
-        var worldForward = _glove.TransformDirection(_glove.forward);
-        return Vector3.Dot(worldForward, MovementDirection) > .75f;
+        var dot = Vector3.Dot(_glove.forward, MovementDirection);
+        return dot > .65f;
     }
     
     public void SetAndSpawnGlove(Collider newGlove)

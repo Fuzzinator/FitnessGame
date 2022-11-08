@@ -6,6 +6,8 @@ using UnityEngine;
 public struct HitInfo
 {
     public float ImpactDotProduct { get; private set; }
+    
+    public float HandDirectionDotProd { get; private set; }
     public float DirectionDotProduct { get; private set; }
 
     public Hand HitHand => RightHand != null ? RightHand : LeftHand;
@@ -20,9 +22,10 @@ public struct HitInfo
 
     public float HitSpeed { get; private set; }
 
-    public HitInfo(float impact, float direction, Hand hand, float distance, float speed)
+    public HitInfo(float impact, float direction, float handDir, Hand hand, float distance, float speed)
     {
         ImpactDotProduct = impact;
+        HandDirectionDotProd = handDir;
         DirectionDotProduct = direction;
         _rightHand = null;
         _leftHand = null;
@@ -41,10 +44,11 @@ public struct HitInfo
         HitSpeed = speed;
     }
 
-    public HitInfo(float impact, float direction, Hand leftHand, Hand rightHand, float distance,
+    public HitInfo(float impact, float direction, float handDir, Hand leftHand, Hand rightHand, float distance,
         float speed)
     {
         ImpactDotProduct = impact;
+        HandDirectionDotProd = handDir;
         DirectionDotProduct = direction;
         
         _rightHand = rightHand;

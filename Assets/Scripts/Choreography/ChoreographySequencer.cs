@@ -466,8 +466,7 @@ public class ChoreographySequencer : MonoBehaviour
     {
         if (_resetting)
         {
-            var leftHanded = SettingsManager.GetSetting(LEFTHANDED, false);
-            CurrentStance = leftHanded ? HitSideType.Left : HitSideType.Right;
+            SetStartingFooting();
         }
         else
         {

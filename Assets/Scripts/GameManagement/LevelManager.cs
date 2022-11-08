@@ -5,6 +5,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
+using Random = System.Random;
 
 public class LevelManager : MonoBehaviour
 {
@@ -38,7 +39,8 @@ public class LevelManager : MonoBehaviour
     private bool _songCompleted = false;
 
     private UniTask _songCountdown;
-    private CancellationTokenSource _cancellationToken;
+    private CancellationToken _cancellationToken;
+    private CancellationTokenSource _cancellationTokenSource;
     public bool SongFullyLoaded => _choreographyLoaded && _songInfoLoaded && _actualSongLoaded;
 
     public bool SongCompleted => _songCompleted;
@@ -90,17 +92,17 @@ public class LevelManager : MonoBehaviour
 
     private void Start()
     {
-        
-        _cancellationToken = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
+        _cancellationToken = this.GetCancellationTokenOnDestroy();
         if (PlaylistManager.Instance != null)
         {
             startedLevelLoad.AddListener(PlaylistManager.Instance.SetFirstPlaylistItem);
+            prepForNextSong.AddListener(PlaylistManager.Instance.UpdateCurrentPlaylist);
         }
         InputManager.Instance.EnableActionMaps("In Game");
         
         if (PlaylistManager.Instance != null)
         {
-            prepForNextSong.AddListener(PlaylistManager.Instance.UpdateCurrentPlaylist);
+            restartingLevel.AddListener(PlaylistManager.Instance.Restart);
         }
         LoadLevel();
     }
@@ -115,6 +117,7 @@ public class LevelManager : MonoBehaviour
 
     public void Restart()
     {
+        CancelLevelLoad();
         restartingLevel?.Invoke();
         LoadLevel();
     }
@@ -143,6 +146,8 @@ public class LevelManager : MonoBehaviour
         _choreographyLoaded = false;
         _songInfoLoaded = false;
         _actualSongLoaded = false;
+        
+        _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_cancellationToken);
     }
 
     public void SetChoreographyLoaded(bool loaded)
@@ -208,7 +213,11 @@ public class LevelManager : MonoBehaviour
     private async UniTaskVoid FireEndSongMessagesAsync()
     {
         songCompleted?.Invoke();
-        await UniTask.DelayFrame(1, cancellationToken:_cancellationToken.Token);
+        await UniTask.DelayFrame(1, cancellationToken:_cancellationTokenSource.Token);
+        if (_cancellationTokenSource.IsCancellationRequested)
+        {
+            return;
+        }
         if (PlaylistManager.Instance == null || PlaylistManager.Instance.CurrentPlaylist.Items == null)
         {
             return;
@@ -224,9 +233,9 @@ public class LevelManager : MonoBehaviour
 
     private async UniTask DelaySongStart(float delayLength)
     {
-        await UniTask.Delay(TimeSpan.FromSeconds(delayLength), cancellationToken: _cancellationToken.Token,
+        await UniTask.Delay(TimeSpan.FromSeconds(delayLength), cancellationToken: _cancellationTokenSource.Token,
             ignoreTimeScale: false);
-        if (_cancellationToken.IsCancellationRequested)
+        if (_cancellationTokenSource.IsCancellationRequested)
         {
             return;
         }
@@ -242,6 +251,6 @@ public class LevelManager : MonoBehaviour
 
     public void CancelLevelLoad()
     {
-        _cancellationToken.Cancel(false);
+        _cancellationTokenSource.Cancel(false);
     }
 }
