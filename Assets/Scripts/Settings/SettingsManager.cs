@@ -32,7 +32,17 @@ public class SettingsManager : MonoBehaviour
     private const string FPSSETTING = "TargetFrameRate";
 
     private static readonly string[] _volumeNames = new[] {MASTERVOLUME, MUSICVOLUME, SFXVOLUME};
-
+    
+    public static readonly Quaternion DEFAULTGLOVEROTATION =
+#if UNITY_ANDROID && !UNITY_EDITOR
+        new Quaternion(0.173648164f,0f,0f,0.984807789f);
+#elif UNITY_EDITOR
+        Quaternion.identity;
+#elif UNITY_STANDALONE_WIN
+        Quaternion.identity;
+#else
+        Quaternion.identity;
+#endif
     #endregion
 
     private void Awake()

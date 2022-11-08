@@ -12,7 +12,7 @@ public class ControllerOffsetTracker : MonoBehaviour, ISaver
     private const string RIGHTGRIPPRESSED = "RightGripPressed";
     private const string LEFTGRIPRELEASED = "LeftGripReleased";
     private const string RIGHTGRIPRELEASED = "RightGripReleased";
-
+    
     private bool _leftGripPressed;
     private bool _rightGripPressed;
 
@@ -180,7 +180,7 @@ public class ControllerOffsetTracker : MonoBehaviour, ISaver
         var isLeftHand = hand.AssignedHand == HitSideType.Left;
 
         hand.GloveOffset = Vector3.zero;
-        hand.GloveRotationOffset = Quaternion.identity;
+        hand.GloveRotationOffset = SettingsManager.DEFAULTGLOVEROTATION;
 
         if (isLeftHand)
         {
@@ -210,8 +210,8 @@ public class ControllerOffsetTracker : MonoBehaviour, ISaver
         HandTracker.RightHand.GloveOffset = _rightOffset;
 #endif
 
-        _leftRotationOffset = SettingsManager.GetSetting(SettingsManager.LEFTGLOVEROTOFFSET, Quaternion.identity);
-        _rightRotationOffset = SettingsManager.GetSetting(SettingsManager.RIGHTGLOVEROTOFFSET, Quaternion.identity);
+        _leftRotationOffset = SettingsManager.GetSetting(SettingsManager.LEFTGLOVEROTOFFSET, SettingsManager.DEFAULTGLOVEROTATION);
+        _rightRotationOffset = SettingsManager.GetSetting(SettingsManager.RIGHTGLOVEROTOFFSET, SettingsManager.DEFAULTGLOVEROTATION);
 #if UNITY_EDITOR
         HandTracker.LeftEditorHand.GloveRotationOffset = _leftRotationOffset;
         HandTracker.RightEditorHand.GloveRotationOffset = _rightRotationOffset;

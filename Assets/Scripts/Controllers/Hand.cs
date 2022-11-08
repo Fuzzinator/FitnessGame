@@ -74,6 +74,7 @@ public class Hand : BaseGameStateListener
     private List<InputDevice> _devices = new List<InputDevice>();
     private bool _trackingPaused = false;
     private CancellationToken _cancellationToken;
+    
 
     private void Awake()
     {
@@ -181,8 +182,8 @@ public class Hand : BaseGameStateListener
         };
         GloveRotationOffset = _assignedHand switch
         {
-            HitSideType.Left => SettingsManager.GetSetting(SettingsManager.LEFTGLOVEROTOFFSET, Quaternion.identity),
-            HitSideType.Right => SettingsManager.GetSetting(SettingsManager.RIGHTGLOVEROTOFFSET, Quaternion.identity),
+            HitSideType.Left => SettingsManager.GetSetting(SettingsManager.LEFTGLOVEROTOFFSET, SettingsManager.DEFAULTGLOVEROTATION),
+            HitSideType.Right => SettingsManager.GetSetting(SettingsManager.RIGHTGLOVEROTOFFSET, SettingsManager.DEFAULTGLOVEROTATION),
             _ => GloveRotationOffset
         };
     }
