@@ -24,9 +24,10 @@
   <component name="ChangeListManager">
     <list default="true" id="39c8e4b5-5816-4073-86c0-257352c63bc5" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.FitnessGame/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.FitnessGame/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Controllers/Hand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Controllers/Hand.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Settings/ControllerOffsetTracker.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Settings/ControllerOffsetTracker.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Settings/SettingsManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Settings/SettingsManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/GameManagement/LevelManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/GameManagement/LevelManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Playlists/PlaylistManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Playlists/PlaylistManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Sound/MusicManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Sound/MusicManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PlayerStats/SongRecords.txt" beforeDir="false" afterPath="$PROJECT_DIR$/PlayerStats/SongRecords.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -196,6 +197,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ad50157ee00e45cdb3c8bd67012f8804157200/86/a9cd6475/Mathf.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Asset Management/CustomPlaylistsManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ad50157ee00e45cdb3c8bd67012f8804157200/56/cc8d2eca/Vector2.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/edef46c9b2db4b878c98495bfdc516fa568ba8/2d/c9811912/Int32.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Choreography/ChoreographyFormation.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/UI/PlaylistCountdownClock.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../Sound Files/Assets/ARPG Effects/Demo/Scripts/ARPGSceneSelect.cs" root0="FORCE_HIGHLIGHTING" />
@@ -415,7 +417,7 @@
       <workItem from="1667022080620" duration="4868000" />
       <workItem from="1667682515339" duration="198000" />
       <workItem from="1667682832940" duration="28000" />
-      <workItem from="1667683330018" duration="33166000" />
+      <workItem from="1667683330018" duration="39118000" />
     </task>
     <servers />
   </component>
@@ -443,95 +445,43 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Scripts/UI/NewPlaylistEnvSetter.cs</url>
-          <line>12</line>
-          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\UI\NewPlaylistEnvSetter.cs" initialLine="12" containingFunctionPresentation="method 'SetDropdownOption'">
+          <url>file://$PROJECT_DIR$/Assets/Scripts/GameManagement/LevelManager.cs</url>
+          <line>227</line>
+          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\GameManagement\LevelManager.cs" initialLine="227" containingFunctionPresentation="method 'FireEndSongMessagesAsync'">
             <startOffsets>
-              <option value="305" />
+              <option value="5641" />
             </startOffsets>
             <endOffsets>
-              <option value="356" />
+              <option value="5740" />
             </endOffsets>
           </properties>
-          <option name="timeStamp" value="1" />
+          <option name="timeStamp" value="24" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Scripts/Playlists/PlaylistMaker.cs</url>
-          <line>150</line>
-          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\Playlists\PlaylistMaker.cs" initialLine="150" containingFunctionPresentation="method 'CreatePlaylistAsync'">
+          <url>file://$PROJECT_DIR$/Assets/Scripts/Playlists/PlaylistManager.cs</url>
+          <line>91</line>
+          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\Playlists\PlaylistManager.cs" initialLine="91" containingFunctionPresentation="method 'UpdateCurrentPlaylist'">
             <startOffsets>
-              <option value="3783" />
+              <option value="2209" />
             </startOffsets>
             <endOffsets>
-              <option value="3887" />
+              <option value="2216" />
             </endOffsets>
           </properties>
-          <option name="timeStamp" value="2" />
+          <option name="timeStamp" value="25" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Scripts/UI/ColorSetter.cs</url>
-          <line>49</line>
-          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\UI\ColorSetter.cs" initialLine="49" containingFunctionPresentation="method 'UpdateFromPlaylist'">
+          <url>file://$PROJECT_DIR$/Assets/Scripts/Playlists/PlaylistManager.cs</url>
+          <line>88</line>
+          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\Playlists\PlaylistManager.cs" initialLine="88" containingFunctionPresentation="method 'UpdateCurrentPlaylist'">
             <startOffsets>
-              <option value="1339" />
+              <option value="2051" />
             </startOffsets>
             <endOffsets>
-              <option value="1383" />
+              <option value="2186" />
             </endOffsets>
           </properties>
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Scripts/Controllers/Hand.cs</url>
-          <line>195</line>
-          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\Controllers\Hand.cs" initialLine="193" containingFunctionPresentation="method 'IsSwinging'">
-            <startOffsets>
-              <option value="5368" />
-            </startOffsets>
-            <endOffsets>
-              <option value="5386" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="6" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Scripts/Targets/BaseTarget.cs</url>
-          <line>152</line>
-          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\Targets\BaseTarget.cs" initialLine="152" containingFunctionPresentation="method 'IsValidDirection'">
-            <startOffsets>
-              <option value="4232" />
-            </startOffsets>
-            <endOffsets>
-              <option value="4303" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="7" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Scripts/Sound/MusicManager.cs</url>
-          <line>164</line>
-          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\Sound\MusicManager.cs" initialLine="164" containingFunctionPresentation="method 'WaitThenPlayMusic'">
-            <startOffsets>
-              <option value="4386" />
-            </startOffsets>
-            <endOffsets>
-              <option value="4393" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="15" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Scripts/Sound/MusicManager.cs</url>
-          <line>237</line>
-          <properties documentPath="D:\Projects\FitnessGame\Assets\Scripts\Sound\MusicManager.cs" initialLine="237" containingFunctionPresentation="method 'WaitForSongFinish'">
-            <startOffsets>
-              <option value="6412" />
-            </startOffsets>
-            <endOffsets>
-              <option value="6488" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="16" />
+          <option name="timeStamp" value="26" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

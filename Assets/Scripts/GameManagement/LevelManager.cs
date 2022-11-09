@@ -225,7 +225,7 @@ public class LevelManager : MonoBehaviour
         
         prepForNextSong?.Invoke();
         
-        if (PlaylistManager.Instance.CurrentIndex == PlaylistManager.Instance.CurrentPlaylist.Items.Length - 1)
+        if (PlaylistManager.Instance.CurrentIndex == PlaylistManager.Instance.CurrentPlaylist.Items.Length)
         {
             levelCompleted?.Invoke();
         }

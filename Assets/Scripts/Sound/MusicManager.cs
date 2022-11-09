@@ -156,6 +156,7 @@ public class MusicManager : BaseGameStateListener
     {
         try
         {
+            _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(_cancellationToken);
             if (SongInfoReader.Instance.songInfo.SongStartDelay > 0)
             {
                 await UniTask.Delay(TimeSpan.FromSeconds(SongInfoReader.Instance.songInfo.SongStartDelay),
@@ -165,7 +166,7 @@ public class MusicManager : BaseGameStateListener
                     return;
                 }
             }
-
+            
             _musicAudioSource.Play();
             _musicPaused = false;
             LevelManager.Instance.SetActualSongCompleted(false);
@@ -194,6 +195,7 @@ public class MusicManager : BaseGameStateListener
         _cancellationSource?.Cancel();
         _musicAudioSource.Stop();
         _musicPaused = false;
+        _awaitingSongEnd = false;
     }
 
     protected override void GameStateListener(GameState oldState, GameState newState)

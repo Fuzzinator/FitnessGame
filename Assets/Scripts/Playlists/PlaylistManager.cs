@@ -84,13 +84,14 @@ public class PlaylistManager : MonoBehaviour
 
     public void UpdateCurrentPlaylist()
     {
+        _currentIndex++;
+
         if (_currentPlaylist.Items == null || _currentPlaylist.Items.Length == 0 ||
-            _currentIndex >= _currentPlaylist.Items.Length - 1)
+            _currentIndex >= _currentPlaylist.Items.Length)
         {
             return;
         }
-
-        _currentIndex++;
+        
         CurrentItem = _currentPlaylist.Items[_currentIndex];
     }
 
