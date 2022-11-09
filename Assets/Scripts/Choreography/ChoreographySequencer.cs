@@ -120,7 +120,7 @@ public class ChoreographySequencer : MonoBehaviour
     private UnityEvent<int> _stanceUpdated = new UnityEvent<int>();
 
     private bool _sequenceUnstartedOrFinished = true;
-    private bool _resetting;
+    private bool _resetting = false;
     
     private Dictionary<float, ActiveLaneIndicator> _laneIndicators = new Dictionary<float, ActiveLaneIndicator>(20);
     public bool SequenceRunning { get; private set; }
@@ -466,7 +466,9 @@ public class ChoreographySequencer : MonoBehaviour
     {
         if (_resetting)
         {
-            SetStartingFooting();
+            
+            var leftHanded = SettingsManager.GetSetting(LEFTHANDED, false);
+            CurrentStance = leftHanded ? HitSideType.Right : HitSideType.Left;
         }
         else
         {

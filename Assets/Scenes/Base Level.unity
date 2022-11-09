@@ -9080,6 +9080,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  playLevel:
+    m_PersistentCalls:
+      m_Calls:
       - m_Target: {fileID: 26562287}
         m_TargetAssemblyTypeName: ChoreographySequencer, Assembly-CSharp
         m_MethodName: FinishSequenceRestart
@@ -9090,11 +9093,8 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 0
+          m_BoolArgument: 1
         m_CallState: 2
-  playLevel:
-    m_PersistentCalls:
-      m_Calls:
       - m_Target: {fileID: 26562285}
         m_TargetAssemblyTypeName: ChoreographyReader, Assembly-CSharp
         m_MethodName: ResetForNextSequence
