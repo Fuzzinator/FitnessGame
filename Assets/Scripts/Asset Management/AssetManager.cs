@@ -21,6 +21,7 @@ public class AssetManager : MonoBehaviour
     private const string PAUSEINEDITOR = "Pause In Editor";
     private const string EDITORCUSTOMSONGFOLDER = "/LocalCustomSongs/Songs/";
     private const string EDITORPLAYLISTLOCATION = "/LocalCustomSongs/Playlists/";
+    private const string UNITYEDITORPLAYLISTLOCATION = "/LocalCustomSongs/Playlists/";
     private static readonly string DataPath = Application.dataPath;
 #elif UNITY_ANDROID && !UNITY_EDITOR
     private const string ANDROIDPATHSTART = "file://";
@@ -28,12 +29,21 @@ public class AssetManager : MonoBehaviour
 #endif
 
     private const string PLAYLISTEXTENSION = ".txt";
+    private const string JPGEXTENSION = ".jpg";
+    
     private const string SONGSFOLDER = "/Resources/Songs/";
     private const string PLAYLISTSFOLDER = "/Resources/Playlists/";
     private const string LOCALSONGSFOLDER = "Assets/Music/Songs/";
+    private const string LOCALPLAYLISTSFOLDER = "Assets/Music/Playlists/";
 
     private const string SONGINFONAME = "Info.txt";
     private const string ALTSONGINFONAME = "Info.dat";
+
+    #endregion
+
+    #region Const ints
+
+    public const int TEXTURESIZE = 256;
 
     #endregion
 
@@ -202,8 +212,31 @@ public class AssetManager : MonoBehaviour
             return null;
         }
     }
+    
+    public static async UniTask<Texture2D> LoadBuiltInPlaylistImage(string playlistName, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var request = Addressables.LoadAssetAsync<Texture2D>($"{LOCALPLAYLISTSFOLDER}{playlistName}.jpg");
+            await request.ToUniTask(cancellationToken: cancellationToken);
 
-    public static async UniTask GetCustomPlaylists(Action<Playlist> playlistLoaded)
+            var texture = request.Result;
+            if (texture == null)
+            {
+                Debug.LogError($"Failed to load local resource file for {playlistName}");
+                return null;
+            }
+
+            texture.name = playlistName;
+            return texture;
+        }
+        catch (Exception e) when (e is OperationCanceledException)
+        {
+            return null;
+        }
+    }
+
+    public static async UniTask GetCustomPlaylists(Action<Playlist> playlistLoaded, CancellationToken cancellationToken)
     {
         if (!CheckPermissions())
         {
@@ -235,14 +268,34 @@ public class AssetManager : MonoBehaviour
                 if (file.Extension == PLAYLISTEXTENSION)
                 {
                     var streamReader = new StreamReader(file.FullName);
-                    var reading = streamReader.ReadToEndAsync();
-                    await reading;
-                    var playlist = JsonUtility.FromJson<Playlist>(reading.Result);
-
+                    var playlistAsJson = await streamReader.ReadToEndAsync();
+                    var playlist = JsonUtility.FromJson<Playlist>(playlistAsJson);
                     streamReader.Close();
+
+
+                    var imagePath = $"{path}{playlist.PlaylistName}.jpg";
+                    if (!File.Exists(imagePath))
+                    {
+                        Debug.LogWarning($"No image found at\"{imagePath}\"");
+                    }
+                    else
+                    {
+                        var bytes = await File.ReadAllBytesAsync(imagePath, cancellationToken);
+                        if (bytes == null || bytes.Length == 0)
+                        {
+                            Debug.LogError($"Failed to load image at \"{imagePath}\"");
+                        }
+                        else
+                        {
+                            var texture = new Texture2D(2, 2);
+                            texture.LoadImage(bytes);
+                            playlist.SetIcon(texture);
+                        }
+                    }
 
                     playlist.isValid = await PlaylistValidator.IsValid(playlist);
                     playlistLoaded?.Invoke(playlist);
+                    await UniTask.DelayFrame(1, cancellationToken: cancellationToken);
                     //if (playlist.isValid)
                     //{
                     //availablePlaylists.Add(playlist);
@@ -257,7 +310,7 @@ public class AssetManager : MonoBehaviour
         }
     }
 
-    public static async UniTask GetBuiltInPlaylists(string label, Action<Playlist> playlistLoaded)
+    public static async UniTask GetBuiltInPlaylists(string label, Action<Playlist> playlistLoaded, CancellationToken cancellationToken)
     {
         await Addressables.LoadAssetsAsync<TextAsset>(label, async asset =>
         {
@@ -267,8 +320,19 @@ public class AssetManager : MonoBehaviour
             }
 
             var playlist = JsonUtility.FromJson<Playlist>(asset.text);
+
+            if (playlist == null)
+            {
+                Debug.LogWarning($"Playlist of name {label} was null.");
+                return;
+            }
+            
             playlist.isValid = await PlaylistValidator.IsValid(playlist); //This is a temporary solution.
+            var texture = await LoadBuiltInPlaylistImage(playlist.PlaylistName, cancellationToken);
+            playlist.SetIcon(texture);
+            
             playlistLoaded?.Invoke(playlist);
+            await UniTask.DelayFrame(1, cancellationToken: cancellationToken);
         });
     }
 
@@ -341,9 +405,8 @@ public class AssetManager : MonoBehaviour
 
     public static async UniTask<SongInfo> GetSingleCustomSong(string fileLocation, CancellationToken token)
     {
-        try
-        {
-
+        //try
+        //{
             var info = new DirectoryInfo(fileLocation);
             var files = info.GetFiles();
             foreach (var file in files)
@@ -389,6 +452,16 @@ public class AssetManager : MonoBehaviour
                         updatedMaps = true;
                     }
 
+                    var image = await item.LoadImage(token);
+                    if (image.texture.width != TEXTURESIZE)
+                    {
+                        await UniTask.DelayFrame(1, cancellationToken: token);
+                        var tex = image.texture.ScaleTexture(TEXTURESIZE, TEXTURESIZE, TextureFormat.RGB24);
+                        var bytes = tex.EncodeToJPG();
+                        await File.WriteAllBytesAsync($"{file.DirectoryName}/{item.ImageFilename}", bytes, token);
+                        item.SetImage(tex);
+                    }
+
                     var madeChange = await item.UpdateDifficultySets(token);
                     if (madeChange)
                     {
@@ -408,12 +481,28 @@ public class AssetManager : MonoBehaviour
                     return item;
                 }
             }
-        }
+        /*}
         catch (Exception e)
         {
             Debug.LogError($"{e.Message}\n{e.StackTrace}");
-        }
-        
+        }*/
+
         return null;
+    }
+
+    public static void DeletePlaylistImage(string playlistName, CancellationToken token)
+    {
+#if UNITY_ANDROID && !UNITY_EDITOR
+        var path = $"{Application.persistentDataPath}{PLAYLISTSFOLDER}";
+#elif UNITY_EDITOR
+        var dataPath = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/'));
+        var path = $"{dataPath}/{UNITYEDITORPLAYLISTLOCATION}";
+#endif
+        
+        var imagePath = $"{path}{playlistName}{JPGEXTENSION}";
+        if (File.Exists(imagePath))
+        {
+            File.Delete(imagePath);
+        }
     }
 }

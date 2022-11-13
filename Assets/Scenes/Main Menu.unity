@@ -3982,6 +3982,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 250701290e7dae7448997fa411ae9176, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _targetMenuPage: 6
 --- !u!1 &78435082
 GameObject:
   m_ObjectHideFlags: 0
@@ -8385,7 +8386,6 @@ GameObject:
   - component: {fileID: 243535170}
   - component: {fileID: 243535169}
   - component: {fileID: 243535175}
-  - component: {fileID: 243535172}
   - component: {fileID: 243535173}
   - component: {fileID: 243535174}
   m_Layer: 5
@@ -8472,30 +8472,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 243535172}
-        m_TargetAssemblyTypeName: GameModeManagement.GameModeSetter, Assembly-CSharp
-        m_MethodName: SetGameModeWithTarget
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 1
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 243535172}
-        m_TargetAssemblyTypeName: GameModeManagement.GameModeSetter, Assembly-CSharp
-        m_MethodName: SetDifficultyWithTarget
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 243535174}
         m_TargetAssemblyTypeName: EnvironmentSelectionLoader, Assembly-CSharp
         m_MethodName: LoadSelectedEnvironmentContainer
@@ -8558,20 +8534,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 243535167}
   m_CullTransparentMesh: 1
---- !u!114 &243535172
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 243535167}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5d5aa5033c7e264e8653999235b1db5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _targetMode: 0
-  _targetDifficulty: -1
 --- !u!114 &243535173
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34444,6 +34406,7 @@ MonoBehaviour:
         m_CallState: 2
   _gameMode: 0
   _difficulty: 0
+  _emptyTexture: {fileID: 2800000, guid: 57bfbfbf26219ff4f9851bb0cf59dd90, type: 3}
 --- !u!114 &1017806881
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37135,7 +37098,6 @@ GameObject:
   - component: {fileID: 1060723423}
   - component: {fileID: 1060723422}
   - component: {fileID: 1060723421}
-  - component: {fileID: 1060723420}
   - component: {fileID: 1060723419}
   - component: {fileID: 1060723418}
   m_Layer: 5
@@ -37195,20 +37157,6 @@ MonoBehaviour:
   _registerPointerClick: 1
   _registerPointerDown: 0
   _registerPointerUp: 0
---- !u!114 &1060723420
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1060723416}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5d5aa5033c7e264e8653999235b1db5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _targetMode: 0
-  _targetDifficulty: -1
 --- !u!114 &1060723421
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37269,30 +37217,6 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
         m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1060723420}
-        m_TargetAssemblyTypeName: GameModeManagement.GameModeSetter, Assembly-CSharp
-        m_MethodName: SetGameModeWithTarget
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 1
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1060723420}
-        m_TargetAssemblyTypeName: GameModeManagement.GameModeSetter, Assembly-CSharp
-        m_MethodName: SetDifficultyWithTarget
-        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -51686,6 +51610,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8248030770639639578, guid: 1ddbc97ca8eda42749e1e1eb08026b42,
         type: 2}
+    - target: {fileID: 3791352119228474436, guid: 36cd4176249ef924cb4492fc602059d5,
+        type: 3}
+      propertyPath: m_Alpha
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3929852072259052266, guid: 36cd4176249ef924cb4492fc602059d5,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -52060,7 +51989,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh2781686
+  m_Name: pb_Mesh1429736
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -63660,7 +63589,6 @@ GameObject:
   - component: {fileID: 1994178434}
   - component: {fileID: 1994178433}
   - component: {fileID: 1994178432}
-  - component: {fileID: 1994178431}
   - component: {fileID: 1994178430}
   m_Layer: 5
   m_Name: Play Song Button
@@ -63702,20 +63630,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96f30ad16d2c29b438f3342d07c142e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1994178431
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1994178428}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5d5aa5033c7e264e8653999235b1db5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _targetMode: 0
-  _targetDifficulty: -1
 --- !u!114 &1994178432
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -63793,30 +63707,6 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
         m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1994178431}
-        m_TargetAssemblyTypeName: GameModeManagement.GameModeSetter, Assembly-CSharp
-        m_MethodName: SetGameModeWithTarget
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1994178431}
-        m_TargetAssemblyTypeName: GameModeManagement.GameModeSetter, Assembly-CSharp
-        m_MethodName: SetDifficultyWithTarget
-        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

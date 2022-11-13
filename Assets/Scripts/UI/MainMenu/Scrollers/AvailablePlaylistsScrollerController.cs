@@ -27,6 +27,12 @@ namespace UI.Scrollers.Playlists
         protected override void SetDataFromFilter()
         {
             _playlists.Clear();
+            
+            if (PlaylistFilesReader.Instance.availablePlaylists == null)
+            {
+                return;
+            }
+
             if (string.IsNullOrWhiteSpace(_searchKey))
             {
                 _playlists.AddRange(PlaylistFilesReader.Instance.availablePlaylists);

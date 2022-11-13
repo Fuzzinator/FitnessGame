@@ -2,9 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using Cysharp.Text;
 using Cysharp.Threading.Tasks;
 using GameModeManagement;
+using Unity.Collections;
+using Unity.Jobs;
 using UnityEngine;
 #if UNITY_ANDROID
 using UnityEngine.Android;
@@ -34,6 +37,9 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     [SerializeField]
     private DifficultyInfo.DifficultyEnum _difficulty = DifficultyInfo.DifficultyEnum.Unset;
 
+    [SerializeField]
+    private Texture2D _emptyTexture;
+    
     public List<PlaylistItem> PlaylistItems => _playlistItems;
 
     private bool _editMode = false;
@@ -45,6 +51,8 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     private string _originalName;
     private string _targetEnv;
 
+    private CancellationToken _cancallationToken;
+    
     #region Const Strings
 
 #if UNITY_ANDROID && !UNITY_EDITOR
@@ -72,6 +80,11 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         {
             Destroy(this);
         }
+    }
+
+    private void Start()
+    {
+        _cancallationToken = this.GetCancellationTokenOnDestroy();
     }
 
     private void OnDestroy()
@@ -148,7 +161,8 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
 
     private async UniTaskVoid CreatePlaylistAsync()
     {
-        var newPlaylist = new Playlist(_playlistItems, _gameMode, _difficulty, _playlistName, true, _targetEnv);
+        var sprite = await GetSprite();
+        var newPlaylist = new Playlist(_playlistItems, _gameMode, _difficulty, _playlistName, true, _targetEnv, sprite);
         PlaylistManager.Instance.CurrentPlaylist = newPlaylist;
         
         if (_playlistItems == null || _playlistItems.Count == 0)
@@ -193,14 +207,13 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         if (!_editMode || (_editMode && _originalName != _playlistName))
         {
             var index = 0;
-            var cancallationToken = this.GetCancellationTokenOnDestroy();
             while (File.Exists(filePath))
             {
                 index++;
                 filePath = $"{path}{_playlistName}_{index:00}.txt";
                 try
                 {
-                    await UniTask.DelayFrame(1, cancellationToken: cancallationToken);
+                    await UniTask.DelayFrame(1, cancellationToken: _cancallationToken);
                 }
                 catch (Exception e) when (e is OperationCanceledException)
                 {
@@ -222,12 +235,48 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         _startWritingPlaylist?.Invoke();
 
         await writingTask;
-
+        
         streamWriter.Close();
+        if (newPlaylist.PlaylistImage != null)
+        {
+            var bytes = newPlaylist.PlaylistImage.texture.EncodeToJPG();
+            await File.WriteAllBytesAsync($"{path}{_playlistName}.jpg", bytes, _cancallationToken);
+        }
 
         _newPlaylistCreated?.Invoke(newPlaylist);
         _playlistItems.Clear();
         SetPlaylistName(NEWPLAYLISTNAME);
+    }
+
+    public async UniTask<Texture2D> GetSprite()
+    {
+        var texture1 = _playlistItems.Count > 0
+            ? await _playlistItems[0].SongInfo.LoadTexture(_cancallationToken)
+            : _emptyTexture;
+        var texture2 = _playlistItems.Count > 1
+            ? await _playlistItems[1].SongInfo.LoadTexture(_cancallationToken)
+            : _emptyTexture;
+        var texture3 = _playlistItems.Count > 2
+            ? await _playlistItems[2].SongInfo.LoadTexture(_cancallationToken)
+            : _emptyTexture;
+        var texture4 = _playlistItems.Count > 3
+            ? await _playlistItems[3].SongInfo.LoadTexture(_cancallationToken)
+            : _emptyTexture;
+        
+        var combinedTexture = new Texture2D(512, 512, TextureFormat.RGB24, false);
+        combinedTexture.SetPixels(0,0, 256, 256, texture1.GetPixels(), 0);
+        combinedTexture.SetPixels(256,0, 256, 256, texture2.GetPixels(), 0);
+        combinedTexture.SetPixels(0,256, 256, 256, texture3.GetPixels(), 0);
+        combinedTexture.SetPixels(256,256, 256, 256, texture4.GetPixels(), 0);
+        combinedTexture.Apply(false, false);
+        
+        if (combinedTexture == null)
+        {
+            Debug.LogError($"Created texture is null for some reason");
+            return null;
+        }
+
+        return combinedTexture;
     }
 
     public float GetLength()
@@ -313,4 +362,118 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     {
         Debug.Log(value);
     }
+    
+    /*private async UniTask<Texture2D> CombineTextures(Texture2D texture1,Texture2D texture2,Texture2D texture3,Texture2D texture4)
+    {
+        
+        var pixels1 = texture1.GetPixelData<Color32>(0);
+        var pixels2 = texture1.GetPixelData<Color32>(0);
+        var pixels3 = texture1.GetPixelData<Color32>(0);
+        var pixels4 = texture1.GetPixelData<Color32>(0);
+        
+        var finalArray = finalTexture.GetPixelData<Color32>(0);/*new NativeArray<Color32>(pixels1.Length + pixels2.Length + pixels3.Length + pixels4.Length,
+            Allocator.TempJob);#1#
+        try
+        {
+            var combineJob = new CombineTexturesJob(finalArray, pixels1, pixels2, pixels3, pixels4);
+            await combineJob.Schedule(finalArray.Length, 16);
+            finalTexture.Apply();
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"{e.Message}\n{e.StackTrace}");
+        }
+        finally
+        {
+            pixels1.Dispose();
+            pixels2.Dispose();
+            pixels3.Dispose();
+            pixels4.Dispose();
+            finalArray.Dispose();
+        }
+
+        return finalTexture;
+    }
+    
+    private struct CombineTexturesJob : IJobParallelFor
+    {
+        private NativeArray<Color32> _finalPixels;
+
+        private readonly NativeArray<Color32> _pixels1;
+        private readonly NativeArray<Color32> _pixels2;
+        private readonly NativeArray<Color32> _pixels3;
+        private readonly NativeArray<Color32> _pixels4;
+
+        private const int WIDTH = 512;
+        private const int HALFWIDTH = 256;
+
+        public CombineTexturesJob(NativeArray<Color32> finalPixels, NativeArray<Color32> pixels1, NativeArray<Color32> pixels2,
+            NativeArray<Color32> pixels3, NativeArray<Color32> pixels4)
+        {
+            _finalPixels = finalPixels;
+            _pixels1 = pixels1;
+            _pixels2 = pixels2;
+            _pixels3 = pixels3;
+            _pixels4 = pixels4;
+        }
+        
+        public void Execute(int index)
+        {
+            var height = index % WIDTH;
+            var width = index - height * WIDTH;
+
+
+            var color = new Color32();
+            if (width < HALFWIDTH)
+            {
+                if (height < HALFWIDTH)
+                {
+                    color = _pixels1[height * HALFWIDTH + width];
+                }
+                else
+                {
+                    height -= HALFWIDTH;
+                    color = _pixels3[height * HALFWIDTH + width];
+                }
+            }
+            else
+            {
+                width -= HALFWIDTH;
+                if (height < HALFWIDTH)
+                {
+                    color = _pixels2[height * HALFWIDTH + width];
+                }
+                else
+                {
+                    height -= HALFWIDTH;
+                    color = _pixels4[height * HALFWIDTH + width];
+                }
+            }
+
+            _finalPixels[index] = color;
+            return;
+            
+            
+            
+            if (index < _pixels1.Length)
+            {
+                _finalPixels[index] = _pixels1[index];
+            }
+            else if (index < _pixels1.Length+_pixels2.Length)
+            {
+                var i = index - _pixels1.Length;
+                _finalPixels[index] = _pixels2[i];
+            }
+            else if (index < _pixels1.Length+_pixels2.Length+_pixels3.Length)
+            {
+                var i = index - _pixels1.Length - _pixels2.Length;
+                _finalPixels[index] = _pixels3[i];
+            }
+            else if (index < _pixels1.Length+_pixels2.Length+_pixels3.Length+_pixels4.Length)
+            {
+                var i = index - _pixels1.Length - _pixels2.Length - _pixels3.Length;
+                _finalPixels[index] = _pixels4[i];
+            }
+        }
+    }*/
 }

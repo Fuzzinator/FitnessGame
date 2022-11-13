@@ -66,10 +66,16 @@ namespace UI.Scrollers.Playlists
             await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
             
             var currentPlaylist = PlaylistManager.Instance.CurrentPlaylist;
-            _playlistTitleCard.interactable = currentPlaylist.isValid;
+            if (currentPlaylist == null)
+            {
+                return;
+            }
+            
+            //_playlistTitleCard.interactable = currentPlaylist.isValid;
             _playlistTitle.SetText(currentPlaylist.PlaylistName);
             _playlistName.SetText(currentPlaylist.PlaylistName);
             _playlistLength.SetText(currentPlaylist.ReadableLength);
+            _playButton.interactable = currentPlaylist.isValid;
             _editButton.gameObject.SetActive(currentPlaylist.IsCustomPlaylist);
             _deleteButton.gameObject.SetActive(currentPlaylist.IsCustomPlaylist);
             _scrollerController.ReloadScroller();
@@ -96,6 +102,11 @@ namespace UI.Scrollers.Playlists
         private async UniTask<SongAndPlaylistRecord> GetPlaylistRecord()
         {
             var playlist = PlaylistManager.Instance.CurrentPlaylist;
+            if (playlist == null)
+            {
+                Debug.LogError("Trying to get record but playlist is null.");
+                return new SongAndPlaylistRecord();
+            }
             var playlistFullName = $"{playlist.PlaylistName}-{playlist.Length}-{playlist.Items.Length}";
             var exists = await PlayerStatsFileManager.PlaylistKeyExists(playlistFullName);
             if (!exists)

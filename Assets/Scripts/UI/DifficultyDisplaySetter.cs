@@ -44,6 +44,11 @@ namespace UI
 
         private void UpdateDisplayedValues(Playlist playlist)
         {
+            if (playlist == null)
+            {
+                return;
+            }
+
             var difficulty = playlist.DifficultyEnum;
             _dropdownField.value = ((int) difficulty);
 

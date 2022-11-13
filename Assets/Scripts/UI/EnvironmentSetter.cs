@@ -38,11 +38,16 @@ namespace UI
             var listOfOptions = EnvironmentControlManager.Instance.GetNewAvailableEnvironmentsList();
             _dropdownField.ClearOptions();
             _dropdownField.AddOptions(listOfOptions);
-            SetSelection(PlaylistManager.Instance.CurrentPlaylist.TargetEnvName);
+            SetSelection(PlaylistManager.Instance.CurrentPlaylist?.TargetEnvName);
         }
 
         private void UpdatePlaylist(Playlist playlist)
         {
+            if (playlist == null)
+            {
+                return;
+            }
+
             SetSelection(playlist.TargetEnvName);
         }
 

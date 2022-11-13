@@ -478,6 +478,11 @@ public class ChoreographySequencer : MonoBehaviour
 
     public void RotateSpawnSource(float angle)
     {
+        if (PlaylistManager.Instance.CurrentPlaylist == null)
+        {
+            Debug.LogError("CurrentPlaylist is null. This is game breaking");
+            return;
+        }
         var playlistGameMode = PlaylistManager.Instance.CurrentPlaylist.GameModeOverride;
         
         var targetGameMode = playlistGameMode == GameMode.Unset

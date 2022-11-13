@@ -53,7 +53,7 @@ public class PlaylistCountdownClock : MonoBehaviour
 
     public async void InitializeClock()
     {
-        _timeRemaining = PlaylistManager.Instance.CurrentPlaylist.Length;
+        _timeRemaining = PlaylistManager.Instance.CurrentPlaylist?.Length ?? 0;
         UpdateDisplay();
 
         var token = this.GetCancellationTokenOnDestroy();
@@ -75,7 +75,7 @@ public class PlaylistCountdownClock : MonoBehaviour
 
     public void ResetClock()
     {
-        _timeRemaining = PlaylistManager.Instance.CurrentPlaylist.Length;
+        _timeRemaining = PlaylistManager.Instance.CurrentPlaylist?.Length ?? 0;
         UpdateDisplay();
         _clockRunning = false;
     }

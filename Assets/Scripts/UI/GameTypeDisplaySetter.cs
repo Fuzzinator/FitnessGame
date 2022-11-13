@@ -50,6 +50,11 @@ namespace UI
 
         private void UpdateDisplayedValues(Playlist playlist)
         {
+            if (playlist == null)
+            {
+                return;
+            }
+            
             var gameMode = playlist.GameModeOverride;
             _dropdownField.value = (int) gameMode;
 

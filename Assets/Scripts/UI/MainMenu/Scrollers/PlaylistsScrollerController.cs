@@ -17,8 +17,6 @@ namespace UI.Scrollers.Playlists
         [SerializeField]
         private int _viewPlaylistPageIndex;
         
-        private int _offset;
-        
         public override int GetNumberOfCells(EnhancedScroller scroller)
         {
             return Mathf.CeilToInt(base.GetNumberOfCells(scroller)*.5f);
@@ -26,16 +24,12 @@ namespace UI.Scrollers.Playlists
         
         public override EnhancedScrollerCellView GetCellView(EnhancedScroller scroller, int dataIndex, int cellIndex)
         {
-            if (dataIndex == 0)
-            {
-                _offset = 0;
-            }
-            if(dataIndex+_offset<_playlists.Count)
+            var targetIndex = dataIndex * 2;
+            if(targetIndex<_playlists.Count)
             {
                 var cellView = scroller.GetCellView(_cellViewPrefab) as DualPlaylistDisplayCellView;
-                var playlist1 = _playlists[dataIndex + _offset];
-                _offset++;
-                var playlist2 = dataIndex+_offset<_playlists.Count?_playlists[dataIndex + _offset]:new Playlist();
+                var playlist1 = _playlists[targetIndex];
+                var playlist2 = targetIndex+1<_playlists.Count?_playlists[targetIndex+1]:null;
                 cellView.SetData(playlist1, playlist2, this);
 
                 return cellView;
@@ -62,7 +56,8 @@ namespace UI.Scrollers.Playlists
             {
                 foreach (var playlist in PlaylistFilesReader.Instance.availablePlaylists)
                 {
-                    if (!playlist.isValid)
+                    
+                    if (playlist is not {isValid: true})
                     {
                         continue;
                     }
@@ -73,6 +68,10 @@ namespace UI.Scrollers.Playlists
             {
                 foreach (var playlist in PlaylistFilesReader.Instance.availablePlaylists)
                 {
+                    if (playlist is not {isValid: true})
+                    {
+                        continue;
+                    }
                     if (playlist.PlaylistName.Contains(_searchKey, StringComparison.InvariantCultureIgnoreCase) ||
                         (string.Equals(_searchKey, "custom", StringComparison.InvariantCultureIgnoreCase) &&
                          playlist.IsCustomPlaylist) && playlist.isValid)

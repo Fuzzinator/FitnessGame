@@ -11,6 +11,7 @@ public class LevelNotificationRequester : MonoBehaviour
     private TransitionController _transitionController;
     
     private readonly Action _mainMenuAction;
+    private Notification.NotificationVisualInfo _visualInfo;
     
     private const string WORKOUTCOMPLETE = "Workout Complete";
     private const string SONGCOMPLETE = "Song Complete";
@@ -32,9 +33,14 @@ public class LevelNotificationRequester : MonoBehaviour
         };//ActiveSceneManager.Instance.LoadMainMenu();};
     }
 
+    private void Start()
+    {
+        _visualInfo = new Notification.NotificationVisualInfo();
+    }
+
     public void CheckLevelStateAndDisplay()
     {
-        if (PlaylistManager.Instance == null || PlaylistManager.Instance.CurrentPlaylist.Items == null)
+        if (PlaylistManager.Instance == null || PlaylistManager.Instance.CurrentPlaylist?.Items == null)
         {
             return;
         }
@@ -56,17 +62,25 @@ public class LevelNotificationRequester : MonoBehaviour
         var goodHits = (int)ScoringManager.Instance.GoodHitsThisSong;
         var missedHits = (int)ScoringManager.Instance.MissedTargetsThisSong;
         var hitObstacles = (int)ScoringManager.Instance.HitObstaclesThisSong;
+        
+        
         string message;
+        //ArraySegment<char> chars;
         using (var sb = ZString.CreateStringBuilder(true))
         {
             sb.AppendFormat(ENDSONGSTATSFORMAT, SONGSCORE,score,GOODHITS,goodHits,MISSEDHITS,missedHits,HITOBSTACLES,hitObstacles);
-
-            //var buffer = sb.AsArraySegment();
-            message = sb.ToString(); //(buffer.Array, buffer.Offset, buffer.Count);
+            message = sb.ToString();
         }
+
+        _visualInfo.message = message;
+        _visualInfo.header = SONGCOMPLETE;
+        _visualInfo.button1Txt = null;
+        _visualInfo.disableUI = false;
+        _visualInfo.autoTimeOutTime = 4f;
+        _visualInfo.popUp = true;
         
-        var visuals = new Notification.NotificationVisuals(message, SONGCOMPLETE, disableUI:false, autoTimeOutTime:4f, popUp:true);
-        NotificationManager.RequestNotification(visuals,  _mainMenuAction);
+        //var visuals = new Notification.NotificationVisuals(message, SONGCOMPLETE, disableUI:false, autoTimeOutTime:4f, popUp:true);
+        NotificationManager.RequestNotification(_visualInfo,  _mainMenuAction);
     }
 
     public void DisplayEndLevelStats()
@@ -77,16 +91,21 @@ public class LevelNotificationRequester : MonoBehaviour
         var hitObstacles = (int)ScoringManager.Instance.HitObstacles;
 
         string message;
+        //ArraySegment<char> chars;
         using (var sb = ZString.CreateStringBuilder(true))
         {
             sb.AppendFormat(ENDLEVELSTATSFORMAT, TOTALSCORE, totalScore,GOODHITS,goodHits,MISSEDHITS,missedHits,HITOBSTACLES,hitObstacles);
-
-            //var buffer = sb.AsArraySegment();
-            message = sb.ToString(); //(buffer.Array, buffer.Offset, buffer.Count);
+            message = sb.ToString();
         }
+
+        _visualInfo.message = message;
+        _visualInfo.header = WORKOUTCOMPLETE;
+        _visualInfo.button1Txt = FINISHBUTTON;
+        _visualInfo.disableUI = false;
+        _visualInfo.autoTimeOutTime = 0f;
+        _visualInfo.popUp = false;
         
-        var visuals = new Notification.NotificationVisuals(message, WORKOUTCOMPLETE, FINISHBUTTON, disableUI:false);
-        NotificationManager.RequestNotification(visuals,  _mainMenuAction);
+        NotificationManager.RequestNotification(_visualInfo,  _mainMenuAction);
     }
 
     public void DisplayEndLevel()

@@ -24,7 +24,7 @@ public class GameModeSetter : MonoBehaviour
 
     public void SetGameMode(GameMode mode)
     {
-        if (PlaylistManager.Instance == null)
+        if (PlaylistManager.Instance == null || PlaylistManager.Instance.CurrentPlaylist == null)
         {
             return;
         }
@@ -33,11 +33,19 @@ public class GameModeSetter : MonoBehaviour
 
     public void SetDifficulty(int difficulty)
     {
+        if (PlaylistManager.Instance == null || PlaylistManager.Instance.CurrentPlaylist == null)
+        {
+            return;
+        }
         PlaylistManager.Instance.CurrentPlaylist.SetDifficulty(DifficultyInfo.GetDifficultyAsEnum(difficulty));
     }
 
     public void SetDifficultyWithTarget()
     {
+        if (PlaylistManager.Instance == null || PlaylistManager.Instance.CurrentPlaylist == null)
+        {
+            return;
+        }
         PlaylistManager.Instance.CurrentPlaylist.SetDifficulty(_targetDifficulty);
     }
     

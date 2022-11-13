@@ -34,7 +34,6 @@ namespace UI
 
         private void OnEnable()
         {
-            //UpdateColors(PlaylistManager.Instance.CurrentPlaylist.TargetColors);//ColorsManager.Instance.ActiveColorSet);
             UpdateFromPlaylist(PlaylistManager.Instance.CurrentPlaylist);
             PlaylistManager.Instance.currentPlaylistUpdated.AddListener(UpdateFromPlaylist);
         }
@@ -48,7 +47,7 @@ namespace UI
         private void UpdateFromPlaylist(Playlist playlist)
         {
             var colorSet = new ColorsManager.ColorSet();
-            if (playlist.TargetColors.IsValid)
+            if (playlist != null && playlist.TargetColors.IsValid)
             {
                 colorSet = playlist.TargetColors;
                 ColorsManager.Instance.SetColorSetOverride(colorSet);

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using Cysharp.Text;
 using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
@@ -42,6 +43,7 @@ public class Notification : MonoBehaviour, IPoolable
 
     private const string HEADERSTART = "<size=100><uppercase><b>";
     private const string HEADEREND = "</uppercase></size></b>\n";
+    private const string MESSAGEFORMAT = "<size=100><uppercase><b>{0}</uppercase></size></b>\n{1}";
     private const float BASEHEIGHT = 720;
     private const float NOBUTTONHEIGHT = 530;
 
@@ -108,6 +110,91 @@ public class Notification : MonoBehaviour, IPoolable
         }
 
         _message.SetText(fullMessage);
+        var hasBttn1 = !string.IsNullOrWhiteSpace(visuals.button1Txt);
+        if (hasBttn1)
+        {
+            _button1Txt.SetText(visuals.button1Txt);
+            _button1.gameObject.SetActive(true);
+        }
+
+        var hasBttn2 = !string.IsNullOrWhiteSpace(visuals.button2Txt);
+        if (hasBttn2)
+        {
+            _button2Txt.SetText(visuals.button2Txt);
+            _button2.gameObject.SetActive(true);
+        }
+
+        var hasBttn3 = !string.IsNullOrWhiteSpace(visuals.button3Txt);
+        if (hasBttn3)
+        {
+            _button3Txt.SetText(visuals.button3Txt);
+            _button3.gameObject.SetActive(true);
+        }
+
+        _buttonsParent.SetActive(hasBttn1 || hasBttn2 || hasBttn3);
+
+        if (transform is RectTransform rectTransform)
+        {
+            if (!hasBttn1 && !hasBttn2 && !hasBttn3)
+            {
+                rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, NOBUTTONHEIGHT);
+            }
+            else
+            {
+                rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, BASEHEIGHT);
+            }
+        }
+
+        _disableUI = visuals.disableUI;
+        _autoTimeOutTime = visuals.autoTimeOutTime;
+        _button1Pressed = button1Pressed;
+        _button2Pressed = button2Pressed;
+        _button3Pressed = button3Pressed;
+
+        gameObject.SetActive(true);
+
+        if (_disableUI && MainMenuUIController.Instance)
+        {
+            MainMenuUIController.Instance.RequestDisableUI(this);
+        }
+
+        if (visuals.hideOnSceneChange)
+        {
+            SceneManager.activeSceneChanged += ReturnOnSceneChange;
+        }
+        
+        if (_autoTimeOutTime <= 0)
+        {
+            return;
+        }
+
+        await UniTask.Delay(TimeSpan.FromSeconds(_autoTimeOutTime), cancellationToken: _cancellationToken)
+            .SuppressCancellationThrow();
+        ReturnToPool();
+    }
+    
+    public async void SetUpObject(NotificationVisualInfo visuals, Action button1Pressed = null,
+        Action button2Pressed = null, Action button3Pressed = null)
+    {
+        ArraySegment<char> fullMessage;
+        if (!string.IsNullOrWhiteSpace(visuals.header))
+        {
+            using (var sb = ZString.CreateStringBuilder(true))
+            {
+                sb.AppendFormat(MESSAGEFORMAT, visuals.header, visuals.message);
+                fullMessage = sb.AsArraySegment();
+            }
+        }
+        else
+        {
+            using (var sb = ZString.CreateStringBuilder(true))
+            {
+                sb.Append(visuals.message);
+                fullMessage = sb.AsArraySegment();
+            }
+        }
+
+        _message.SetText(fullMessage.Array, fullMessage.Offset, fullMessage.Count);
         var hasBttn1 = !string.IsNullOrWhiteSpace(visuals.button1Txt);
         if (hasBttn1)
         {
@@ -256,5 +343,18 @@ public class Notification : MonoBehaviour, IPoolable
             this.popUp = popUp;
             this.hideOnSceneChange = hideOnSceneChange;
         }
+    }
+
+    public class NotificationVisualInfo
+    {
+        public string header;
+        public string message;
+        public string button1Txt = null;
+        public string button2Txt = null;
+        public string button3Txt = null;
+        public bool disableUI = true;
+        public float autoTimeOutTime = 0f;
+        public bool popUp = false;
+        public bool hideOnSceneChange = true;
     }
 }

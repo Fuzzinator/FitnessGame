@@ -184,15 +184,15 @@ public class ControllerOffsetTracker : MonoBehaviour, ISaver
 
         if (isLeftHand)
         {
-            _leftOffset = Vector3.zero;
-            _leftRotationOffset = Quaternion.identity;
+            _leftOffset = hand.GloveOffset;
+            _leftRotationOffset = hand.GloveRotationOffset;
             SettingsManager.SetSetting(SettingsManager.LEFTGLOVEOFFSET, _leftOffset);
             SettingsManager.SetSetting(SettingsManager.LEFTGLOVEROTOFFSET, _leftRotationOffset);
         }
         else
         {
-            _rightOffset = Vector3.zero;
-            _rightRotationOffset = Quaternion.identity;
+            _rightOffset = hand.GloveOffset;
+            _rightRotationOffset = hand.GloveRotationOffset;
             SettingsManager.SetSetting(SettingsManager.RIGHTGLOVEOFFSET, _rightOffset);
             SettingsManager.SetSetting(SettingsManager.RIGHTGLOVEROTOFFSET, _rightRotationOffset);
         }

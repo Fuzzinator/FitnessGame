@@ -72,6 +72,35 @@ public class NotificationManager : MonoBehaviour
         return obj;
     }
 
+    public static Notification RequestNotification(Notification.NotificationVisualInfo visuals,
+        Action button1Pressed = null, Action button2Pressed = null, Action button3Pressed = null)
+    {
+        var obj = Instance._notificationPoolManager.GetNewPoolable() as Notification;
+        if (obj == null)
+        {
+            Debug.LogError("Notification was null");
+            return null;
+        }
+
+        obj.SetUpObject(visuals, button1Pressed, button2Pressed, button3Pressed);
+
+        obj.transform.SetParent(Instance.transform);
+        if (visuals.popUp)
+        {
+            var transform1 = obj.transform;
+            transform1.position = Instance._popUpPosition.position;
+            transform1.rotation = Instance._popUpPosition.rotation;
+        }
+        else
+        {
+            var transform1 = obj.transform;
+            transform1.position = Instance._basePosition.position;
+            transform1.rotation = Instance._basePosition.rotation;
+        }
+
+        return obj;
+    }
+
     public static void ReportFailedToLoadInMenus(string message)
     {
         var visuals = new Notification.NotificationVisuals(message,

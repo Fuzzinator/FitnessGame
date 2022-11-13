@@ -13,6 +13,8 @@ using UnityEngine.UI;
 public class PlaylistDisplayObject : MonoBehaviour
 {
     [SerializeField]
+    private Image _combinedImage;
+    [SerializeField]
     private Image[] _images = new Image[4];
 
     [SerializeField]
@@ -44,7 +46,7 @@ public class PlaylistDisplayObject : MonoBehaviour
             Initialize();
         }
 
-        if (!playlist.isValid)
+        if (playlist == null || !playlist.isValid)
         {
             gameObject.SetActive(false);
             return;
@@ -61,6 +63,18 @@ public class PlaylistDisplayObject : MonoBehaviour
 
     private async UniTaskVoid SetImages()
     {
+        if (_playlist?.PlaylistImage != null)
+        {
+            _combinedImage.gameObject.SetActive(true);
+            _combinedImage.sprite = _playlist.PlaylistImage;
+            foreach (var img in _images)
+            {
+                img.gameObject.SetActive(false);
+            }
+            return;
+        }
+
+        _combinedImage.gameObject.SetActive(false);
         for (var i = 0; i < _images.Length; i++)
         {
             Sprite image = null;
@@ -69,6 +83,7 @@ public class PlaylistDisplayObject : MonoBehaviour
                 image = await _playlist.Items[i].SongInfo.LoadImage(_cancellationToken);
             }
 
+            _images[i].gameObject.SetActive(true);
             _images[i].sprite = image;
             _images[i].enabled = image != null;
         }

@@ -18,6 +18,7 @@ public class CustomPlaylistsManager : MonoBehaviour
 #endif
 
     private const string PLAYLISTEXTENSION = ".txt";
+    private const string JPGEXTENSION = ".jpg";
 
     #endregion
     private void Awake()
@@ -34,12 +35,17 @@ public class CustomPlaylistsManager : MonoBehaviour
 
     public void DeleteActivePlaylist()
     {
-        var playlist = PlaylistManager.Instance.CurrentPlaylist.PlaylistName;
+        var playlist = PlaylistManager.Instance.CurrentPlaylist?.PlaylistName;
+        if (string.IsNullOrWhiteSpace(playlist))
+        {
+            Debug.LogWarning("Cannot delete null playlist.");
+            return;
+        }
         
         PlaylistFilesReader.Instance.RemovePlaylist(PlaylistManager.Instance.CurrentPlaylist);
         DeletePlaylist(playlist);
         
-        PlaylistManager.Instance.CurrentPlaylist = new Playlist();
+        PlaylistManager.Instance.CurrentPlaylist = null;
     }
 
     public void DeletePlaylist(string playlistName)
@@ -50,10 +56,16 @@ public class CustomPlaylistsManager : MonoBehaviour
         var dataPath = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/'));
         var path = $"{dataPath}/{UNITYEDITORLOCATION}";
 #endif
-        path = $"{path}{playlistName}{PLAYLISTEXTENSION}";
-        if (File.Exists(path))
+        var filePath = $"{path}{playlistName}{PLAYLISTEXTENSION}";
+        if (File.Exists(filePath))
         {
-            File.Delete(path);
+            File.Delete(filePath);
+        }
+        
+        var imagePath = $"{path}{playlistName}{JPGEXTENSION}";
+        if (File.Exists(imagePath))
+        {
+            File.Delete(imagePath);
         }
     }
 }

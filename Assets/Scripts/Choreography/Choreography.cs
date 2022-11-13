@@ -75,7 +75,7 @@ public class Choreography
         try
         {
             var streamReader = new StreamReader(path);
-
+            
             var json = await streamReader.ReadToEndAsync().AsUniTask().AttachExternalCancellation(token);
             Choreography choreography = null;
 

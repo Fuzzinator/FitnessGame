@@ -82,7 +82,8 @@ public class TransitionController : MonoBehaviour
     public void TryLoadBaseLevel()
     {
         var playlist = PlaylistManager.Instance.CurrentPlaylist;
-        if (!playlist.isValid)
+        
+        if (playlist is not {isValid: true}) // this means if playlist == null || !playlist.isValid
         {
             NotificationManager.RequestNotification(
                 new Notification.NotificationVisuals(

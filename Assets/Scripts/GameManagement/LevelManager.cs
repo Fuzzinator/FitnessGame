@@ -218,7 +218,7 @@ public class LevelManager : MonoBehaviour
         {
             return;
         }
-        if (PlaylistManager.Instance == null || PlaylistManager.Instance.CurrentPlaylist.Items == null)
+        if (PlaylistManager.Instance == null || PlaylistManager.Instance.CurrentPlaylist?.Items == null)
         {
             return;
         }

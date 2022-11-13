@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -25,6 +26,8 @@ public class PlaylistFilesReader : MonoBehaviour
     private UnityEvent _playlistsUpdated = new UnityEvent();
 
     public Playlist.SortingMethod CurrentSortingMethod => _sortingMethod;
+
+    private CancellationToken _cancellationToken;
     
     private void Awake()
     {
@@ -36,6 +39,11 @@ public class PlaylistFilesReader : MonoBehaviour
         {
             Destroy(this);
         }
+    }
+
+    private void Start()
+    {
+        _cancellationToken = this.GetCancellationTokenOnDestroy();
     }
 
     public void RequestPlaylistsUpdate()
@@ -53,8 +61,11 @@ public class PlaylistFilesReader : MonoBehaviour
         for (int i = 0; i < availablePlaylists.Count; i++)
         {
             var playlist = availablePlaylists[i];
+            if (playlist == null)
+            {
+                continue;
+            }
             playlist.isValid = await PlaylistValidator.IsValid(playlist);
-            availablePlaylists[i] = playlist;
         }
     }
 
@@ -63,12 +74,17 @@ public class PlaylistFilesReader : MonoBehaviour
         availablePlaylists.Clear();
         void AddPlaylist(Playlist playlist)
         {
+            if (playlist == null)
+            {
+                return;
+            }
+            
             availablePlaylists.Add(playlist);
             _playlistsUpdated?.Invoke();
         }
 
-        await AssetManager.GetBuiltInPlaylists(_labelReference.labelString, AddPlaylist);
-        await AssetManager.GetCustomPlaylists(AddPlaylist);
+        await AssetManager.GetBuiltInPlaylists(_labelReference.labelString, AddPlaylist, _cancellationToken);
+        await AssetManager.GetCustomPlaylists(AddPlaylist, _cancellationToken);
         
         SortPlaylists();
         _playlistsUpdated?.Invoke();
@@ -76,12 +92,13 @@ public class PlaylistFilesReader : MonoBehaviour
     
     public void AddNewPlaylist(Playlist playlist)
     {
-        var existingPlaylist = availablePlaylists.Find((i) => i.PlaylistName == playlist.PlaylistName);
-        if (!string.IsNullOrWhiteSpace(existingPlaylist.PlaylistName))
+        if (playlist == null)
         {
-            availablePlaylists[availablePlaylists.IndexOf(existingPlaylist)] = playlist;
+            return;
         }
-        else
+        
+        //var existingIndex = availablePlaylists.IndexOf(playlist);//Find((i) => i.PlaylistName == playlist.PlaylistName);
+        if (!availablePlaylists.Contains(playlist))
         {
             availablePlaylists.Add(playlist);
         }
@@ -90,6 +107,11 @@ public class PlaylistFilesReader : MonoBehaviour
 
     public void RemovePlaylist(Playlist playlist)
     {
+        if (playlist == null)
+        {
+            return;
+        }
+        
         availablePlaylists.Remove(playlist);
         _playlistsUpdated?.Invoke();
     }

@@ -15,7 +15,7 @@ public class ShuffleSongs : MonoBehaviour
 
     public void ShuffleActivePlaylist()
     {
-        if (PlaylistManager.Instance == null)
+        if (PlaylistManager.Instance == null || PlaylistManager.Instance.CurrentPlaylist == null)
         {
             return;
         }

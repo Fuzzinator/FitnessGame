@@ -20,6 +20,12 @@ namespace UI.Scrollers.Playlists
         public void SetData(Playlist playlist)
         {
             _playlist = playlist;
+            
+            if (playlist == null)
+            {
+                return;
+            }
+
             using (var sb = ZString.CreateStringBuilder(true))
             {
                 if (!_playlist.isValid)

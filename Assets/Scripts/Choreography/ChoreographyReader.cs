@@ -74,6 +74,12 @@ public class ChoreographyReader : MonoBehaviour
     private async UniTaskVoid AsyncLoadJson(PlaylistItem item)
     {
         var playlist = PlaylistManager.Instance.CurrentPlaylist;
+        if (playlist == null)
+        {
+            Debug.LogError("Current playlist is null. This is game breaking");
+            return;
+        }
+        
         var gameMode = playlist.GameModeOverride == GameMode.Unset ? item.TargetGameMode : playlist.GameModeOverride;
         
         if (playlist.DifficultyEnum == DifficultyInfo.DifficultyEnum.Unset)
@@ -116,6 +122,12 @@ public class ChoreographyReader : MonoBehaviour
     private void GetChoreographSequenceables()
     {
         _sequenceables.Clear();
+        
+        if (PlaylistManager.Instance.CurrentPlaylist == null)
+        {
+            Debug.LogError("Current playlist is null. This is game breaking");
+            return;
+        }
 
         var playlistGameMode = PlaylistManager.Instance.CurrentPlaylist.GameModeOverride;
         

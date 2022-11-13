@@ -26,6 +26,9 @@ namespace InfoSaving
         private static bool _accessingSongRecords;
         private static bool _accessingPlaylistRecords;
 
+        private static ES3Settings _songSettings;
+        private static ES3Settings _playlistSettings;
+
         private static string Path
         {
             get
@@ -80,7 +83,11 @@ namespace InfoSaving
             EnsurePath();
             await UniTask.WaitWhile(() => _accessingSongRecords, cancellationToken: token);
             _accessingSongRecords = true;
-            var returnValue = await RecordValue(key, value, SongFolder, token);
+            if (_songSettings == null)
+            {
+                _songSettings = new ES3Settings(SongFolder);
+            }
+            var returnValue = await RecordValue(key, value, _songSettings, token);
             _accessingSongRecords = false;
             return returnValue;
         }
@@ -90,7 +97,12 @@ namespace InfoSaving
             EnsurePath();
             await UniTask.WaitWhile(() => _accessingSongRecords, cancellationToken: token);
             _accessingSongRecords = true;
-            var returnValue= await GetValue<T>(key, SongFolder, token);
+            
+            if (_songSettings == null)
+            {
+                _songSettings = new ES3Settings(SongFolder);
+            }
+            var returnValue= await GetValue<T>(key, _songSettings, token);
             _accessingSongRecords = false;
             return returnValue;
         }
@@ -100,7 +112,12 @@ namespace InfoSaving
             EnsurePath();
             await UniTask.WaitWhile(() => _accessingPlaylistRecords, cancellationToken: token);
             _accessingPlaylistRecords = true;
-            var returnValue = await GetValue<T>(key, PlaylistFolder, token);
+            
+            if (_playlistSettings == null)
+            {
+                _playlistSettings = new ES3Settings(PlaylistFolder);
+            }
+            var returnValue = await GetValue<T>(key, _playlistSettings, token);
             _accessingPlaylistRecords = false;
             return returnValue;
         }
@@ -111,7 +128,12 @@ namespace InfoSaving
             
             await UniTask.WaitWhile(() => _accessingPlaylistRecords, cancellationToken: token);
             _accessingPlaylistRecords = true;
-            await RecordValue(key, value, PlaylistFolder, token);
+            
+            if (_playlistSettings == null)
+            {
+                _playlistSettings = new ES3Settings(PlaylistFolder);
+            }
+            await RecordValue(key, value, _playlistSettings, token);
             _accessingPlaylistRecords = false;
         }
 
@@ -121,6 +143,25 @@ namespace InfoSaving
             try
             {
                 var settings = new ES3Settings(folder);
+                await UniTask.RunOnThreadPool(() => ES3.Save(key, value, settings), cancellationToken: token);
+                return true;
+            }
+            catch (Exception e)
+            {
+                if (e is OperationCanceledException)
+                {
+                    return false;
+                }
+                
+                Debug.LogError(e);
+                return false;
+            }
+        }
+        private static async UniTask<bool> RecordValue<T>(string key, T value, ES3Settings settings, CancellationToken token)
+        {
+            EnsurePath();
+            try
+            {
                 await UniTask.RunOnThreadPool(() => ES3.Save(key, value, settings), cancellationToken: token);
                 return true;
             }
@@ -150,15 +191,37 @@ namespace InfoSaving
 
             return null;
         }
+        
+        private static async UniTask<object> GetValue<T>(string key, ES3Settings settings, CancellationToken token)
+        {
+            EnsurePath();
+            try
+            {
+                return await UniTask.RunOnThreadPool(() => ES3.Load<T>(key, settings), cancellationToken: token);
+            }
+            catch (Exception e)when (e is OperationCanceledException)
+            {
+            }
+
+            return null;
+        }
 
         public static async UniTask<bool> PlaylistKeyExists(string key)
         {
-            return await KeyExists(key, PlaylistFolder);
+            if (_playlistSettings == null)
+            {
+                _playlistSettings = new ES3Settings(PlaylistFolder);
+            }
+            return await KeyExists(key, _playlistSettings);
         }
 
         public static async UniTask<bool> SongKeyExists(string key)
         {
-            return await KeyExists(key, SongFolder);
+            if (_songSettings == null)
+            {
+                _songSettings = new ES3Settings(SongFolder);
+            }
+            return await KeyExists(key, _songSettings);
         }
 
         private static async UniTask<bool> KeyExists(string key, string folder)
@@ -167,6 +230,20 @@ namespace InfoSaving
             try
             {
                 var settings = new ES3Settings(folder);
+                return ES3.KeyExists(key, settings); //UniTask.RunOnThreadPool(() => ES3.KeyExists(key, settings));
+            }
+            catch (Exception e)when (e is OperationCanceledException)
+            {
+            }
+
+            return false;
+        }
+        
+        private static async UniTask<bool> KeyExists(string key, ES3Settings settings)
+        {
+            EnsurePath();
+            try
+            {
                 return ES3.KeyExists(key, settings); //UniTask.RunOnThreadPool(() => ES3.KeyExists(key, settings));
             }
             catch (Exception e)when (e is OperationCanceledException)

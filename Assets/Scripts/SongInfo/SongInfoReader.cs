@@ -166,6 +166,12 @@ public class SongInfoReader : MonoBehaviour
         info = json;
         songInfo = JsonUtility.FromJson<SongInfo>(json);
         var playlist = PlaylistManager.Instance.CurrentPlaylist;
+        
+        if (playlist == null)
+        {
+            return;
+        }
+        
         if (playlist.GameModeOverride == GameMode.Unset)
         {
             _gameMode = item.TargetGameMode;

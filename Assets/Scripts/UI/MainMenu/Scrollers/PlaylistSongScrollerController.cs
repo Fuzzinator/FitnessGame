@@ -47,7 +47,7 @@ namespace UI.Scrollers.Playlists
         {
             if (PlaylistManager.Instance != null)
             {
-                return PlaylistManager.Instance.CurrentPlaylist.Items?.Length ?? 0;
+                return PlaylistManager.Instance.CurrentPlaylist?.Items?.Length ?? 0;
             }
             return 0;
         }

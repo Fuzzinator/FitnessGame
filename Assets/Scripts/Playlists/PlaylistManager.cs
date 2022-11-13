@@ -50,7 +50,7 @@ public class PlaylistManager : MonoBehaviour
 
     public int CurrentIndex => _currentIndex;
 
-    public int SongCount => _currentPlaylist.Items?.Length ?? 0;
+    public int SongCount => _currentPlaylist?.Items?.Length ?? 0;
     
     private void Awake()
     {
@@ -73,7 +73,7 @@ public class PlaylistManager : MonoBehaviour
     
     {
         _currentIndex = 0;
-        if (_currentPlaylist.Items == null || _currentPlaylist.Items.Length <= _currentIndex)
+        if (_currentPlaylist?.Items == null || _currentPlaylist.Items.Length <= _currentIndex)
         {
             Debug.LogError("Playlist has no items");
             return;
@@ -86,7 +86,7 @@ public class PlaylistManager : MonoBehaviour
     {
         _currentIndex++;
 
-        if (_currentPlaylist.Items == null || _currentPlaylist.Items.Length == 0 ||
+        if (_currentPlaylist?.Items == null || _currentPlaylist.Items.Length == 0 ||
             _currentIndex >= _currentPlaylist.Items.Length)
         {
             return;
@@ -104,7 +104,7 @@ public class PlaylistManager : MonoBehaviour
     {
         _currentIndex = 0;
         _currentItem = new PlaylistItem();
-        _currentPlaylist = new Playlist();
+        _currentPlaylist = null;
     }
 
     public void SetTempSongPlaylist(PlaylistItem playlistItem)
@@ -115,16 +115,16 @@ public class PlaylistManager : MonoBehaviour
 
     public void SetEnvironment(string envName)
     {
-        _currentPlaylist = new Playlist(_currentPlaylist, envName);
+        _currentPlaylist?.SetEnvironment(envName);// = new Playlist(_currentPlaylist, envName);
     }
 
     public void SetDifficulty(DifficultyInfo.DifficultyEnum difficultyEnum)
     {
-        _currentPlaylist = new Playlist(_currentPlaylist, difficultyEnum);
+        _currentPlaylist?.SetDifficulty(difficultyEnum);// = new Playlist(_currentPlaylist, difficultyEnum);
     }
 
     public void SetGameMode(GameMode gameMode)
     {
-        _currentPlaylist = new Playlist(_currentPlaylist, gameMode);
+        _currentPlaylist?.SetGameMode(gameMode);// = new Playlist(_currentPlaylist, gameMode);
     }
 }
