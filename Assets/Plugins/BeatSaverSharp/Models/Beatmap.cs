@@ -143,6 +143,8 @@ namespace BeatSaverSharp.Models
         public static bool operator ==(Beatmap? left, Beatmap? right) => Equals(left, right);
         public static bool operator !=(Beatmap? left, Beatmap? right) => !Equals(left, right);
 
+        
+        
         [SerializeField]
         public struct CuratorInfo
         {

@@ -18,7 +18,9 @@ public class BaseHitVFX : MonoBehaviour, IPoolable
     {
         if (_particleSystems == null)
         {
-            TryGetComponent(out _particleSystems);
+            
+            TryGetComponent(out ParticleSystem system);
+            _particleSystems = new[] {system};
         }
     }
 

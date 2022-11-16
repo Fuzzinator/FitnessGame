@@ -30,22 +30,7 @@ public class BeatSaverPageController : MonoBehaviour
 
     [FormerlySerializedAs("_songName")] [SerializeField]
     private TextMeshProUGUI _songDetails;
-
-    /*[SerializeField]
-    private TextMeshProUGUI _songAuthor;
-
-    [SerializeField]
-    private TextMeshProUGUI _levelAuthor;
-
-    [SerializeField]
-    private TextMeshProUGUI _levelLength;
-
-    [SerializeField]
-    private TextMeshProUGUI _songScore;
-
-    [SerializeField]
-    private TextMeshProUGUI _uploadDate;*/
-
+    
     [SerializeField]
     private TextMeshProUGUI _mapDifficulties;
 
@@ -72,6 +57,8 @@ public class BeatSaverPageController : MonoBehaviour
     private Texture2D _activeBeatmapImage;
 
     private List<string> _downloadingIds = new List<string>();
+
+    private BeatSaverSongCellView _cellView;
 
     private const int MINUTE = 60;
 
@@ -276,6 +263,7 @@ public class BeatSaverPageController : MonoBehaviour
     
     private async UniTaskVoid DownloadSongAsync()
     {
+        var activeCell = _cellView;
         var folderName =
             $"{_activeBeatmap.ID} ({_activeBeatmap.Metadata.SongName} - {_activeBeatmap.Metadata.LevelAuthorName})";
 
@@ -314,7 +302,7 @@ public class BeatSaverPageController : MonoBehaviour
         {
             _downloadButton.interactable = true;
         }
-
+        activeCell.SetDownloaded(true);
         await SongInfoFilesReader.Instance.LoadNewSong(folderName);
         //await SongInfoFilesReader.Instance.UpdateSongs();
         PlaylistFilesReader.Instance.RefreshPlaylistsValidStates().Forget();
@@ -325,9 +313,10 @@ public class BeatSaverPageController : MonoBehaviour
     private async UniTask UpdateData()
     {
         await UniTask.SwitchToMainThread(_cancellationToken);
+        
+        _cellView = null;
 
         _showLoadingObject.SetActive(false);
-
         _scrollerController.SetBeatmaps(_activePage.Beatmaps);
     }
 
@@ -335,6 +324,11 @@ public class BeatSaverPageController : MonoBehaviour
     {
         _activeBeatmap = beatmap;
         UpdateUI().Forget();
+    }
+
+    public void SetSelectedCellView(BeatSaverSongCellView cellView)
+    {
+        _cellView = cellView;
     }
 
     private async UniTaskVoid UpdateUI()

@@ -31,7 +31,6 @@ namespace UI.Scrollers.BeatsaverIntegraton
         {
             _beatmaps = beatmaps;
             _scroller.ReloadData();
-            //SetDataFromFilter();
         }
 
         public override int GetNumberOfCells(EnhancedScroller scroller)
@@ -52,6 +51,11 @@ namespace UI.Scrollers.BeatsaverIntegraton
         public void SetActiveBeatmap(Beatmap beatmap)
         {
             _pageController.SetActiveBeatmap(beatmap);
+        }
+
+        public void SetSelectedCellView(BeatSaverSongCellView cellView)
+        {
+            _pageController.SetSelectedCellView(cellView);
         }
     }
 }

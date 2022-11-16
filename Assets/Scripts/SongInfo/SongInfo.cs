@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using BeatSaverSharp.Models;
 using Cysharp.Text;
 using Cysharp.Threading.Tasks;
 using GameModeManagement;
@@ -403,19 +404,19 @@ public class SongInfo
         {
             return _songArt;
         }
-        
+
         var image = await LoadTexture(token);
 
         if (image == null)
         {
             return null;
         }
-        
-        _songArt = Sprite.Create(image, new Rect(0,0, image.width, image.height),
-            Vector2.one *.5f, 100f);
+
+        _songArt = Sprite.Create(image, new Rect(0, 0, image.width, image.height),
+            Vector2.one * .5f, 100f);
         return _songArt;
     }
-    
+
     public async UniTask<Texture2D> LoadTexture(CancellationToken token)
     {
         if (_songArt != null)
@@ -433,14 +434,14 @@ public class SongInfo
             //await UniTask.SwitchToMainThread(token);
             image = await AssetManager.LoadBuiltInSongImage(this, token);
         }
-        
+
         return image;
     }
 
     public void SetImage(Texture2D texture)
     {
-        _songArt = Sprite.Create(texture, new Rect(0,0, texture.width, texture.height),
-            Vector2.one *.5f, 100f);
+        _songArt = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height),
+            Vector2.one * .5f, 100f);
     }
 
     [Serializable]
@@ -636,5 +637,76 @@ public class SongInfo
     public static bool operator !=(SongInfo info, PlaylistItem item)
     {
         return !(info == item);
+    }
+
+    public static bool operator ==(SongInfo info, BeatSaverSharp.Models.Beatmap beatmap)
+    {
+        return beatmap == info;
+    }
+
+    public static bool operator !=(SongInfo info, BeatSaverSharp.Models.Beatmap beatmap)
+    {
+        return beatmap != info;
+    }
+
+    public static bool operator ==(BeatSaverSharp.Models.Beatmap beatmap, SongInfo songInfo)
+    {
+        if (beatmap is null && songInfo is null)
+        {
+            return true;
+        }
+
+        if (beatmap is null || songInfo is null)
+        {
+            return false;
+        }
+
+        var metaData = beatmap.Metadata;
+        var songNameMatches = string.Equals(metaData.SongName, songInfo.SongName);
+        var songAuthorMatches = SongAuthorMatches(metaData, songInfo, out var badSongAuthorData);
+        var levelAuthorMatches = LevelAuthorMatches(metaData, songInfo, out var badLevelAuthorData);
+        return songNameMatches &&
+               ((songAuthorMatches && levelAuthorMatches) ||
+                (songAuthorMatches && badSongAuthorData) ||
+                (levelAuthorMatches && badLevelAuthorData));
+    }
+
+    public static bool operator !=(BeatSaverSharp.Models.Beatmap beatmap, SongInfo songInfo)
+    {
+        return !(beatmap == songInfo);
+    }
+
+    private static bool SongAuthorMatches(BeatmapMetadata metaData, SongInfo songInfo, out bool badMetaData)
+    {
+        badMetaData = false;
+        
+        var songAuthorMatches = string.Equals(metaData.SongAuthorName, songInfo.SongAuthorName);
+        if (!songAuthorMatches)// This exists to prevent false negatives when beatmap meta data is wrong
+        {
+            songAuthorMatches = string.Equals(metaData.SongAuthorName, songInfo.LevelAuthorName);
+            if (songAuthorMatches)
+            {
+                badMetaData = true;
+            }
+        }
+
+        return songAuthorMatches;
+    }
+
+    private static bool LevelAuthorMatches(BeatmapMetadata metaData, SongInfo songInfo, out bool badMetaData)
+    {
+        badMetaData = false;
+        
+        var levelMatches = string.Equals(metaData.LevelAuthorName, songInfo.LevelAuthorName);
+        if(!levelMatches)// This exists to prevent false negatives when beatmap meta data is wrong
+        {
+            levelMatches = string.Equals(metaData.LevelAuthorName, songInfo.SongAuthorName);
+            if (levelMatches)
+            {
+                badMetaData = true;
+            }
+        }
+
+        return levelMatches;
     }
 }
