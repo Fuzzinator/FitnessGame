@@ -19,9 +19,7 @@ namespace InfoSaving
 
         #endregion
 
-        private static string _path;
-        private static string _songFolder;
-        private static string _playlistFolder;
+        private static readonly string Path = $"{AssetManager.DataPath}{DATAFOLDER}";
 
         private static bool _accessingSongRecords;
         private static bool _accessingPlaylistRecords;
@@ -29,58 +27,11 @@ namespace InfoSaving
         private static ES3Settings _songSettings;
         private static ES3Settings _playlistSettings;
 
-        private static string Path
-        {
-            get
-            {
-                if (_path == null)
-                {
-#if UNITY_ANDROID && !UNITY_EDITOR
-                    _path = $"{Application.persistentDataPath}{DATAFOLDER}";
-#elif UNITY_EDITOR
-                    var dataPath = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/'));
-                    _path = $"{dataPath}{UNITYEDITORLOCATION}";
-#endif
-                }
-
-                return _path;
-            }
-        }
-
-        private static string SongFolder
-        {
-            get
-            {
-                if (_songFolder == null)
-                {
-                    _songFolder = $"{Path}{SONGRECORDS}";
-                }
-
-                return _songFolder;
-            }
-        }
-
-        private static string PlaylistFolder
-        {
-            get
-            {
-                if (_songFolder == null)
-                {
-                    _songFolder = $"{Path}{PLAYLISTRECORDS}";
-                }
-
-                return _songFolder;
-            }
-        }
-
-        private static void EnsurePath()
-        {
-            var path = Path;
-        }
+        private static readonly string SongFolder = $"{Path}{SONGRECORDS}";
+        private static readonly string PlaylistFolder = $"{Path}{PLAYLISTRECORDS}";
 
         public static async UniTask<bool> RecordSongValue<T>(string key, T value, CancellationToken token)
         {
-            EnsurePath();
             await UniTask.WaitWhile(() => _accessingSongRecords, cancellationToken: token);
             _accessingSongRecords = true;
             if (_songSettings == null)
@@ -94,7 +45,6 @@ namespace InfoSaving
 
         public static async UniTask<object> GetSongValue<T>(string key, CancellationToken token)
         {
-            EnsurePath();
             await UniTask.WaitWhile(() => _accessingSongRecords, cancellationToken: token);
             _accessingSongRecords = true;
             
@@ -109,7 +59,6 @@ namespace InfoSaving
 
         public static async UniTask<object> GetPlaylistValue<T>(string key, CancellationToken token)
         {
-            EnsurePath();
             await UniTask.WaitWhile(() => _accessingPlaylistRecords, cancellationToken: token);
             _accessingPlaylistRecords = true;
             
@@ -124,8 +73,6 @@ namespace InfoSaving
 
         public static async UniTask RecordPlaylistValue<T>(string key, T value, CancellationToken token)
         {
-            EnsurePath();
-            
             await UniTask.WaitWhile(() => _accessingPlaylistRecords, cancellationToken: token);
             _accessingPlaylistRecords = true;
             
@@ -139,7 +86,6 @@ namespace InfoSaving
 
         private static async UniTask<bool> RecordValue<T>(string key, T value, string folder, CancellationToken token)
         {
-            EnsurePath();
             try
             {
                 var settings = new ES3Settings(folder);
@@ -159,7 +105,6 @@ namespace InfoSaving
         }
         private static async UniTask<bool> RecordValue<T>(string key, T value, ES3Settings settings, CancellationToken token)
         {
-            EnsurePath();
             try
             {
                 await UniTask.RunOnThreadPool(() => ES3.Save(key, value, settings), cancellationToken: token);
@@ -179,7 +124,6 @@ namespace InfoSaving
 
         private static async UniTask<object> GetValue<T>(string key, string folder, CancellationToken token)
         {
-            EnsurePath();
             try
             {
                 var settings = new ES3Settings(folder);
@@ -194,7 +138,6 @@ namespace InfoSaving
         
         private static async UniTask<object> GetValue<T>(string key, ES3Settings settings, CancellationToken token)
         {
-            EnsurePath();
             try
             {
                 return await UniTask.RunOnThreadPool(() => ES3.Load<T>(key, settings), cancellationToken: token);
@@ -226,7 +169,6 @@ namespace InfoSaving
 
         private static async UniTask<bool> KeyExists(string key, string folder)
         {
-            EnsurePath();
             try
             {
                 var settings = new ES3Settings(folder);
@@ -241,7 +183,6 @@ namespace InfoSaving
         
         private static async UniTask<bool> KeyExists(string key, ES3Settings settings)
         {
-            EnsurePath();
             try
             {
                 return ES3.KeyExists(key, settings); //UniTask.RunOnThreadPool(() => ES3.KeyExists(key, settings));

@@ -8,45 +8,6 @@ using UnityEngine;
 
 public static class CustomSongsManager
 {
-    #region Const Strings
-
-#if UNITY_ANDROID && !UNITY_EDITOR
-    private const string ANDROIDPATHSTART = "file://";
-    private const string SONGSFOLDER = "/Resources/Songs/";
-#elif UNITY_EDITOR
-    private const string UNITYEDITORLOCATION = "/LocalCustomSongs/Songs/";
-#endif
-
-
-    #endregion
-
-    public static string Path
-    {
-        get
-        {
-#if UNITY_ANDROID && !UNITY_EDITOR
-        var path = $"{Application.persistentDataPath}{SONGSFOLDER}";
-#elif UNITY_EDITOR
-            var dataPath = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/'));
-            var path = $"{dataPath}{UNITYEDITORLOCATION}";
-#endif
-            return path;
-        }
-    }
-
-    
-    public static async UniTask DeleteCustomSong(SongInfo info)
-    {
-        var path = $"{Path}/{info.fileLocation}";
-        if (!Directory.Exists(path))
-        {
-            Debug.LogWarning("Invalid path cannot delete");
-        }
-
-        await UniTask.RunOnThreadPool(() => Directory.Delete(path, true));
-    }
-
-
     public static async UniTask<float> TryGetSongLength(SongInfo info,
         CancellationToken token, bool customSong = true)
     {

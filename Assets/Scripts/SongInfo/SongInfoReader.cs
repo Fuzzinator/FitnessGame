@@ -38,17 +38,9 @@ public class SongInfoReader : MonoBehaviour
 
     #region Const Strings
 
-#if UNITY_ANDROID && !UNITY_EDITOR
-    private const string ANDROIDPATHSTART = "file://";
-#elif UNITY_EDITOR
-    private const string UNITYEDITORLOCATION = "/LocalCustomSongs/Songs/";
-    private const string DAT = ".dat";
-#endif
-
-    private const string SONGSFOLDER = "/Resources/Songs/";
-    private const string LOCALSONGSFOLDER = "Assets/Music/Songs/";
     private const string INFO = "/Info";
     private const string TXT = ".txt";
+    private const string DAT = ".dat";
 
     #endregion
 
@@ -100,13 +92,7 @@ public class SongInfoReader : MonoBehaviour
         {
             if (item.IsCustomSong)
             {
-#if UNITY_ANDROID && !UNITY_EDITOR
-            var path = $"{Application.persistentDataPath}{SONGSFOLDER}{item.FileLocation}/{INFO}.dat";
-#elif UNITY_EDITOR
-
-                var dataPath = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/'));
-                var path = $"{dataPath}{UNITYEDITORLOCATION}{item.FileLocation}{INFO}{DAT}";
-#endif
+                var path = $"{AssetManager.SongsPath}{item.FileLocation}{INFO}{DAT}";
                 if (!File.Exists(path))
                 {
                     NotificationManager.ReportFailedToLoadInGame($"{item.SongName} does not exist on your device.");
@@ -133,7 +119,7 @@ public class SongInfoReader : MonoBehaviour
             else
             {
                 var request =
-                    Addressables.LoadAssetAsync<TextAsset>($"{LOCALSONGSFOLDER}{item.FileLocation}{INFO}{TXT}")
+                    Addressables.LoadAssetAsync<TextAsset>($"{AssetManager.LOCALSONGSFOLDER}{item.FileLocation}{INFO}{TXT}")
                         .ToUniTask().AttachExternalCancellation(_cancellationSource.Token);
                 var json = await request;
                 if (json == null)

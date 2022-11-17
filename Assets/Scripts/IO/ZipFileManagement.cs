@@ -8,18 +8,7 @@ using UnityEngine;
 
 public static class ZipFileManagement
 {
-    #region Const Strings
-
-#if UNITY_ANDROID && !UNITY_EDITOR
-    private const string ANDROIDPATHSTART = "file://";
-    private const string SONGSFOLDER = "/Resources/Songs/";
-#elif UNITY_EDITOR
-    private const string UNITYEDITORLOCATION = "/LocalCustomSongs/Songs/";
-#endif
     private static string _dataPath = string.Empty;
-
-    #endregion
-
 
     public static void Initialize(string dataPath)
     {
@@ -30,12 +19,7 @@ public static class ZipFileManagement
     {
         folderName = folderName.RemoveIllegalIOCharacters();
 
-#if UNITY_ANDROID && !UNITY_EDITOR
-        var path = $"{_dataPath}{SONGSFOLDER}{folderName}/";
-#elif UNITY_EDITOR
-        //var dataPath = 
-        var path = $"{_dataPath}{UNITYEDITORLOCATION}{folderName}/";
-#endif
+        var path = $"{_dataPath}{folderName}";
         using var memoryStream = new MemoryStream(songBytes);
         if (!Directory.Exists(path))
         {

@@ -5,9 +5,6 @@ using Cysharp.Threading.Tasks;
 using UI.Scrollers.Playlists;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-#if UNITY_ANDROID && !UNITY_EDITOR
-using UnityEngine.Android;
-#endif
 using UnityEngine.Events;
 using Random = UnityEngine.Random;
 
@@ -125,7 +122,7 @@ public class SongInfoFilesReader : MonoBehaviour
         _songRemoved?.Invoke(targetSongInfo);
         _songsUpdated?.Invoke();
         
-        await CustomSongsManager.DeleteCustomSong(targetSongInfo);
+        await AssetManager.DeleteCustomSong(targetSongInfo);
         //_displaySongInfo.ClearDisplayedInfo();
         PlaylistMaker.Instance.SetActiveItem(new SongInfo());
         MainMenuUIController.Instance.RequestEnableUI(this);

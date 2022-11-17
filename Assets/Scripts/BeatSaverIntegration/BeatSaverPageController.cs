@@ -71,14 +71,8 @@ public class BeatSaverPageController : MonoBehaviour
         _beatSaver = new BeatSaver(Application.productName, Version.Parse(Application.version));
         _scrollerController.SetPageController(this);
 
-#if UNITY_ANDROID && !UNITY_EDITOR
-        var directory = Application.persistentDataPath;
-#elif UNITY_EDITOR
-        //var dataPath = 
-        var directory = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/'));
-#endif
-        ZipFileManagement.Initialize(directory);
-        _levelFileManagement = new LevelFileManagement(directory);
+        ZipFileManagement.Initialize(AssetManager.SongsPath);
+        _levelFileManagement = new LevelFileManagement(AssetManager.SongsPath);
     }
 
     private void OnDisable()

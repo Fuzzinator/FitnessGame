@@ -19,22 +19,29 @@ public class AssetManager : MonoBehaviour
 
 #if UNITY_EDITOR
     private const string PAUSEINEDITOR = "Pause In Editor";
-    private const string EDITORCUSTOMSONGFOLDER = "/LocalCustomSongs/Songs/";
-    private const string EDITORPLAYLISTLOCATION = "/LocalCustomSongs/Playlists/";
-    private const string UNITYEDITORPLAYLISTLOCATION = "/LocalCustomSongs/Playlists/";
-    private static readonly string DataPath = Application.dataPath;
-#elif UNITY_ANDROID && !UNITY_EDITOR
+    private const string SONGSFOLDER = "/LocalCustomSongs/Songs/";
+    private const string PLAYLISTSFOLDER = "/LocalCustomSongs/Playlists/";
+    public static readonly string DataPath = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/'));
+#else
+    private const string SONGSFOLDER = "/Resources/Songs/";
+    private const string PLAYLISTSFOLDER = "/Resources/Playlists/";
+    #if UNITY_ANDROID
     private const string ANDROIDPATHSTART = "file://";
-    private static readonly string DataPath = Application.persistentDataPath;
+    public static readonly string DataPath = Application.persistentDataPath;
+    #elif UNITY_STANDALONE_WIN
+    public static readonly string DataPath = Application.dataPath;
+    #endif
+    
 #endif
+
+    public static readonly string SongsPath = $"{DataPath}{SONGSFOLDER}";
+    public static readonly string PlaylistsPath = $"{DataPath}{PLAYLISTSFOLDER}";
 
     private const string PLAYLISTEXTENSION = ".txt";
     private const string JPGEXTENSION = ".jpg";
-    
-    private const string SONGSFOLDER = "/Resources/Songs/";
-    private const string PLAYLISTSFOLDER = "/Resources/Playlists/";
-    private const string LOCALSONGSFOLDER = "Assets/Music/Songs/";
-    private const string LOCALPLAYLISTSFOLDER = "Assets/Music/Playlists/";
+
+    public const string LOCALSONGSFOLDER = "Assets/Music/Songs/";
+    public const string LOCALPLAYLISTSFOLDER = "Assets/Music/Playlists/";
 
     private const string SONGINFONAME = "Info.txt";
     private const string ALTSONGINFONAME = "Info.dat";
@@ -81,13 +88,16 @@ public class AssetManager : MonoBehaviour
 
         try
         {
-#if UNITY_ANDROID && !UNITY_EDITOR
+#if UNITY_EDITOR
+            var path = $"{SongsPath}{parentDirectory}/{info.SongFilename}";
+#else
+    #if UNITY_ANDROID
             var path =
- $"{ANDROIDPATHSTART}{Application.persistentDataPath}{SONGSFOLDER}{parentDirectory}/{info.SongFilename}";
-#elif UNITY_EDITOR
-            var path = Application.dataPath;
-            path = path.Substring(0, path.LastIndexOf('/'));
-            path = $"{path}{EDITORCUSTOMSONGFOLDER}{parentDirectory}/{info.SongFilename}";
+            $"{ANDROIDPATHSTART}{SongsPath}{parentDirectory}/{info.SongFilename}";
+    #elif UNITY_STANDALONE_WIN
+            var path = $"{SongsPath}{parentDirectory}/{info.SongFilename}";
+    #endif
+
 #endif
 
             var uwr = UnityWebRequestMultimedia.GetAudioClip(path, AudioType.OGGVORBIS);
@@ -153,13 +163,8 @@ public class AssetManager : MonoBehaviour
 
         try
         {
-#if UNITY_ANDROID && !UNITY_EDITOR
-            var path = $"{DataPath}{SONGSFOLDER}{parentDirectory}/{info.ImageFilename}";
-#elif UNITY_EDITOR
-            var path = DataPath;
-            path = path.Substring(0, path.LastIndexOf('/'));
-            path = $"{path}{EDITORCUSTOMSONGFOLDER}{parentDirectory}/{info.ImageFilename}";
-#endif
+            var path = $"{SongsPath}{parentDirectory}/{info.ImageFilename}";
+
             if (!File.Exists(path))
             {
                 Debug.LogWarning($"No image found at\"{path}\"");
@@ -212,8 +217,9 @@ public class AssetManager : MonoBehaviour
             return null;
         }
     }
-    
-    public static async UniTask<Texture2D> LoadBuiltInPlaylistImage(string playlistName, CancellationToken cancellationToken)
+
+    public static async UniTask<Texture2D> LoadBuiltInPlaylistImage(string playlistName,
+        CancellationToken cancellationToken)
     {
         try
         {
@@ -243,22 +249,13 @@ public class AssetManager : MonoBehaviour
             Debug.LogWarning("User did not give permissions cannot access custom files");
             return;
         }
-#if UNITY_ANDROID && !UNITY_EDITOR
-        var path = $"{Application.persistentDataPath}{PLAYLISTSFOLDER}";
-        /*if (!Permission.HasUserAuthorizedPermission(Permission.ExternalStorageRead))
+        
+        if (!Directory.Exists(PlaylistsPath))
         {
-            Permission.RequestUserPermission(Permission.ExternalStorageRead);
-        }*/
-#elif UNITY_EDITOR
-        var dataPath = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/'));
-        var path = $"{dataPath}{EDITORPLAYLISTLOCATION}";
-#endif
-        if (!Directory.Exists(path))
-        {
-            Directory.CreateDirectory(path);
+            Directory.CreateDirectory(PlaylistsPath);
         }
 
-        var info = new DirectoryInfo(path);
+        var info = new DirectoryInfo(PlaylistsPath);
         var files = info.GetFiles();
 
         foreach (var file in files)
@@ -273,7 +270,7 @@ public class AssetManager : MonoBehaviour
                     streamReader.Close();
 
 
-                    var imagePath = $"{path}{playlist.PlaylistName}.jpg";
+                    var imagePath = $"{PlaylistsPath}{playlist.PlaylistName}.jpg";
                     if (!File.Exists(imagePath))
                     {
                         Debug.LogWarning($"No image found at\"{imagePath}\"");
@@ -310,7 +307,8 @@ public class AssetManager : MonoBehaviour
         }
     }
 
-    public static async UniTask GetBuiltInPlaylists(string label, Action<Playlist> playlistLoaded, CancellationToken cancellationToken)
+    public static async UniTask GetBuiltInPlaylists(string label, Action<Playlist> playlistLoaded,
+        CancellationToken cancellationToken)
     {
         await Addressables.LoadAssetsAsync<TextAsset>(label, async asset =>
         {
@@ -326,11 +324,11 @@ public class AssetManager : MonoBehaviour
                 Debug.LogWarning($"Playlist of name {label} was null.");
                 return;
             }
-            
+
             playlist.isValid = await PlaylistValidator.IsValid(playlist); //This is a temporary solution.
             var texture = await LoadBuiltInPlaylistImage(playlist.PlaylistName, cancellationToken);
             playlist.SetIcon(texture);
-            
+
             playlistLoaded?.Invoke(playlist);
             await UniTask.DelayFrame(1, cancellationToken: cancellationToken);
         });
@@ -359,18 +357,13 @@ public class AssetManager : MonoBehaviour
             Debug.LogWarning("User did not give permissions cannot access custom files");
             return;
         }
-#if UNITY_ANDROID && !UNITY_EDITOR
-        var path = $"{Application.persistentDataPath}{SONGSFOLDER}";
-#elif UNITY_EDITOR
-        var dataPath = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/'));
-        var path = $"{dataPath}{EDITORCUSTOMSONGFOLDER}";
-#endif
-        if (!Directory.Exists(path))
+        
+        if (!Directory.Exists(SongsPath))
         {
-            Directory.CreateDirectory(path);
+            Directory.CreateDirectory(SongsPath);
         }
 
-        var directories = Directory.GetDirectories(path);
+        var directories = Directory.GetDirectories(SongsPath);
 
         foreach (var dir in directories)
         {
@@ -389,12 +382,7 @@ public class AssetManager : MonoBehaviour
             Debug.LogWarning("User did not give permissions cannot access custom files");
             return null;
         }
-#if UNITY_ANDROID && !UNITY_EDITOR
-        var path = $"{Application.persistentDataPath}{SONGSFOLDER}/{fileLocation}";
-#elif UNITY_EDITOR
-        var dataPath = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/'));
-        var path = $"{dataPath}{EDITORCUSTOMSONGFOLDER}{fileLocation}";
-#endif
+        var path = $"{SongsPath}{fileLocation}";
         if (!Directory.Exists(path))
         {
             Directory.CreateDirectory(path);
@@ -407,80 +395,80 @@ public class AssetManager : MonoBehaviour
     {
         //try
         //{
-            var info = new DirectoryInfo(fileLocation);
-            var files = info.GetFiles();
-            foreach (var file in files)
+        var info = new DirectoryInfo(fileLocation);
+        var files = info.GetFiles();
+        foreach (var file in files)
+        {
+            if (file == null)
             {
-                if (file == null)
+                return null;
+            }
+
+            if (string.Equals(file.Name, SONGINFONAME, StringComparison.InvariantCultureIgnoreCase)
+                || string.Equals(file.Name, ALTSONGINFONAME, StringComparison.InvariantCultureIgnoreCase))
+            {
+                var streamReader = new StreamReader(file.FullName);
+                var result = await streamReader.ReadToEndAsync().AsUniTask()
+                    .AttachExternalCancellation(token);
+
+                var item = JsonUtility.FromJson<SongInfo>(result);
+
+                streamReader.Close();
+                if (item == null)
                 {
+                    Debug.LogWarning($"Failed to read song info in {info.Name}. It is likely corrupted");
                     return null;
                 }
 
-                if (string.Equals(file.Name, SONGINFONAME, StringComparison.InvariantCultureIgnoreCase)
-                    || string.Equals(file.Name, ALTSONGINFONAME, StringComparison.InvariantCultureIgnoreCase))
+                var updatedMaps = false;
+                if (file.Directory != null)
                 {
-                    var streamReader = new StreamReader(file.FullName);
-                    var result = await streamReader.ReadToEndAsync().AsUniTask()
-                        .AttachExternalCancellation(token);
-
-                    var item = JsonUtility.FromJson<SongInfo>(result);
-
-                    streamReader.Close();
-                    if (item == null)
-                    {
-                        Debug.LogWarning($"Failed to read song info in {info.Name}. It is likely corrupted");
-                        return null;
-                    }
-
-                    var updatedMaps = false;
-                    if (file.Directory != null)
-                    {
-                        item.fileLocation = file.Directory.Name;
-                        updatedMaps = true;
-                    }
-
-                    if (!item.isCustomSong)
-                    {
-                        item.isCustomSong = true;
-                        updatedMaps = true;
-                    }
-
-                    if (item.SongLength < 1)
-                    {
-                        var songLength = await CustomSongsManager.TryGetSongLength(item, token);
-                        item.SongLength = songLength;
-                        updatedMaps = true;
-                    }
-
-                    var image = await item.LoadImage(token);
-                    if (image.texture.width != TEXTURESIZE)
-                    {
-                        await UniTask.DelayFrame(1, cancellationToken: token);
-                        var tex = image.texture.ScaleTexture(TEXTURESIZE, TEXTURESIZE, TextureFormat.RGB24);
-                        var bytes = tex.EncodeToJPG();
-                        await File.WriteAllBytesAsync($"{file.DirectoryName}/{item.ImageFilename}", bytes, token);
-                        item.SetImage(tex);
-                    }
-
-                    var madeChange = await item.UpdateDifficultySets(token);
-                    if (madeChange)
-                    {
-                        updatedMaps = true;
-                    }
-
-                    if (updatedMaps)
-                    {
-                        await UniTask.DelayFrame(2, cancellationToken: token);
-                        using (var streamWriter = new StreamWriter(file.FullName))
-                        {
-                            await streamWriter.WriteAsync(JsonUtility.ToJson(item));
-                            streamWriter.Close();
-                        }
-                    }
-
-                    return item;
+                    item.fileLocation = file.Directory.Name;
+                    updatedMaps = true;
                 }
+
+                if (!item.isCustomSong)
+                {
+                    item.isCustomSong = true;
+                    updatedMaps = true;
+                }
+
+                if (item.SongLength < 1)
+                {
+                    var songLength = await CustomSongsManager.TryGetSongLength(item, token);
+                    item.SongLength = songLength;
+                    updatedMaps = true;
+                }
+
+                var image = await item.LoadImage(token);
+                if (image.texture.width != TEXTURESIZE)
+                {
+                    await UniTask.DelayFrame(1, cancellationToken: token);
+                    var tex = image.texture.ScaleTexture(TEXTURESIZE, TEXTURESIZE, TextureFormat.RGB24);
+                    var bytes = tex.EncodeToJPG();
+                    await File.WriteAllBytesAsync($"{file.DirectoryName}/{item.ImageFilename}", bytes, token);
+                    item.SetImage(tex);
+                }
+
+                var madeChange = await item.UpdateDifficultySets(token);
+                if (madeChange)
+                {
+                    updatedMaps = true;
+                }
+
+                if (updatedMaps)
+                {
+                    await UniTask.DelayFrame(2, cancellationToken: token);
+                    using (var streamWriter = new StreamWriter(file.FullName))
+                    {
+                        await streamWriter.WriteAsync(JsonUtility.ToJson(item));
+                        streamWriter.Close();
+                    }
+                }
+
+                return item;
             }
+        }
         /*}
         catch (Exception e)
         {
@@ -489,16 +477,36 @@ public class AssetManager : MonoBehaviour
 
         return null;
     }
+    
+    
+    public static async UniTask DeleteCustomSong(SongInfo info)
+    {
+        if (!Directory.Exists(SongsPath))
+        {
+            Debug.LogWarning("Invalid path cannot delete");
+        }
+
+        await UniTask.RunOnThreadPool(() => Directory.Delete(SongsPath, true));
+    }
+    
+    public static void DeletePlaylist(string playlistName)
+    {
+        var filePath = $"{PlaylistsPath}{playlistName}{PLAYLISTEXTENSION}";
+        if (File.Exists(filePath))
+        {
+            File.Delete(filePath);
+        }
+        
+        var imagePath = $"{PlaylistsPath}{playlistName}{JPGEXTENSION}";
+        if (File.Exists(imagePath))
+        {
+            File.Delete(imagePath);
+        }
+    }
 
     public static void DeletePlaylistImage(string playlistName, CancellationToken token)
     {
-#if UNITY_ANDROID && !UNITY_EDITOR
-        var path = $"{Application.persistentDataPath}{PLAYLISTSFOLDER}";
-#elif UNITY_EDITOR
-        var dataPath = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/'));
-        var path = $"{dataPath}/{UNITYEDITORPLAYLISTLOCATION}";
-#endif
-        
+        var path = $"{DataPath}/{PLAYLISTSFOLDER}";
         var imagePath = $"{path}{playlistName}{JPGEXTENSION}";
         if (File.Exists(imagePath))
         {

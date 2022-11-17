@@ -65,13 +65,7 @@ public class Choreography
     private static async UniTask<Choreography> AsyncLoadCustomSong(string fileLocation, string fileName,
         string songName, CancellationToken token)
     {
-#if UNITY_ANDROID && !UNITY_EDITOR
-        var path =
-            $"{Application.persistentDataPath}{SONGSFOLDER}{fileLocation}/{fileName}";
-#elif UNITY_EDITOR
-        var dataPath = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/'));
-        var path = $"{dataPath}{UNITYEDITORLOCATION}{fileLocation}/{fileName}";
-#endif
+        var path = $"{AssetManager.SongsPath}/{fileLocation}/{fileName}";
         try
         {
             var streamReader = new StreamReader(path);
@@ -148,13 +142,7 @@ public class Choreography
     public static async UniTask<bool> AsyncSave(Choreography choreography, string fileLocation, string fileName,
         string songName, CancellationToken token)
     {
-#if UNITY_ANDROID && !UNITY_EDITOR
-        var path =
-            $"{Application.persistentDataPath}{SONGSFOLDER}{fileLocation}/{fileName}";
-#elif UNITY_EDITOR
-        var dataPath = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/'));
-        var path = $"{dataPath}{UNITYEDITORLOCATION}{fileLocation}/{fileName}";
-#endif
+        var path = $"{AssetManager.SongsPath}/{fileLocation}/{fileName}";
         try
         {
             using (var streamWriter = new StreamWriter(path))

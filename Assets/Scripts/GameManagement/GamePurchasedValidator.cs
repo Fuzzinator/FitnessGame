@@ -18,7 +18,7 @@ public class GamePurchasedValidator : MonoBehaviour
       Validate();
    }
 
-#if UNITY_ANDROID
+#if UNITY_ANDROID //Oculus specific
    private void Validate()
    {
       try

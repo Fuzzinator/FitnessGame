@@ -5,18 +5,8 @@ using UnityEngine;
 
 public class LevelFileManagement
 {
-    #region Const Strings
-
-#if UNITY_ANDROID && !UNITY_EDITOR
-    private const string ANDROIDPATHSTART = "file://";
-    private const string SONGSFOLDER = "/Resources/Songs/";
-#elif UNITY_EDITOR
-    private const string UNITYEDITORLOCATION = "/LocalCustomSongs/Songs/";
-
-#endif
     private static string _dataPath = string.Empty;
-    #endregion
-
+    
     public LevelFileManagement(string dataPath)
     {
         _dataPath = dataPath;
@@ -24,12 +14,7 @@ public class LevelFileManagement
 
     private string GetPath(string folderName)
     {
-#if UNITY_ANDROID && !UNITY_EDITOR
-        var path = $"{_dataPath}{SONGSFOLDER}{folderName}/";
-#elif UNITY_EDITOR
-        //var dataPath = 
-        var path = $"{_dataPath}{UNITYEDITORLOCATION}{folderName}/";
-#endif
+        var path = $"{_dataPath}{folderName}/";
         return path;
     }
 

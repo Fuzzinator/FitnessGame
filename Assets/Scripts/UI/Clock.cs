@@ -44,8 +44,6 @@ public class Clock : MonoBehaviour
 
     private void SetClock(out DateTime prevTime)
     {
-        #if UNITY_ANDROID
-        #endif
         var hour = use24HourTime?DateTime.Now.Hour:DateTime.Now.Hour.To12HrFormat();
         var minute = DateTime.Now.Minute;
         using (var sb = ZString.CreateStringBuilder(true))

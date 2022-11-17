@@ -9,9 +9,6 @@ using GameModeManagement;
 using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
-#if UNITY_ANDROID
-using UnityEngine.Android;
-#endif
 using UnityEngine.Events;
 
 public class PlaylistMaker : MonoBehaviour, IProgress<float>
@@ -54,13 +51,6 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     private CancellationToken _cancallationToken;
     
     #region Const Strings
-
-#if UNITY_ANDROID && !UNITY_EDITOR
-    private const string ANDROIDPATHSTART = "file://";
-    private const string PLAYLISTSFOLDER = "/Resources/Playlists/";
-#elif UNITY_EDITOR
-    private const string UNITYEDITORLOCATION = "/LocalCustomSongs/Playlists/";
-#endif
 
     private const string NEWPLAYLISTNAME = "New Playlist";
     private const string PLAYLISTEXTENSION = ".txt";
@@ -173,19 +163,9 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
             NotificationManager.RequestNotification(visuals);
             return;
         }
-#if UNITY_ANDROID && !UNITY_EDITOR
-        var path = $"{Application.persistentDataPath}{PLAYLISTSFOLDER}";
-        /*if (!Permission.HasUserAuthorizedPermission(Permission.ExternalStorageWrite))
+        if (!Directory.Exists(AssetManager.PlaylistsPath))
         {
-            Permission.RequestUserPermission(Permission.ExternalStorageWrite);
-        }*/
-#elif UNITY_EDITOR
-        var dataPath = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/'));
-        var path = $"{dataPath}/{UNITYEDITORLOCATION}";
-#endif
-        if (!Directory.Exists(path))
-        {
-            Directory.CreateDirectory(path);
+            Directory.CreateDirectory(AssetManager.PlaylistsPath);
         }
 
         _playlistName = _playlistName.RemoveIllegalIOCharacters();
@@ -194,13 +174,13 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
             _playlistName = newPlaylist.PlaylistName;
         }
 
-        var filePath = $"{path}{_playlistName}.txt";
+        var filePath = $"{AssetManager.PlaylistsPath}{_playlistName}.txt";
         if (_editMode)
         {
-            if (_originalName != _playlistName && File.Exists($"{path}{_originalName}.txt"))
+            if (_originalName != _playlistName && File.Exists($"{AssetManager.PlaylistsPath}{_originalName}.txt"))
             {
                 PlaylistFilesReader.Instance.RemovePlaylistByName(_originalName);
-                CustomPlaylistsManager.Instance.DeletePlaylist(_originalName);
+                AssetManager.DeletePlaylist(_originalName);
             }
         }
 
@@ -210,7 +190,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
             while (File.Exists(filePath))
             {
                 index++;
-                filePath = $"{path}{_playlistName}_{index:00}.txt";
+                filePath = $"{AssetManager.PlaylistsPath}{_playlistName}_{index:00}.txt";
                 try
                 {
                     await UniTask.DelayFrame(1, cancellationToken: _cancallationToken);
@@ -240,7 +220,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         if (newPlaylist.PlaylistImage != null)
         {
             var bytes = newPlaylist.PlaylistImage.texture.EncodeToJPG();
-            await File.WriteAllBytesAsync($"{path}{_playlistName}.jpg", bytes, _cancallationToken);
+            await File.WriteAllBytesAsync($"{AssetManager.PlaylistsPath}{_playlistName}.jpg", bytes, _cancallationToken);
         }
 
         _newPlaylistCreated?.Invoke(newPlaylist);

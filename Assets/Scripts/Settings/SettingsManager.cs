@@ -34,7 +34,7 @@ public class SettingsManager : MonoBehaviour
     private static readonly string[] _volumeNames = new[] {MASTERVOLUME, MUSICVOLUME, SFXVOLUME};
     
     public static readonly Quaternion DEFAULTGLOVEROTATION =
-#if UNITY_ANDROID && !UNITY_EDITOR
+#if UNITY_ANDROID && !UNITY_EDITOR//Oculus Quest 2
         new Quaternion(0.173648164f,0f,0f,0.984807789f);
 #elif UNITY_EDITOR
         Quaternion.identity;
@@ -129,7 +129,7 @@ public class SettingsManager : MonoBehaviour
 
     private void SetTargetFPS(FPSSetting defaultValue = FPSSetting.Unset)
     {
-#if UNITY_ANDROID
+#if UNITY_ANDROID//Oculus Quest
         if (defaultValue == FPSSetting.Unset)
         {
             defaultValue = GetFPSSetting();
@@ -185,7 +185,7 @@ public class SettingsManager : MonoBehaviour
 
     public static FPSSetting GetFPSSetting()
     {
-#if UNITY_ANDROID
+#if UNITY_ANDROID//Oculus
         var headset = OVRPlugin.GetSystemHeadsetType();
 
         return GetSetting(FPSSETTING,
