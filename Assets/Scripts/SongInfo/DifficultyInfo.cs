@@ -143,7 +143,7 @@ public struct DifficultyInfo
 
 public static class EnumExtensions
 {
-    private static string UNSET = "Unset";
+    private static string UNSET = "Default";
     private static string EASY = "Easy";
     private static string NORMAL = "Normal";
     private static string HARD = "Hard";

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using Cysharp.Threading.Tasks;
 using TMPro;
-using UI.Scrollers.Playlists;
+using UI.Scrollers;
 using UnityEngine;
 
 public class SearchScroller : MonoBehaviour

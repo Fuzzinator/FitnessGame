@@ -15,21 +15,18 @@ using UnityEngine.Android;
 
 public class AssetManager : MonoBehaviour
 {
+    public static string DataPath { get; private set; }
     #region Const Strings
 
 #if UNITY_EDITOR
     private const string PAUSEINEDITOR = "Pause In Editor";
     private const string SONGSFOLDER = "/LocalCustomSongs/Songs/";
     private const string PLAYLISTSFOLDER = "/LocalCustomSongs/Playlists/";
-    public static readonly string DataPath = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/'));
 #else
     private const string SONGSFOLDER = "/Resources/Songs/";
     private const string PLAYLISTSFOLDER = "/Resources/Playlists/";
     #if UNITY_ANDROID
     private const string ANDROIDPATHSTART = "file://";
-    public static readonly string DataPath = Application.persistentDataPath;
-    #elif UNITY_STANDALONE_WIN
-    public static readonly string DataPath = Application.dataPath;
     #endif
     
 #endif
@@ -54,7 +51,19 @@ public class AssetManager : MonoBehaviour
 
     #endregion
 
-    private static bool CheckPermissions()
+    private void Awake()
+    {
+        DataPath = 
+        #if UNITY_EDITOR
+            Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/'));
+        #elif UNITY_ANDROID
+            Application.persistentDataPath;
+        #elif UNITY_STANDALONE_WIN
+            Application.dataPath;
+        #endif
+    }
+
+    public static bool CheckPermissions()
     {
 #if UNITY_ANDROID
         var readPermission = Permission.HasUserAuthorizedPermission(Permission.ExternalStorageRead);
@@ -161,9 +170,14 @@ public class AssetManager : MonoBehaviour
             return null;
         }
 
+        var path = $"{SongsPath}{parentDirectory}/{info.ImageFilename}";
+        return await LoadImageFromPath(path, cancellationToken);
+    }
+
+    public static async UniTask<Texture2D> LoadImageFromPath(string path, CancellationToken cancellationToken)
+    {
         try
         {
-            var path = $"{SongsPath}{parentDirectory}/{info.ImageFilename}";
 
             if (!File.Exists(path))
             {

@@ -102,7 +102,7 @@ public class SettingsManager : MonoBehaviour
 
     public float LoadVolumeMixerValue(VolumeMixer mixer)
     {
-        return GetFloatSetting(_volumeNames[(int) mixer]);
+        return GetSetting(_volumeNames[(int) mixer], 1f);
     }
 
     public void SaveVolumeMixer(VolumeMixer mixer, float value)
@@ -112,9 +112,9 @@ public class SettingsManager : MonoBehaviour
 
     private void SetAudioSettings()
     {
-        var musicVolume = GetFloatSetting(MUSICVOLUME);
-        var sfxVolume = GetFloatSetting(SFXVOLUME);
-        SetVolumeMixer(VolumeMixer.Master, GetFloatSetting(MASTERVOLUME));
+        var musicVolume = GetSetting(MUSICVOLUME, 1f);
+        var sfxVolume = GetSetting(SFXVOLUME, 1f);
+        SetVolumeMixer(VolumeMixer.Master, GetSetting(MASTERVOLUME, 1f));
         SetVolumeMixer(VolumeMixer.Music, musicVolume);
         SetVolumeMixer(VolumeMixer.SFX, sfxVolume);
     }
@@ -127,7 +127,7 @@ public class SettingsManager : MonoBehaviour
     #endregion
 
 
-    private void SetTargetFPS(FPSSetting defaultValue = FPSSetting.Unset)
+    private static void SetTargetFPS(FPSSetting defaultValue = FPSSetting.Unset)
     {
 #if UNITY_ANDROID//Oculus Quest
         if (defaultValue == FPSSetting.Unset)
@@ -157,30 +157,47 @@ public class SettingsManager : MonoBehaviour
 #endif
     }
 
-    public static float GetFloatSetting(string settingName, float defaultValue = 1f)
-    {
-        return ES3.Load(settingName, defaultValue);
-    }
-
     /*public static void SetFloatSetting(string settingName, float value)
     {
         ES3.Save(settingName, value);
     }*/
 
-    public static void SetSetting<T>(string settingName, T value) where T : struct
+    public static void SetSetting<T>(string settingName, T value, bool isProfileSetting = true)
     {
-        ES3.Save(settingName, value);
+        if (!isProfileSetting)
+        {
+            ES3.Save(settingName, value);
+        }
+        else
+        {
+            if (ProfileManager.Instance.ProfileSettings == null)
+            {
+                return;
+            }
+
+            ES3.Save(settingName, value, ProfileManager.Instance.ProfileSettings);
+        }
     }
 
-    public static T GetSetting<T>(string settingName, T defaultValue) where T : struct
+    public static T GetSetting<T>(string settingName, T defaultValue, bool isProfileSetting = true)
     {
-        return ES3.Load(settingName, defaultValue);
+        if (!isProfileSetting)
+        {
+            return ES3.Load<T>(settingName, defaultValue);
+        }
+        
+        if (ProfileManager.Instance.ProfileSettings == null)
+        {
+            return defaultValue;
+        }
+        
+        return ES3.Load<T>(settingName, defaultValue, ProfileManager.Instance.ProfileSettings);
     }
 
     public static void SetFPSSetting(int value)
     {
         SetSetting(FPSSETTING, value);
-        Instance.SetTargetFPS((FPSSetting) value);
+        SetTargetFPS((FPSSetting) value);
     }
 
     public static FPSSetting GetFPSSetting()
@@ -189,7 +206,7 @@ public class SettingsManager : MonoBehaviour
         var headset = OVRPlugin.GetSystemHeadsetType();
 
         return GetSetting(FPSSETTING,
-            (headset == OVRPlugin.SystemHeadset.Oculus_Quest ? FPSSetting._72 : FPSSetting._90));
+            (headset == OVRPlugin.SystemHeadset.Oculus_Quest ? FPSSetting._72 : FPSSetting._90), false);
 #endif
         return FPSSetting._90;
     }

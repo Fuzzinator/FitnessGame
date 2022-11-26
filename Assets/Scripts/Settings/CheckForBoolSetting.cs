@@ -17,7 +17,13 @@ public class CheckForBoolSetting : MonoBehaviour
 
     private void OnEnable()
     {
+        ProfileManager.Instance.activeProfileUpdated.AddListener(CheckSetting);
         CheckSetting();
+    }
+
+    private void OnDisable()
+    {
+        ProfileManager.Instance.activeProfileUpdated.RemoveListener(CheckSetting);
     }
 
     private void CheckSetting()

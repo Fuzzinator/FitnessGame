@@ -17,6 +17,8 @@ public class UIToggleGroupSetting : MonoBehaviour, ISaver
     protected int _currentValue;
     protected int _index;
 
+    public int CurrentValue => _currentValue;
+
     public bool SaveRequested { get; set; }
 
     private void OnEnable()

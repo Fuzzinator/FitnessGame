@@ -483,11 +483,8 @@ public class ChoreographySequencer : MonoBehaviour
             Debug.LogError("CurrentPlaylist is null. This is game breaking");
             return;
         }
-        var playlistGameMode = PlaylistManager.Instance.CurrentPlaylist.GameModeOverride;
         
-        var targetGameMode = playlistGameMode == GameMode.Unset
-            ? PlaylistManager.Instance.CurrentItem.TargetGameMode
-            :playlistGameMode;
+        var targetGameMode = PlaylistManager.Instance.TargetGameMode;
 
         if (targetGameMode == GameMode.Degrees90 &&
             Mathf.Abs(_currentRotation + angle) > MAX90ROTATION)

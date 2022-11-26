@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
+using GameModeManagement;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -113,7 +114,12 @@ public static class PlaylistValidator
 
     private static async UniTask<bool> AsyncCheckChoreography(PlaylistItem item)
     {
-        var difficultyInfo = item.SongInfo.TryGetActiveDifficultyInfo(item.DifficultyEnum, item.TargetGameMode);
+        var targetDifficulty = item.DifficultyEnum == DifficultyInfo.DifficultyEnum.Unset
+            ? DifficultyInfo.DifficultyEnum.Normal
+            : item.DifficultyEnum;
+        var targetGameMode = item.TargetGameMode == GameMode.Unset ? GameMode.Normal : item.TargetGameMode;
+        
+        var difficultyInfo = item.SongInfo.TryGetActiveDifficultyInfo(targetDifficulty, targetGameMode);
         if (item.IsCustomSong)
         {
             var path = $"{AssetManager.SongsPath}{item.FileLocation}/{difficultyInfo.FileName}";

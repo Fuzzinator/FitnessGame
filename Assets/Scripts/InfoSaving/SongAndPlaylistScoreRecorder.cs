@@ -44,7 +44,8 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
         {
             await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
         }
-        _currentSongName = SongInfoReader.Instance.GetSongFullName();
+
+        _currentSongName = PlaylistManager.Instance.GetFullSongName();//SongInfoReader.Instance.GetSongFullName();
         _previousRecordExists = await PlayerStatsFileManager.SongKeyExists(_currentSongName);
         if (!_previousRecordExists)
         {

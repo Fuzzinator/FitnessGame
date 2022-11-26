@@ -33,4 +33,9 @@ public class InputFieldController : MonoBehaviour
         await UniTask.WaitWhile(() => keyboard.gameObject.activeInHierarchy);
         _editFieldCompleted?.Invoke(_inputField.text);
     }
+
+    public void SetDefaultText(string value)
+    {
+        _defaultText = value;
+    }
 }

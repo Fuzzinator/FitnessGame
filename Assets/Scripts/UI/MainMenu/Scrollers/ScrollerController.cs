@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using EnhancedUI.EnhancedScroller;
 using UnityEngine;
 
-namespace UI.Scrollers.Playlists
+namespace UI.Scrollers
 {
     public class ScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
     {

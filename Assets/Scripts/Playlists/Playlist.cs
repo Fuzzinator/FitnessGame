@@ -50,7 +50,7 @@ public class Playlist
 
     public string TargetEnvName => _targetEnvName;
 
-    public GameMode GameModeOverride => _gameMode;
+    public GameMode TargetGameMode => _gameMode;
 
     public DifficultyInfo.DifficultyEnum DifficultyEnum => _difficulty;
 
@@ -109,6 +109,40 @@ public class Playlist
         isValid = true;
     }
 
+    public Playlist(Playlist sourcePlaylist, string targetEnvName)
+    {
+        CopyPlaylist(sourcePlaylist);
+        _targetEnvName = targetEnvName;
+    }
+    
+    public Playlist(Playlist sourcePlaylist, GameMode gameMode)
+    {
+        CopyPlaylist(sourcePlaylist);
+        _gameMode = gameMode;
+    }
+    
+    public Playlist(Playlist sourcePlaylist, DifficultyInfo.DifficultyEnum difficulty)
+    {
+        CopyPlaylist(sourcePlaylist);
+        _difficulty = difficulty;
+    }
+
+    public void CopyPlaylist(Playlist sourcePlaylist)
+    {
+        _playlistName = sourcePlaylist.PlaylistName;
+        _items = new PlaylistItem[sourcePlaylist.Items.Length];
+        sourcePlaylist.Items.CopyTo(_items,0);
+        
+        _isCustomPlaylist = sourcePlaylist.IsCustomPlaylist;
+        _length = sourcePlaylist.Length;
+        _gameMode = sourcePlaylist.TargetGameMode;
+        _difficulty = sourcePlaylist.DifficultyEnum;
+        _targetEnvName = sourcePlaylist.TargetEnvName;
+        _targetColors = sourcePlaylist.TargetColors;
+        _image = sourcePlaylist.PlaylistImage;
+        isValid = true;
+    }
+    
     public Playlist(PlaylistItem singleSong, string targetEnvName = null, Sprite image = null)
     {
         _playlistName = singleSong.SongName;

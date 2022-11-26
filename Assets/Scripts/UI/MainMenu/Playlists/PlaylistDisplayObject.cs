@@ -105,7 +105,7 @@ public class PlaylistDisplayObject : MonoBehaviour
         var minutes = (int)Mathf.Floor(_playlist.Length / 60);
         var seconds = (int)Mathf.Floor(_playlist.Length % 60);
         var difficulty = _playlist.DifficultyEnum.Readable();
-        var gameMode = _playlist.GameModeOverride.Readable();
+        var gameMode = _playlist.TargetGameMode.Readable();
         using (var sb = ZString.CreateStringBuilder(true))
         {
             sb.AppendFormat(DETAILS, minutes, seconds, difficulty, gameMode);

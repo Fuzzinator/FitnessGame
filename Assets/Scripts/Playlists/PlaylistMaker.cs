@@ -42,7 +42,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     private bool _editMode = false;
 
     public string PlaylistName => _playlistName;
-    public GameMode CurrentGameMode => _gameMode;
+    public GameMode TargetGameMode => _gameMode;
     public DifficultyInfo.DifficultyEnum Difficulty => _difficulty;
     private string _playlistName;
     private string _originalName;
@@ -306,7 +306,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
             _originalName = playlist.PlaylistName;
             _playlistName = playlist.PlaylistName;
             _difficulty = playlist.DifficultyEnum;
-            _gameMode = playlist.GameModeOverride;
+            _gameMode = playlist.TargetGameMode;
 
             _playlistItems.Clear();
 

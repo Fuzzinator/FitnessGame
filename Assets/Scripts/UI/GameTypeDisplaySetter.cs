@@ -55,7 +55,7 @@ namespace UI
                 return;
             }
             
-            var gameMode = playlist.GameModeOverride;
+            var gameMode = playlist.TargetGameMode;
             _dropdownField.value = (int) gameMode;
 
             _dropdownField.RefreshShownValue();

@@ -25,8 +25,8 @@ public class ChoreographyReader : MonoBehaviour
     public ChoreographyObstacle[] Obstacles => _choreography.Obstacles;
 
     public bool CanHaveBlock =>
-        PlaylistManager.Instance.CurrentItem.TargetGameMode is not GameMode.JabsOnly or GameMode.OneHanded or GameMode.LightShow;
-    public bool CanSwitchHands => PlaylistManager.Instance.CurrentItem.TargetGameMode is not GameMode.OneHanded;
+        PlaylistManager.Instance.TargetGameMode is not GameMode.JabsOnly or GameMode.OneHanded or GameMode.LightShow;
+    public bool CanSwitchHands => PlaylistManager.Instance.TargetGameMode is not GameMode.OneHanded;
     
 
     [Header("Settings")] public UnityEvent finishedLoadingSong = new UnityEvent();
@@ -79,17 +79,11 @@ public class ChoreographyReader : MonoBehaviour
             Debug.LogError("Current playlist is null. This is game breaking");
             return;
         }
+
+        var gameMode = PlaylistManager.Instance.TargetGameMode;
+        var targetDifficulty = PlaylistManager.Instance.TargetDifficulty;
         
-        var gameMode = playlist.GameModeOverride == GameMode.Unset ? item.TargetGameMode : playlist.GameModeOverride;
-        
-        if (playlist.DifficultyEnum == DifficultyInfo.DifficultyEnum.Unset)
-        {
-            _difficultyInfo = item.SongInfo.TryGetActiveDifficultyInfo(item.DifficultyEnum, item.TargetGameMode);
-        }
-        else
-        {
-            _difficultyInfo = item.SongInfo.TryGetActiveDifficultyInfo(playlist.DifficultyEnum, gameMode);
-        }
+        _difficultyInfo = item.SongInfo.TryGetActiveDifficultyInfo(targetDifficulty, gameMode);
         
         if (_cancellationSource.IsCancellationRequested)
         {
@@ -129,11 +123,7 @@ public class ChoreographyReader : MonoBehaviour
             return;
         }
 
-        var playlistGameMode = PlaylistManager.Instance.CurrentPlaylist.GameModeOverride;
-        
-        var targetGameMode = playlistGameMode == GameMode.Unset
-            ? PlaylistManager.Instance.CurrentItem.TargetGameMode
-            :playlistGameMode;
+        var targetGameMode = PlaylistManager.Instance.TargetGameMode;
 
         var notes = Notes;
         var obstacles = Obstacles;

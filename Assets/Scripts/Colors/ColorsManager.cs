@@ -11,7 +11,7 @@ public class ColorsManager : MonoBehaviour
 
     [SerializeField]
     private ColorSet _currentColorSet = ColorSet.Default;
-    
+
     [SerializeField]
     private Texture2DArray _targetTexturesArray;
 
@@ -23,7 +23,7 @@ public class ColorsManager : MonoBehaviour
 
     public UnityEvent<ColorSet> activeColorSetUpdated = new UnityEvent<ColorSet>();
     public UnityEvent availableColorSetsUpdated = new UnityEvent();
-    
+
     public ColorSet ActiveColorSet
     {
         get => _currentColorSet;
@@ -33,17 +33,18 @@ public class ColorsManager : MonoBehaviour
             activeColorSetUpdated?.Invoke(value);
         }
     }
+
     public List<ColorSet> AvailableColorSets => _colorSets;
     public int ActiveSetIndex { get; private set; }
-    
+
     #region Const Vars
 
     private const string CUSTOMCOLORSETCOUNT = "CustomColorSetCount";
     private const string CUSTOMCOLORSETNUMBERX = "CustomColorSetNumber:";
     private const string ACTIVECOLORSETINDEX = "ActiveColorSetIndex";
-    
+
     #endregion
-    
+
     private void Awake()
     {
         if (Instance == null)
@@ -59,7 +60,6 @@ public class ColorsManager : MonoBehaviour
     private void Start()
     {
         UpdateTextureSets();
-        GetColorSets();
     }
 
     private void OnValidate()
@@ -84,15 +84,14 @@ public class ColorsManager : MonoBehaviour
     {
         return hitSide switch
         {
-            HitSideType.Left => isNote?_currentColorSet.LeftController:_currentColorSet.LeftEnvironment,
-            HitSideType.Right => isNote?_currentColorSet.RightController:_currentColorSet.RightEnvironment,
-            HitSideType.Block =>  isNote?_currentColorSet.BlockColor:_currentColorSet.CenterEnvironment,
+            HitSideType.Left => isNote ? _currentColorSet.LeftController : _currentColorSet.LeftEnvironment,
+            HitSideType.Right => isNote ? _currentColorSet.RightController : _currentColorSet.RightEnvironment,
+            HitSideType.Block => isNote ? _currentColorSet.BlockColor : _currentColorSet.CenterEnvironment,
             HitSideType.Unused => _currentColorSet.ObstacleColor,
             _ => Color.white
         };
     }
-    
-    private void GetColorSets()
+    public void GetColorSets()
     {
         _colorSets.Clear();
         _customColorCount = SettingsManager.GetSetting(CUSTOMCOLORSETCOUNT, 0);
@@ -117,7 +116,7 @@ public class ColorsManager : MonoBehaviour
     {
         _colorSets.Add(colorSet);
         availableColorSetsUpdated?.Invoke();
-        SaveColorSet(colorSet, AvailableColorSets.Count - 1);//
+        SaveColorSet(colorSet, AvailableColorSets.Count - 1); //
         SettingsManager.SetSetting(CUSTOMCOLORSETCOUNT, AvailableColorSets.Count);
         return _colorSets.Count - 1;
     }
@@ -147,12 +146,12 @@ public class ColorsManager : MonoBehaviour
             ActiveSetIndex = -1;
         }
     }
-    
+
     public void SetActiveColorSet(ColorSet colorSet, int index)
     {
         ActiveSetIndex = index;
         ActiveColorSet = colorSet;
-        
+
         SettingsManager.SetSetting(ACTIVECOLORSETINDEX, index);
     }
 
@@ -220,7 +219,7 @@ public class ColorsManager : MonoBehaviour
             _centerEnvironment = centerEnv;
             _isValid = true;
         }
-        
+
         public ColorSet(Color leftController, Color rightController, Color blockColor, Color obstacleColor)
         {
             _leftController = leftController;
@@ -247,20 +246,20 @@ public class ColorsManager : MonoBehaviour
         public static bool operator !=(ColorSet a, ColorSet b)
         {
             return a._leftController != b._leftController ||
-                a._rightController != b._rightController ||
-                a._blockColor != b._blockColor ||
-                a._obstacleColor != b._obstacleColor ||
-                a._leftEnvironment != b._leftEnvironment ||
-                a._rightEnvironment != b._rightEnvironment ||
-                a._centerEnvironment != b._centerEnvironment;
+                   a._rightController != b._rightController ||
+                   a._blockColor != b._blockColor ||
+                   a._obstacleColor != b._obstacleColor ||
+                   a._leftEnvironment != b._leftEnvironment ||
+                   a._rightEnvironment != b._rightEnvironment ||
+                   a._centerEnvironment != b._centerEnvironment;
         }
 
         public static bool Equal(ColorSet a, ColorSet b)
         {
             return a == b;
         }
-        
-        public static readonly ColorSet Default = new (
+
+        public static readonly ColorSet Default = new(
             new Color(.1125f, .5374f, .75f),
             new Color(.75f, .1125f, .1125f),
             new Color(.1921f, .749f, .1137f),

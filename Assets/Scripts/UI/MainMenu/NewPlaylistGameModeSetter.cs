@@ -42,7 +42,7 @@ namespace UI
 
         private void UpdateDisplayedValues()
         {
-            _dropdownField.value = ((int) PlaylistMaker.Instance.CurrentGameMode);
+            _dropdownField.value = ((int) PlaylistMaker.Instance.TargetGameMode);
 
             _dropdownField.RefreshShownValue();
         }

@@ -155,11 +155,24 @@ MonoBehaviour:
   _currentPlaylist:
     _playlistName: 
     _length: 0
+    _image: {fileID: 0}
     _items: []
     _isCustomPlaylist: 0
     _gameMode: 0
     _difficulty: 0
     _targetEnvName: 
+    _targetColors:
+      _leftController: {r: 0, g: 0, b: 0, a: 0}
+      _rightController: {r: 0, g: 0, b: 0, a: 0}
+      _blockColor: {r: 0, g: 0, b: 0, a: 0}
+      _obstacleColor: {r: 0, g: 0, b: 0, a: 0}
+      _leftEnvironment: {r: 0, g: 0, b: 0, a: 0}
+      _rightEnvironment: {r: 0, g: 0, b: 0, a: 0}
+      _centerEnvironment: {r: 0, g: 0, b: 0, a: 0}
+      _isValid: 0
+    isValid: 0
+  _overrideDifficulties: 0
+  _overrideGameModes: 0
   playlistItemUpdated:
     m_PersistentCalls:
       m_Calls: []
@@ -237,6 +250,7 @@ Transform:
   - {fileID: 1391568995}
   - {fileID: 1158288263}
   - {fileID: 2032097330}
+  - {fileID: 1377366318}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -619,6 +633,68 @@ Transform:
   m_Father: {fileID: 811981821}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1377366317
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1377366318}
+  - component: {fileID: 1377366319}
+  m_Layer: 0
+  m_Name: ProfileManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1377366318
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1377366317}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 811981821}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1377366319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1377366317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3764d65b0ce8b74e96f4f0b51a19960, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  activeProfileUpdated:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2032097332}
+        m_TargetAssemblyTypeName: ColorsManager, Assembly-CSharp
+        m_MethodName: GetColorSets
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  profilesUpdated:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1391568994
 GameObject:
   m_ObjectHideFlags: 0
@@ -789,6 +865,7 @@ MonoBehaviour:
     _leftEnvironment: {r: 0, g: 0, b: 0, a: 0}
     _rightEnvironment: {r: 0, g: 0, b: 0, a: 0}
     _centerEnvironment: {r: 0, g: 0, b: 0, a: 0}
+    _isValid: 1
   _targetTexturesArray: {fileID: 0}
   _obstacleTexturesArray: {fileID: 0}
   activeColorSetUpdated:

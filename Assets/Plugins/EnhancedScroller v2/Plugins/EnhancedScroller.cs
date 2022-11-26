@@ -1407,6 +1407,9 @@ namespace EnhancedUI.EnhancedScroller
                 _container.sizeDelta = new Vector2(0, _cellViewOffsetArray.Last() + padding.top + padding.bottom);
             else
                 _container.sizeDelta = new Vector2(_cellViewOffsetArray.Last() + padding.left + padding.right, 0);
+            
+            
+            _container.anchoredPosition = Vector2.zero;
 
             // if looping, set up the loop positions and triggers
             if (loop)
@@ -1826,10 +1829,15 @@ namespace EnhancedUI.EnhancedScroller
             // Create a new active cell view container with a layout group
             go = new GameObject("Container", typeof(RectTransform));
             go.transform.SetParent(_scrollRectTransform);
+            go.transform.SetSiblingIndex(0);
             if (scrollDirection == ScrollDirectionEnum.Vertical)
+            {
                 go.AddComponent<VerticalLayoutGroup>();
+            }
             else
+            {
                 go.AddComponent<HorizontalLayoutGroup>();
+            }
             _container = go.GetComponent<RectTransform>();
 
             // set the containers anchor and pivot
@@ -1849,6 +1857,7 @@ namespace EnhancedUI.EnhancedScroller
             }
             _container.offsetMax = Vector2.zero;
             _container.offsetMin = Vector2.zero;
+            _container.anchoredPosition = Vector2.zero;
             _container.localPosition = Vector3.zero;
             _container.localRotation = Quaternion.identity;
             _container.localScale = Vector3.one;

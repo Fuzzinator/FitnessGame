@@ -1,5 +1,5 @@
 
-using UI.Scrollers.Playlists;
+using UI.Scrollers;
 using UnityEngine;
 
 namespace CustomAttributes.Editor

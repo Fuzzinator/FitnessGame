@@ -10,6 +10,8 @@ using UnityEngine;
 public class UpdatePlayerHeightDisplay : MonoBehaviour, ISaver
 {
     [SerializeField]
+    private UIToggleGroupSetting _toggleGroup;
+    [SerializeField]
     private SettingsDisplay _settingsDisplay;
     [SerializeField]
     private TextMeshProUGUI _currentText; 
@@ -21,6 +23,8 @@ public class UpdatePlayerHeightDisplay : MonoBehaviour, ISaver
     public bool SaveRequested { get; set; }
 
     private const string METERS = "<size=50%> Meters</size>";
+    private const string FEET = "<size=50%> Feet</size>";
+    private const float METERTOFEET = 3.28084f;
 
     private void OnEnable()
     {
@@ -88,14 +92,34 @@ public class UpdatePlayerHeightDisplay : MonoBehaviour, ISaver
         UpdateDisplay();
     }
 
+    public void RefreshDisplayType()
+    {
+        SetText(_toggleGroup.CurrentValue == 0);
+    }
+
     private void UpdateDisplay()
+    {
+        var useMeters = SettingsManager.GetSetting("DisplayInMeters", 0) == 0;
+        SetText(useMeters);
+    }
+
+    private void SetText(bool useMeters)
     {
         using (var sb = ZString.CreateStringBuilder(true))
         {
-            var height = Mathf.Round(_setHeight * 1000f) / 1000f;
             //var heightAsDouble = Math.Round((double)height, 2);
-            sb.Append(height);
-            sb.Append(METERS);
+            if (useMeters)
+            {
+                var height = Mathf.Round(_setHeight * 1000f) / 1000f;
+                sb.Append(height);
+                sb.Append(METERS);
+            }
+            else
+            {
+                var height = Mathf.Round(_setHeight * METERTOFEET * 1000f) / 1000f;
+                sb.Append(height);
+                sb.Append(FEET);
+            }
             _currentText.SetText(sb);
         }
     }

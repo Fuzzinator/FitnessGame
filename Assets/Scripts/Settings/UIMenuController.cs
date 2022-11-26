@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,6 +13,10 @@ public class UIMenuController : MonoBehaviour
     private CanvasGroup[] _settingsPages;
    
     private CanvasGroup _activePage;
+
+    private bool _initialized = false;
+    
+    
     protected virtual void Start()
     {
         if (_settingsPages == null || _settingsPages.Length < 1)
@@ -19,13 +24,22 @@ public class UIMenuController : MonoBehaviour
             return;
         }
         
-        _activePage = _settingsPages[0];
-        _activePage.SetGroupState(1, true);
-        _activePage.gameObject.SetActive(true);
         var canvas = GetComponent<Canvas>();
         canvas.worldCamera = Head.Instance.HeadCamera;
     }
-    
+
+    protected void OnEnable()
+    {
+        if (!_initialized)
+        {
+            _initialized = true;
+            return;
+        }
+        _activePage = _settingsPages[0];
+        _activePage.SetGroupState(1, true);
+        _activePage.gameObject.SetActive(true);
+    }
+
     public virtual void Activate()
     {
         gameObject.SetActive(true);

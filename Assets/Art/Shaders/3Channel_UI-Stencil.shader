@@ -2,7 +2,7 @@ Shader "Custom/UI/3Channel_Stencil"
 {
     Properties
     {        
-        _MainTex ("Sprite", 2D) = "white" {}
+        [PerRendererData]_MainTex ("Sprite Texture", 2D) = "white" {}
         _Red_Channel_Color("Red Channel Color", Color) = (1, 1, 1, 1)
         _Green_Channel_PrimaryColor("Green Channel PrimaryColor", Color) = (1, 1, 1, 1)
         _BlueAccentColor("BlueAccentColor", Color) = (1, 1, 1, 1)
@@ -15,8 +15,11 @@ Shader "Custom/UI/3Channel_Stencil"
         [HideInInspector]_StencilOp ("Stencil Operation", Float) = 0
         [HideInInspector]_StencilWriteMask ("Stencil Write Mask", Float) = 255
         [HideInInspector]_StencilReadMask ("Stencil Read Mask", Float) = 255
+        _ClipAlpha ("Alpha Clip", Float) = 0.1
 
         _ColorMask ("Color Mask", Float) = 15
+        
+        [Toggle(UNITY_UI_ALPHACLIP)] _UseUIAlphaClip ("Use Alpha Clip", Float) = 0
     }
     SubShader
     {
@@ -72,6 +75,8 @@ Shader "Custom/UI/3Channel_Stencil"
 
             // Keywords
             #pragma multi_compile _ DEBUG_DISPLAY
+            #pragma multi_compile_local _ UNITY_UI_CLIP_RECT
+            #pragma multi_compile_local _ UNITY_UI_ALPHACLIP
             // GraphKeywords: <None>
 
             // Defines
@@ -229,6 +234,7 @@ Shader "Custom/UI/3Channel_Stencil"
             TEXTURE2D(_MainTex);
             SAMPLER(sampler_MainTex);
             float4 _MainTex_TexelSize;
+            float _ClipAlpha;
 
             // Graph Includes
             // GraphIncludes: <None>
@@ -345,6 +351,10 @@ Shader "Custom/UI/3Channel_Stencil"
                                   _Clamp_088d188b093245a8aeb9eb4185168951_Out_3);
                 surface.BaseColor = (_Add_9fd612c48c3942ab8c360c599b8a289f_Out_2.xyz);
                 surface.Alpha = _Clamp_088d188b093245a8aeb9eb4185168951_Out_3;
+                
+                #ifdef UNITY_UI_ALPHACLIP
+                clip (surface.Alpha - _ClipAlpha);
+                #endif
                 return surface;
             }
 
@@ -371,7 +381,8 @@ Shader "Custom/UI/3Channel_Stencil"
 
                 output.uv0 = input.texCoord0;
                 #if defined(SHADER_STAGE_FRAGMENT) && defined(VARYINGS_NEED_CULLFACE)
-        #define BUILD_SURFACE_DESCRIPTION_INPUTS_OUTPUT_FACESIGN                output.FaceSign =                                   IS_FRONT_VFACE(input.cullFace, true, false);
+        #define BUILD_SURFACE_DESCRIPTION_INPUTS_OUTPUT_FACESIGN
+                output.FaceSign =                                   IS_FRONT_VFACE(input.cullFace, true, false);
                 #else
                 #define BUILD_SURFACE_DESCRIPTION_INPUTS_OUTPUT_FACESIGN
                 #endif

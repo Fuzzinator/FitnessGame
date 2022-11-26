@@ -40,6 +40,4 @@ public class CustomPlaylistsManager : MonoBehaviour
         
         PlaylistManager.Instance.CurrentPlaylist = null;
     }
-
-    
 }

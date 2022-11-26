@@ -33,6 +33,12 @@ public class PlaylistManager : MonoBehaviour
     [SerializeField]
     private Playlist _currentPlaylist;
 
+    [SerializeField]
+    private bool _overrideDifficulties;
+
+    [SerializeField]
+    private bool _overrideGameModes;
+
     public Playlist CurrentPlaylist
     {
         get => _currentPlaylist;
@@ -51,6 +57,44 @@ public class PlaylistManager : MonoBehaviour
     public int CurrentIndex => _currentIndex;
 
     public int SongCount => _currentPlaylist?.Items?.Length ?? 0;
+
+    public bool OverrideDifficulties => _overrideDifficulties;
+
+    public bool OverrideGameModes => _overrideGameModes;
+    
+    public GameMode TargetGameMode
+    {
+        get
+        {
+            if (!_overrideGameModes && _currentItem.TargetGameMode != GameMode.Unset)
+            {
+                return _currentItem.TargetGameMode;
+            }
+            if (_currentPlaylist != null && _currentPlaylist.TargetGameMode != GameMode.Unset)
+            {
+                return _currentPlaylist.TargetGameMode;
+            }
+
+            return GameMode.Normal;
+        }
+    }
+
+    public DifficultyInfo.DifficultyEnum TargetDifficulty
+    {
+        get
+        {
+            if (!_overrideDifficulties && _currentItem.DifficultyEnum != DifficultyInfo.DifficultyEnum.Unset)
+            {
+                return _currentItem.DifficultyEnum;
+            }
+            if (_currentPlaylist != null && _currentPlaylist.DifficultyEnum != DifficultyInfo.DifficultyEnum.Unset)
+            {
+                return _currentPlaylist.DifficultyEnum;
+            }
+
+            return DifficultyInfo.DifficultyEnum.Normal;
+        }
+    }
     
     private void Awake()
     {
@@ -105,6 +149,8 @@ public class PlaylistManager : MonoBehaviour
         _currentIndex = 0;
         _currentItem = new PlaylistItem();
         _currentPlaylist = null;
+        SetOverrideDifficulty(false);
+        SetOverrideGameMode(false);
     }
 
     public void SetTempSongPlaylist(PlaylistItem playlistItem)
@@ -115,16 +161,32 @@ public class PlaylistManager : MonoBehaviour
 
     public void SetEnvironment(string envName)
     {
-        _currentPlaylist?.SetEnvironment(envName);// = new Playlist(_currentPlaylist, envName);
+        _currentPlaylist = new Playlist(_currentPlaylist, envName);
     }
 
+    public void SetOverrideDifficulty(bool overrideDifficulty)
+    {
+        _overrideDifficulties = overrideDifficulty;
+    }
+    
+    
+    public void SetOverrideGameMode(bool overrideGameMode)
+    {
+        _overrideGameModes = overrideGameMode;
+    }
+    
     public void SetDifficulty(DifficultyInfo.DifficultyEnum difficultyEnum)
     {
-        _currentPlaylist?.SetDifficulty(difficultyEnum);// = new Playlist(_currentPlaylist, difficultyEnum);
+        _currentPlaylist = new Playlist(_currentPlaylist, difficultyEnum);
     }
 
     public void SetGameMode(GameMode gameMode)
     {
-        _currentPlaylist?.SetGameMode(gameMode);// = new Playlist(_currentPlaylist, gameMode);
+        _currentPlaylist = new Playlist(_currentPlaylist, gameMode);
+    }
+
+    public string GetFullSongName()
+    {
+        return SongInfoReader.Instance.GetFullSongName(TargetDifficulty, TargetGameMode);
     }
 }

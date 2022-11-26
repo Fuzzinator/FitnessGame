@@ -22,19 +22,15 @@ public class SongInfoReader : MonoBehaviour
     [SerializeField]
     private DifficultyInfo _difficultyInfo;
 
-    [SerializeField]
-    private GameMode _gameMode;
-
     public UnityEvent<PlaylistItem> finishedLoadingSongInfo = new UnityEvent<PlaylistItem>();
 
     private CancellationTokenSource _cancellationSource;
 
     public int Difficulty => _difficultyInfo.DifficultyRank;
-
     public float NoteSpeed => _difficultyInfo.MovementSpeed;
     public float BeatsPerMinute => songInfo.BeatsPerMinute;
 
-    public GameMode CurrentGameMode => _gameMode;
+    public DifficultyInfo.DifficultyEnum CurrentDifficulty => _difficultyInfo.DifficultyAsEnum;
 
     #region Const Strings
 
@@ -157,29 +153,17 @@ public class SongInfoReader : MonoBehaviour
         {
             return;
         }
-        
-        if (playlist.GameModeOverride == GameMode.Unset)
-        {
-            _gameMode = item.TargetGameMode;
-        }
-        else
-        {
-            _gameMode = playlist.GameModeOverride;
-        }
 
-        var targetDifficulty = playlist.DifficultyEnum == DifficultyInfo.DifficultyEnum.Unset
-            ? item.DifficultyEnum
-            : playlist.DifficultyEnum;
-        var targetGameMode = playlist.GameModeOverride == GameMode.Unset
-            ? item.TargetGameMode
-            : playlist.GameModeOverride;
+        var targetDifficulty = PlaylistManager.Instance.TargetDifficulty;
+        var targetGameMode = PlaylistManager.Instance.TargetGameMode;
 
         _difficultyInfo = songInfo.TryGetActiveDifficultyInfo(targetDifficulty, targetGameMode);
     }
 
     public string GetSongFullName()
     {
-        return GetFullSongName(songInfo, _difficultyInfo.Difficulty, _gameMode);
+        var gameMode = PlaylistManager.Instance.TargetGameMode;
+        return GetFullSongName(songInfo, _difficultyInfo.Difficulty, gameMode);
     }
 
     public AudioClip GetCurrentSong()
@@ -190,6 +174,11 @@ public class SongInfoReader : MonoBehaviour
     private void SubscribeToPlaylistUpdating()
     {
         PlaylistManager.Instance.playlistItemUpdated.AddListener(LoadJson);
+    }
+
+    public string GetFullSongName(DifficultyInfo.DifficultyEnum difficultyEnum, GameMode gameMode)
+    {
+        return GetFullSongName(songInfo, difficultyEnum.Readable(), gameMode);
     }
 
     public static string GetFullSongName(SongInfo info, string difficulty, GameMode gameMode)

@@ -35,7 +35,7 @@ namespace GameModeManagement
         private const string NOOBSTACLES = "NoObstacles";
         private const string LAWLESS = "Lawless";
         
-        private const string DISPLAYUNSET = "Unset";
+        private const string DISPLAYUNSET = "Default";
         private const string DISPLAYNORMAL = "Standard";
         private const string DISPLAYJABSONLY = "Jabs Only";
         private const string DISPLAYONEHANDED = "One Handed";
