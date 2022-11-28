@@ -69,11 +69,21 @@ public class ProfileEditor : MonoBehaviour
         ResetCreateNewProfile();
     }
 
+    public void DeleteProfile()
+    {
+        if (_profile != null)
+        {
+            ProfileManager.Instance.DeleteProfile(_profile);
+        }
+        ResetCreateNewProfile();
+    }
+
     public void ResetCreateNewProfile()
     {
         _inputField.text = string.Empty;
         _iconAddress = ProfileManager.DEFAULTICONADDRESS;
         SetIsCustomIcon(false);
+        SetImage();
         gameObject.SetActive(false);
     }
 

@@ -75,6 +75,7 @@ public class ProfileManager : MonoBehaviour
         }
         
         SaveProfiles();
+        DeleteSaveFile(profile);
     }
 
     public void CreateProfile(string profileName, string iconAddress, bool customImage)
@@ -115,6 +116,11 @@ public class ProfileManager : MonoBehaviour
         activeProfileUpdated?.Invoke();
     }
 
+    public void ActiveProfileUpdated()
+    {
+        activeProfileUpdated?.Invoke();
+    }
+    
     public void UpdateProfile(Profile profile, string profileName, string address, bool isCustomIcon)
     {
         if (!string.Equals(profile.ProfileName, profileName))
@@ -289,6 +295,15 @@ public class ProfileManager : MonoBehaviour
         {
             var newPath = $"{AssetManager.DataPath}{PROFILESETTINGS}{profileName}.{profile.GUID}.dat";
             File.Move(originalPath, newPath);
+        }
+    }
+
+    private static void DeleteSaveFile(Profile profile)
+    {
+        var path = $"{AssetManager.DataPath}{PROFILESETTINGS}{profile.ProfileName}.{profile.GUID}.dat";
+        if (File.Exists(path))
+        {
+            File.Delete(path);
         }
     }
     

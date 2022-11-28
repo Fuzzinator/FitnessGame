@@ -42,6 +42,7 @@ public class ColorsManager : MonoBehaviour
     private const string CUSTOMCOLORSETCOUNT = "CustomColorSetCount";
     private const string CUSTOMCOLORSETNUMBERX = "CustomColorSetNumber:";
     private const string ACTIVECOLORSETINDEX = "ActiveColorSetIndex";
+    private const string CUSTOMCOLORS = "CustomColors";
 
     #endregion
 
@@ -91,21 +92,23 @@ public class ColorsManager : MonoBehaviour
             _ => Color.white
         };
     }
+
     public void GetColorSets()
     {
         _colorSets.Clear();
-        _customColorCount = SettingsManager.GetSetting(CUSTOMCOLORSETCOUNT, 0);
+        _colorSets = SettingsManager.GetSetting(CUSTOMCOLORS, _colorSets);
+        /*_customColorCount = SettingsManager.GetSetting(CUSTOMCOLORSETCOUNT, 0);
         if (_customColorCount == 0)
         {
             AddColorSet(ColorSet.Default);
         }
         else
         {
-            for (var i = 0; i < _customColorCount; i++)
+            /*for (var i = 0; i < _customColorCount; i++)
             {
                 _colorSets.Add(SettingsManager.GetSetting($"{CUSTOMCOLORSETNUMBERX}{i}", ColorSet.Default));
-            }
-        }
+            }#1#
+        }*/
 
         ActiveSetIndex = SettingsManager.GetSetting(ACTIVECOLORSETINDEX, 0);
         SetActiveColorSet(ActiveSetIndex);
@@ -116,7 +119,7 @@ public class ColorsManager : MonoBehaviour
     {
         _colorSets.Add(colorSet);
         availableColorSetsUpdated?.Invoke();
-        SaveColorSet(colorSet, AvailableColorSets.Count - 1); //
+        SaveColorSets();
         SettingsManager.SetSetting(CUSTOMCOLORSETCOUNT, AvailableColorSets.Count);
         return _colorSets.Count - 1;
     }
@@ -125,7 +128,7 @@ public class ColorsManager : MonoBehaviour
     {
         _colorSets[index] = colorSet;
         availableColorSetsUpdated?.Invoke();
-        SaveColorSet(colorSet, index);
+        SaveColorSets();
     }
 
     public bool IsActiveColorSet(ColorSet colorSet)
@@ -158,12 +161,20 @@ public class ColorsManager : MonoBehaviour
     private void SetActiveColorSet(int index)
     {
         ActiveSetIndex = index;
-        ActiveColorSet = _colorSets[index];
+        if (index < _colorSets.Count)
+        {
+            ActiveColorSet = _colorSets[index];
+        }
     }
 
     private void SaveColorSet(ColorSet colorSet, int index)
     {
         SettingsManager.SetSetting($"{CUSTOMCOLORSETNUMBERX}{index}", colorSet);
+    }
+
+    private void SaveColorSets()
+    {
+        SettingsManager.SetSetting($"{CUSTOMCOLORS}", _colorSets);
     }
 
     [Serializable]

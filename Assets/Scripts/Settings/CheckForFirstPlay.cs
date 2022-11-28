@@ -26,7 +26,7 @@ public class CheckForFirstPlay : MonoBehaviour
             return;
         }
 
-        hasKey = SettingsManager.GetSetting(PLAYEDBEFORE, false, true);
+        hasKey = SettingsManager.GetSetting(PLAYEDBEFORE, false);
         if (hasKey)
         {
             GoToMainMenu();

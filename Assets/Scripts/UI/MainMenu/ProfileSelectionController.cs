@@ -25,6 +25,9 @@ public class ProfileSelectionController : MonoBehaviour
     
     [SerializeField]
     private MaterialValueLerper _valueLerper;
+
+    [SerializeField]
+    private GameObject _noProfileDisplay;
     
     private PoolManager _choicesPoolManager;
     
@@ -66,10 +69,8 @@ public class ProfileSelectionController : MonoBehaviour
             _activeChoices.Add(choice);
         }
 
-        if (ProfileManager.Instance.Profiles.Count == 0)
-        {
-            _profileEditor.StartCreateProfile();
-        }
+        var showNoProfiles = ProfileManager.Instance.Profiles.Count == 0;
+        _noProfileDisplay.SetActive(showNoProfiles);
     }
 
     private void HideProfileChoices()

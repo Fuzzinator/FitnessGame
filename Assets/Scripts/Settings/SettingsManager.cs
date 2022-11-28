@@ -194,6 +194,18 @@ public class SettingsManager : MonoBehaviour
         return ES3.Load<T>(settingName, defaultValue, ProfileManager.Instance.ProfileSettings);
     }
 
+    public static void DeleteSetting(string settingName, bool isProfileSetting = true)
+    {
+        if (!isProfileSetting)
+        {
+            ES3.DeleteKey(settingName);
+        }
+        else
+        {
+            ES3.DeleteKey(settingName, ProfileManager.Instance.ProfileSettings);
+        }
+    }
+
     public static void SetFPSSetting(int value)
     {
         SetSetting(FPSSETTING, value);
