@@ -45,7 +45,20 @@ public class ProfileManager : MonoBehaviour
     private const string PROFILEICONSLOCATION = "/Resources/Profile Icons/";
     #endif
 
-    public static readonly string ProfileIconsPath = $"{AssetManager.DataPath}{PROFILEICONSLOCATION}";
+    private static string _profileIconsPath;
+
+    public static string ProfileIconsPath
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(_profileIconsPath))
+            {
+                _profileIconsPath = $"{AssetManager.DataPath}{PROFILEICONSLOCATION}";
+            }
+
+            return _profileIconsPath;
+        }
+    }
 
     private void Awake()
     {

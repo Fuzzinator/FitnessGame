@@ -44,6 +44,9 @@ public class Playlist
 
     public bool isValid;
 
+    [SerializeField]
+    private string _version;
+    
     public bool IsCustomPlaylist => _isCustomPlaylist;
     public float Length => _length;
     public string PlaylistName => _playlistName;
@@ -84,6 +87,8 @@ public class Playlist
         }
     }
 
+    public string Version => _version;
+
     private const int MINUTE = 60;
     private const string DIVIDER = ":";
 
@@ -106,6 +111,7 @@ public class Playlist
         _targetEnvName = targetEnvName;
         _targetColors = ColorsManager.Instance.ActiveColorSet;
         SetIcon(image);
+        _version = "0.0.1";
         isValid = true;
     }
 
@@ -140,6 +146,7 @@ public class Playlist
         _targetEnvName = sourcePlaylist.TargetEnvName;
         _targetColors = sourcePlaylist.TargetColors;
         _image = sourcePlaylist.PlaylistImage;
+        _version = sourcePlaylist.Version;
         isValid = true;
     }
     
@@ -154,6 +161,7 @@ public class Playlist
         _targetEnvName = targetEnvName;
         _targetColors = ColorsManager.Instance.ActiveColorSet;
         _image = image;
+        _version = "0.0.1";
         isValid = true;
     }
 
@@ -241,4 +249,34 @@ public class Playlist
         PlaylistLength = 5,
         InversePlaylistLength = 6
     }
+
+    #region Upgrade Support
+
+    public void UpgradePlaylistSoSongsAreOverrides()
+    {
+        _version = "0.0.1";
+        for (var i = 0; i < _items.Length; i++)
+        {
+            _items[i] = UpdatePlaylistItemNormalToUnset(_items[i]);
+        }
+    }
+
+    private PlaylistItem UpdatePlaylistItemNormalToUnset(PlaylistItem item)
+    {
+        var targetDifficulty = item.DifficultyEnum;
+        if (item.DifficultyEnum == DifficultyInfo.DifficultyEnum.Normal)
+        {
+            targetDifficulty = DifficultyInfo.DifficultyEnum.Unset;
+        }
+
+        var targetMode = item.TargetGameMode;
+        if (item.TargetGameMode == GameMode.Normal)
+        {
+            targetMode = GameMode.Unset;
+        }
+
+        return new PlaylistItem(item.SongInfo, targetDifficulty.Readable(), targetDifficulty, targetMode);
+    }
+
+    #endregion
 }

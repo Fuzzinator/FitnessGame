@@ -15,7 +15,21 @@ using UnityEngine.Android;
 
 public class AssetManager : MonoBehaviour
 {
-    public static string DataPath { get; private set; }
+    private static string _dataPath;
+
+    public static string DataPath
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(_dataPath))
+            {
+                _dataPath = GetDataPath();
+            }
+
+            return _dataPath;
+        }
+    }
+
     #region Const Strings
 
 #if UNITY_EDITOR
@@ -51,16 +65,16 @@ public class AssetManager : MonoBehaviour
 
     #endregion
 
-    private void Awake()
+    private static string GetDataPath()
     {
-        DataPath = 
-        #if UNITY_EDITOR
-            Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/'));
-        #elif UNITY_ANDROID
+        return
+#if UNITY_EDITOR
+        Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/'));
+#elif UNITY_ANDROID
             Application.persistentDataPath;
-        #elif UNITY_STANDALONE_WIN
+#elif UNITY_STANDALONE_WIN
             Application.dataPath;
-        #endif
+#endif
     }
 
     public static bool CheckPermissions()
@@ -302,6 +316,20 @@ public class AssetManager : MonoBehaviour
                             texture.LoadImage(bytes);
                             playlist.SetIcon(texture);
                         }
+                    }
+
+                    if (string.IsNullOrWhiteSpace(playlist.Version))
+                    {
+                        playlist.UpgradePlaylistSoSongsAreOverrides();
+                        
+                        var streamWriter = File.CreateText(file.FullName);
+                        var json = JsonUtility.ToJson(playlist);
+                        var writingTask = streamWriter.WriteAsync(json);
+
+                        await writingTask;
+        
+                        streamWriter.Close();
+                        
                     }
 
                     playlist.isValid = await PlaylistValidator.IsValid(playlist);
