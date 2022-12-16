@@ -33,7 +33,8 @@ public class ProfileSelectionController : MonoBehaviour
     
     private void OnEnable()
     {
-        _valueLerper.TriggerValueChange(_enableEffectName);
+        
+        _valueLerper.TriggerValueChange(_enableEffectName).Forget();
         
         ProfileManager.Instance.GetAllProfileSprites();
         ShowAvailableProfiles();
@@ -42,7 +43,7 @@ public class ProfileSelectionController : MonoBehaviour
 
     private void OnDisable()
     {
-        _valueLerper.TriggerValueChange(_disableEffectName);
+        _valueLerper.TriggerValueChange(_disableEffectName).Forget();
         
         ProfileManager.Instance.UnloadProfileSprites();
         HideProfileChoices();

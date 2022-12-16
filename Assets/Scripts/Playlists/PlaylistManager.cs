@@ -1,7 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using GameModeManagement;
+using InfoSaving;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -48,7 +51,7 @@ public class PlaylistManager : MonoBehaviour
             currentPlaylistUpdated?.Invoke(value);
         }
     }
-    
+
     public UnityEvent<PlaylistItem> playlistItemUpdated = new UnityEvent<PlaylistItem>();
     public UnityEvent<Playlist> currentPlaylistUpdated = new UnityEvent<Playlist>();
 
@@ -61,7 +64,7 @@ public class PlaylistManager : MonoBehaviour
     public bool OverrideDifficulties => _overrideDifficulties;
 
     public bool OverrideGameModes => _overrideGameModes;
-    
+
     public GameMode TargetGameMode
     {
         get
@@ -70,6 +73,7 @@ public class PlaylistManager : MonoBehaviour
             {
                 return _currentItem.TargetGameMode;
             }
+
             if (_currentPlaylist != null && _currentPlaylist.TargetGameMode != GameMode.Unset)
             {
                 return _currentPlaylist.TargetGameMode;
@@ -87,6 +91,7 @@ public class PlaylistManager : MonoBehaviour
             {
                 return _currentItem.DifficultyEnum;
             }
+
             if (_currentPlaylist != null && _currentPlaylist.DifficultyEnum != DifficultyInfo.DifficultyEnum.Unset)
             {
                 return _currentPlaylist.DifficultyEnum;
@@ -95,7 +100,7 @@ public class PlaylistManager : MonoBehaviour
             return DifficultyInfo.DifficultyEnum.Normal;
         }
     }
-    
+
     private void Awake()
     {
         if (Instance == null)
@@ -114,7 +119,7 @@ public class PlaylistManager : MonoBehaviour
     }
 
     public void SetFirstPlaylistItem()
-    
+
     {
         _currentIndex = 0;
         if (_currentPlaylist?.Items == null || _currentPlaylist.Items.Length <= _currentIndex)
@@ -135,7 +140,7 @@ public class PlaylistManager : MonoBehaviour
         {
             return;
         }
-        
+
         CurrentItem = _currentPlaylist.Items[_currentIndex];
     }
 
@@ -143,7 +148,7 @@ public class PlaylistManager : MonoBehaviour
     {
         _currentIndex = -1;
     }
-    
+
     public void FullReset()
     {
         _currentIndex = 0;
@@ -168,13 +173,13 @@ public class PlaylistManager : MonoBehaviour
     {
         _overrideDifficulties = overrideDifficulty;
     }
-    
-    
+
+
     public void SetOverrideGameMode(bool overrideGameMode)
     {
         _overrideGameModes = overrideGameMode;
     }
-    
+
     public void SetDifficulty(DifficultyInfo.DifficultyEnum difficultyEnum)
     {
         _currentPlaylist = new Playlist(_currentPlaylist, difficultyEnum);
@@ -185,8 +190,25 @@ public class PlaylistManager : MonoBehaviour
         _currentPlaylist = new Playlist(_currentPlaylist, gameMode);
     }
 
-    public string GetFullSongName()
+    public string GetFullSongName(SongInfo info = null, string prefix = null, string suffix = null)
     {
-        return SongInfoReader.Instance.GetFullSongName(TargetDifficulty, TargetGameMode);
+        if (info == null)
+        {
+            info = SongInfoReader.Instance?.songInfo;
+        }
+
+        if (info == null)
+        {
+            return string.Empty;
+        }
+        
+        return SongInfoReader.GetFullSongName(info,TargetDifficulty, TargetGameMode, prefix, suffix);
+    }
+
+    public async UniTask<SongAndPlaylistRecords> TryGetRecords(SongAndPlaylistScoreRecord[] scores,
+        SongAndPlaylistStreakRecord[] streaks, CancellationToken token)
+    {
+        return await PlayerStatsFileManager.TryGetRecords(SongInfoReader.Instance.songInfo, TargetDifficulty,
+            TargetGameMode, scores, streaks, token);
     }
 }

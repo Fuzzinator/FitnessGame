@@ -318,20 +318,26 @@ public class AssetManager : MonoBehaviour
                         }
                     }
 
+                    #region Upgrading Playlists
+                    var shouldSave = false;
                     if (string.IsNullOrWhiteSpace(playlist.Version))
                     {
                         playlist.UpgradePlaylistSoSongsAreOverrides();
-                        
-                        var streamWriter = File.CreateText(file.FullName);
-                        var json = JsonUtility.ToJson(playlist);
-                        var writingTask = streamWriter.WriteAsync(json);
-
-                        await writingTask;
-        
-                        streamWriter.Close();
-                        
+                        shouldSave = true;
                     }
-
+                    
+                    if (string.IsNullOrWhiteSpace(playlist.GUID))
+                    {
+                        playlist.UpgradePlaylistAddGuid();
+                        shouldSave = true;
+                    }
+                    
+                    if(shouldSave)
+                    {
+                        await SavePlaylist(playlist, file.FullName);
+                    }
+                    #endregion
+                    
                     playlist.isValid = await PlaylistValidator.IsValid(playlist);
                     playlistLoaded?.Invoke(playlist);
                     await UniTask.DelayFrame(1, cancellationToken: cancellationToken);
@@ -554,5 +560,16 @@ public class AssetManager : MonoBehaviour
         {
             File.Delete(imagePath);
         }
+    }
+
+    private static async UniTask SavePlaylist(Playlist playlist, string fullPath)
+    {
+        var streamWriter = File.CreateText(fullPath);
+        var json = JsonUtility.ToJson(playlist);
+        var writingTask = streamWriter.WriteAsync(json);
+
+        await writingTask;
+        
+        streamWriter.Close();
     }
 }

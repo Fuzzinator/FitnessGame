@@ -15,18 +15,29 @@ namespace UI
 {
     public class DisplaySongRecords : MonoBehaviour
     {
-        [FormerlySerializedAs("_playlistRecordScore")] [SerializeField] 
-        private TextMeshProUGUI _songRecordScore;
-        [FormerlySerializedAs("_playlistRecordStreak")] [SerializeField] 
-        TextMeshProUGUI _songRecordStreak;
+        [SerializeField] 
+        private TextMeshProUGUI _songScoreNames;
+        [SerializeField] 
+        TextMeshProUGUI _songStreakNames;
+        [FormerlySerializedAs("_songRecordScore")] [SerializeField] 
+        private TextMeshProUGUI _songRecordScores;
+        [FormerlySerializedAs("_songRecordStreak")] [SerializeField] 
+        TextMeshProUGUI _songRecordStreaks;
 
         [SerializeField]
         private SetAndShowSongOptions _showSongOptions;
+        
+        private SongAndPlaylistScoreRecord[] _songScoreRecords = new SongAndPlaylistScoreRecord[5];
+        private SongAndPlaylistStreakRecord[] _songStreakRecords = new SongAndPlaylistStreakRecord[5];
         
         private SongInfo _songInfo;
         
         private CancellationToken _cancellationToken;
 
+        private const string STREAK = "Streak:";
+        private const string SCORE = "Score:";
+        private const string NEWLINE = "\n";
+        
         public void ShowRecords(SongInfo songInfo)
         {
             _songInfo = songInfo;
@@ -43,33 +54,61 @@ namespace UI
         {
             var songRecord = await GetSongRecord();
             
-            using (var sb = ZString.CreateStringBuilder(true))
+            using (var scoresSb = ZString.CreateStringBuilder(true))
             {
-                sb.Append(songRecord.Score);
+                using (var namesSb = ZString.CreateStringBuilder(false))
+                {
+                    foreach (var score in songRecord.scores)
+                    {
+                        scoresSb.Append(NEWLINE);
+                        namesSb.Append(NEWLINE);
+                        if (!score.IsValid)
+                        {
+                            continue;
+                        }
 
-                var buffer = sb.AsArraySegment();
-                _songRecordScore.SetCharArray(buffer.Array, buffer.Offset, buffer.Count);
+                        scoresSb.Append(score.Score);
+                        namesSb.Append(score.ProfileName);
+                    }
+
+                    var scoresBuffer = scoresSb.AsArraySegment();
+                    _songRecordScores.SetCharArray(scoresBuffer.Array, scoresBuffer.Offset, scoresBuffer.Count);
+                    var namesBuffer = namesSb.AsArraySegment();
+                    _songScoreNames.SetCharArray(namesBuffer.Array, namesBuffer.Offset, namesBuffer.Count);
+                }
             }
-            using (var sb = ZString.CreateStringBuilder(true))
+            using (var streaksSb = ZString.CreateStringBuilder(true))
             {
-                sb.Append(songRecord.Streak);
+                using (var namesSb = ZString.CreateStringBuilder(false))
+                {
+                    foreach (var streaks in songRecord.streaks)
+                    {
+                        streaksSb.Append(NEWLINE);
+                        namesSb.Append(NEWLINE);
+                        if (!streaks.IsValid)
+                        {
+                            continue;
+                        }
 
-                var buffer = sb.AsArraySegment();
-                _songRecordStreak.SetCharArray(buffer.Array, buffer.Offset, buffer.Count);
+                        streaksSb.Append(streaks.Streak);
+                        namesSb.Append(streaks.ProfileName);
+                    }
+
+                    var streaksBuffer = streaksSb.AsArraySegment();
+                    _songRecordStreaks.SetCharArray(streaksBuffer.Array, streaksBuffer.Offset, streaksBuffer.Count);
+                    var namesBuffer = namesSb.AsArraySegment();
+                    _songStreakNames.SetCharArray(namesBuffer.Array, namesBuffer.Offset, namesBuffer.Count);
+                }
             }
         }
 
-        private async UniTask<SongAndPlaylistRecord> GetSongRecord()
+        private async UniTask<SongAndPlaylistRecords> GetSongRecord()
         {
             await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
-            var songFullName = SongInfoReader.GetFullSongName(_songInfo, _showSongOptions.SelectedDifficulty, _showSongOptions.SelectedGameMode);
-            var exists = await PlayerStatsFileManager.SongKeyExists(songFullName);
-            if (!exists)
-            {
-                return new SongAndPlaylistRecord(0, 0);
-            }
-            return (SongAndPlaylistRecord) await PlayerStatsFileManager.GetSongValue<SongAndPlaylistRecord>(
-                songFullName, _cancellationToken);
+            var records = await PlayerStatsFileManager.TryGetRecords(_songInfo, _showSongOptions.DifficultyAsEnum,
+                _showSongOptions.SelectedGameMode, _songScoreRecords, _songStreakRecords, _cancellationToken);
+
+            return records;
         }
     }
 }

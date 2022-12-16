@@ -46,6 +46,9 @@ public class Playlist
 
     [SerializeField]
     private string _version;
+
+    [SerializeField]
+    private string _guid;
     
     public bool IsCustomPlaylist => _isCustomPlaylist;
     public float Length => _length;
@@ -89,8 +92,11 @@ public class Playlist
 
     public string Version => _version;
 
+    public string GUID => _guid;
+
     private const int MINUTE = 60;
     private const string DIVIDER = ":";
+    private const string PLAYLISTVERSION = "0.0.2";
 
     public Playlist(List<PlaylistItem> items, GameMode gameMode, DifficultyInfo.DifficultyEnum difficulty,
         string playlistName = null, bool isCustomPlaylist = true, string targetEnvName = null, Texture2D image = null)
@@ -111,7 +117,8 @@ public class Playlist
         _targetEnvName = targetEnvName;
         _targetColors = ColorsManager.Instance.ActiveColorSet;
         SetIcon(image);
-        _version = "0.0.1";
+        _version = PLAYLISTVERSION;
+        _guid = Guid.NewGuid().ToString();
         isValid = true;
     }
 
@@ -147,6 +154,7 @@ public class Playlist
         _targetColors = sourcePlaylist.TargetColors;
         _image = sourcePlaylist.PlaylistImage;
         _version = sourcePlaylist.Version;
+        _guid = sourcePlaylist.GUID;
         isValid = true;
     }
     
@@ -161,7 +169,8 @@ public class Playlist
         _targetEnvName = targetEnvName;
         _targetColors = ColorsManager.Instance.ActiveColorSet;
         _image = image;
-        _version = "0.0.1";
+        _version = PLAYLISTVERSION;
+        _guid = Guid.NewGuid().ToString();
         isValid = true;
     }
 
@@ -254,11 +263,16 @@ public class Playlist
 
     public void UpgradePlaylistSoSongsAreOverrides()
     {
-        _version = "0.0.1";
+        _version = PLAYLISTVERSION;
         for (var i = 0; i < _items.Length; i++)
         {
             _items[i] = UpdatePlaylistItemNormalToUnset(_items[i]);
         }
+    }
+
+    public void UpgradePlaylistAddGuid()
+    {
+        _guid = Guid.NewGuid().ToString();
     }
 
     private PlaylistItem UpdatePlaylistItemNormalToUnset(PlaylistItem item)

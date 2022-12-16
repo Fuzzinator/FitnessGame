@@ -241,7 +241,7 @@ public class BeatSaverPageController : MonoBehaviour
             _audioSource.Stop();
             return;
         }
-        
+
         var audioClip = await _activeBeatmap.LatestVersion.GetPlayablePreview(_cancellationToken);
         if (audioClip == null)
         {
@@ -253,6 +253,7 @@ public class BeatSaverPageController : MonoBehaviour
         await UniTask.DelayFrame(1);
         _audioSource.clip = audioClip;
         _audioSource.Play();
+        await UniTask.WaitUntil(() => !_audioSource.isPlaying && FocusTracker.Instance.IsFocused);
     }
     
     private async UniTaskVoid DownloadSongAsync()

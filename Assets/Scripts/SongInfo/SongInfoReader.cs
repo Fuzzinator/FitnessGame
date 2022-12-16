@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using Cysharp.Text;
 using Cysharp.Threading.Tasks;
 using GameModeManagement;
 using UnityEngine;
@@ -37,6 +38,7 @@ public class SongInfoReader : MonoBehaviour
     private const string INFO = "/Info";
     private const string TXT = ".txt";
     private const string DAT = ".dat";
+    private const string DASH = "-";
 
     #endregion
 
@@ -163,7 +165,7 @@ public class SongInfoReader : MonoBehaviour
     public string GetSongFullName()
     {
         var gameMode = PlaylistManager.Instance.TargetGameMode;
-        return GetFullSongName(songInfo, _difficultyInfo.Difficulty, gameMode);
+        return GetFullSongName(songInfo, _difficultyInfo.DifficultyAsEnum, gameMode, null, null);
     }
 
     public AudioClip GetCurrentSong()
@@ -176,13 +178,36 @@ public class SongInfoReader : MonoBehaviour
         PlaylistManager.Instance.playlistItemUpdated.AddListener(LoadJson);
     }
 
-    public string GetFullSongName(DifficultyInfo.DifficultyEnum difficultyEnum, GameMode gameMode)
+    public string GetFullSongName(DifficultyInfo.DifficultyEnum difficultyEnum, GameMode gameMode, string prefix = null, string suffix = null)
     {
-        return GetFullSongName(songInfo, difficultyEnum.Readable(), gameMode);
+        return GetFullSongName(songInfo, difficultyEnum, gameMode, prefix, suffix);
     }
 
-    public static string GetFullSongName(SongInfo info, string difficulty, GameMode gameMode)
+    public static string GetFullSongName(SongInfo info, DifficultyInfo.DifficultyEnum difficultyEnum, GameMode gameMode, string prefix = null, string suffix = null)
     {
-        return $"{info.SongName}-{difficulty}-{gameMode}-{info.fileLocation}-{info.SongLength}";
+        using (var sb = ZString.CreateStringBuilder(true))
+        {
+            if(!string.IsNullOrWhiteSpace(prefix))
+            {
+                sb.Append(prefix);
+            }
+            
+            sb.Append(info.SongName);
+            sb.Append(DASH);
+            sb.Append(difficultyEnum.Readable());
+            sb.Append(DASH);
+            sb.Append(gameMode);
+            sb.Append(DASH);
+            sb.Append(info.fileLocation);
+            sb.Append(DASH);
+            sb.Append(info.SongLength);
+
+            if(!string.IsNullOrWhiteSpace(suffix))
+            {
+                sb.Append(suffix);
+            }
+
+            return sb.ToString();
+        }
     }
 }

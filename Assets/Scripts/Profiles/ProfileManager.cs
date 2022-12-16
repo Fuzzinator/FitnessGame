@@ -38,12 +38,12 @@ public class ProfileManager : MonoBehaviour
     private const string PROFILEICONLABEL = "Profile Icon";
     private const string LOCALPROFILEICONSLOCATION = "Assets/Art/Textures/Profile Icons/";
     public const string DEFAULTICONADDRESS = "Icon_Account.Png";
-    
-    #if UNITY_EDITOR
+
+#if UNITY_EDITOR
     private const string PROFILEICONSLOCATION = "/LocalCustomIcons/";
-    #else
+#else
     private const string PROFILEICONSLOCATION = "/Resources/Profile Icons/";
-    #endif
+#endif
 
     private static string _profileIconsPath;
 
@@ -86,7 +86,7 @@ public class ProfileManager : MonoBehaviour
             _activeProfile = null;
             activeProfileUpdated?.Invoke();
         }
-        
+
         SaveProfiles();
         DeleteSaveFile(profile);
     }
@@ -95,7 +95,7 @@ public class ProfileManager : MonoBehaviour
     {
         AddProfile(new Profile(profileName, iconAddress, customImage));
     }
-    
+
     public void TryGetProfiles()
     {
         var profiles = SettingsManager.GetSetting<List<Profile>>(PROFILES, null, false);
@@ -108,6 +108,7 @@ public class ProfileManager : MonoBehaviour
         {
             return;
         }
+
         _profiles = profiles;
         profilesUpdated?.Invoke();
     }
@@ -115,17 +116,18 @@ public class ProfileManager : MonoBehaviour
     public void AddProfile(Profile profile)
     {
         _profiles ??= new List<Profile>();
-        
+
         _profiles.Add(profile);
         profilesUpdated?.Invoke();
-        
+
         SaveProfiles();
     }
 
     public void SetActiveProfile(Profile profile)
     {
         _activeProfile = profile;
-        ProfileSettings = new ES3Settings($"{PROFILESETTINGS}{_activeProfile.ProfileName}.{_activeProfile.GUID}.dat");
+        ProfileSettings =
+            new ES3Settings($"{PROFILESETTINGS}{_activeProfile.ProfileName}.{_activeProfile.GUID}.dat");
         activeProfileUpdated?.Invoke();
     }
 
@@ -133,7 +135,7 @@ public class ProfileManager : MonoBehaviour
     {
         activeProfileUpdated?.Invoke();
     }
-    
+
     public void UpdateProfile(Profile profile, string profileName, string address, bool isCustomIcon)
     {
         if (!string.Equals(profile.ProfileName, profileName))
@@ -141,15 +143,15 @@ public class ProfileManager : MonoBehaviour
             UpdateSaveFile(profile, profileName, address, isCustomIcon);
             profile.SetName(profileName);
         }
-        
+
         profile.SetIconAddress(address, isCustomIcon);
-        
+
         profilesUpdated?.Invoke();
         if (profile == _activeProfile)
         {
             activeProfileUpdated?.Invoke();
         }
-        
+
         SaveProfiles();
     }
 
@@ -170,10 +172,11 @@ public class ProfileManager : MonoBehaviour
 
     public Sprite TryGetSpriteFromInfo(ProfileIconInfo info)
     {
-        if(string.IsNullOrWhiteSpace(info.Address))
+        if (string.IsNullOrWhiteSpace(info.Address))
         {
             info.Address = DEFAULTICONADDRESS;
         }
+
         if (!_spriteDictionary.ContainsValue(info))
         {
             return null;
@@ -198,33 +201,34 @@ public class ProfileManager : MonoBehaviour
     private async UniTaskVoid GetBuiltInProfileSprites()
     {
         var resourceHandle = Addressables.LoadResourceLocationsAsync("Profile Icon", typeof(Sprite));
-        
+
         var spriteLocations = await resourceHandle;
         foreach (var location in spriteLocations)
         {
             var spriteLoadHandle = Addressables.LoadAssetAsync<Sprite>(location);
-            if(!_spriteAssetHandles.Contains(spriteLoadHandle))
+            if (!_spriteAssetHandles.Contains(spriteLoadHandle))
             {
                 _spriteAssetHandles.Add(spriteLoadHandle);
             }
-            
-            var sprite = await spriteLoadHandle;;
+
+            var sprite = await spriteLoadHandle;
+            ;
             if (sprite == null)
             {
                 continue;
             }
 
             var address = location.PrimaryKey;
-            address =  address.Substring(address.LastIndexOf('/')+1);
+            address = address.Substring(address.LastIndexOf('/') + 1);
             var info = new ProfileIconInfo(address, false);
             _spriteDictionary[sprite] = info;
-            
+
             if (!_sprites.Contains(sprite))
             {
                 _sprites.Add(sprite);
             }
         }
-        
+
         Addressables.Release(resourceHandle);
     }
 
@@ -235,6 +239,7 @@ public class ProfileManager : MonoBehaviour
         {
             Addressables.Release(handle);
         }
+
         _spriteAssetHandles.Clear();
     }
 
@@ -259,6 +264,7 @@ public class ProfileManager : MonoBehaviour
             {
                 filename = DEFAULTICONADDRESS;
             }
+
             var request = Addressables.LoadAssetAsync<Sprite>($"{LOCALPROFILEICONSLOCATION}{filename}");
             await request.ToUniTask(cancellationToken: Instance._cancellationToken);
             if (Instance._cancellationToken.IsCancellationRequested)
@@ -278,7 +284,7 @@ public class ProfileManager : MonoBehaviour
             return null;
         }
     }
-    
+
     private static async UniTask<Sprite> LoadCustomSprite(Profile profile)
     {
         if (!AssetManager.CheckPermissions())
@@ -319,7 +325,7 @@ public class ProfileManager : MonoBehaviour
             File.Delete(path);
         }
     }
-    
+
     public struct ProfileIconInfo
     {
         public string Address { get; set; }
@@ -330,8 +336,8 @@ public class ProfileManager : MonoBehaviour
             Address = address;
             IsCustom = isCustom;
         }
-        
-        public static bool operator==(ProfileIconInfo item1, ProfileIconInfo item2)
+
+        public static bool operator ==(ProfileIconInfo item1, ProfileIconInfo item2)
         {
             return string.Equals(item1.Address, item2.Address) && item1.IsCustom == item2.IsCustom;
         }

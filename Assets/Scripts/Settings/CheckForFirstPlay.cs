@@ -7,16 +7,18 @@ public class CheckForFirstPlay : MonoBehaviour
 {
     [SerializeField]
     private int _targetMenuPage;
-    
+
     private const string PLAYEDBEFORE = "HasPlayerPlayedBefore";
     private bool hasKey;
 
     private void Start()
     {
-        if (ProfileManager.Instance.ActiveProfile == null)
-        {
-            ProfileManager.Instance.activeProfileUpdated.AddListener(RunCheck);
-        }
+        ProfileManager.Instance.activeProfileUpdated.AddListener(RunCheck);
+    }
+
+    private void OnDestroy()
+    {
+        ProfileManager.Instance.activeProfileUpdated.RemoveListener(RunCheck);
     }
 
     private void RunCheck()
@@ -34,7 +36,7 @@ public class CheckForFirstPlay : MonoBehaviour
         }
 
         ShowTutorialRequest();
-        
+
         SettingsManager.SetSetting(PLAYEDBEFORE, true);
     }
 
@@ -47,7 +49,7 @@ public class CheckForFirstPlay : MonoBehaviour
 
         MainMenuUIController.Instance.SetActivePage(_targetMenuPage);
     }
-    
+
     private void GoToMainMenu()
     {
         if (MainMenuUIController.Instance == null)
