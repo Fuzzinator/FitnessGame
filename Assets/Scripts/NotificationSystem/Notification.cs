@@ -135,14 +135,20 @@ public class Notification : MonoBehaviour, IPoolable
 
         if (transform is RectTransform rectTransform)
         {
-            if (!hasBttn1 && !hasBttn2 && !hasBttn3)
+            var targetHeight = visuals.height;
+            if (targetHeight == 0f)
             {
-                rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, NOBUTTONHEIGHT);
+                if (!hasBttn1 && !hasBttn2 && !hasBttn3)
+                {
+                    targetHeight = NOBUTTONHEIGHT;
+                }
+                else
+                {
+                    targetHeight = BASEHEIGHT;
+                }
             }
-            else
-            {
-                rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, BASEHEIGHT);
-            }
+
+            rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, targetHeight);
         }
 
         _disableUI = visuals.disableUI;
@@ -162,7 +168,7 @@ public class Notification : MonoBehaviour, IPoolable
         {
             SceneManager.activeSceneChanged += ReturnOnSceneChange;
         }
-        
+
         if (_autoTimeOutTime <= 0)
         {
             return;
@@ -172,7 +178,7 @@ public class Notification : MonoBehaviour, IPoolable
             .SuppressCancellationThrow();
         ReturnToPool();
     }
-    
+
     public async void SetUpObject(NotificationVisualInfo visuals, Action button1Pressed = null,
         Action button2Pressed = null, Action button3Pressed = null)
     {
@@ -247,7 +253,7 @@ public class Notification : MonoBehaviour, IPoolable
         {
             SceneManager.activeSceneChanged += ReturnOnSceneChange;
         }
-        
+
         if (_autoTimeOutTime <= 0)
         {
             return;
@@ -270,9 +276,9 @@ public class Notification : MonoBehaviour, IPoolable
         {
             return;
         }
-        
+
         SceneManager.activeSceneChanged -= ReturnOnSceneChange;
-        
+
         _message.SetText(string.Empty);
         _button1Txt.SetText(string.Empty);
         _button2Txt.SetText(string.Empty);
@@ -329,9 +335,12 @@ public class Notification : MonoBehaviour, IPoolable
         public float autoTimeOutTime;
         public bool popUp;
         public bool hideOnSceneChange;
+        public float height;
 
         public NotificationVisuals(string message, string header = "", string button1Txt = "", string button2Txt = "",
-            string button3Txt = "", bool disableUI = true, float autoTimeOutTime = 0f, bool popUp = false, bool hideOnSceneChange = true)
+            string button3Txt = "", bool disableUI = true, float autoTimeOutTime = 0f, bool popUp = false,
+            bool hideOnSceneChange = false,
+            float height = 0f)
         {
             this.header = header;
             this.message = message;
@@ -342,6 +351,7 @@ public class Notification : MonoBehaviour, IPoolable
             this.autoTimeOutTime = autoTimeOutTime;
             this.popUp = popUp;
             this.hideOnSceneChange = hideOnSceneChange;
+            this.height = height;
         }
     }
 
@@ -356,5 +366,6 @@ public class Notification : MonoBehaviour, IPoolable
         public float autoTimeOutTime = 0f;
         public bool popUp = false;
         public bool hideOnSceneChange = true;
+        public float height = 0f;
     }
 }

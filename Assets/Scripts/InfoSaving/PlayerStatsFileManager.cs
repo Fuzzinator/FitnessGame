@@ -142,6 +142,10 @@ namespace InfoSaving
             catch (Exception e)when (e is OperationCanceledException)
             {
             }
+            catch (Exception e)
+            {
+                Debug.LogError($"{e.Message}\n {e.StackTrace}");
+            }
 
             return null;
         }

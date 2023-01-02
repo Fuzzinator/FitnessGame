@@ -32,16 +32,6 @@ namespace UI.Scrollers.Playlists
 
         public void SetData(PlaylistItem playlistItem)
         {
-            SetDataAsync(playlistItem).Forget();
-        }
-
-        public void SetHighlight(bool on)
-        {
-            _highlight.gameObject.SetActive(on);
-        }
-
-        private async UniTaskVoid SetDataAsync(PlaylistItem playlistItem)
-        {
             if (_songDetails == null)
             {
                 return;
@@ -57,6 +47,16 @@ namespace UI.Scrollers.Playlists
                 _songDetails.SetText(sb);
             }
         }
+
+        public void SetHighlight(bool on)
+        {
+            _highlight.gameObject.SetActive(on);
+        }
+
+        /*private async UniTaskVoid SetDataAsync(PlaylistItem playlistItem)
+        {
+            
+        }*/
 
         private DifficultyInfo.DifficultyEnum GetTargetDifficulty(PlaylistItem playlistItem)
         {

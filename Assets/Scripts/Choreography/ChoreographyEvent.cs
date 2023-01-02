@@ -30,6 +30,23 @@ public struct ChoreographyEvent// : ISequenceable //First release wont use this 
         get { return HitSideType.Unused; }
     }
 
+    public static RotateEventValue FloatToValue(float source)
+    {
+        var value = RotateEventValue.ClockWise15;
+
+        for (var i = 0; i < _rotationValues.Length; i++)
+        {
+            var rotValue = _rotationValues[i];
+            
+            if (Mathf.Abs(rotValue - source) < .1f)
+            {
+                value = (RotateEventValue) i;
+            }
+        }
+        
+        return value;
+    }
+    
     public ChoreographyEvent(float time, EventType type, RotateEventValue eventValue)
     {
         _time = time;

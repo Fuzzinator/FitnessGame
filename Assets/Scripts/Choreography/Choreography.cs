@@ -54,6 +54,11 @@ public class Choreography
     private const string DAT = ".dat";
     private const string TXT = ".txt";
 
+    private const string V1V1 = "version\":\"1.";
+    private const string V2V1 = "version\":\"2.";
+    
+    private const string V3V1 = "\"version\":\"3.";
+    
     #endregion
 
     public static async UniTask<Choreography> AsyncLoadFromSongInfo(SongInfo info, DifficultyInfo difficultyInfo,
@@ -69,27 +74,43 @@ public class Choreography
         try
         {
             var streamReader = new StreamReader(path);
-            
+
             var json = await streamReader.ReadToEndAsync().AsUniTask().AttachExternalCancellation(token);
             Choreography choreography = null;
 
 
             if (!string.IsNullOrWhiteSpace(json))
             {
-                try
+                var first50 = json[..50].Replace(" ", "");
+                if (first50.Contains(V3V1))
                 {
-                    choreography = JsonUtility.FromJson<Choreography>(json);
+                    var v3Choreography = JsonUtility.FromJson<BeatsaberV3Choreography>(json);
+                    if (v3Choreography.colorNotes != null)
+                    {
+                        choreography = new Choreography(v3Choreography);
+                    }
                 }
-                catch (Exception e)
+                else if (first50.Contains(V1V1) || first50.Contains(V2V1))
                 {
-                    LevelManager.Instance.LoadFailed();
-                    NotificationManager.ReportFailedToLoadInGame($"{songName}'s choreography failed to load.");
-                    Debug.LogError(e);
-                    return choreography;
+                    try
+                    {
+                        choreography = JsonUtility.FromJson<Choreography>(json);
+                    }
+                    catch (Exception e)
+                    {
+                        if (LevelManager.Instance != null)
+                        {
+                            LevelManager.Instance.LoadFailed();
+                            NotificationManager.ReportFailedToLoadInGame($"{songName}'s choreography failed to load.");
+                        }
+
+                        Debug.LogError(e);
+                        return choreography;
+                    }
                 }
             }
 
-            if (choreography == null || choreography.Notes == null)
+            if (LevelManager.Instance != null && choreography?.Notes == null)
             {
                 LevelManager.Instance.LoadFailed();
                 NotificationManager.ReportFailedToLoadInGame($"{songName}'s choreography failed to load.");
@@ -307,6 +328,84 @@ public class Choreography
         private NativeArray<ChoreographyObstacle> _obstacles;
         private ChoreographyCustomData _customData;
     }
+
+    public Choreography()
+    {
+    }
+
+    public Choreography(BeatsaberV3Choreography v3Choreography)
+    {
+        _version = "2.0.0";
+        _events = new ChoreographyEvent[v3Choreography.EventCount];
+        _notes = new ChoreographyNote[v3Choreography.NoteCount];
+        _obstacles = new ChoreographyObstacle[v3Choreography.ObstacleCount];
+
+        for (var i = 0; i < _events.Length; i++)
+        {
+            var rotEvent = v3Choreography.rotationEvents[i];
+            var eventType = rotEvent.e == 0
+                ? ChoreographyEvent.EventType.EarlyRotation
+                : ChoreographyEvent.EventType.LateRotation;
+            var rotValue = ChoreographyEvent.FloatToValue(rotEvent.r);
+            _events[i] = new ChoreographyEvent(rotEvent.b, eventType, rotValue);
+        }
+
+        var targetIndex = 0;
+        var blockIndex = 0;
+        var completedTargets = false;
+        var completedBlocks = false;
+        for (var i = 0; i < _notes.Length; i++)
+        {
+            var targetNote = v3Choreography.colorNotes[targetIndex];
+            var time = targetNote.b;
+            var lineIndex = targetNote.x;
+            var lineLayer = targetNote.y;
+            var type = targetNote.c;
+            var cutDir = targetNote.d;
+
+            if (!completedBlocks && v3Choreography.bombNotes.Length > 0 &&
+                targetNote.b > v3Choreography.bombNotes[blockIndex].b)
+            {
+                if (blockIndex + 1 < v3Choreography.bombNotes.Length)
+                {
+                    blockIndex++;
+                }
+                else
+                {
+                    completedBlocks = true;
+                }
+
+                var blockNote = v3Choreography.bombNotes[blockIndex];
+                time = blockNote.b;
+                lineIndex = blockNote.x;
+                lineLayer = blockNote.y;
+                type = blockNote.C;
+            }
+            else if (!completedTargets)
+            {
+                if (targetIndex + 1 < v3Choreography.colorNotes.Length)
+                {
+                    targetIndex++;
+                }
+                else
+                {
+                    completedTargets = true;
+                }
+            }
+
+            _notes[i] = new ChoreographyNote(time, lineIndex, lineLayer, type, cutDir);
+        }
+
+        for (var i = 0; i < _obstacles.Length; i++)
+        {
+            var obstacle = v3Choreography.obstacles[i];
+            var obstacleType = (int) obstacle.y < 1
+                ? ChoreographyObstacle.ObstacleType.Dodge
+                : ChoreographyObstacle.ObstacleType.Crouch;
+
+            _obstacles[i] = new ChoreographyObstacle(obstacle.b, obstacle.d, obstacleType, obstacle.x, obstacle.w);
+        }
+    }
 }
 
 [BurstCompile]
@@ -405,7 +504,9 @@ public struct CreateNewRotationEventsJob : IJobParallelFor
         {
             return;
         }
-        var newEvent = new ChoreographyEvent(_notes[index*INTERVAL].Time, GetEventType(index), GetRotationEvent(index));
+
+        var newEvent =
+            new ChoreographyEvent(_notes[index * INTERVAL].Time, GetEventType(index), GetRotationEvent(index));
         _events[index] = newEvent;
     }
 

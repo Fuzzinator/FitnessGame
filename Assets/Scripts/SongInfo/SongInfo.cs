@@ -183,9 +183,21 @@ public class SongInfo
         return _difficultyBeatmapSets.Length > 0 ? _difficultyBeatmapSets[0] : new DifficultySet();
     }
 
-    public async UniTask<bool> UpdateDifficultySets(CancellationToken token)
+    public struct UpdatedMaps
     {
-        var madeChange = false;
+        public bool MadeChange { get; private set; }
+        public bool Success { get; private set; }
+
+        public UpdatedMaps(bool madeChange, bool success)
+        {
+            MadeChange = madeChange;
+            Success = success;
+        }
+    }
+    
+    public async UniTask<UpdatedMaps> UpdateDifficultySets(CancellationToken token)
+    {
+        var changeMade = false;
         var difficultySet = new DifficultySet();
         var has90RotationSet = false;
         var has360RotationSet = false;
@@ -201,7 +213,7 @@ public class SongInfo
                 if (_difficultyBeatmapSets[i].MapGameMode == GameMode.Unset)
                 {
                     _difficultyBeatmapSets[i].SetMapGameMode(mapName.GetGameMode());
-                    madeChange = true;
+                    changeMade = true;
                 }
 
                 if (_difficultyBeatmapSets[i].MapGameMode == GameMode.Normal)
@@ -258,13 +270,13 @@ public class SongInfo
                 continue;
             }
 
-            madeChange = true;
             for (var i = 0; i < _difficultyBeatmapSets.Length; i++)
             {
                 if (_difficultyBeatmapSets[i].MapGameMode == GameMode.Unset)
                 {
                     _difficultyBeatmapSets[i] = difficultySet;
                     string newFileName = null;
+                    
                     switch (gameMode)
                     {
                         case GameMode.Unset:
@@ -289,7 +301,11 @@ public class SongInfo
                                 newFileName =
                                     await AsyncCreateNewDifficultyFile(difficultySet.DifficultyInfos[^1], gameMode,
                                         token);
-
+                                
+                                if (string.IsNullOrWhiteSpace(newFileName))
+                                {
+                                    return new UpdatedMaps(false, false);
+                                }
                                 _difficultyBeatmapSets[i].SetFileName(newFileName);
                                 rotation90Set = _difficultyBeatmapSets[i];
                                 has90RotationSet = true;
@@ -312,6 +328,10 @@ public class SongInfo
                                     await AsyncCreateNewDifficultyFile(difficultySet.DifficultyInfos[^1], gameMode,
                                         token);
 
+                                if (string.IsNullOrWhiteSpace(newFileName))
+                                {
+                                    return new UpdatedMaps(false, false);
+                                }
                                 _difficultyBeatmapSets[i].SetFileName(newFileName);
                                 rotation360Set = _difficultyBeatmapSets[i];
                                 has360RotationSet = true;
@@ -325,6 +345,11 @@ public class SongInfo
                             newFileName =
                                 await AsyncCreateNewDifficultyFile(difficultySet.DifficultyInfos[^1], gameMode,
                                     token);
+                            
+                            if (string.IsNullOrWhiteSpace(newFileName))
+                            {
+                                return new UpdatedMaps(false, false);
+                            }
                             _difficultyBeatmapSets[i].SetFileName(newFileName);
                             break;
                         case GameMode.NoObstacles:
@@ -336,21 +361,23 @@ public class SongInfo
                     }
 
                     _difficultyBeatmapSets[i].SetMapGameMode(gameMode);
+                    
+                    changeMade = true;
                     break;
                 }
             }
         }
 
-        for (var i = 0; i < _difficultyBeatmapSets.Length; i++)
+        /*for (var i = 0; i < _difficultyBeatmapSets.Length; i++)
         {
             var removed = _difficultyBeatmapSets[i].TryRemoveExpertPlus();
             if (removed)
             {
-                madeChange = true;
+                changeMade = true;
             }
-        }
+        }*/
 
-        return madeChange;
+        return new UpdatedMaps(changeMade, true);
     }
 
     public void SetDifficultySets(DifficultySet[] sets)
@@ -362,6 +389,10 @@ public class SongInfo
         CancellationToken token)
     {
         var choreography = await Choreography.AsyncLoadFromSongInfo(this, info, token);
+        if (choreography == null)
+        {
+            return null;
+        }
         var newFileName = info.FileName.Substring(0, info.FileName.LastIndexOf('.'));
         switch (mode)
         {
@@ -625,7 +656,9 @@ public class SongInfo
         AuthorName = 3,
         InverseAuthorName = 4,
         SongLength = 5,
-        InverseSongLength = 6
+        InverseSongLength = 6,
+        LevelAuthorName = 7,
+        InverseLevelAuthorName = 8
     }
 
     public static bool operator ==(SongInfo info, PlaylistItem item)
@@ -639,17 +672,17 @@ public class SongInfo
         return !(info == item);
     }
 
-    public static bool operator ==(SongInfo info, BeatSaverSharp.Models.Beatmap beatmap)
+    public static bool operator ==(SongInfo info, Beatmap beatmap)
     {
         return beatmap == info;
     }
 
-    public static bool operator !=(SongInfo info, BeatSaverSharp.Models.Beatmap beatmap)
+    public static bool operator !=(SongInfo info, Beatmap beatmap)
     {
         return beatmap != info;
     }
 
-    public static bool operator ==(BeatSaverSharp.Models.Beatmap beatmap, SongInfo songInfo)
+    public static bool operator ==(Beatmap beatmap, SongInfo songInfo)
     {
         if (beatmap is null && songInfo is null)
         {
@@ -671,7 +704,7 @@ public class SongInfo
                 (levelAuthorMatches && badLevelAuthorData));
     }
 
-    public static bool operator !=(BeatSaverSharp.Models.Beatmap beatmap, SongInfo songInfo)
+    public static bool operator !=(Beatmap beatmap, SongInfo songInfo)
     {
         return !(beatmap == songInfo);
     }

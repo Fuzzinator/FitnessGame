@@ -10,6 +10,12 @@ public class ObjectAndTargetMatReplacer : BaseGameStateListener
 
     private Dictionary<Renderer, Material> _rendererMatSet = new Dictionary<Renderer, Material>();
     private List<Renderer> _renderers = new List<Renderer>();
+    private LocalKeyword _keyword;
+
+    protected void Start()
+    {
+        _keyword = new LocalKeyword(_replacementMat.shader, "_SHOWNOTES");
+    }
 
     protected override void AddListener()
     {
@@ -108,6 +114,7 @@ public class ObjectAndTargetMatReplacer : BaseGameStateListener
             if (_rendererMatSet.TryGetValue(rend, out var material))
             {
                 rend.sharedMaterial = material;
+                //rend.sharedMaterial.SetKeyword(_keyword, true);
             }
         }
     }
@@ -117,6 +124,7 @@ public class ObjectAndTargetMatReplacer : BaseGameStateListener
         foreach (var rend in _renderers)
         {
             rend.sharedMaterial = _replacementMat;
+            //rend.sharedMaterial.SetKeyword(_keyword, false);
         }
     }
 }

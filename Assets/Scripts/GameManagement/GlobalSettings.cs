@@ -14,10 +14,10 @@ public static class GlobalSettings
     public static UnityEvent<Vector3> RControllerOffsetChanged = new UnityEvent<Vector3>();
     public static float UserHeight
     {
-        get => ES3.Load(USERHEIGHT, -1f);
+        get => SettingsManager.GetSetting(USERHEIGHT, -1f);
         set
         {
-            ES3.Save(USERHEIGHT, value);
+            SettingsManager.SetSetting(USERHEIGHT, value);
             UserHeightChanged?.Invoke(value);
         }
         
@@ -25,20 +25,20 @@ public static class GlobalSettings
 
     public static Vector3 LControllerOffset
     {
-        get => ES3.Load(LCONTROLLEROFFSET, Vector3.zero);
+        get => SettingsManager.GetSetting(LCONTROLLEROFFSET, Vector3.zero);
         set
         {
-            ES3.Save(LCONTROLLEROFFSET, value);
+            SettingsManager.SetSetting(LCONTROLLEROFFSET, value);
             LControllerOffsetChanged?.Invoke(value);
         }
     }
 
     public static Vector3 RControllerOffset
     {
-        get => ES3.Load(RCONTROLLEROFFSET, Vector3.zero);
+        get => SettingsManager.GetSetting(RCONTROLLEROFFSET, Vector3.zero);
         set
         {
-            ES3.Save(RCONTROLLEROFFSET, value);
+            SettingsManager.SetSetting(RCONTROLLEROFFSET, value);
             RControllerOffsetChanged?.Invoke(value);
         }
     }

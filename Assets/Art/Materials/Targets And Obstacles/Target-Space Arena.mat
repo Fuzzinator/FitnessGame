@@ -20,19 +20,18 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Hide Objects
+  m_Name: Target-Space Arena
   m_Shader: {fileID: -6465566751694194690, guid: 484375f57bc0ac74f86bba3b66c843ab,
     type: 3}
-  m_ShaderKeywords: _SURFACE_TYPE_TRANSPARENT _TEXTURESET_TARGETS _USEDISTANCEOFFSET
+  m_ShaderKeywords: _ALPHATEST_ON _SHOWNOTES _TEXTURESET_TARGETS _USEDISTANCEDISSOLVE
+    _USEDISTANCEOFFSET
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3000
+  m_CustomRenderQueue: 2450
   stringTagMap:
-    RenderType: Transparent
-  disabledShaderPasses:
-  - DepthOnly
-  - SHADOWCASTER
+    RenderType: TransparentCutout
+  disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -114,21 +113,21 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AlphaClip: 0
+    - _AlphaClip: 1
     - _AlphaStrength: 1
-    - _Alpha_Clip: 0
+    - _Alpha_Clip: 0.5
     - _Appear_Distance: 12
     - _Base_Color_Strength: 1
     - _Blend: 0
     - _BumpScale: 1
-    - _CastShadows: 0
+    - _CastShadows: 1
     - _Color_Strength: 10
     - _Cull: 2
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _Dissolve_Power: 0.5
     - _Dissolve_Range: 1.5
-    - _DstBlend: 10
+    - _DstBlend: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossinessSource: 0
@@ -140,39 +139,39 @@ Material:
     - _Normal_Strength: 1
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _Position_Change_Distance: 1
-    - _Position_Change_Range: 1
+    - _Position_Change_Distance: 2.5
+    - _Position_Change_Range: 10
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Rotation: 180
-    - _SHOWNOTES: 0
+    - _SHOWNOTES: 1
     - _Shininess: 0
     - _Smoothness: 0.5
     - _SmoothnessSource: 0
     - _SmoothnessTextureChannel: 0
     - _SpecSource: 0
     - _SpecularHighlights: 1
-    - _SrcBlend: 5
-    - _Surface: 1
+    - _SrcBlend: 1
+    - _Surface: 0
     - _TEXTURESET: 0
-    - _TextureIndex: 1
-    - _USEDISTANCEDISSOLVE: 0
+    - _TextureIndex: 0
+    - _USEDISTANCEDISSOLVE: 1
     - _USEDISTANCEOFFSET: 1
     - _UVSec: 0
     - _WorkflowMode: 1
     - _ZTest: 4
-    - _ZWrite: 0
+    - _ZWrite: 1
     - _ZWriteControl: 0
     m_Colors:
     - _BaseColor: {r: 0.7075472, g: 0.7075472, b: 0.7075472, a: 1}
-    - _Base_Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Base_Color: {r: 1, g: 1, b: 1, a: 0}
     - _CenterPosition: {r: 0, g: 0, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Color_1: {r: 1, g: 1, b: 1, a: 0}
     - _DissolveColor: {r: 3.979057, g: 0.3141361, b: 0, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _Position_Change: {r: 0, g: 0, b: 0, a: 0}
+    - _Position_Change: {r: 0, g: 1, b: 0, a: 0}
     - _Rotation_Axis: {r: 1, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
     - _Tiling: {r: 1, g: 1, b: 0, a: 0}

@@ -421,10 +421,10 @@ public class ChoreographySequencer : MonoBehaviour
                         .localPosition;
                 return new Vector3(0, lineLayerObj.y, 0);
             case HitSideType.Left:
-                return _sequenceStartPoses[Mathf.Min(1 + (int) note.LineLayer * 4, _sequenceStartPoses.Length - 3)]
+                return _sequenceStartPoses[Mathf.Min(2 + (int) note.LineLayer * 4, _sequenceStartPoses.Length - 2)]
                     .localPosition;
             case HitSideType.Right:
-                return _sequenceStartPoses[Mathf.Min(2 + (int) note.LineLayer * 4, _sequenceStartPoses.Length - 2)]
+                return _sequenceStartPoses[Mathf.Min(1 + (int) note.LineLayer * 4, _sequenceStartPoses.Length - 3)]
                     .localPosition;
             default:
                 return Vector3.zero;

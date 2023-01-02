@@ -78,6 +78,7 @@ public class LevelNotificationRequester : MonoBehaviour
         _visualInfo.disableUI = false;
         _visualInfo.autoTimeOutTime = 4f;
         _visualInfo.popUp = true;
+        _visualInfo.height = 0f;
         
         //var visuals = new Notification.NotificationVisuals(message, SONGCOMPLETE, disableUI:false, autoTimeOutTime:4f, popUp:true);
         NotificationManager.RequestNotification(_visualInfo,  _mainMenuAction);
@@ -104,6 +105,7 @@ public class LevelNotificationRequester : MonoBehaviour
         _visualInfo.disableUI = false;
         _visualInfo.autoTimeOutTime = 0f;
         _visualInfo.popUp = false;
+        _visualInfo.height = 0f;
         
         NotificationManager.RequestNotification(_visualInfo,  _mainMenuAction);
     }

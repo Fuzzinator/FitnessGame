@@ -255,8 +255,8 @@ public class Playlist
         None = 0,
         PlaylistName = 1,
         InversePlaylistName = 2,
-        PlaylistLength = 5,
-        InversePlaylistLength = 6
+        PlaylistLength = 3,
+        InversePlaylistLength = 4
     }
 
     #region Upgrade Support

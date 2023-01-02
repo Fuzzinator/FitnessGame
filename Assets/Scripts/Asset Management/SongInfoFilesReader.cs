@@ -19,7 +19,7 @@ public class SongInfoFilesReader : MonoBehaviour
 
     [SerializeField]
     private AssetLabelReference _labelReference;
-    
+
     [SerializeField]
     private UnityEvent _startSongsUpdate = new UnityEvent();
 
@@ -31,7 +31,7 @@ public class SongInfoFilesReader : MonoBehaviour
 
     [SerializeField]
     private UnityEvent<SongInfo> _songRemoved = new UnityEvent<SongInfo>();
-    
+
     [Header("UI Thingy")]
     [SerializeField]
     private DisplaySongInfo _displaySongInfo;
@@ -42,6 +42,7 @@ public class SongInfoFilesReader : MonoBehaviour
     public SongInfo.SortingMethod CurrentSortingMethod => _sortingMethod;
 
     #region Const Strings
+
     private const string SONGINFONAME = "Info.txt";
     private const string ALTSONGINFONAME = "Info.dat";
 
@@ -87,6 +88,7 @@ public class SongInfoFilesReader : MonoBehaviour
     private async UniTask UpdateAvailableSongs()
     {
         availableSongs.Clear();
+
         void AddSongs(SongInfo info)
         {
             availableSongs.Add(info);
@@ -94,7 +96,7 @@ public class SongInfoFilesReader : MonoBehaviour
         }
 
         await AssetManager.GetBuiltInSongs(_labelReference, AddSongs);
-        await AssetManager.GetCustomSongs(AddSongs,_cancellationSource);
+        await AssetManager.GetCustomSongs(AddSongs, _cancellationSource);
         SortSongs();
         _songsUpdated?.Invoke();
     }
@@ -108,7 +110,7 @@ public class SongInfoFilesReader : MonoBehaviour
         }
 
         var deleteVisuals = new Notification.NotificationVisuals(
-            $"Are you sure you would like to permanently delete {targetSongInfo.SongName}?", 
+            $"Are you sure you would like to permanently delete {targetSongInfo.SongName}?",
             "Delete Song?", "Confirm", "Cancel");
 
         NotificationManager.RequestNotification(deleteVisuals, () => ConfirmDeleteSong(targetSongInfo).Forget());
@@ -117,11 +119,11 @@ public class SongInfoFilesReader : MonoBehaviour
     private async UniTaskVoid ConfirmDeleteSong(SongInfo targetSongInfo)
     {
         MainMenuUIController.Instance.RequestDisableUI(this);
-        
+
         availableSongs.Remove(targetSongInfo);
         _songRemoved?.Invoke(targetSongInfo);
         _songsUpdated?.Invoke();
-        
+
         await AssetManager.DeleteCustomSong(targetSongInfo);
         //_displaySongInfo.ClearDisplayedInfo();
         PlaylistMaker.Instance.SetActiveItem(new SongInfo());
@@ -130,7 +132,6 @@ public class SongInfoFilesReader : MonoBehaviour
 
     public async UniTask LoadNewSong(string songFolderName)
     {
-        
         var songInfo = await AssetManager.TryGetSingleCustomSong(songFolderName, _cancellationSource.Token);
         if (songInfo != null)
         {
@@ -159,25 +160,33 @@ public class SongInfoFilesReader : MonoBehaviour
                 return;
             case SongInfo.SortingMethod.SongName:
                 availableSongs.Sort((x, y) =>
-                    string.Compare(x.SongName, y.SongName, StringComparison.Ordinal));
+                    string.Compare(x.SongName, y.SongName, StringComparison.InvariantCulture));
                 break;
             case SongInfo.SortingMethod.InverseSongName:
                 availableSongs.Sort((x, y) =>
-                    string.Compare(y.SongName, x.SongName, StringComparison.Ordinal));
+                    string.Compare(y.SongName, x.SongName, StringComparison.InvariantCulture));
                 break;
             case SongInfo.SortingMethod.AuthorName:
                 availableSongs.Sort((x, y) =>
-                    string.Compare(x.SongAuthorName, y.SongAuthorName, StringComparison.Ordinal));
+                    string.Compare(x.SongAuthorName, y.SongAuthorName, StringComparison.InvariantCulture));
                 break;
             case SongInfo.SortingMethod.InverseAuthorName:
                 availableSongs.Sort((x, y) =>
-                    string.Compare(y.SongAuthorName, x.SongAuthorName, StringComparison.Ordinal));
+                    string.Compare(y.SongAuthorName, x.SongAuthorName, StringComparison.InvariantCulture));
                 break;
             case SongInfo.SortingMethod.SongLength:
                 availableSongs.Sort((x, y) => x.SongLength.CompareTo(y.SongLength));
                 break;
             case SongInfo.SortingMethod.InverseSongLength:
                 availableSongs.Sort((x, y) => y.SongLength.CompareTo(x.SongLength));
+                break;
+            case SongInfo.SortingMethod.LevelAuthorName:
+                availableSongs.Sort((x, y) =>
+                    string.Compare(x.LevelAuthorName, y.LevelAuthorName, StringComparison.InvariantCulture));
+                break;
+            case SongInfo.SortingMethod.InverseLevelAuthorName:
+                availableSongs.Sort((x, y) =>
+                    string.Compare(y.LevelAuthorName, x.LevelAuthorName, StringComparison.InvariantCulture));
                 break;
         }
     }

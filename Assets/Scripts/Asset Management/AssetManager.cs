@@ -42,7 +42,7 @@ public class AssetManager : MonoBehaviour
     #if UNITY_ANDROID
     private const string ANDROIDPATHSTART = "file://";
     #endif
-    
+
 #endif
 
     public static readonly string SongsPath = $"{DataPath}{SONGSFOLDER}";
@@ -69,7 +69,7 @@ public class AssetManager : MonoBehaviour
     {
         return
 #if UNITY_EDITOR
-        Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/'));
+            Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/'));
 #elif UNITY_ANDROID
             Application.persistentDataPath;
 #elif UNITY_STANDALONE_WIN
@@ -192,7 +192,6 @@ public class AssetManager : MonoBehaviour
     {
         try
         {
-
             if (!File.Exists(path))
             {
                 Debug.LogWarning($"No image found at\"{path}\"");
@@ -277,7 +276,7 @@ public class AssetManager : MonoBehaviour
             Debug.LogWarning("User did not give permissions cannot access custom files");
             return;
         }
-        
+
         if (!Directory.Exists(PlaylistsPath))
         {
             Directory.CreateDirectory(PlaylistsPath);
@@ -319,25 +318,27 @@ public class AssetManager : MonoBehaviour
                     }
 
                     #region Upgrading Playlists
+
                     var shouldSave = false;
                     if (string.IsNullOrWhiteSpace(playlist.Version))
                     {
                         playlist.UpgradePlaylistSoSongsAreOverrides();
                         shouldSave = true;
                     }
-                    
+
                     if (string.IsNullOrWhiteSpace(playlist.GUID))
                     {
                         playlist.UpgradePlaylistAddGuid();
                         shouldSave = true;
                     }
-                    
-                    if(shouldSave)
+
+                    if (shouldSave)
                     {
                         await SavePlaylist(playlist, file.FullName);
                     }
+
                     #endregion
-                    
+
                     playlist.isValid = await PlaylistValidator.IsValid(playlist);
                     playlistLoaded?.Invoke(playlist);
                     await UniTask.DelayFrame(1, cancellationToken: cancellationToken);
@@ -405,7 +406,7 @@ public class AssetManager : MonoBehaviour
             Debug.LogWarning("User did not give permissions cannot access custom files");
             return;
         }
-        
+
         if (!Directory.Exists(SongsPath))
         {
             Directory.CreateDirectory(SongsPath);
@@ -430,6 +431,7 @@ public class AssetManager : MonoBehaviour
             Debug.LogWarning("User did not give permissions cannot access custom files");
             return null;
         }
+
         var path = $"{SongsPath}{fileLocation}";
         if (!Directory.Exists(path))
         {
@@ -498,8 +500,18 @@ public class AssetManager : MonoBehaviour
                     item.SetImage(tex);
                 }
 
-                var madeChange = await item.UpdateDifficultySets(token);
-                if (madeChange)
+                var updated = await item.UpdateDifficultySets(token);
+
+                if (!updated.Success)
+                {
+                    var visuals = new Notification.NotificationVisuals(
+                        $"\"{item.SongName}\" was unable to be read and will not be imported.",
+                        $"Failed To Load Song \"{item.SongName}\"", autoTimeOutTime: 2.5f);
+                    NotificationManager.RequestNotification(visuals);
+                    return null;
+                }
+
+                if (updated.MadeChange)
                 {
                     updatedMaps = true;
                 }
@@ -525,8 +537,8 @@ public class AssetManager : MonoBehaviour
 
         return null;
     }
-    
-    
+
+
     public static async UniTask DeleteCustomSong(SongInfo info)
     {
         if (!Directory.Exists(SongsPath))
@@ -536,7 +548,7 @@ public class AssetManager : MonoBehaviour
 
         await UniTask.RunOnThreadPool(() => Directory.Delete(SongsPath, true));
     }
-    
+
     public static void DeletePlaylist(string playlistName)
     {
         var filePath = $"{PlaylistsPath}{playlistName}{PLAYLISTEXTENSION}";
@@ -544,7 +556,7 @@ public class AssetManager : MonoBehaviour
         {
             File.Delete(filePath);
         }
-        
+
         var imagePath = $"{PlaylistsPath}{playlistName}{JPGEXTENSION}";
         if (File.Exists(imagePath))
         {
@@ -569,7 +581,7 @@ public class AssetManager : MonoBehaviour
         var writingTask = streamWriter.WriteAsync(json);
 
         await writingTask;
-        
+
         streamWriter.Close();
     }
 }

@@ -134,11 +134,11 @@ public class PlaylistFilesReader : MonoBehaviour
                 return;
             case Playlist.SortingMethod.PlaylistName:
                 availablePlaylists.Sort((x, y) => 
-                    string.Compare(x.PlaylistName, y.PlaylistName, StringComparison.Ordinal));
+                    string.Compare(x.PlaylistName, y.PlaylistName, StringComparison.InvariantCulture));
                 break;
             case Playlist.SortingMethod.InversePlaylistName:
                 availablePlaylists.Sort((x, y) => 
-                    string.Compare(y.PlaylistName, x.PlaylistName, StringComparison.Ordinal));
+                    string.Compare(y.PlaylistName, x.PlaylistName, StringComparison.InvariantCulture));
                 break;
             case Playlist.SortingMethod.PlaylistLength:
                 availablePlaylists.Sort((x, y) => x.Length.CompareTo(y.Length));

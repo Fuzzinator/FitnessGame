@@ -83,8 +83,33 @@ public class BeatSaverPageController : MonoBehaviour
         }
     }
 
+    public void RequestFilterBy(int sortingOptions)
+    {
+        _showLoadingObject.SetActive(true);
+        var search = ((SortingOptions) sortingOptions) switch
+        {
+            SortingOptions.Latest => SearchTextFilterOption.Latest,
+            SortingOptions.Relevance => SearchTextFilterOption.Relevance,
+            SortingOptions.Rating => SearchTextFilterOption.Rating,
+            SortingOptions.Curated => SearchTextFilterOption.Curated,
+            _ => throw new ArgumentOutOfRangeException(nameof(sortingOptions), sortingOptions, null)
+        };
+        search.Query = _inputField.text;
+        
+        SearchAsync(search).Forget();
+    }
+
     #region Webcalls
 
+    public void RequestCurated()
+    {
+        _showLoadingObject.SetActive(true);
+        var alphabetical = SearchTextFilterOption.Curated;
+        alphabetical.Query = _inputField.text;
+        
+        SearchAsync(alphabetical).Forget();
+    }
+    
     public void RequestLatest()
     {
         _showLoadingObject.SetActive(true);

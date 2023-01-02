@@ -7,44 +7,35 @@ using UnityEngine.InputSystem;
 
 public class SetPlayerProportions : MonoBehaviour
 {
+    [SerializeField]
+    private bool _resetOnStart;
     private const string RESETHEADSET = "Reset Headset";
 
     // Start is called before the first frame update
     private void Start()
     {
-        var height = GlobalSettings.UserHeight;
-        if (height < 0)
-        {
-            height = Head.Instance.transform.position.y;
-            
-            GlobalSettings.UserHeight = height;
-        }
-    }
-
-    /*private void OnEnable()
-    {
-        //InputManager.Instance.MainInput[RESETHEADSET].performed += ResetHeadset;
-    }*/
-
-    /*private void OnDisable()
-    {
-        if (InputManager.Instance == null)
+        if (!_resetOnStart)
         {
             return;
         }
+        
+        var height = GlobalSettings.UserHeight;
+        if (height < 0)
+        {
+            ResetHeadsetWithDelay().Forget();
+        }
+    }
 
-        //InputManager.Instance.MainInput[RESETHEADSET].performed -= ResetHeadset;
-    }*/
+    public void SetHeight()
+    {
+        GlobalSettings.UserHeight = Head.Instance.transform.position.y;
+    }
 
     private async UniTaskVoid ResetHeadsetWithDelay()
     {
         await UniTask.Delay(TimeSpan.FromSeconds(1), cancellationToken: this.GetCancellationTokenOnDestroy(),
             ignoreTimeScale: false);
-        ResetHeadset(new InputAction.CallbackContext());
-    }
-
-    private void ResetHeadset(InputAction.CallbackContext context)
-    {
-        GlobalSettings.UserHeight = Head.Instance.transform.position.y;
+        
+        SetHeight();
     }
 }

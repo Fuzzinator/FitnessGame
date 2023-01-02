@@ -96,10 +96,7 @@ public struct ChoreographyNote// : ISequenceable
         HookRightDown = 7,//Will be treated as Jab(8) {Only exists for BeatSaber map support}
         Jab = 8
     }
-
-    
 }
-
 
 public enum HitSideType
 {
