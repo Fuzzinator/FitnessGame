@@ -35,6 +35,9 @@ namespace InfoSaving
         private static readonly string SongFolder = $"{Path}{SONGRECORDS}";
         private static readonly string PlaylistFolder = $"{Path}{PLAYLISTRECORDS}";
 
+        private static readonly SongAndPlaylistScoreRecord[] _scores = new SongAndPlaylistScoreRecord[5];
+        private static readonly SongAndPlaylistStreakRecord[] _streaks = new SongAndPlaylistStreakRecord[5];
+
 
         private static ES3Settings SongSettings => _songSettings ??= new ES3Settings(SongFolder);
         private static ES3Settings PlaylistSettings => _playlistSettings ??= new ES3Settings(PlaylistFolder);
@@ -199,13 +202,12 @@ namespace InfoSaving
         }
 
         public static async UniTask<SongAndPlaylistRecords> TryGetRecords(SongInfo info, DifficultyInfo.DifficultyEnum difficultyEnum,
-            GameMode gameMode, SongAndPlaylistScoreRecord[] records, SongAndPlaylistStreakRecord[] streaks,
-            CancellationToken token)
+            GameMode gameMode, CancellationToken token)
         {
-            var currentSongScoreName = SongInfoReader.GetFullSongName(info, difficultyEnum, gameMode,  SCORE);
+            var currentSongScoreName = SongInfoReader.GetFullSongName(info, difficultyEnum, gameMode, SCORE);
             var hasScoreRecord = await SongKeyExists(currentSongScoreName);
 
-            var currentSongStreakName = SongInfoReader.GetFullSongName(info, difficultyEnum, gameMode , STREAK);
+            var currentSongStreakName = SongInfoReader.GetFullSongName(info, difficultyEnum, gameMode, STREAK);
             var hasStreakRecord = await SongKeyExists(currentSongStreakName);
 
             var exists = hasScoreRecord && hasStreakRecord;
@@ -216,22 +218,25 @@ namespace InfoSaving
                 exists = await SongKeyExists(oldKey);
                 if (exists)
                 {
-                    await UpgradeFromSingleStatsRecord(records, streaks, oldKey, token);
+                    var upgraded = await UpgradeFromSingleStatsRecord(oldKey, token);
                     DeleteSongKey(oldKey);
+                    return upgraded;
                 }
             }
             else
             {
                 try
                 {
-                    records =
+                    var recordScores =
                         (SongAndPlaylistScoreRecord[]) await GetSongValue<SongAndPlaylistScoreRecord[]>(
-                            currentSongScoreName,
-                            token);
-                    streaks =
+                            currentSongScoreName, token) ?? _scores;
+                    
+
+                    var recordStreaks =
                         (SongAndPlaylistStreakRecord[]) await GetSongValue<SongAndPlaylistStreakRecord[]>(
-                            currentSongStreakName,
-                            token);
+                            currentSongStreakName, token) ?? _streaks;
+                    
+                    return new SongAndPlaylistRecords(exists, recordScores, recordStreaks);
                 }
                 catch (Exception e)
                 {
@@ -240,26 +245,73 @@ namespace InfoSaving
                 }
             }
 
-            return new SongAndPlaylistRecords(exists, records, streaks);
+            return new SongAndPlaylistRecords(false, _scores, _streaks);
         }
 
-        
+        public static async UniTask<SongAndPlaylistRecords> TryGetRecords(Playlist playlist, CancellationToken token)
+        {
+            var playlistFullScoreName = $"{SCORE}{playlist.GUID}-{playlist.DifficultyEnum}-{playlist.TargetGameMode}";
+            var playlistFullStreakName = $"{STREAK}{playlist.GUID}-{playlist.DifficultyEnum}-{playlist.TargetGameMode}";
+
+            var scoreExists = await PlaylistKeyExists(playlistFullScoreName);
+            var streakExists = await PlaylistKeyExists(playlistFullStreakName);
+
+            var exists = scoreExists && streakExists;
+
+            if (!exists)
+            {
+                var oldKey = $"{playlist.PlaylistName}-{playlist.Length}-{playlist.Items.Length}";
+                var keyExists = await SongKeyExists(oldKey);
+                if (keyExists)
+                {
+                    #region Upgrading
+
+                    var upgraded = await UpgradeFromSingleStatsRecord(oldKey, token);
+                    DeletePlaylistKey(oldKey);
+                    
+                    return upgraded;
+                    #endregion
+                }
+            }
+            else
+            {
+                try
+                {
+                    var recordScores =
+                        (SongAndPlaylistScoreRecord[]) await GetPlaylistValue<SongAndPlaylistScoreRecord[]>(
+                            playlistFullScoreName, token) ?? _scores;
+
+
+                    var recordStreaks =
+                        (SongAndPlaylistStreakRecord[]) await GetPlaylistValue<SongAndPlaylistStreakRecord[]>(
+                            playlistFullStreakName, token) ?? _streaks;
+                    
+                    return new SongAndPlaylistRecords(true, recordScores, recordStreaks);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError(e);
+                    throw;
+                }
+            }
+
+            return new SongAndPlaylistRecords(false, _scores, _streaks);
+        }
+
 
         #region Upgrading
 
-        public static async UniTask UpgradeFromSingleStatsRecord(SongAndPlaylistScoreRecord[] scores,
-            SongAndPlaylistStreakRecord[] streaks, string key, CancellationToken token)
+        public static async UniTask<SongAndPlaylistRecords> UpgradeFromSingleStatsRecord(string key,
+            CancellationToken token)
         {
             var oldRecord = (SongAndPlaylistRecord) await GetSongValue<SongAndPlaylistRecord>(
                 key, token);
             oldRecord = new SongAndPlaylistRecord(oldRecord.Score, oldRecord.Streak);
+            var scores = new SongAndPlaylistScoreRecord[5];
+            var streaks = new SongAndPlaylistStreakRecord[5];
             scores[0] = new SongAndPlaylistScoreRecord(oldRecord.Score);
             streaks[0] = new SongAndPlaylistStreakRecord(oldRecord.Streak);
-            for (var i = 1; i < scores.Length; i++)
-            {
-                scores[i] = new SongAndPlaylistScoreRecord();
-                streaks[i] = new SongAndPlaylistStreakRecord();
-            }
+            return new SongAndPlaylistRecords(true, scores, streaks);
         }
 
         #endregion

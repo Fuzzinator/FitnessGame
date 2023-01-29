@@ -32,11 +32,13 @@ public class BaseTarget : MonoBehaviour, IPoolable
 
     [SerializeField]
     private SetTargetHighlightColor _highlightColorSetter;
-    
+
     protected bool _wasHit = false;
 
     protected IValidHit[] _validHitEffects;
     protected IMissedHit[] _missedHitEffects;
+
+    private const string PrecisionMode = "PrecisionMode";
     public bool WasHit => _wasHit;
     public PoolManager MyPoolManager { get; set; }
     public Vector3 OptimalHitPoint { get; protected set; }
@@ -47,16 +49,16 @@ public class BaseTarget : MonoBehaviour, IPoolable
 
     private int _nameLayer;
 
-    #if UNITY_EDITOR
+#if UNITY_EDITOR
     private void OnDrawGizmos()
     {
         var color = Gizmos.color;
         Gizmos.color = Color.green;
-        Gizmos.DrawLine(Vector3.zero, _optimalHitDirection);
+        Gizmos.DrawLine(transform.position, transform.position + _optimalHitDirection);
         Gizmos.color = color;
     }
 #endif
-    
+
     public void Initialize()
     {
         _validHitEffects = GetComponents<IValidHit>();
@@ -143,19 +145,22 @@ public class BaseTarget : MonoBehaviour, IPoolable
         return hand.AssignedHand == _noteType;
     }
 
-    protected bool IsValidDirection(Collision other, Hand hand, out float impactDotProd, out float dirDotProd, out float handDotProd)
+    protected bool IsValidDirection(Collision other, Hand hand, out float impactDotProd, out float dirDotProd,
+        out float handDotProd)
     {
+        var precisionMode = SettingsManager.GetCachedSetting(PrecisionMode, false);
         var handDirection = transform.InverseTransformDirection(hand.MovementDirection);
-        var isSwinging = hand.IsSwinging();
+        var isSwinging = !precisionMode || hand.IsSwinging();
         impactDotProd = Vector3.Dot(-handDirection, _optimalHitDirection);
         var collisionDirection = Vector3.Normalize(other.GetContact(0).point - transform.position);
         dirDotProd = Vector3.Dot(collisionDirection, _optimalHitDirection);
         handDotProd = Vector3.Dot(_optimalHitDirection, hand.ForwardDirection);
         
 #if UNITY_EDITOR
-        return isSwinging; //true;
+        return isSwinging && (!precisionMode || handDotProd<-.5f);; //true;
 #else
-        return isSwinging && impactDotProd > _minMaxAllowance.x && hand.MovementSpeed>_minHitSpeed && handDotProd<-.5f;
+        return isSwinging && impactDotProd > _minMaxAllowance.x && hand.MovementSpeed>_minHitSpeed &&
+               (!precisionMode || handDotProd<-.5f);
 #endif
     }
 

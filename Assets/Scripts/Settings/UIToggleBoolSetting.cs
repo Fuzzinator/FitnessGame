@@ -7,62 +7,79 @@ using UnityEngine.UI;
 
 public class UIToggleBoolSetting : MonoBehaviour, ISaver
 {
-   [SerializeField]
-   private string _settingName;
-   [SerializeField]
-   private bool _defaultValue;
-   
-   [SerializeField]
-   private Toggle _toggle;
-   [SerializeField]
-   private TextMeshProUGUI _text;
-   [SerializeField]
-   private SettingsDisplay _settingsDisplay;
+    [SerializeField]
+    private string _settingName;
 
-   private bool _currentValue;
-   
-   public bool SaveRequested { get; set; }
-   
-   private const string ON = "On";
-   private const string OFF = "Off";
-   
-   private void OnEnable()
-   {
-      Revert();
-      SaveRequested = false;
-   }
+    [SerializeField]
+    private bool _defaultValue;
 
-   private void OnDisable()
-   {
-      if (!SaveRequested)
-      {
-         Revert();
-      }
-   }
+    [SerializeField]
+    private bool _cached = false;
 
-   public void ToggleSet(bool isOn)
-   {
-      if (_currentValue != isOn)
-      {
-         _currentValue = isOn;
-         _text.SetText(isOn?ON:OFF);
-         _settingsDisplay.ChangeWasMade(this);
-         
-         SaveRequested = true;
-      }
-   }
+    [SerializeField]
+    private Toggle _toggle;
 
-   public void Save()
-   {
-      SettingsManager.SetSetting(_settingName, _currentValue);
-      SaveRequested = false;
-   }
+    [SerializeField]
+    private TextMeshProUGUI _text;
 
-   public void Revert()
-   {
-      _currentValue = SettingsManager.GetSetting(_settingName, _defaultValue);
-      _toggle.SetIsOnWithoutNotify(_currentValue);
-      _text.SetText(_currentValue?ON:OFF);
-      SaveRequested = false;
-   }
+    [SerializeField]
+    private SettingsDisplay _settingsDisplay;
+
+    private bool _currentValue;
+
+    public bool SaveRequested { get; set; }
+
+    private const string ON = "On";
+    private const string OFF = "Off";
+
+    private void OnEnable()
+    {
+        Revert();
+        SaveRequested = false;
+    }
+
+    private void OnDisable()
+    {
+        if (!SaveRequested)
+        {
+            Revert();
+        }
+    }
+
+    public void ToggleSet(bool isOn)
+    {
+        if (_currentValue != isOn)
+        {
+            _currentValue = isOn;
+            _text.SetText(isOn ? ON : OFF);
+            _settingsDisplay.ChangeWasMade(this);
+
+            SaveRequested = true;
+        }
+    }
+
+    public void Save()
+    {
+        if (_cached)
+        {
+            SettingsManager.SetCachedSetting(_settingName, _currentValue);
+        }
+        else
+        {
+            SettingsManager.SetSetting(_settingName, _currentValue);
+        }
+
+        SaveRequested = false;
+    }
+
+    public void Revert()
+    {
+        _currentValue = _cached
+            ? SettingsManager.GetCachedSetting(_settingName, _defaultValue)
+            : SettingsManager.GetSetting(_settingName, _defaultValue);
+        
+        _toggle.SetIsOnWithoutNotify(_currentValue);
+        _text.SetText(_currentValue ? ON : OFF);
+        SaveRequested = false;
+    }
 }

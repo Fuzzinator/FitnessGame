@@ -1,17 +1,33 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Audio;
 
 public class SettingsManager : MonoBehaviour
 {
+    public static SettingsManager Instance { get; private set; }
+
     [SerializeField]
     private AudioMixer _mixer;
 
-    public static SettingsManager Instance { get; private set; }
-
     private static float[] _volumes = new float[3];
+
+    private static Dictionary<string, bool> _boolSettings;
+    private static Dictionary<string, float> _floatSettings;
+    private static Dictionary<string, int> _intSettings;
+
+    public static readonly Quaternion DEFAULTGLOVEROTATION =
+#if UNITY_ANDROID && !UNITY_EDITOR //Oculus Quest 2
+        new Quaternion(0.173648164f,0f,0f,0.984807789f);
+#elif UNITY_EDITOR
+        Quaternion.identity;
+#elif UNITY_STANDALONE_WIN
+        Quaternion.identity;
+#else
+        Quaternion.identity;
+#endif
 
     #region Const Strings
 
@@ -32,17 +48,7 @@ public class SettingsManager : MonoBehaviour
     private const string FPSSETTING = "TargetFrameRate";
 
     private static readonly string[] _volumeNames = new[] {MASTERVOLUME, MUSICVOLUME, SFXVOLUME};
-    
-    public static readonly Quaternion DEFAULTGLOVEROTATION =
-#if UNITY_ANDROID && !UNITY_EDITOR//Oculus Quest 2
-        new Quaternion(0.173648164f,0f,0f,0.984807789f);
-#elif UNITY_EDITOR
-        Quaternion.identity;
-#elif UNITY_STANDALONE_WIN
-        Quaternion.identity;
-#else
-        Quaternion.identity;
-#endif
+
     #endregion
 
     private void Awake()
@@ -61,6 +67,28 @@ public class SettingsManager : MonoBehaviour
     {
         SetAudioSettings();
         SetTargetFPS();
+
+        if (ProfileManager.Instance != null)
+        {
+            ProfileManager.Instance.activeProfileUpdated.AddListener(ProfileChanged);
+        }
+        else
+        {
+            WaitForProfileManager().Forget();
+        }
+    }
+
+    private async UniTaskVoid WaitForProfileManager()
+    {
+        await UniTask.WaitUntil(() => ProfileManager.Instance != null);
+        ProfileManager.Instance.activeProfileUpdated.AddListener(ProfileChanged);
+    }
+
+    private void ProfileChanged()
+    {
+        _boolSettings?.Clear();
+        _floatSettings?.Clear();
+        _intSettings?.Clear();
     }
 
     #region Audio Settings
@@ -126,10 +154,58 @@ public class SettingsManager : MonoBehaviour
 
     #endregion
 
+    public static void SetCachedSetting<T>(string settingName, T value) where T : struct
+    {
+        CachSetting(settingName, value);
+        SetSetting(settingName, value);
+    }
+
+    private static void CachSetting<T>(string settingName, T value) where T : struct
+    {
+        if (value is bool boolValue)
+        {
+            _boolSettings ??= new Dictionary<string, bool>();
+            _boolSettings[settingName] = boolValue;
+        }
+        else if (value is float floatValue)
+        {
+            _floatSettings ??= new Dictionary<string, float>();
+            _floatSettings[settingName] = floatValue;
+        }
+        else if (value is int intValue)
+        {
+            _intSettings ??= new Dictionary<string, int>();
+            _intSettings[settingName] = intValue;
+        }
+        else
+        {
+            Debug.LogWarning($"{typeof(T)} is not cachable at this time");
+        }
+    }
+
+    public static T GetCachedSetting<T>(string settingName, T defaultValue) where T : struct
+    {
+        switch (defaultValue)
+        {
+            case bool when _boolSettings != null && _boolSettings.TryGetValue(settingName, out var boolValue) &&
+                           boolValue is T returnValue:
+                return returnValue;
+            case float when _floatSettings != null && _floatSettings.TryGetValue(settingName, out var floatValue) &&
+                            floatValue is T returnValue:
+                return returnValue;
+            case int when _intSettings != null && _intSettings.TryGetValue(settingName, out var intValue) &&
+                          intValue is T returnValue:
+                return returnValue;
+        }
+
+        var setting = GetSetting(settingName, defaultValue);
+        CachSetting(settingName, setting);
+        return setting;
+    }
 
     private static void SetTargetFPS(FPSSetting defaultValue = FPSSetting.Unset)
     {
-#if UNITY_ANDROID//Oculus Quest
+#if UNITY_ANDROID //Oculus Quest
         if (defaultValue == FPSSetting.Unset)
         {
             defaultValue = GetFPSSetting();
@@ -145,7 +221,7 @@ public class SettingsManager : MonoBehaviour
 
         OVRPlugin.systemDisplayFrequency = actualTarget;
         OVRPlugin.occlusionMesh = true;
-        
+
 #elif UNITY_STANDALONE_WIN
         Application.targetFrameRate = defaultValue switch
         {
@@ -185,13 +261,15 @@ public class SettingsManager : MonoBehaviour
         {
             return ES3.Load<T>(settingName, defaultValue);
         }
-        
+
         if (ProfileManager.Instance.ProfileSettings == null)
         {
             return defaultValue;
         }
-        
-        return ES3.Load<T>(settingName, defaultValue, ProfileManager.Instance.ProfileSettings);
+
+        var value = ES3.Load<T>(settingName, defaultValue, ProfileManager.Instance.ProfileSettings);
+
+        return value;
     }
 
     public static void DeleteSetting(string settingName, bool isProfileSetting = true)
@@ -214,13 +292,25 @@ public class SettingsManager : MonoBehaviour
 
     public static FPSSetting GetFPSSetting()
     {
-#if UNITY_ANDROID//Oculus
+#if UNITY_ANDROID //Oculus
         var headset = OVRPlugin.GetSystemHeadsetType();
 
         return GetSetting(FPSSETTING,
             (headset == OVRPlugin.SystemHeadset.Oculus_Quest ? FPSSetting._72 : FPSSetting._90), false);
 #endif
         return FPSSetting._90;
+    }
+
+    private struct CachedBoolSetting
+    {
+        public bool IsSet { get; private set; }
+        public bool Value { get; private set; }
+
+        public CachedBoolSetting(bool value)
+        {
+            IsSet = true;
+            Value = value;
+        }
     }
 }
 

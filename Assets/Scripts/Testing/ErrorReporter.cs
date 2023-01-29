@@ -21,7 +21,7 @@ public class ErrorReporter : MonoBehaviour
     private const string ERRORTITLE = "An error has occurred.";
 
     private const string ERRORBODY =
-        "An error has occured that may affect interactions with ShadowBoXR. If you run into issues restarting the game may be required.";
+        "An error has occured that may affect gameplay. If you run into issues, restarting the game may be required.";
 
     private void Awake()
     {
@@ -38,6 +38,11 @@ public class ErrorReporter : MonoBehaviour
     private void Start()
     {
         _settings = new ES3Settings(ERRORLOG);
+        if (ES3.DirectoryExists(_settings))
+        {
+            ES3.DeleteFile(_settings);
+        }
+        
         _callback = (text, stacktrace, logType) =>
         {
             LogMessage(text, stacktrace, logType);

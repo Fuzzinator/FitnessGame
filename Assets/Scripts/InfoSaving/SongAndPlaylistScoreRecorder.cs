@@ -56,7 +56,7 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
         }
 
         var records =
-            await PlaylistManager.Instance.TryGetRecords(_songScoreRecords, _songStreakRecords, _cancellationToken);
+            await PlaylistManager.Instance.TryGetRecords(_cancellationToken);
         _previousRecordExists = records.hasRecord;
         _songScoreRecords = records.scores;
         _songStreakRecords = records.streaks;
@@ -200,15 +200,14 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
             if (keyExists)
             {
                 #region Upgrading
-                await PlayerStatsFileManager.UpgradeFromSingleStatsRecord(_playlistScoreRecords, _playlistStreakRecords,
-                    oldKey, _cancellationToken);
+                var upgraded = await PlayerStatsFileManager.UpgradeFromSingleStatsRecord(oldKey, _cancellationToken);
                 PlayerStatsFileManager.DeletePlaylistKey(oldKey);
-                if (ShouldUpdateScoreFile(_playlistScoreRecords[0], true, out songScore))
+                if (ShouldUpdateScoreFile(upgraded.scores[0], true, out songScore))
                 {
                     scoreIndex = 0;
                 }
 
-                if (ShouldUpdateStreakFile(_playlistStreakRecords[0], true, out bestStreak))
+                if (ShouldUpdateStreakFile(upgraded.streaks[0], true, out bestStreak))
                 {
                     streakIndex = 0;
                 }
@@ -227,19 +226,19 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
         {
             try
             {
-                var highScores =
+                _playlistScoreRecords =
                     (SongAndPlaylistScoreRecord[]) await PlayerStatsFileManager
-                        .GetPlaylistValue<SongAndPlaylistScoreRecord>(
+                        .GetPlaylistValue<SongAndPlaylistScoreRecord[]>(
                             playlistFullScoreName, _cancellationToken);
-                var highStreaks =
+                _playlistStreakRecords =
                     (SongAndPlaylistStreakRecord[]) await PlayerStatsFileManager
-                        .GetPlaylistValue<SongAndPlaylistStreakRecord>(
-                            playlistFullScoreName, _cancellationToken);
+                        .GetPlaylistValue<SongAndPlaylistStreakRecord[]>(
+                            playlistFullStreakName, _cancellationToken);
 
-                for (var i = 0; i < highScores.Length; i++)
+                for (var i = 0; i < _playlistScoreRecords.Length; i++)
                 {
-                    var score = highScores[i];
-                    var streak = highStreaks[i];
+                    var score = _playlistScoreRecords[i];
+                    var streak = _playlistStreakRecords[i];
                     if (ShouldUpdateScoreFile(score, true, out songScore))
                     {
                         scoreIndex = i;

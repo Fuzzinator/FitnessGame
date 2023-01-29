@@ -35,7 +35,7 @@ namespace UI.Scrollers.Playlists
         [SerializeField] private Button _deleteButton;
 
         [SerializeField] private PlaylistSongScrollerController _scrollerController;
-
+        
         private CancellationToken _cancellationToken;
 
         private void OnEnable()
@@ -80,41 +80,40 @@ namespace UI.Scrollers.Playlists
             _deleteButton.gameObject.SetActive(currentPlaylist.IsCustomPlaylist);
             _scrollerController.ReloadScroller();
 
-            var playlistRecord = await GetPlaylistRecord();
-            
-            
+            var playlistRecords = await GetPlaylistRecords();
+
+            ulong score = 0;
+            var streak = 0;
+            if (playlistRecords.scores != null && playlistRecords.scores.Length>0)
+            {
+                score = playlistRecords.scores[0].Score;
+                streak = playlistRecords.streaks[0].Streak;
+            }
             using (var sb = ZString.CreateStringBuilder(true))
             {
-                sb.Append(playlistRecord.Score);
+                sb.Append(score);
 
                 var buffer = sb.AsArraySegment();
                 _playlistRecordScore.SetCharArray(buffer.Array, buffer.Offset, buffer.Count);
             }
             using (var sb = ZString.CreateStringBuilder(true))
             {
-                sb.Append(playlistRecord.Streak);
+                sb.Append(streak);
 
                 var buffer = sb.AsArraySegment();
                 _playlistRecordStreak.SetCharArray(buffer.Array, buffer.Offset, buffer.Count);
             }
         }
 
-        private async UniTask<SongAndPlaylistRecord> GetPlaylistRecord()
+        private async UniTask<SongAndPlaylistRecords> GetPlaylistRecords()
         {
             var playlist = PlaylistManager.Instance.CurrentPlaylist;
             if (playlist == null)
             {
                 Debug.LogError("Trying to get record but playlist is null.");
-                return new SongAndPlaylistRecord();
+                return new SongAndPlaylistRecords();
             }
-            var playlistFullName = $"{playlist.PlaylistName}-{playlist.Length}-{playlist.Items.Length}";
-            var exists = await PlayerStatsFileManager.PlaylistKeyExists(playlistFullName);
-            if (!exists)
-            {
-                return new SongAndPlaylistRecord(0, 0);
-            }
-            return (SongAndPlaylistRecord) await PlayerStatsFileManager.GetPlaylistValue<SongAndPlaylistRecord>(
-                playlistFullName, _cancellationToken);
+            return await PlayerStatsFileManager.TryGetRecords(playlist, _cancellationToken);
         }
     }
 }

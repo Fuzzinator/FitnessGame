@@ -8,6 +8,9 @@ public class BaseObstacle : MonoBehaviour, IPoolable
 {
     [SerializeField]
     private SetRendererMaterial _setRendererMaterial;
+
+    [SerializeField]
+    private SetRendererColor _setRendererColor;
     public PoolManager MyPoolManager { get; set; }
 
     public SetRendererMaterial RendererSetter => _setRendererMaterial;
@@ -16,6 +19,7 @@ public class BaseObstacle : MonoBehaviour, IPoolable
     public void Initialize()
     {
         _setRendererMaterial.Initialize(HitSideType.Unused);
+        _setRendererColor?.Initialize();
     }
     public void ReturnToPool()
     {

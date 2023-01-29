@@ -27,9 +27,6 @@ namespace UI
         [SerializeField]
         private SetAndShowSongOptions _showSongOptions;
         
-        private SongAndPlaylistScoreRecord[] _songScoreRecords = new SongAndPlaylistScoreRecord[5];
-        private SongAndPlaylistStreakRecord[] _songStreakRecords = new SongAndPlaylistStreakRecord[5];
-        
         private SongInfo _songInfo;
         
         private CancellationToken _cancellationToken;
@@ -60,8 +57,6 @@ namespace UI
                 {
                     foreach (var score in songRecord.scores)
                     {
-                        scoresSb.Append(NEWLINE);
-                        namesSb.Append(NEWLINE);
                         if (!score.IsValid)
                         {
                             continue;
@@ -69,6 +64,8 @@ namespace UI
 
                         scoresSb.Append(score.Score);
                         namesSb.Append(score.ProfileName);
+                        scoresSb.Append(NEWLINE);
+                        namesSb.Append(NEWLINE);
                     }
 
                     var scoresBuffer = scoresSb.AsArraySegment();
@@ -83,8 +80,6 @@ namespace UI
                 {
                     foreach (var streaks in songRecord.streaks)
                     {
-                        streaksSb.Append(NEWLINE);
-                        namesSb.Append(NEWLINE);
                         if (!streaks.IsValid)
                         {
                             continue;
@@ -92,6 +87,8 @@ namespace UI
 
                         streaksSb.Append(streaks.Streak);
                         namesSb.Append(streaks.ProfileName);
+                        streaksSb.Append(NEWLINE);
+                        namesSb.Append(NEWLINE);
                     }
 
                     var streaksBuffer = streaksSb.AsArraySegment();
@@ -106,7 +103,7 @@ namespace UI
         {
             await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
             var records = await PlayerStatsFileManager.TryGetRecords(_songInfo, _showSongOptions.DifficultyAsEnum,
-                _showSongOptions.SelectedGameMode, _songScoreRecords, _songStreakRecords, _cancellationToken);
+                _showSongOptions.SelectedGameMode, _cancellationToken);
 
             return records;
         }

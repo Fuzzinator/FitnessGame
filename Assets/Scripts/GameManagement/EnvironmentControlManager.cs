@@ -85,6 +85,11 @@ public class EnvironmentControlManager : MonoBehaviour
         return index;
     }
 
+    public string GetTargetEnvName()
+    {
+        return _availableReferences[_targetEnvironmentIndex].EnvironmentName;
+    }
+    
     private void LoadEnvironmentData(int index)
     {
         LoadEnvironmentDataAsync(index).Forget();

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class SetRendererMaterial : MonoBehaviour
 {
@@ -16,7 +17,7 @@ public class SetRendererMaterial : MonoBehaviour
 
     [SerializeField]
     private int _textureIndex;
-
+    
     public Renderer[] Renderers => _targetRenderers;
 
     public void Initialize(HitSideType type)

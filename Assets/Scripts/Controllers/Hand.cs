@@ -6,7 +6,7 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.XR;
 
-public class Hand : BaseGameStateListener 
+public class Hand : BaseGameStateListener
 {
     [SerializeField]
     private HitSideType _assignedHand;
@@ -18,7 +18,7 @@ public class Hand : BaseGameStateListener
     private Transform _glove;
 
     private Renderer _gloveRenderer;
-    
+
     public Collider MyCollider => _collider;
 
     public HitSideType AssignedHand => _assignedHand;
@@ -36,7 +36,7 @@ public class Hand : BaseGameStateListener
     }
 
     public Vector3 ForwardDirection => _glove.forward;
-    
+
     public Vector3 MovementDirection
     {
         get
@@ -46,7 +46,8 @@ public class Hand : BaseGameStateListener
             {
                 direction += dir;
             }
-            return direction/_previousDirections.Length;
+
+            return direction / _previousDirections.Length;
         }
     }
 
@@ -65,16 +66,16 @@ public class Hand : BaseGameStateListener
     }
 
     private Vector3 _previousPosition;
-    
+
     private Vector3[] _previousDirections = new Vector3[3];
     private float[] _previousSpeeds = new float[3];
-    
+
     private int _index = 0;
 
     private List<InputDevice> _devices = new List<InputDevice>();
     private bool _trackingPaused = false;
     private CancellationToken _cancellationToken;
-    
+
 
     private void Awake()
     {
@@ -85,7 +86,7 @@ public class Hand : BaseGameStateListener
     {
         //enabled = true;
         UpdateDevices();
-        
+
         SetOffset();
         TrackDirAndSpeed(_cancellationToken).Forget();
     }
@@ -115,8 +116,8 @@ public class Hand : BaseGameStateListener
     {
         var filter = InputDeviceCharacteristics.Controller | InputDeviceCharacteristics.TrackedDevice |
                      (_assignedHand == HitSideType.Left
-                          ? InputDeviceCharacteristics.Left
-                          : InputDeviceCharacteristics.Right);
+                         ? InputDeviceCharacteristics.Left
+                         : InputDeviceCharacteristics.Right);
         InputDevices.GetDevicesWithCharacteristics(filter, _devices);
     }
 
@@ -141,21 +142,22 @@ public class Hand : BaseGameStateListener
         while (enabled)
         {
             _previousPosition = transform.position;
-            await UniTask.DelayFrame(1, cancellationToken:token);
+            await UniTask.DelayFrame(1, cancellationToken: token);
             if (_cancellationToken.IsCancellationRequested)
             {
                 return;
             }
+
             if (_trackingPaused)
             {
                 continue;
             }
 
             var position = transform.position;
-            
+
             _previousDirections[_index] = Vector3.Normalize(position - _previousPosition);
-            _previousSpeeds[_index] = Vector3.Distance(position, _previousPosition)/Time.unscaledDeltaTime;
-            
+            _previousSpeeds[_index] = Vector3.Distance(position, _previousPosition) / Time.unscaledDeltaTime;
+
             if (_index + 1 < _previousDirections.Length)
             {
                 _index++;
@@ -173,7 +175,7 @@ public class Hand : BaseGameStateListener
         {
             return;
         }
-        
+
         GloveOffset = _assignedHand switch
         {
             HitSideType.Left => SettingsManager.GetSetting(SettingsManager.LEFTGLOVEOFFSET, Vector3.zero),
@@ -182,20 +184,20 @@ public class Hand : BaseGameStateListener
         };
         GloveRotationOffset = _assignedHand switch
         {
-            HitSideType.Left => SettingsManager.GetSetting(SettingsManager.LEFTGLOVEROTOFFSET, SettingsManager.DEFAULTGLOVEROTATION),
-            HitSideType.Right => SettingsManager.GetSetting(SettingsManager.RIGHTGLOVEROTOFFSET, SettingsManager.DEFAULTGLOVEROTATION),
+            HitSideType.Left => SettingsManager.GetSetting(SettingsManager.LEFTGLOVEROTOFFSET,
+                SettingsManager.DEFAULTGLOVEROTATION),
+            HitSideType.Right => SettingsManager.GetSetting(SettingsManager.RIGHTGLOVEROTOFFSET,
+                SettingsManager.DEFAULTGLOVEROTATION),
             _ => GloveRotationOffset
         };
     }
 
     public bool IsSwinging()
     {
-        //return true;
-        //TODO Come back to this someday and figure it out
         var dot = Vector3.Dot(_glove.forward, MovementDirection);
         return dot > .65f;
     }
-    
+
     public void SetAndSpawnGlove(Collider newGlove)
     {
         _collider = Instantiate(newGlove, transform);
@@ -210,7 +212,7 @@ public class Hand : BaseGameStateListener
     {
         _gloveRenderer.sharedMaterial.color = ColorsManager.Instance.GetAppropriateColor(_assignedHand, true);
     }
-    
+
     public void UnparentGlove()
     {
         _glove.SetParent(null);

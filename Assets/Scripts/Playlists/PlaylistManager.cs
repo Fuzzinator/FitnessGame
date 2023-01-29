@@ -160,7 +160,8 @@ public class PlaylistManager : MonoBehaviour
 
     public void SetTempSongPlaylist(PlaylistItem playlistItem)
     {
-        var tempPlaylist = new Playlist(playlistItem);
+        var targetEnvName = EnvironmentControlManager.Instance.GetTargetEnvName();
+        var tempPlaylist = new Playlist(playlistItem, targetEnvName);
         CurrentPlaylist = tempPlaylist;
     }
 
@@ -205,10 +206,8 @@ public class PlaylistManager : MonoBehaviour
         return SongInfoReader.GetFullSongName(info,TargetDifficulty, TargetGameMode, prefix, suffix);
     }
 
-    public async UniTask<SongAndPlaylistRecords> TryGetRecords(SongAndPlaylistScoreRecord[] scores,
-        SongAndPlaylistStreakRecord[] streaks, CancellationToken token)
+    public async UniTask<SongAndPlaylistRecords> TryGetRecords(CancellationToken token)
     {
-        return await PlayerStatsFileManager.TryGetRecords(SongInfoReader.Instance.songInfo, TargetDifficulty,
-            TargetGameMode, scores, streaks, token);
+        return await PlayerStatsFileManager.TryGetRecords(SongInfoReader.Instance.songInfo, TargetDifficulty, TargetGameMode, token);
     }
 }
