@@ -12,14 +12,9 @@ public class Hand : BaseGameStateListener
     private HitSideType _assignedHand;
 
     [SerializeField]
-    private Collider _collider;
-
-    [SerializeField]
     private Transform _glove;
 
-    private Renderer _gloveRenderer;
-
-    public Collider MyCollider => _collider;
+    public Collider MyCollider => _gloveController?.GloveCollider;
 
     public HitSideType AssignedHand => _assignedHand;
 
@@ -72,6 +67,7 @@ public class Hand : BaseGameStateListener
 
     private int _index = 0;
 
+    private GloveController _gloveController;
     private List<InputDevice> _devices = new List<InputDevice>();
     private bool _trackingPaused = false;
     private CancellationToken _cancellationToken;
@@ -198,19 +194,19 @@ public class Hand : BaseGameStateListener
         return dot > .65f;
     }
 
-    public void SetAndSpawnGlove(Collider newGlove)
+    public void SetAndSpawnGlove(GloveController newGlove)
     {
-        _collider = Instantiate(newGlove, transform);
+        _gloveController = Instantiate(newGlove, transform);
 
-        _collider.TryGetComponent(out _gloveRenderer);
-        _glove = _collider.transform;
+        _glove = _gloveController.transform;
         SetGloveColor();
         SetOffset();
     }
 
     private void SetGloveColor()
     {
-        _gloveRenderer.sharedMaterial.color = ColorsManager.Instance.GetAppropriateColor(_assignedHand, true);
+        var color = ColorsManager.Instance.GetAppropriateColor(_assignedHand, true);
+        _gloveController.SetRendersColor(color);
     }
 
     public void UnparentGlove()

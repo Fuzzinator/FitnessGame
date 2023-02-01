@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Serialization;
 
 [CreateAssetMenu(fileName = "New Asset Container", menuName = "ScriptableObjects/Environment Asset Container", order = 1)]
 public class EnvironmentAssetContainer : ScriptableObject
@@ -25,10 +26,10 @@ public class EnvironmentAssetContainer : ScriptableObject
     private TextureArraySet[] _globalTextureArraySets;
 
     [SerializeField]
-    private Collider _leftGlove;
+    private GloveController _leftGlove;
     
     [SerializeField]
-    private Collider _rightGlove;
+    private GloveController _rightGlove;
     
     [SerializeField]
     private BaseTarget _jabTarget;
@@ -65,8 +66,8 @@ public class EnvironmentAssetContainer : ScriptableObject
     public TextureSet[] GlobalTextureSets => _globalTextureSets;
     public TextureArraySet[] GlobalTextureArraySets => _globalTextureArraySets;
 
-    public Collider LeftGlove => _leftGlove;
-    public Collider RightGlove => _rightGlove;
+    public GloveController LeftGlove => _leftGlove;
+    public GloveController RightGlove => _rightGlove;
     public BaseTarget JabTarget => _jabTarget;
     public BaseTarget HookLeftTarget => _hookLeftTarget;
     public BaseTarget HookRightTarget => _hookRightTarget;

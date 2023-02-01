@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Left Sci-Fi Glove
+  m_Name: Left Space Arena Glove Shield
   m_Shader: {fileID: -6465566751694194690, guid: 484375f57bc0ac74f86bba3b66c843ab,
     type: 3}
   m_ShaderKeywords: _SHOWNOTES _SURFACE_TYPE_TRANSPARENT _TEXTURESET_TARGETS
@@ -32,6 +32,7 @@ Material:
     RenderType: Transparent
   disabledShaderPasses:
   - SHADOWCASTER
+  - DepthOnly
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -155,14 +156,14 @@ Material:
     - _SrcBlend: 5
     - _Surface: 1
     - _TEXTURESET: 0
-    - _TextureIndex: 1
+    - _TextureIndex: 3
     - _USEDISTANCEDISSOLVE: 0
     - _USEDISTANCEOFFSET: 0
     - _UVSec: 0
     - _WorkflowMode: 1
     - _ZTest: 4
-    - _ZWrite: 1
-    - _ZWriteControl: 1
+    - _ZWrite: 0
+    - _ZWriteControl: 0
     m_Colors:
     - _BaseColor: {r: 0.11249998, g: 0.5374999, b: 0.75, a: 1}
     - _Base_Color: {r: 1, g: 1, b: 1, a: 0}

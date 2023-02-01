@@ -13,7 +13,13 @@ public class UIToggleGroupSetting : MonoBehaviour, ISaver
 
     [SerializeField]
     protected SettingsDisplay _settingsDisplay;
+    
+    [SerializeField]
+    protected bool _cached = false;
 
+    [SerializeField]
+    protected int _defaultValue;
+    
     protected int _currentValue;
     protected int _index;
 
@@ -54,7 +60,15 @@ public class UIToggleGroupSetting : MonoBehaviour, ISaver
 
     public virtual void Save()
     {
-        SettingsManager.SetSetting(_settingName, _currentValue);
+        if (_cached)
+        {
+            SettingsManager.SetCachedSetting(_settingName, _currentValue);
+        }
+        else
+        {
+            SettingsManager.SetSetting(_settingName, _currentValue);
+        }
+        
         SaveRequested = false;
     }
 
@@ -75,6 +89,8 @@ public class UIToggleGroupSetting : MonoBehaviour, ISaver
 
     protected void GetDefaultValue()
     {
-        _currentValue = SettingsManager.GetSetting(_settingName, _currentValue);
+        _currentValue = _cached
+            ? SettingsManager.GetCachedSetting(_settingName, _defaultValue)
+            : SettingsManager.GetSetting(_settingName, _defaultValue);
     }
 }

@@ -413,6 +413,35 @@ public class ChoreographySequencer : MonoBehaviour
 
     private Vector3 GetTargetPosition(ChoreographyNote note)
     {
+        var targetSides = TargetSideInfo.GetSetting();
+        int leftSide;
+        int rightSide;
+        switch (targetSides)
+        {
+            case TargetSide.Uncrossed:
+                leftSide = 3;
+                rightSide = 2;
+                break;
+            case TargetSide.Mixed:
+                if (note.CutDir is ChoreographyNote.CutDirection.Jab or ChoreographyNote.CutDirection.JabDown or
+                    ChoreographyNote.CutDirection.HookLeftDown or ChoreographyNote.CutDirection.HookRightDown)
+                {
+                    leftSide = 3;
+                    rightSide = 2;
+                }
+                else
+                {
+                    leftSide = 2;
+                    rightSide = 3;
+                }
+                break;
+            case TargetSide.Crossed:
+            default:
+                leftSide = 2;
+                rightSide = 3;
+                break;
+        }
+        
         switch (note.HitSideType)
         {
             case HitSideType.Block:
@@ -421,10 +450,10 @@ public class ChoreographySequencer : MonoBehaviour
                         .localPosition;
                 return new Vector3(0, lineLayerObj.y, 0);
             case HitSideType.Left:
-                return _sequenceStartPoses[Mathf.Min(2 + (int) note.LineLayer * 4, _sequenceStartPoses.Length - 2)]
+                return _sequenceStartPoses[Mathf.Min(4-leftSide + (int) note.LineLayer * 4, _sequenceStartPoses.Length - leftSide)]
                     .localPosition;
             case HitSideType.Right:
-                return _sequenceStartPoses[Mathf.Min(1 + (int) note.LineLayer * 4, _sequenceStartPoses.Length - 3)]
+                return _sequenceStartPoses[Mathf.Min(4-rightSide + (int) note.LineLayer * 4, _sequenceStartPoses.Length - rightSide)]
                     .localPosition;
             default:
                 return Vector3.zero;
