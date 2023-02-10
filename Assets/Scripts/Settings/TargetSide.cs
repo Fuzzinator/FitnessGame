@@ -8,12 +8,12 @@ internal sealed class TargetSideInfo
 
     public static void SetSetting(TargetSide setting)
     {
-        SettingsManager.SetCachedSetting(TARGETSIDESETTING, (int)setting);
+        SettingsManager.SetCachedInt(TARGETSIDESETTING, (int)setting);
     }
     
     public static TargetSide GetSetting()
     {
-        var asInt = SettingsManager.GetCachedSetting(TARGETSIDESETTING, 0);
+        var asInt = SettingsManager.GetCachedInt(TARGETSIDESETTING, 0);
         return (TargetSide) asInt;
     }
 }

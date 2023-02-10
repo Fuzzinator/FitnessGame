@@ -153,53 +153,76 @@ public class SettingsManager : MonoBehaviour
     }
 
     #endregion
-
-    public static void SetCachedSetting<T>(string settingName, T value) where T : struct
+    
+    public static void SetCachedBool(string settingName, bool value)
     {
-        CachSetting(settingName, value);
+        CacheBool(settingName, value);
+        SetSetting(settingName, value);
+    }
+    
+    public static void SetCachedFloat(string settingName, float value)
+    {
+        CacheFloat(settingName, value);
+        SetSetting(settingName, value);
+    }
+    
+    public static void SetCachedInt(string settingName, int value)
+    {
+        CacheInt(settingName, value);
         SetSetting(settingName, value);
     }
 
-    private static void CachSetting<T>(string settingName, T value) where T : struct
+    private static void CacheBool(string settingName, bool value)
     {
-        if (value is bool boolValue)
-        {
-            _boolSettings ??= new Dictionary<string, bool>();
-            _boolSettings[settingName] = boolValue;
-        }
-        else if (value is float floatValue)
-        {
-            _floatSettings ??= new Dictionary<string, float>();
-            _floatSettings[settingName] = floatValue;
-        }
-        else if (value is int intValue)
-        {
-            _intSettings ??= new Dictionary<string, int>();
-            _intSettings[settingName] = intValue;
-        }
-        else
-        {
-            Debug.LogWarning($"{typeof(T)} is not cachable at this time");
-        }
+        _boolSettings ??= new Dictionary<string, bool>();
+        _boolSettings[settingName] = value;
+    }
+    
+    private static void CacheFloat(string settingName, float value)
+    {
+        _floatSettings ??= new Dictionary<string, float>();
+        _floatSettings[settingName] = value;
+    }
+    
+    private static void CacheInt(string settingName, int value)
+    {
+        _intSettings ??= new Dictionary<string, int>();
+        _intSettings[settingName] = value;
     }
 
-    public static T GetCachedSetting<T>(string settingName, T defaultValue) where T : struct
+    public static bool GetCachedBool(string settingName, bool defaultValue)
     {
-        switch (defaultValue)
+        if (_boolSettings != null && _boolSettings.TryGetValue(settingName, out var cachedValue))
         {
-            case bool when _boolSettings != null && _boolSettings.TryGetValue(settingName, out var boolValue) &&
-                           boolValue is T returnValue:
-                return returnValue;
-            case float when _floatSettings != null && _floatSettings.TryGetValue(settingName, out var floatValue) &&
-                            floatValue is T returnValue:
-                return returnValue;
-            case int when _intSettings != null && _intSettings.TryGetValue(settingName, out var intValue) &&
-                          intValue is T returnValue:
-                return returnValue;
+            return cachedValue;
         }
 
         var setting = GetSetting(settingName, defaultValue);
-        CachSetting(settingName, setting);
+        CacheBool(settingName, setting);
+        return setting;
+    }
+
+    public static float GetCachedFloat(string settingName, float defaultValue)
+    {
+        if (_floatSettings != null && _floatSettings.TryGetValue(settingName, out var cachedValue))
+        {
+            return cachedValue;
+        }
+
+        var setting = GetSetting(settingName, defaultValue);
+        CacheFloat(settingName, setting);
+        return setting;
+    }
+
+    public static int GetCachedInt(string settingName, int defaultValue)
+    {
+        if (_intSettings != null && _intSettings.TryGetValue(settingName, out var cachedValue))
+        {
+            return cachedValue;
+        }
+
+        var setting = GetSetting(settingName, defaultValue);
+        CacheInt(settingName, setting);
         return setting;
     }
 
@@ -259,7 +282,7 @@ public class SettingsManager : MonoBehaviour
     {
         if (!isProfileSetting)
         {
-            return ES3.Load<T>(settingName, defaultValue);
+            return ES3.Load(settingName, defaultValue);
         }
 
         if (ProfileManager.Instance.ProfileSettings == null)
@@ -267,7 +290,7 @@ public class SettingsManager : MonoBehaviour
             return defaultValue;
         }
 
-        var value = ES3.Load<T>(settingName, defaultValue, ProfileManager.Instance.ProfileSettings);
+        var value = ES3.Load(settingName, defaultValue, ProfileManager.Instance.ProfileSettings);
 
         return value;
     }

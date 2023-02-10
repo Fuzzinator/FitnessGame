@@ -54,7 +54,7 @@ public class BaseTarget : MonoBehaviour, IPoolable
     {
         var color = Gizmos.color;
         Gizmos.color = Color.green;
-        Gizmos.DrawLine(transform.position, transform.position + _optimalHitDirection);
+        Gizmos.DrawLine(transform.position, transform.TransformPoint(_optimalHitDirection));
         Gizmos.color = color;
     }
 #endif
@@ -148,13 +148,13 @@ public class BaseTarget : MonoBehaviour, IPoolable
     protected bool IsValidDirection(Collision other, Hand hand, out float impactDotProd, out float dirDotProd,
         out float handDotProd)
     {
-        var precisionMode = SettingsManager.GetCachedSetting(PrecisionMode, false);
+        var precisionMode = SettingsManager.GetCachedBool(PrecisionMode, false);
         var handDirection = transform.InverseTransformDirection(hand.MovementDirection);
         var isSwinging = !precisionMode || hand.IsSwinging();
         impactDotProd = Vector3.Dot(-handDirection, _optimalHitDirection);
         var collisionDirection = Vector3.Normalize(other.GetContact(0).point - transform.position);
         dirDotProd = Vector3.Dot(collisionDirection, _optimalHitDirection);
-        handDotProd = Vector3.Dot(_optimalHitDirection, hand.ForwardDirection);
+        handDotProd = Vector3.Dot(transform.TransformDirection(_optimalHitDirection), hand.ForwardDirection);
         
 #if UNITY_EDITOR
         return isSwinging && (!precisionMode || handDotProd<-.5f);; //true;

@@ -193,6 +193,21 @@ public class Hand : BaseGameStateListener
         var dot = Vector3.Dot(_glove.forward, MovementDirection);
         return dot > .65f;
     }
+    
+#if UNITY_EDITOR
+    private void OnDrawGizmos()
+    {
+        var color = Gizmos.color;
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(transform.position, transform.position +_glove.forward);
+        
+        
+        Gizmos.color = Color.blue;
+        Gizmos.DrawLine(transform.position, transform.position + MovementDirection);
+        Gizmos.color = color;
+    }
+#endif
+    
 
     public void SetAndSpawnGlove(GloveController newGlove)
     {

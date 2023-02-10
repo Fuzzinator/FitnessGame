@@ -62,7 +62,7 @@ public class UIToggleGroupSetting : MonoBehaviour, ISaver
     {
         if (_cached)
         {
-            SettingsManager.SetCachedSetting(_settingName, _currentValue);
+            SettingsManager.SetCachedInt(_settingName, _currentValue);
         }
         else
         {
@@ -90,7 +90,7 @@ public class UIToggleGroupSetting : MonoBehaviour, ISaver
     protected void GetDefaultValue()
     {
         _currentValue = _cached
-            ? SettingsManager.GetCachedSetting(_settingName, _defaultValue)
+            ? SettingsManager.GetCachedInt(_settingName, _defaultValue)
             : SettingsManager.GetSetting(_settingName, _defaultValue);
     }
 }

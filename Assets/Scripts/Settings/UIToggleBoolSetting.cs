@@ -62,7 +62,7 @@ public class UIToggleBoolSetting : MonoBehaviour, ISaver
     {
         if (_cached)
         {
-            SettingsManager.SetCachedSetting(_settingName, _currentValue);
+            SettingsManager.SetCachedBool(_settingName, _currentValue);
         }
         else
         {
@@ -75,7 +75,7 @@ public class UIToggleBoolSetting : MonoBehaviour, ISaver
     public void Revert()
     {
         _currentValue = _cached
-            ? SettingsManager.GetCachedSetting(_settingName, _defaultValue)
+            ? SettingsManager.GetCachedBool(_settingName, _defaultValue)
             : SettingsManager.GetSetting(_settingName, _defaultValue);
         
         _toggle.SetIsOnWithoutNotify(_currentValue);
