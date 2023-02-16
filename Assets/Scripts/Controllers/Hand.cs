@@ -199,7 +199,7 @@ public class Hand : BaseGameStateListener
     {
         var color = Gizmos.color;
         Gizmos.color = Color.green;
-        Gizmos.DrawLine(transform.position, transform.position +_glove.forward);
+        Gizmos.DrawLine(transform.position, transform.position +(_glove? _glove.forward:transform.forward));
         
         
         Gizmos.color = Color.blue;
