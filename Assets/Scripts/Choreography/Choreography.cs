@@ -315,6 +315,15 @@ public class Choreography
         return tweakedNotes;
     }
 
+    public static ChoreographyNote[] SwapNotesSide(ChoreographyNote[] notes)
+    {
+        for (var i = 0; i < notes.Length; i++)
+        {
+            notes[i] = notes[i].SwapSides();
+        }
+        return notes;
+    }
+
     private NativeArray<int> GetOptionTypes()
     {
         return new NativeArray<int>(TypeOptionsArray, Allocator.Persistent);

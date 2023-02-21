@@ -27,9 +27,12 @@ public class ChoreographyReader : MonoBehaviour
     public bool CanHaveBlock =>
         PlaylistManager.Instance.TargetGameMode is not GameMode.JabsOnly or GameMode.OneHanded or GameMode.LightShow;
     public bool CanSwitchHands => PlaylistManager.Instance.TargetGameMode is not GameMode.OneHanded;
-    
 
-    [Header("Settings")] public UnityEvent finishedLoadingSong = new UnityEvent();
+
+    [Header("Settings")]
+    [SerializeField]
+    private string _leftHandedMode = "LeftHanded";
+    public UnityEvent finishedLoadingSong = new UnityEvent();
 
     private CancellationTokenSource _cancellationSource;
 
@@ -127,6 +130,11 @@ public class ChoreographyReader : MonoBehaviour
 
         var notes = Notes;
         var obstacles = Obstacles;
+
+        if (SettingsManager.GetCachedBool(_leftHandedMode, false))
+        {
+            notes = Choreography.SwapNotesSide(notes);
+        }
         switch (targetGameMode)
         {
             case GameMode.Unset:
@@ -445,7 +453,7 @@ public class ChoreographyReader : MonoBehaviour
 
                                 if (note.CutDir == ChoreographyNote.CutDirection.HookLeft)
                                 {
-                                    note = note.SetToBasicJab();
+                                    note = note.SetCutDirection(ChoreographyNote.CutDirection.HookRight);
                                 }
 
                                 leftSidePriority--;
@@ -459,7 +467,7 @@ public class ChoreographyReader : MonoBehaviour
 
                                 if (note.CutDir == ChoreographyNote.CutDirection.HookRight)
                                 {
-                                    note = note.SetToBasicJab();
+                                    note = note.SetCutDirection(ChoreographyNote.CutDirection.HookLeft);
                                 }
 
                                 rightSidePriority--;

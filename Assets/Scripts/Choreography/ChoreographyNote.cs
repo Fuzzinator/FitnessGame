@@ -84,6 +84,19 @@ public struct ChoreographyNote// : ISequenceable
         return this;
     }
     
+    public ChoreographyNote SwapSides()
+    {
+        _type = _type switch
+        {
+            HitSideType.Left => HitSideType.Right,
+            HitSideType.Right => HitSideType.Left,
+            HitSideType.Unused => HitSideType.Unused,
+            HitSideType.Block => HitSideType.Block,
+            _ => _type
+        };
+        return this;
+    }
+
     public enum CutDirection
     {
         Uppercut = 0,
