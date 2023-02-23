@@ -18,10 +18,10 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
     private string _currentSongScoreName;
     private string _currentSongStreakName;
     private bool _previousRecordExists = false;
-    private SongAndPlaylistScoreRecord[] _songScoreRecords = new SongAndPlaylistScoreRecord[5];
-    private SongAndPlaylistStreakRecord[] _songStreakRecords = new SongAndPlaylistStreakRecord[5];
-    private SongAndPlaylistScoreRecord[] _playlistScoreRecords = new SongAndPlaylistScoreRecord[5];
-    private SongAndPlaylistStreakRecord[] _playlistStreakRecords = new SongAndPlaylistStreakRecord[5];
+    private readonly SongAndPlaylistScoreRecord[] _songScoreRecords = new SongAndPlaylistScoreRecord[5];
+    private readonly SongAndPlaylistStreakRecord[] _songStreakRecords = new SongAndPlaylistStreakRecord[5];
+    private readonly SongAndPlaylistScoreRecord[] _playlistScoreRecords = new SongAndPlaylistScoreRecord[5];
+    private readonly SongAndPlaylistStreakRecord[] _playlistStreakRecords = new SongAndPlaylistStreakRecord[5];
 
     private const string STREAK = "Streak:";
     private const string SCORE = "Score:";
@@ -58,11 +58,11 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
         var records =
             await PlaylistManager.Instance.TryGetRecords(_cancellationToken);
         _previousRecordExists = records.hasRecord;
-        _songScoreRecords = records.scores;
-        _songStreakRecords = records.streaks;
+        records.scores.CopyTo(_songScoreRecords, 0);
+        records.streaks.CopyTo(_songStreakRecords, 0);
 
-        _currentSongScoreName = PlaylistManager.Instance.GetFullSongName(prefix:SCORE);
-        _currentSongStreakName = PlaylistManager.Instance.GetFullSongName(prefix:STREAK);
+        _currentSongScoreName = PlaylistManager.Instance.GetFullSongName(prefix: SCORE);
+        _currentSongStreakName = PlaylistManager.Instance.GetFullSongName(prefix: STREAK);
         /*var hasScoreRecord = await PlayerStatsFileManager.SongKeyExists(_currentSongScoreName);
 
         var hasStreakRecord = await PlayerStatsFileManager.SongKeyExists(_currentSongStreakName);
@@ -113,7 +113,7 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
         var scoreIndexToUpdate = -1;
         var streakIndexToUpdate = -1;
 
-         if (_previousRecordExists)
+        if (_previousRecordExists)
         {
             for (var i = 0; i < _songScoreRecords.Length; i++)
             {
@@ -211,7 +211,7 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
                 {
                     streakIndex = 0;
                 }
-                
+
                 #endregion
             }
             else
@@ -226,14 +226,17 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
         {
             try
             {
-                _playlistScoreRecords =
-                    (SongAndPlaylistScoreRecord[]) await PlayerStatsFileManager
-                        .GetPlaylistValue<SongAndPlaylistScoreRecord[]>(
-                            playlistFullScoreName, _cancellationToken);
-                _playlistStreakRecords =
-                    (SongAndPlaylistStreakRecord[]) await PlayerStatsFileManager
+                var playlistScoreRecords = (SongAndPlaylistScoreRecord[])await PlayerStatsFileManager
+                    .GetPlaylistValue<SongAndPlaylistScoreRecord[]>(
+                        playlistFullScoreName, _cancellationToken);
+
+                playlistScoreRecords.CopyTo(_playlistScoreRecords, 0);
+
+                var playlistStreakRecords = (SongAndPlaylistStreakRecord[])await PlayerStatsFileManager
                         .GetPlaylistValue<SongAndPlaylistStreakRecord[]>(
                             playlistFullStreakName, _cancellationToken);
+
+                playlistStreakRecords.CopyTo(_playlistStreakRecords, 0);
 
                 for (var i = 0; i < _playlistScoreRecords.Length; i++)
                 {

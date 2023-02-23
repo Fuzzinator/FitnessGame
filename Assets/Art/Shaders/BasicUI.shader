@@ -39,7 +39,7 @@ Shader "UI/BasicUI"
                 float4 color : COLOR;
                 float2 texcoord : TEXCOORD0;
                 
-                //UNITY_VERTEX_INPUT_INSTANCE_ID
+                UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
             struct v2f
@@ -49,7 +49,7 @@ Shader "UI/BasicUI"
                 half2 texcoord : TEXCOORD0;
                 float4 worldPosition : TEXCOORD1;
                 
-                //UNITY_VERTEX_OUTPUT_STEREO
+                UNITY_VERTEX_OUTPUT_STEREO
             };
 
             fixed4 _Color;
@@ -60,9 +60,9 @@ Shader "UI/BasicUI"
                 v2f OUT;
 
                 
-                //UNITY_SETUP_INSTANCE_ID(v); //Insert
-                //UNITY_INITIALIZE_OUTPUT(v2f, OUT); //Insert
-                //UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(OUT); //Insert
+                UNITY_SETUP_INSTANCE_ID(IN); //Insert
+                UNITY_INITIALIZE_OUTPUT(v2f, OUT); //Insert
+                UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(OUT); //Insert
                 
                 OUT.worldPosition = IN.vertex;
                 OUT.vertex = UnityObjectToClipPos(OUT.worldPosition);

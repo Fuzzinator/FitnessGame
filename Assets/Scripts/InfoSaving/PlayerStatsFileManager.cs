@@ -3,6 +3,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using GameModeManagement;
 using UnityEngine;
+using UnityEngine.Pool;
 
 namespace InfoSaving
 {
@@ -32,7 +33,7 @@ namespace InfoSaving
         private static ES3Settings _playlistSettings;
 
 
-        private static readonly string SongFolder = $"{Path}{SONGRECORDS}";
+        private static readonly string SongFolder = $"{Path}{SONGRECORDS}";//"D:\\Projects\\Shadow BoXR Oculus Build\\Shadow BoXR_Data\\Resources\\PlayerStats\\SongRecords.txt";
         private static readonly string PlaylistFolder = $"{Path}{PLAYLISTRECORDS}";
 
         private static readonly SongAndPlaylistScoreRecord[] _scores = new SongAndPlaylistScoreRecord[5];
@@ -244,8 +245,17 @@ namespace InfoSaving
                     throw;
                 }
             }
-
+            ClearRecords();
             return new SongAndPlaylistRecords(false, _scores, _streaks);
+        }
+
+        private static void ClearRecords()
+        {
+            for (var i = 0; i < _scores.Length; i++)
+            {
+                _scores[i] = new SongAndPlaylistScoreRecord();
+                _streaks[i] = new SongAndPlaylistStreakRecord();
+            }
         }
 
         public static async UniTask<SongAndPlaylistRecords> TryGetRecords(Playlist playlist, CancellationToken token)
