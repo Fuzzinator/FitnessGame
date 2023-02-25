@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class UIToggleFPSSetting : UIToggleGroupSetting
 {
-    public override void Save()
+    public override void Save(Profile overrideProfile = null)
     {
         SettingsManager.SetFPSSetting(_currentValue);
     }

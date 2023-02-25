@@ -14,12 +14,16 @@ public class UpdatePlayerHeightDisplay : MonoBehaviour, ISaver
     [SerializeField]
     private SettingsDisplay _settingsDisplay;
     [SerializeField]
-    private TextMeshProUGUI _currentText; 
+    private ProfileEditor _profileEditor;
+    [SerializeField]
+    private UIToggleGroupSetting _metersOrFeet;
+    [SerializeField]
+    private TextMeshProUGUI _currentText;
     private float _setHeight;
     private bool _pressed;
 
     private CancellationToken _cancellationToken;
-    
+
     public bool SaveRequested { get; set; }
 
     private const string METERS = "<size=50%> Meters</size>";
@@ -28,6 +32,7 @@ public class UpdatePlayerHeightDisplay : MonoBehaviour, ISaver
 
     private void OnEnable()
     {
+        Revert();
         SaveRequested = false;
     }
 
@@ -42,23 +47,14 @@ public class UpdatePlayerHeightDisplay : MonoBehaviour, ISaver
     private void Start()
     {
         _cancellationToken = this.GetCancellationTokenOnDestroy();
-        
-        _setHeight = GlobalSettings.UserHeight;
-        if (_setHeight < 0)
-        {
-            _setHeight = Head.Instance.transform.position.y;
-            
-            GlobalSettings.UserHeight = _setHeight;
-        }
-        UpdateDisplay();
     }
 
     public void ResetHeadHeight()
     {
         _setHeight = Head.Instance.transform.position.y;
-        _settingsDisplay.ChangeWasMade(this);
+        _settingsDisplay?.ChangeWasMade(this);
         UpdateDisplay();
-        
+
         SaveRequested = true;
     }
 
@@ -76,19 +72,19 @@ public class UpdatePlayerHeightDisplay : MonoBehaviour, ISaver
     private async UniTaskVoid WaitToUpdate(float increment)
     {
         UpdateHeadHeight(increment);
-        await UniTask.Delay(TimeSpan.FromSeconds(1.5), cancellationToken:_cancellationToken);
+        await UniTask.Delay(TimeSpan.FromSeconds(1.5), cancellationToken: _cancellationToken);
         while (!_cancellationToken.IsCancellationRequested && _pressed)
         {
             UpdateHeadHeight(increment);
-            await UniTask.Delay(TimeSpan.FromSeconds(.5), cancellationToken:_cancellationToken);
+            await UniTask.Delay(TimeSpan.FromSeconds(.5), cancellationToken: _cancellationToken);
         }
-        
+
     }
 
     public void UpdateHeadHeight(float increment)
     {
         _setHeight += increment;
-        _settingsDisplay.ChangeWasMade(this);
+        _settingsDisplay?.ChangeWasMade(this);
         UpdateDisplay();
     }
 
@@ -99,7 +95,8 @@ public class UpdatePlayerHeightDisplay : MonoBehaviour, ISaver
 
     private void UpdateDisplay()
     {
-        var useMeters = SettingsManager.GetSetting("DisplayInMeters", 0) == 0;
+        var useMeters = _metersOrFeet.CurrentValue == 0;
+        //var useMeters = SettingsManager.GetSetting("DisplayInMeters", 0) == 0;
         SetText(useMeters);
     }
 
@@ -124,15 +121,32 @@ public class UpdatePlayerHeightDisplay : MonoBehaviour, ISaver
         }
     }
 
-    public void Save()
+    public void Save(Profile overrideProfile = null)
     {
-        GlobalSettings.UserHeight = _setHeight;
+        GlobalSettings.SetUserHeight(_setHeight, overrideProfile);
         SaveRequested = false;
     }
 
     public void Revert()
     {
-        _setHeight = GlobalSettings.UserHeight;
+        if (_profileEditor != null)
+        {
+            _setHeight = -1f;
+            
+            if (_profileEditor.ActiveProfile != null)
+            {
+                _setHeight = GlobalSettings.GetUserHeight(_profileEditor.ActiveProfile);
+            }
+
+            if(_setHeight == -1)
+            {
+                _setHeight = Head.Instance.transform.position.y;
+            }
+        }
+        else
+        {
+            _setHeight = GlobalSettings.UserHeight;
+        }
         UpdateDisplay();
         SaveRequested = false;
     }

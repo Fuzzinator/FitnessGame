@@ -58,7 +58,7 @@ public class UIToggleBoolSetting : MonoBehaviour, ISaver
         }
     }
 
-    public void Save()
+    public void Save(Profile overrideProfile = null)
     {
         if (_cached)
         {

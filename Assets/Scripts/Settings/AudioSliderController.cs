@@ -61,7 +61,7 @@ public class AudioSliderController : MonoBehaviour, ISaver
 
     }
 
-    public void Save()
+    public void Save(Profile overrideProfile = null)
     {
         SettingsManager.SetSetting(SettingsManager.GetVolumeMixerName(_mixerType), _slider.value);
         SaveRequested = false;

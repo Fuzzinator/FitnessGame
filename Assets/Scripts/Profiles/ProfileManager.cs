@@ -91,9 +91,11 @@ public class ProfileManager : MonoBehaviour
         DeleteSaveFile(profile);
     }
 
-    public void CreateProfile(string profileName, string iconAddress, bool customImage)
+    public Profile CreateProfile(string profileName, string iconAddress, bool customImage)
     {
-        AddProfile(new Profile(profileName, iconAddress, customImage));
+        var newProfile = new Profile(profileName, iconAddress, customImage);
+        AddProfile(newProfile);
+        return newProfile;
     }
 
     public void TryGetProfiles()
@@ -126,8 +128,7 @@ public class ProfileManager : MonoBehaviour
     public void SetActiveProfile(Profile profile)
     {
         _activeProfile = profile;
-        ProfileSettings =
-            new ES3Settings($"{PROFILESETTINGS}{_activeProfile.ProfileName}.{_activeProfile.GUID}.dat");
+        ProfileSettings = GetProfileSettings(profile);
         activeProfileUpdated?.Invoke();
     }
 
@@ -324,6 +325,11 @@ public class ProfileManager : MonoBehaviour
         {
             File.Delete(path);
         }
+    }
+
+    public static ES3Settings GetProfileSettings(Profile profile)
+    {
+        return new ES3Settings($"{PROFILESETTINGS}{profile.ProfileName}.{profile.GUID}.dat");
     }
 
     public struct ProfileIconInfo

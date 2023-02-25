@@ -17,10 +17,15 @@ public class ProfileEditor : MonoBehaviour
     [SerializeField]
     private EnhancedScroller _profileImagesScroller;
 
+    [SerializeField]
+    private MonoBehaviour[] _settings;
+
     private string _iconAddress = ProfileManager.DEFAULTICONADDRESS;
 
     private Profile _profile = null;
     private bool _isCustomIcon = false;
+
+    public Profile ActiveProfile => _profile;
 
     public void StartEditProfile(Profile profile)
     {
@@ -49,7 +54,7 @@ public class ProfileEditor : MonoBehaviour
     {
         if (_profile == null)
         {
-            ProfileManager.Instance.CreateProfile(_inputField.text, _iconAddress, _isCustomIcon);
+            _profile = ProfileManager.Instance.CreateProfile(_inputField.text, _iconAddress, _isCustomIcon);            
         }
         else
         {
@@ -59,8 +64,18 @@ public class ProfileEditor : MonoBehaviour
             }
 
             ProfileManager.Instance.UpdateProfile(_profile, _inputField.text, _iconAddress, _isCustomIcon);
-            _profile = null;
         }
+
+        foreach (ISaver setting in _settings)
+        {
+            if (setting == null)
+            {
+                continue;
+            }
+            setting.Save(_profile);
+        }
+
+        _profile = null;
 
         ResetCreateNewProfile();
     }

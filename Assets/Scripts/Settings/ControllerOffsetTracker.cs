@@ -148,7 +148,7 @@ public class ControllerOffsetTracker : MonoBehaviour, ISaver
         Revert();
     }
 
-    public void Save()
+    public void Save(Profile overrideProfile = null)
     {
         SettingsManager.SetSetting(SettingsManager.LEFTGLOVEOFFSET, _leftOffset);
         SettingsManager.SetSetting(SettingsManager.RIGHTGLOVEOFFSET, _rightOffset);

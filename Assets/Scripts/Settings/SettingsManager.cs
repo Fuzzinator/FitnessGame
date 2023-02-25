@@ -166,7 +166,8 @@ public class SettingsManager : MonoBehaviour
         SetSetting(settingName, value);
     }
     
-    public static void SetCachedInt(string settingName, int value)
+    //TODO Make OverrideProfiles do something
+    public static void SetCachedInt(string settingName, int value, Profile overrideProfile = null)
     {
         CacheInt(settingName, value);
         SetSetting(settingName, value);
@@ -214,7 +215,8 @@ public class SettingsManager : MonoBehaviour
         return setting;
     }
 
-    public static int GetCachedInt(string settingName, int defaultValue)
+    //TODO Make OverrideProfiles do something
+    public static int GetCachedInt(string settingName, int defaultValue, Profile overrideProfile = null)
     {
         if (_intSettings != null && _intSettings.TryGetValue(settingName, out var cachedValue))
         {
@@ -261,7 +263,7 @@ public class SettingsManager : MonoBehaviour
         ES3.Save(settingName, value);
     }*/
 
-    public static void SetSetting<T>(string settingName, T value, bool isProfileSetting = true)
+    public static void SetSetting<T>(string settingName, T value, bool isProfileSetting = true, Profile overrideProfile = null)
     {
         if (!isProfileSetting)
         {
@@ -269,6 +271,11 @@ public class SettingsManager : MonoBehaviour
         }
         else
         {
+            if(overrideProfile != null)
+            {
+                ES3.Save(settingName, value, ProfileManager.GetProfileSettings(overrideProfile));
+                return;
+            }
             if (ProfileManager.Instance.ProfileSettings == null)
             {
                 return;
@@ -278,13 +285,17 @@ public class SettingsManager : MonoBehaviour
         }
     }
 
-    public static T GetSetting<T>(string settingName, T defaultValue, bool isProfileSetting = true)
+    public static T GetSetting<T>(string settingName, T defaultValue, bool isProfileSetting = true, Profile overrideProfile = null)
     {
         if (!isProfileSetting)
         {
             return ES3.Load(settingName, defaultValue);
         }
 
+        if (overrideProfile != null)
+        {
+            return ES3.Load(settingName, defaultValue, ProfileManager.GetProfileSettings(overrideProfile));
+        }
         if (ProfileManager.Instance.ProfileSettings == null)
         {
             return defaultValue;
@@ -295,7 +306,7 @@ public class SettingsManager : MonoBehaviour
         return value;
     }
 
-    public static void DeleteSetting(string settingName, bool isProfileSetting = true)
+    public static void DeleteSetting(string settingName, bool isProfileSetting = true, Profile overrideProfile = null)
     {
         if (!isProfileSetting)
         {
@@ -303,6 +314,11 @@ public class SettingsManager : MonoBehaviour
         }
         else
         {
+            if (overrideProfile != null)
+            {
+                ES3.DeleteKey(settingName, ProfileManager.GetProfileSettings(overrideProfile));
+                return;
+            }
             ES3.DeleteKey(settingName, ProfileManager.Instance.ProfileSettings);
         }
     }

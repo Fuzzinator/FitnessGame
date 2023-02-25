@@ -42,4 +42,28 @@ public static class GlobalSettings
             RControllerOffsetChanged?.Invoke(value);
         }
     }
+
+    public static float GetUserHeight(Profile overrideProfile = null)
+    {
+        if (overrideProfile == null)
+        {
+            return UserHeight;
+        }
+        else
+        {
+            return SettingsManager.GetSetting(USERHEIGHT, -1f, true, overrideProfile);
+        }
+    }
+
+    public static void SetUserHeight(float height, Profile overrideProfile = null)
+    {
+        if (overrideProfile == null)
+        {
+            UserHeight = height;
+        }
+        else
+        {
+            SettingsManager.SetSetting(USERHEIGHT, height, true, overrideProfile);
+        }
+    }
 }

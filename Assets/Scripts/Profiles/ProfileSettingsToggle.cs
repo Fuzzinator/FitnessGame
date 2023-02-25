@@ -1,11 +1,9 @@
-using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 using UnityEngine.UI;
 
-public class UIToggleGroupSetting : MonoBehaviour, ISaver
+public class ProfileSettingsToggle : MonoBehaviour, ISaver
 {
     [SerializeField]
     private string _settingName;
@@ -15,10 +13,7 @@ public class UIToggleGroupSetting : MonoBehaviour, ISaver
 
     [SerializeField]
     protected SettingsDisplay _settingsDisplay;
-
-    [SerializeField]
-    private ProfileEditor _profileEditor;
-
+    
     [SerializeField]
     protected bool _cached = false;
 
@@ -28,15 +23,14 @@ public class UIToggleGroupSetting : MonoBehaviour, ISaver
     protected int _currentValue;
     protected int _index;
 
-    private bool _updated;
-
     public int CurrentValue => _currentValue;
 
     public bool SaveRequested { get; set; }
 
     private void OnEnable()
     {
-        DelayDisplayUpdate().Forget();
+        Revert();
+        SaveRequested = false;
     }
 
     public virtual void ToggleSet(Toggle selectedToggle)
@@ -59,7 +53,7 @@ public class UIToggleGroupSetting : MonoBehaviour, ISaver
         if (_currentValue != _index)
         {
             _currentValue = _index;
-            _settingsDisplay?.ChangeWasMade(this);
+            _settingsDisplay.ChangeWasMade(this);
             SaveRequested = true;
         }
     }
@@ -68,33 +62,19 @@ public class UIToggleGroupSetting : MonoBehaviour, ISaver
     {
         if (_cached)
         {
-            SettingsManager.SetCachedInt(_settingName, _currentValue, overrideProfile);
+            SettingsManager.SetCachedInt(_settingName, _currentValue);
         }
         else
         {
-            SettingsManager.SetSetting(_settingName, _currentValue, true, overrideProfile);
+            SettingsManager.SetSetting(_settingName, _currentValue);
         }
         
-        SaveRequested = false;
-    }
-
-    protected async virtual UniTaskVoid DelayDisplayUpdate()
-    {
-        _updated = true;
-        await UniTask.DelayFrame(1);
-        if(this == null)
-        {
-            return;
-        }
-        GetDefaultValue();
-        SetActiveToggle();
         SaveRequested = false;
     }
 
     public virtual void Revert()
     {
         GetDefaultValue();
-        _updated = true;
         SetActiveToggle();
         SaveRequested = false;
     }
@@ -109,8 +89,6 @@ public class UIToggleGroupSetting : MonoBehaviour, ISaver
 
     protected void GetDefaultValue()
     {
-        _currentValue = _cached
-            ? SettingsManager.GetCachedInt(_settingName, _defaultValue, _profileEditor?.ActiveProfile)
-            : SettingsManager.GetSetting(_settingName, _defaultValue, true, _profileEditor?.ActiveProfile);
+        _currentValue = _defaultValue;
     }
 }
