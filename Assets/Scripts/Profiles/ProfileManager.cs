@@ -77,6 +77,11 @@ public class ProfileManager : MonoBehaviour
         _cancellationToken = this.GetCancellationTokenOnDestroy();
     }
 
+    public void ClearActiveProfile()
+    {
+        _activeProfile = null;
+    }
+
     public void DeleteProfile(Profile profile)
     {
         _profiles.Remove(profile);

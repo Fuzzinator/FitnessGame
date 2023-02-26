@@ -66,12 +66,12 @@ VaryingsSolver VertSolver(AttributesDefault input)
 float2 GetClosestFragment(float2 uv)
 {
     const float2 k = _CameraDepthTexture_TexelSize.xy;
-    const float4 neighborhood = float4(
-        SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, uv - k),
+    const float4 neighborhood = float4(1, 1, 1, 1);
+        /*SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, uv - k),
         SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, uv + float2(k.x, -k.y)),
         SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, uv + float2(-k.x, k.y)),
         SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, uv + k)
-        );
+        );*/
 
 #if defined(UNITY_REVERSED_Z)
     #define COMPARE_DEPTH(a, b) step(b, a)

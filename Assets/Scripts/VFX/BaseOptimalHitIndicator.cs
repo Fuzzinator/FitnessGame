@@ -21,7 +21,7 @@ public class BaseOptimalHitIndicator : MonoBehaviour
         }
 
         _propertyHash = Shader.PropertyToID(_propertyName);
-        _renderer.material.SetFloat(_propertyHash, 0);
+        _renderer.material.SetVector(_propertyHash, Vector3.zero);
 
         OnEnable();
     }

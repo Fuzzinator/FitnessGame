@@ -125,10 +125,10 @@ Shader "Hidden/Post FX/Screen Space Reflection"
         {
             float3 P;
 
-            P.z = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, ssP.xy);
+            //P.z = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, ssP.xy);
 
             // Offset to pixel center
-            P = ReconstructCSPosition(float2(ssP) /*+ float2(0.5, 0.5)*/, P.z);
+            P = ReconstructCSPosition(float2(ssP) /*+ float2(0.5, 0.5)*/, 1);
             return P;
         }
 
@@ -771,8 +771,8 @@ Shader "Hidden/Post FX/Screen Space Reflection"
 
         float4 fragDepthToCSZ(v2f i) : SV_Target
         {
-            float depth = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, i.uv2.xy);
-            return float4(-LinearEyeDepth(depth), 0.0, 0.0, 0.0);
+            //float depth = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, i.uv2.xy);
+            return float4(1, 0.0, 0.0, 0.0);
         }
 
         static const int NUM_POISSON_TAPS = 12;

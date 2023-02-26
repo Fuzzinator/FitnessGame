@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using ClipperLib;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
