@@ -13,29 +13,33 @@ public class ProfileSelectionController : MonoBehaviour
 
     [SerializeField]
     private Transform _choiceParent;
-    
+
     [SerializeField]
     private ProfileEditor _profileEditor;
 
     [SerializeField]
     private string _enableEffectName;
-    
+
     [SerializeField]
     private string _disableEffectName;
-    
+
     [SerializeField]
     private MaterialValueLerper _valueLerper;
 
     [SerializeField]
     private GameObject _noProfileDisplay;
-    
+
     private PoolManager _choicesPoolManager;
-    
+    private bool _fogActive = false;
+
     private void OnEnable()
     {
-        
-        _valueLerper.TriggerValueChange(_enableEffectName).Forget();
-        
+        if (ProfileManager.Instance.ActiveProfile == null)
+        {
+            _fogActive = true;
+            _valueLerper.TriggerValueChange(_enableEffectName).Forget();
+        }
+
         ProfileManager.Instance.GetAllProfileSprites();
         ShowAvailableProfiles();
         ProfileManager.Instance.profilesUpdated.AddListener(ShowAvailableProfiles);
@@ -43,8 +47,12 @@ public class ProfileSelectionController : MonoBehaviour
 
     private void OnDisable()
     {
-        _valueLerper.TriggerValueChange(_disableEffectName).Forget();
-        
+        if (_fogActive)
+        {
+            _fogActive = false;
+            _valueLerper.TriggerValueChange(_disableEffectName).Forget();
+        }
+
         ProfileManager.Instance.UnloadProfileSprites();
         HideProfileChoices();
         ProfileManager.Instance.profilesUpdated.RemoveListener(ShowAvailableProfiles);
@@ -54,7 +62,7 @@ public class ProfileSelectionController : MonoBehaviour
     {
         _choicesPoolManager ??= new PoolManager(_displayObjectPrefab, _choiceParent, 5);
         HideProfileChoices();
-        
+
         foreach (var profile in ProfileManager.Instance.Profiles)
         {
             var poolable = _choicesPoolManager.GetNewPoolable();
@@ -76,13 +84,13 @@ public class ProfileSelectionController : MonoBehaviour
 
     private void HideProfileChoices()
     {
-        while (_activeChoices.Count>0)
+        while (_activeChoices.Count > 0)
         {
             _activeChoices[0].ReturnToPool();
             _activeChoices.RemoveAt(0);
         }
     }
-    
+
     public void StartEditProfile(Profile profile)
     {
         _profileEditor.StartEditProfile(profile);
