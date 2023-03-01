@@ -60,6 +60,19 @@ public class Hand : BaseGameStateListener
         }
     }
 
+    public Quaternion DefaultRotation
+    {
+        get
+        {
+            if (_defaultRotation == Quaternion.identity)
+            {
+                var controllerName = (_devices.Count > 0 ? _devices[0].name : null);
+                _defaultRotation = SettingsManager.GetDefaultControllerRotation(controllerName);
+            }
+            return _defaultRotation;
+        }
+    }
+
     private Vector3 _previousPosition;
 
     private Vector3[] _previousDirections = new Vector3[3];
@@ -67,6 +80,7 @@ public class Hand : BaseGameStateListener
 
     private int _index = 0;
 
+    private Quaternion _defaultRotation = Quaternion.identity;
     private GloveController _gloveController;
     private List<InputDevice> _devices = new List<InputDevice>();
     private bool _trackingPaused = false;
@@ -85,13 +99,17 @@ public class Hand : BaseGameStateListener
 
         SetOffset();
         TrackDirAndSpeed(_cancellationToken).Forget();
+        if (_devices.Count == 0)
+        {
+            InputDevices.deviceConnected += DeviceConnected;
+        }
     }
 
-    /*protected override  void OnDisable()
+    private void OnDisable()
     {
-        base.OnDisable();
-        enabled = false;
-    }*/
+        InputDevices.deviceDisconnected -= DeviceConnected;
+    }
+
 
     protected override void GameStateListener(GameState oldState, GameState newState)
     {
@@ -178,12 +196,11 @@ public class Hand : BaseGameStateListener
             HitSideType.Right => SettingsManager.GetSetting(SettingsManager.RIGHTGLOVEOFFSET, Vector3.zero),
             _ => GloveOffset
         };
+
         GloveRotationOffset = _assignedHand switch
         {
-            HitSideType.Left => SettingsManager.GetSetting(SettingsManager.LEFTGLOVEROTOFFSET,
-                SettingsManager.DEFAULTGLOVEROTATION),
-            HitSideType.Right => SettingsManager.GetSetting(SettingsManager.RIGHTGLOVEROTOFFSET,
-                SettingsManager.DEFAULTGLOVEROTATION),
+            HitSideType.Left => SettingsManager.GetSetting(SettingsManager.LEFTGLOVEROTOFFSET, DefaultRotation),
+            HitSideType.Right => SettingsManager.GetSetting(SettingsManager.RIGHTGLOVEROTOFFSET, DefaultRotation),
             _ => GloveRotationOffset
         };
     }
@@ -193,21 +210,21 @@ public class Hand : BaseGameStateListener
         var dot = Vector3.Dot(_glove.forward, MovementDirection);
         return dot > .65f;
     }
-    
+
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
         var color = Gizmos.color;
         Gizmos.color = Color.green;
-        Gizmos.DrawLine(transform.position, transform.position +(_glove? _glove.forward:transform.forward));
-        
-        
+        Gizmos.DrawLine(transform.position, transform.position + (_glove ? _glove.forward : transform.forward));
+
+
         Gizmos.color = Color.blue;
         Gizmos.DrawLine(transform.position, transform.position + MovementDirection);
         Gizmos.color = color;
     }
 #endif
-    
+
 
     public void SetAndSpawnGlove(GloveController newGlove)
     {
@@ -232,5 +249,11 @@ public class Hand : BaseGameStateListener
     public void ParentGlove()
     {
         _glove.SetParent(transform);
+    }
+
+    private void DeviceConnected(InputDevice device)
+    {
+        UpdateDevices();
+        SetOffset();
     }
 }

@@ -180,7 +180,7 @@ public class ControllerOffsetTracker : MonoBehaviour, ISaver
         var isLeftHand = hand.AssignedHand == HitSideType.Left;
 
         hand.GloveOffset = Vector3.zero;
-        hand.GloveRotationOffset = SettingsManager.DEFAULTGLOVEROTATION;
+        hand.GloveRotationOffset = hand.DefaultRotation;
 
         if (isLeftHand)
         {
@@ -209,9 +209,9 @@ public class ControllerOffsetTracker : MonoBehaviour, ISaver
         HandTracker.LeftHand.GloveOffset = _leftOffset;
         HandTracker.RightHand.GloveOffset = _rightOffset;
 #endif
-
-        _leftRotationOffset = SettingsManager.GetSetting(SettingsManager.LEFTGLOVEROTOFFSET, SettingsManager.DEFAULTGLOVEROTATION);
-        _rightRotationOffset = SettingsManager.GetSetting(SettingsManager.RIGHTGLOVEROTOFFSET, SettingsManager.DEFAULTGLOVEROTATION);
+        var defaultRotation = HandTracker.GetDefaultRotation();
+        _leftRotationOffset = SettingsManager.GetSetting(SettingsManager.LEFTGLOVEROTOFFSET, defaultRotation);
+        _rightRotationOffset = SettingsManager.GetSetting(SettingsManager.RIGHTGLOVEROTOFFSET, defaultRotation);
 #if UNITY_EDITOR
         HandTracker.LeftEditorHand.GloveRotationOffset = _leftRotationOffset;
         HandTracker.RightEditorHand.GloveRotationOffset = _rightRotationOffset;

@@ -99,6 +99,11 @@ public class BeatSaverPageController : MonoBehaviour
         SearchAsync(search).Forget();
     }
 
+    public void NetworkConnectionLost()
+    {
+
+    }
+
     #region Webcalls
 
     public void RequestCurated()

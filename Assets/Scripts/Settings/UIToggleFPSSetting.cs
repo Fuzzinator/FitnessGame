@@ -1,7 +1,10 @@
+using Cysharp.Threading.Tasks;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 using UnityEngine.UI;
 
 public class UIToggleFPSSetting : UIToggleGroupSetting
@@ -15,5 +18,17 @@ public class UIToggleFPSSetting : UIToggleGroupSetting
     {
         _currentValue = (int)SettingsManager.GetFPSSetting();
         SetActiveToggle();
+    }
+
+    protected override async UniTaskVoid DelayDisplayUpdateAsync()
+    {
+        _updated = true;
+        await UniTask.DelayFrame(1);
+        if (this == null)
+        {
+            return;
+        }
+        Revert();
+        SaveRequested = false;
     }
 }

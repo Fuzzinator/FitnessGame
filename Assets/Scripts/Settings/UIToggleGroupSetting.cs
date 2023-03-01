@@ -28,15 +28,15 @@ public class UIToggleGroupSetting : MonoBehaviour, ISaver
     protected int _currentValue;
     protected int _index;
 
-    private bool _updated;
+    protected bool _updated;
 
     public int CurrentValue => _currentValue;
 
     public bool SaveRequested { get; set; }
 
-    private void OnEnable()
+    protected virtual void OnEnable()
     {
-        DelayDisplayUpdate().Forget();
+        DelayDisplayUpdateAsync().Forget();
     }
 
     public virtual void ToggleSet(Toggle selectedToggle)
@@ -78,7 +78,7 @@ public class UIToggleGroupSetting : MonoBehaviour, ISaver
         SaveRequested = false;
     }
 
-    protected async virtual UniTaskVoid DelayDisplayUpdate()
+    protected async virtual UniTaskVoid DelayDisplayUpdateAsync()
     {
         _updated = true;
         await UniTask.DelayFrame(1);

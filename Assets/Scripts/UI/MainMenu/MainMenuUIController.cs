@@ -148,6 +148,13 @@ public class MainMenuUIController : BaseGameStateListener
         _activeMenuPage.SetActive(.5f, false, true);
     }
 
+    public void ReturnToHomeIfActive(Canvas canvas)
+    {
+        if(_activePageSet && _activeMenuPage.TargetCanvas == canvas)
+        {
+            SetActivePage(0);
+        }
+    }
 
     [Serializable]
     private struct MenuPage

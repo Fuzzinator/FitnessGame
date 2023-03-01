@@ -87,5 +87,22 @@ public class HandTracker : MonoBehaviour
         return false;
     }
     
-    
+    public static Quaternion GetDefaultRotation()
+    {
+        var hasRightHand = RightHand != null;
+        var defaultRotation = Quaternion.identity;
+        if (hasRightHand)
+        {
+            defaultRotation = RightHand.DefaultRotation;
+        }
+        else
+        {
+            var hasLeftHand = LeftHand != null;
+            if (hasLeftHand)
+            {
+                defaultRotation = LeftHand.DefaultRotation;
+            }
+        }
+        return defaultRotation;
+    }
 }

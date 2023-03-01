@@ -18,17 +18,12 @@ public class SettingsManager : MonoBehaviour
     private static Dictionary<string, float> _floatSettings;
     private static Dictionary<string, int> _intSettings;
 
-    public static readonly Quaternion DEFAULTGLOVEROTATION =
-#if UNITY_ANDROID && !UNITY_EDITOR //Oculus Quest 2
-        new Quaternion(0.173648164f,0f,0f,0.984807789f);
-#elif UNITY_EDITOR
-        Quaternion.identity;
+    //public static readonly Quaternion DEFAULTGLOVEROTATION =
+#if UNITY_ANDROID// && !UNITY_EDITOR //Oculus Quest 2
+    private static readonly Quaternion Quest2Rotation = new Quaternion(0.18f, 0f, 0f, 0.98f);
 #elif UNITY_STANDALONE_WIN
-        Quaternion.identity;
-#else
-        Quaternion.identity;
+    private static readonly Quaternion ViveWandRotation = new Quaternion(.615f, 0f, 0f, .8f);
 #endif
-
     #region Const Strings
 
     private const string MASTERVOLUME = "MasterVolume";
@@ -47,7 +42,13 @@ public class SettingsManager : MonoBehaviour
 
     private const string FPSSETTING = "TargetFrameRate";
 
-    private static readonly string[] _volumeNames = new[] {MASTERVOLUME, MUSICVOLUME, SFXVOLUME};
+    private const string HTCViveWand = "HTC Vive Controller";
+    private const string KronosController = "KHR Simple Controller";
+    private const string WMRController = "Windows MR Controller";
+    private const string OculusTouchController = "Oculus Touch Controller";
+    private const string IndexController = "Index Controller";
+
+    private static readonly string[] _volumeNames = new[] { MASTERVOLUME, MUSICVOLUME, SFXVOLUME };
 
     #endregion
 
@@ -97,12 +98,12 @@ public class SettingsManager : MonoBehaviour
     {
         //_mixer.GetFloat(_volumeNames[(int) mixer], out var value);
         //value = Mathf.Pow(10, value);
-        return _volumes[(int) mixer]; //value;
+        return _volumes[(int)mixer]; //value;
     }
 
     public void SetVolumeMixer(VolumeMixer mixer, float value, bool autoSave = false)
     {
-        _volumes[(int) mixer] = value;
+        _volumes[(int)mixer] = value;
 
         var convertedValue = value == 0 ? -80 : Mathf.Log10(value) * 20;
         switch (mixer)
@@ -130,12 +131,12 @@ public class SettingsManager : MonoBehaviour
 
     public float LoadVolumeMixerValue(VolumeMixer mixer)
     {
-        return GetSetting(_volumeNames[(int) mixer], 1f);
+        return GetSetting(_volumeNames[(int)mixer], 1f);
     }
 
     public void SaveVolumeMixer(VolumeMixer mixer, float value)
     {
-        SetSetting(_volumeNames[(int) mixer], value);
+        SetSetting(_volumeNames[(int)mixer], value);
     }
 
     private void SetAudioSettings()
@@ -149,23 +150,23 @@ public class SettingsManager : MonoBehaviour
 
     public static string GetVolumeMixerName(VolumeMixer mixer)
     {
-        return _volumeNames[(int) mixer];
+        return _volumeNames[(int)mixer];
     }
 
     #endregion
-    
+
     public static void SetCachedBool(string settingName, bool value)
     {
         CacheBool(settingName, value);
         SetSetting(settingName, value);
     }
-    
+
     public static void SetCachedFloat(string settingName, float value)
     {
         CacheFloat(settingName, value);
         SetSetting(settingName, value);
     }
-    
+
     //TODO Make OverrideProfiles do something
     public static void SetCachedInt(string settingName, int value, Profile overrideProfile = null)
     {
@@ -178,13 +179,13 @@ public class SettingsManager : MonoBehaviour
         _boolSettings ??= new Dictionary<string, bool>();
         _boolSettings[settingName] = value;
     }
-    
+
     private static void CacheFloat(string settingName, float value)
     {
         _floatSettings ??= new Dictionary<string, float>();
         _floatSettings[settingName] = value;
     }
-    
+
     private static void CacheInt(string settingName, int value)
     {
         _intSettings ??= new Dictionary<string, int>();
@@ -271,7 +272,7 @@ public class SettingsManager : MonoBehaviour
         }
         else
         {
-            if(overrideProfile != null)
+            if (overrideProfile != null)
             {
                 ES3.Save(settingName, value, ProfileManager.GetProfileSettings(overrideProfile));
                 return;
@@ -326,7 +327,40 @@ public class SettingsManager : MonoBehaviour
     public static void SetFPSSetting(int value)
     {
         SetSetting(FPSSETTING, value);
-        SetTargetFPS((FPSSetting) value);
+        SetTargetFPS((FPSSetting)value);
+    }
+
+    public static Quaternion GetDefaultControllerRotation(string controllerName)
+    {
+        if(string.IsNullOrEmpty(controllerName))
+        {
+            return Quaternion.identity;
+        }
+
+        Debug.Log($"Controller Name is {controllerName}");
+#if UNITY_ANDROID
+
+        switch (true)
+        {
+            case var quest when controllerName.Contains(OculusTouchController):
+                return Quest2Rotation;
+            default:
+                return Quaternion.identity;
+        }
+
+#elif UNITY_STANDALONE_WIN
+        switch (true)
+        {
+            case var vive when controllerName.Contains(HTCViveWand):
+            case var oculus when controllerName.Contains(OculusTouchController):
+            case var index when controllerName.Contains(IndexController):
+                return ViveWandRotation;
+            default:
+                return Quaternion.identity;
+        }
+#endif
+
+        return Quaternion.identity;
     }
 
     public static FPSSetting GetFPSSetting()
@@ -334,8 +368,8 @@ public class SettingsManager : MonoBehaviour
 #if UNITY_ANDROID //Oculus
         var headset = OVRPlugin.GetSystemHeadsetType();
 
-        return GetSetting(FPSSETTING,
-            (headset == OVRPlugin.SystemHeadset.Oculus_Quest ? FPSSetting._72 : FPSSetting._90), false);
+        return (FPSSetting)GetSetting(FPSSETTING,
+            ((int)(headset == OVRPlugin.SystemHeadset.Oculus_Quest ? FPSSetting._72 : FPSSetting._90)));
 #endif
         return FPSSetting._90;
     }
