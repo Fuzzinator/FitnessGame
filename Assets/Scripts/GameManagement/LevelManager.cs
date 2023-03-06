@@ -146,7 +146,7 @@ public class LevelManager : MonoBehaviour
         _choreographyLoaded = false;
         _songInfoLoaded = false;
         _actualSongLoaded = false;
-        
+        _cancellationTokenSource?.Dispose();
         _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_cancellationToken);
     }
 

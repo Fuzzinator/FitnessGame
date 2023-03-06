@@ -99,6 +99,7 @@ public class MusicManager : BaseGameStateListener
         AudioClip audioClip;
         if (_cancellationSource.IsCancellationRequested)
         {
+            _cancellationSource.Dispose();
             _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
         }
 
@@ -118,6 +119,7 @@ public class MusicManager : BaseGameStateListener
             NotificationManager.ReportFailedToLoadInGame($"{item.SongName}'s music failed to load.");
             if (_cancellationSource.IsCancellationRequested)
             {
+                _cancellationSource.Dispose();
                 _cancellationSource =
                     CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
             }
@@ -156,6 +158,7 @@ public class MusicManager : BaseGameStateListener
     {
         try
         {
+            _cancellationSource?.Dispose();
             _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(_cancellationToken);
             if (SongInfoReader.Instance.songInfo.SongStartDelay > 0)
             {

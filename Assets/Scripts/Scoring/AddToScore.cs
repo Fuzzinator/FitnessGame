@@ -10,8 +10,8 @@ public class AddToScore : MonoBehaviour, IValidHit
     [SerializeField]
     private int _maxValue = 25;
 
-    [SerializeField]
-    private float _hitRange = 2f;
+    //[SerializeField]
+    private float _hitRange = .3f;//2f;
 
     private const int OPTIMALHITMOD = 2;
     private const int MAXPUNCHSPEED = 30;

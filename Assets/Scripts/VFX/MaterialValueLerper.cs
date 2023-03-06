@@ -57,6 +57,7 @@ public class MaterialValueLerper : MonoBehaviour
         await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
         if(_cancellationTokenSource.IsCancellationRequested && !_cancellationToken.IsCancellationRequested)
         {
+            _cancellationTokenSource.Dispose();
             _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_cancellationToken);
         }
         

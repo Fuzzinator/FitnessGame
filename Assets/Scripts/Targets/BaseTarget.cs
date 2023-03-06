@@ -35,8 +35,8 @@ public class BaseTarget : MonoBehaviour, IPoolable
 
     protected bool _wasHit = false;
 
-    protected IValidHit[] _validHitEffects;
-    protected IMissedHit[] _missedHitEffects;
+    protected List<IValidHit> _validHitEffects = new List<IValidHit>();
+    protected List<IMissedHit> _missedHitEffects = new List<IMissedHit>();
 
     private const string PrecisionMode = "PrecisionMode";
     public bool WasHit => _wasHit;
@@ -61,8 +61,8 @@ public class BaseTarget : MonoBehaviour, IPoolable
 
     public void Initialize()
     {
-        _validHitEffects = GetComponents<IValidHit>();
-        _missedHitEffects = GetComponents<IMissedHit>();
+        GetComponents(_validHitEffects);
+        GetComponents(_missedHitEffects);
         _nameLayer = LayerMask.NameToLayer("Hand");
         _optimalHitIndicator.Initialize();
     }

@@ -83,6 +83,7 @@ public class SongInfoReader : MonoBehaviour
     {
         if (_cancellationSource.IsCancellationRequested)
         {
+            _cancellationSource.Dispose();
             _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
         }
 
@@ -137,6 +138,7 @@ public class SongInfoReader : MonoBehaviour
         {
             if (_cancellationSource.IsCancellationRequested && this?.gameObject != null)
             {
+                _cancellationSource.Dispose();
                 _cancellationSource =
                     CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
             }

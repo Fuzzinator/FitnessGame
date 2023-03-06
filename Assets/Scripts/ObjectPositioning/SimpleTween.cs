@@ -151,6 +151,7 @@ namespace SimpleTweens
                 OnReturn = null;
                 return;
             }
+            _internalCancelTokenSource.Dispose();
             _internalCancelTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_destroyedCancellationToken);
         }
 

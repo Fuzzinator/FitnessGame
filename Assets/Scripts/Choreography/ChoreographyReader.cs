@@ -90,6 +90,7 @@ public class ChoreographyReader : MonoBehaviour
         
         if (_cancellationSource.IsCancellationRequested)
         {
+            _cancellationSource.Dispose();
             _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
         }
 

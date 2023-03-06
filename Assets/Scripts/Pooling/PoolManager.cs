@@ -1,6 +1,8 @@
+using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Pool;
 using Object = UnityEngine.Object;
 
 public class PoolManager
@@ -8,7 +10,6 @@ public class PoolManager
     public Transform poolParent { get; private set; }
     private IPoolable _poolableObj;
     private List<IPoolable> _pooledObjs = new List<IPoolable>();
-
     private const string FAILEDTOCAST = "Failed to cast instance of _poolableObj back to IPoolable";
 
     public IPoolable GetNewPoolable()

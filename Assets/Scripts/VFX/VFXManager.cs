@@ -1,6 +1,8 @@
+using Cysharp.Threading.Tasks;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class VFXManager : MonoBehaviour
@@ -11,6 +13,7 @@ public class VFXManager : MonoBehaviour
     private BaseHitVFX _normalHitPrefab;
 
     private PoolManager _normalHitPool;
+
 
     private void Awake()
     {
@@ -31,6 +34,7 @@ public class VFXManager : MonoBehaviour
             _normalHitPrefab = EnvironmentControlManager.Instance.ActiveEnvironmentContainer.BaseHitVFX;
         }
         _normalHitPool = new PoolManager(_normalHitPrefab, transform, 20);
+
     }
 
     private void OnDestroy()
