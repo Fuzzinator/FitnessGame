@@ -1,0 +1,84 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: TEMP Spawn-In Effect
+  m_Shader: {fileID: -6465566751694194690, guid: 91ec050cde17cf640961a3123d986f23,
+    type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _Hexagon_Pattern:
+        m_Texture: {fileID: 2800000, guid: 40b0cd26a7f0441458cdcdcdada36df1, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: a33281b5e459dd04a81b5c599e607267, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_6c5b7c7f84644f25a5111c822af1ac72_Texture_1:
+        m_Texture: {fileID: 2800000, guid: 8c7988713d4cb0547af588ab4c542013, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_cfbba5b9ce4744d9932378ed3e0c857a_Texture_1:
+        m_Texture: {fileID: 2800000, guid: 40b0cd26a7f0441458cdcdcdada36df1, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Triplanar_f8e3af14821442449a109be2f8ebe345_Texture_1:
+        m_Texture: {fileID: 2800000, guid: 40b0cd26a7f0441458cdcdcdada36df1, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _Alpha_clip: 0
+    - _Effect_Edge_Distance: 0.06
+    - _Float: 1.59
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    - _Spawn_In: 21.3
+    - _Vertex_Offset_Scale: 0.34
+    m_Colors:
+    - _BlueAccentColor: {r: 0, g: 0.8235294, b: 1, a: 1}
+    - _Green_Channel_PrimaryColor: {r: 0, g: 0.06666667, b: 0.09803922, a: 1}
+    - _Hexagon_Tiling: {r: 4, g: 4, b: 0, a: 0}
+    - _Red_Channel_Color: {r: 0, g: 0.8235294, b: 1, a: 1}
+    - _Spawn_Color_1: {r: 0, g: 1.65445, b: 1.9999998, a: 1}
+    - _Spawn_Color_2: {r: 0, g: 32, b: 0, a: 1}
+  m_BuildTextureStacks: []
+--- !u!114 &8488342849405672788
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 5

@@ -11,7 +11,7 @@ public class UIToggleBoolSetting : MonoBehaviour, ISaver
     private string _settingName;
 
     [SerializeField]
-    private bool _defaultValue;
+    protected bool _defaultValue;
 
     [SerializeField]
     private bool _cached = false;
@@ -25,7 +25,7 @@ public class UIToggleBoolSetting : MonoBehaviour, ISaver
     [SerializeField]
     private SettingsDisplay _settingsDisplay;
 
-    private bool _currentValue;
+    protected bool _currentValue;
 
     public bool SaveRequested { get; set; }
 
@@ -46,7 +46,7 @@ public class UIToggleBoolSetting : MonoBehaviour, ISaver
         }
     }
 
-    public void ToggleSet(bool isOn)
+    public virtual void ToggleSet(bool isOn)
     {
         if (_currentValue != isOn)
         {
@@ -58,7 +58,7 @@ public class UIToggleBoolSetting : MonoBehaviour, ISaver
         }
     }
 
-    public void Save(Profile overrideProfile = null)
+    public virtual void Save(Profile overrideProfile = null)
     {
         if (_cached)
         {
@@ -72,7 +72,7 @@ public class UIToggleBoolSetting : MonoBehaviour, ISaver
         SaveRequested = false;
     }
 
-    public void Revert()
+    public virtual void Revert()
     {
         _currentValue = _cached
             ? SettingsManager.GetCachedBool(_settingName, _defaultValue)

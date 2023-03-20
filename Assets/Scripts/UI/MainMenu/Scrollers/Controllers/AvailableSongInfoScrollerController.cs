@@ -22,7 +22,7 @@ namespace UI.Scrollers.Playlists
             CancellationToken = gameObject.GetCancellationTokenOnDestroy();
             base.Start();
         }
-        
+
         public override int GetNumberOfCells(EnhancedScroller scroller)
         {
             if (string.IsNullOrWhiteSpace(_searchKey) && _songInfos.Count == 0 || _songInfos.Count == 0)
@@ -51,7 +51,7 @@ namespace UI.Scrollers.Playlists
             _displaySongInfo.RequestDisplay(info);
             PlaylistMaker.Instance.SetActiveItem(info);
         }
-        
+
         protected override void SetDataFromFilter()
         {
             _songInfos.Clear();
@@ -73,6 +73,21 @@ namespace UI.Scrollers.Playlists
                     }
                 }
             }
+        }
+
+        public void ScrollToData(SongInfo info)
+        {
+            if(_songInfos.Count == 0)
+            {
+                _songInfos.AddRange(SongInfoFilesReader.Instance.availableSongs);
+            }
+            var dataIndex = _songInfos.IndexOf(info);
+            if (dataIndex < 0)
+            {
+                return;
+            }
+            _scroller.GetScrollPositionForDataIndex(dataIndex, EnhancedScroller.CellViewPositionEnum.After);
+            _scroller.SetScrollPositionImmediately(dataIndex);
         }
     }
 }

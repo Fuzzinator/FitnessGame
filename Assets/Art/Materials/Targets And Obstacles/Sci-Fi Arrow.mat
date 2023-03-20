@@ -93,6 +93,7 @@ Material:
     - _DetailNormalMapScale: 1
     - _Dissolve_Power: 0.5
     - _Dissolve_Range: 0.5
+    - _DistanceRotation: 0
     - _DstBlend: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
@@ -103,6 +104,8 @@ Material:
     - _Normal_Strength: 1
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _Position_Change_Distance: 1
+    - _Position_Change_Range: 1
     - _QueueControl: 0
     - _QueueOffset: 0
     - _Rotation: 90
@@ -114,16 +117,19 @@ Material:
     - _TEXTURESET: 0
     - _TextureIndex: 0
     - _USEDISTANCEDISSOLVE: 0
+    - _USEDISTANCEOFFSET: 0
     - _UVSec: 0
     - _ZTest: 4
     - _ZWrite: 1
     - _ZWriteControl: 0
     m_Colors:
-    - _Base_Color: {r: 1, g: 1, b: 1, a: 0}
+    - _Base_Color: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 1}
+    - _Base_Color_2: {r: 0.20392157, g: 0.20392157, b: 0.20392157, a: 1}
     - _CenterPosition: {r: 0, g: 0, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DissolveColor: {r: 3.979057, g: 0.3141361, b: 0, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _Position_Change: {r: 0, g: 0, b: 0, a: 0}
     - _Rotation_Axis: {r: 1, g: 0, b: 0, a: 0}
     - _Tiling: {r: 1, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []

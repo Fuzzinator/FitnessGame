@@ -4152,6 +4152,7 @@ GameObject:
   - component: {fileID: 78222454}
   - component: {fileID: 78222455}
   - component: {fileID: 78222456}
+  - component: {fileID: 78222457}
   m_Layer: 0
   m_Name: Main Menu
   m_TagString: Untagged
@@ -4205,13 +4206,49 @@ MonoBehaviour:
     _animator: {fileID: 366741910}
   _transitionStarted:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1993093614}
+        m_TargetAssemblyTypeName: GloveSpawnLerper, Assembly-CSharp
+        m_MethodName: TriggerValueChange
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Disable
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 983265265}
+        m_TargetAssemblyTypeName: GloveSpawnLerper, Assembly-CSharp
+        m_MethodName: TriggerValueChange
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Disable
+          m_BoolArgument: 0
+        m_CallState: 2
   _transitionCompleted:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 78222454}
         m_TargetAssemblyTypeName: TransitionController, Assembly-CSharp
         m_MethodName: TryLoadBaseLevel
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 78222455}
+        m_TargetAssemblyTypeName: EnvironmentController, Assembly-CSharp
+        m_MethodName: UpdateObstacleTargetTextures
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4254,6 +4291,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _targetMenuPage: 6
+--- !u!114 &78222457
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 78222451}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6d0c687fd23a344f8781e24127f79fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _availableSongInfoScrollerController: {fileID: 1716144662}
+  _availableSongsRecordDisplay: {fileID: 972979011}
+  _availableSongsInfoDisplay: {fileID: 1790807269}
 --- !u!1 &78435082
 GameObject:
   m_ObjectHideFlags: 0
@@ -24450,6 +24502,12 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.083896205
   m_Center: {x: -0.0000000037252903, y: -0.00013258308, z: 0}
+--- !u!23 &563850001 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: 10edd585d00d4e84b94ba17616566af7,
+    type: 3}
+  m_PrefabInstance: {fileID: 563849997}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &565796667
 GameObject:
   m_ObjectHideFlags: 0
@@ -35257,6 +35315,55 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &891770474
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 891770476}
+  - component: {fileID: 891770475}
+  m_Layer: 0
+  m_Name: Global Volume
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &891770475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 891770474}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: 9ad2be2f3b3c7534683478f39addfd7c, type: 2}
+--- !u!4 &891770476
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 891770474}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 18
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &892251488
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37123,6 +37230,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 10edd585d00d4e84b94ba17616566af7,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 75c61ac3b5ec21a40ac8c3f2cf7fda27, type: 2}
     - target: {fileID: 919132149155446097, guid: 10edd585d00d4e84b94ba17616566af7,
         type: 3}
       propertyPath: m_Name
@@ -37160,6 +37272,12 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.083896205
   m_Center: {x: -0.0000000037252903, y: -0.00013258308, z: 0}
+--- !u!23 &940288502 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: 10edd585d00d4e84b94ba17616566af7,
+    type: 3}
+  m_PrefabInstance: {fileID: 940288498}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &943107627
 GameObject:
   m_ObjectHideFlags: 0
@@ -38027,7 +38145,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -38679,6 +38797,7 @@ GameObject:
   - component: {fileID: 983265259}
   - component: {fileID: 983265258}
   - component: {fileID: 983265264}
+  - component: {fileID: 983265265}
   m_Layer: 7
   m_Name: RightHand Controller
   m_TagString: Untagged
@@ -38694,7 +38813,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 983265255}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.167, y: 0.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -38733,6 +38852,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _assignedHand: 1
   _glove: {fileID: 563849998}
+  _gloveSetUp:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &983265260
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -39091,6 +39213,129 @@ MonoBehaviour:
   _rayInteractor: {fileID: 983265262}
   _lineRenderer: {fileID: 983265261}
   _interactorLineVisual: {fileID: 983265260}
+--- !u!114 &983265265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 983265255}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 751f386bf5e6f254285f793d573964cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _targetMaterial: {fileID: 0}
+  _lerpSpeed: 0.5
+  _materialValues:
+  - rid: 5116675628597772289
+  - rid: 5116675628597772291
+  _gloves:
+  - {fileID: 563850001}
+  _targetShader: {fileID: -6465566751694194690, guid: 86c42e08a0f497041afa673a821fd011,
+    type: 3}
+  _onEnableEventName: Enable
+  references:
+    version: 2
+    RefIds:
+    - rid: 5116675628597772289
+      type: {class: MaterialValueLerper/FloatValue, ns: , asm: Assembly-CSharp}
+      data:
+        _materialPropertyName: _Spawn_In
+        _effectName: Enable
+        _lerpSpeedModifier: 1
+        _animationCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 2
+            outSlope: 2
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        started:
+          m_PersistentCalls:
+            m_Calls:
+            - m_Target: {fileID: 563849999}
+              m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+              m_MethodName: SetActive
+              m_Mode: 6
+              m_Arguments:
+                m_ObjectArgument: {fileID: 0}
+                m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+                m_IntArgument: 0
+                m_FloatArgument: 0
+                m_StringArgument: 
+                m_BoolArgument: 1
+              m_CallState: 2
+        completed:
+          m_PersistentCalls:
+            m_Calls: []
+        _endValue: 3.5
+    - rid: 5116675628597772291
+      type: {class: MaterialValueLerper/FloatValue, ns: , asm: Assembly-CSharp}
+      data:
+        _materialPropertyName: _Spawn_In
+        _effectName: Disable
+        _lerpSpeedModifier: 0.5
+        _animationCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 2
+            outSlope: 2
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        started:
+          m_PersistentCalls:
+            m_Calls: []
+        completed:
+          m_PersistentCalls:
+            m_Calls:
+            - m_Target: {fileID: 563849999}
+              m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+              m_MethodName: SetActive
+              m_Mode: 6
+              m_Arguments:
+                m_ObjectArgument: {fileID: 0}
+                m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+                m_IntArgument: 0
+                m_FloatArgument: 0
+                m_StringArgument: 
+                m_BoolArgument: 0
+              m_CallState: 2
+        _endValue: -0.5
 --- !u!114 &990073139
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -39821,7 +40066,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 1790807269}
         m_TargetAssemblyTypeName: UI.Scrollers.Playlists.DisplaySongInfo, Assembly-CSharp
-        m_MethodName: ClearDisplayedInfo
+        m_MethodName: CheckIfShouldClear
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -44554,6 +44799,56 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1080761753}
   m_CullTransparentMesh: 1
+--- !u!1 &1087698613
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1087698615}
+  - component: {fileID: 1087698614}
+  m_Layer: 0
+  m_Name: SetGameTextures
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1087698614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1087698613}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5511af2d7d15e7f4281f1c990bde3f74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _textureSets:
+  - _textureName: _HexagonPattern
+    _texture: {fileID: 2800000, guid: 40b0cd26a7f0441458cdcdcdada36df1, type: 3}
+  _textureArraySets:
+  - _textureArrayName: _TargetTextures
+    _textureArray: {fileID: 18700000, guid: c20004db87ee21a4dbe852a7f7aa0e00, type: 3}
+--- !u!4 &1087698615
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1087698613}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 17
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1088904183
 GameObject:
   m_ObjectHideFlags: 0
@@ -61943,7 +62238,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh227458
+  m_Name: pb_Mesh1306866
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -64523,6 +64818,12 @@ MonoBehaviour:
           m_PreInfinity: 2
           m_PostInfinity: 2
           m_RotationOrder: 4
+        started:
+          m_PersistentCalls:
+            m_Calls: []
+        completed:
+          m_PersistentCalls:
+            m_Calls: []
         _endValue: 0.5
     - rid: 370772409500565505
       type: {class: MaterialValueLerper/FloatValue, ns: , asm: Assembly-CSharp}
@@ -64554,6 +64855,12 @@ MonoBehaviour:
           m_PreInfinity: 2
           m_PostInfinity: 2
           m_RotationOrder: 4
+        started:
+          m_PersistentCalls:
+            m_Calls: []
+        completed:
+          m_PersistentCalls:
+            m_Calls: []
         _endValue: 0
 --- !u!1 &1677968003
 GameObject:
@@ -75028,6 +75335,7 @@ GameObject:
   - component: {fileID: 1993093608}
   - component: {fileID: 1993093607}
   - component: {fileID: 1993093613}
+  - component: {fileID: 1993093614}
   m_Layer: 7
   m_Name: LeftHand Controller
   m_TagString: Untagged
@@ -75043,7 +75351,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1993093605}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.101, y: 0.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -75082,6 +75390,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _assignedHand: 0
   _glove: {fileID: 940288499}
+  _gloveSetUp:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1993093609
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -75440,6 +75751,129 @@ MonoBehaviour:
   _rayInteractor: {fileID: 1993093611}
   _lineRenderer: {fileID: 1993093610}
   _interactorLineVisual: {fileID: 1993093609}
+--- !u!114 &1993093614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1993093605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 751f386bf5e6f254285f793d573964cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _targetMaterial: {fileID: 0}
+  _lerpSpeed: 0.5
+  _materialValues:
+  - rid: 5116675628597772288
+  - rid: 5116675628597772290
+  _gloves:
+  - {fileID: 940288502}
+  _targetShader: {fileID: -6465566751694194690, guid: 86c42e08a0f497041afa673a821fd011,
+    type: 3}
+  _onEnableEventName: Enable
+  references:
+    version: 2
+    RefIds:
+    - rid: 5116675628597772288
+      type: {class: MaterialValueLerper/FloatValue, ns: , asm: Assembly-CSharp}
+      data:
+        _materialPropertyName: _Spawn_In
+        _effectName: Enable
+        _lerpSpeedModifier: 1
+        _animationCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 2
+            outSlope: 2
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        started:
+          m_PersistentCalls:
+            m_Calls:
+            - m_Target: {fileID: 940288500}
+              m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+              m_MethodName: SetActive
+              m_Mode: 6
+              m_Arguments:
+                m_ObjectArgument: {fileID: 0}
+                m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+                m_IntArgument: 0
+                m_FloatArgument: 0
+                m_StringArgument: 
+                m_BoolArgument: 1
+              m_CallState: 2
+        completed:
+          m_PersistentCalls:
+            m_Calls: []
+        _endValue: 3.5
+    - rid: 5116675628597772290
+      type: {class: MaterialValueLerper/FloatValue, ns: , asm: Assembly-CSharp}
+      data:
+        _materialPropertyName: _Spawn_In
+        _effectName: Disable
+        _lerpSpeedModifier: 0.5
+        _animationCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 2
+            outSlope: 2
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        started:
+          m_PersistentCalls:
+            m_Calls: []
+        completed:
+          m_PersistentCalls:
+            m_Calls:
+            - m_Target: {fileID: 940288500}
+              m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+              m_MethodName: SetActive
+              m_Mode: 6
+              m_Arguments:
+                m_ObjectArgument: {fileID: 0}
+                m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+                m_IntArgument: 0
+                m_FloatArgument: 0
+                m_StringArgument: 
+                m_BoolArgument: 0
+              m_CallState: 2
+        _endValue: -0.5
 --- !u!1 &1994178428
 GameObject:
   m_ObjectHideFlags: 0

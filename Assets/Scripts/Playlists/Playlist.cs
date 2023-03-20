@@ -170,7 +170,7 @@ public class Playlist
         _targetColors = ColorsManager.Instance.ActiveColorSet;
         _image = image;
         _version = PLAYLISTVERSION;
-        _guid = Guid.NewGuid().ToString();
+        _guid = null;
         isValid = true;
     }
 

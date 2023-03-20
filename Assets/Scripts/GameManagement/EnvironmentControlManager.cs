@@ -54,7 +54,7 @@ public class EnvironmentControlManager : MonoBehaviour
     public void LoadSelection()
     {
         LoadEnvironmentData(_targetEnvironmentIndex);
-        
+
         availableReferencesUpdated?.Invoke();
     }
 
@@ -89,7 +89,7 @@ public class EnvironmentControlManager : MonoBehaviour
     {
         return _availableReferences[_targetEnvironmentIndex].EnvironmentName;
     }
-    
+
     private void LoadEnvironmentData(int index)
     {
         LoadEnvironmentDataAsync(index).Forget();
@@ -126,10 +126,10 @@ public class EnvironmentControlManager : MonoBehaviour
 
                 ActiveEnvironmentContainer = asset;
             });
-        ColorsManager.Instance.SetAndUpdateTextureSets(ActiveEnvironmentContainer.TargetTextures,
-            ActiveEnvironmentContainer.ObstacleTextures);
+        //ColorsManager.Instance.SetAndUpdateTextureSets(ActiveEnvironmentContainer.TargetTextures,
+        //    ActiveEnvironmentContainer.ObstacleTextures);
 
-        if (ActiveEnvironmentContainer.GlobalTextureSets is {Length: > 0}) //this is equal to is GlobalTextureSets != null && its length>0
+        if (ActiveEnvironmentContainer.GlobalTextureSets is { Length: > 0 }) //this is equal to is GlobalTextureSets != null && its length>0
         {
             foreach (var set in ActiveEnvironmentContainer.GlobalTextureSets)
             {
@@ -137,7 +137,7 @@ public class EnvironmentControlManager : MonoBehaviour
             }
         }
 
-        if (ActiveEnvironmentContainer.GlobalTextureArraySets is {Length: > 0})
+        if (ActiveEnvironmentContainer.GlobalTextureArraySets is { Length: > 0 })
         {
             foreach (var set in ActiveEnvironmentContainer.GlobalTextureArraySets)
             {
@@ -146,6 +146,12 @@ public class EnvironmentControlManager : MonoBehaviour
         }
 
         LoadingEnvironmentContainer = false;
+    }
+
+    public void UpdateObstacleTargetTextures()
+    {
+        ColorsManager.Instance.SetAndUpdateTextureSets(ActiveEnvironmentContainer.TargetTextures,
+            ActiveEnvironmentContainer.ObstacleTextures);
     }
 
     public List<string> GetNewAvailableEnvironmentsList()

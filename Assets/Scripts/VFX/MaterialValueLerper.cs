@@ -4,20 +4,21 @@ using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class MaterialValueLerper : MonoBehaviour
 {
     [SerializeField]
-    private Material _targetMaterial;
+    protected Material _targetMaterial;
 
     [SerializeField]
-    private float _lerpSpeed = 1f;
+    protected float _lerpSpeed = 1f;
 
     [SerializeReference]
-    private List<MaterialValue> _materialValues = new List<MaterialValue>();
+    protected List<MaterialValue> _materialValues = new List<MaterialValue>();
 
-    private CancellationTokenSource _cancellationTokenSource;
-    private CancellationToken _cancellationToken;
+    protected CancellationTokenSource _cancellationTokenSource;
+    protected CancellationToken _cancellationToken;
 
 
     #region Creating New MaterialValues
@@ -40,9 +41,15 @@ public class MaterialValueLerper : MonoBehaviour
         _materialValues.Add(new VectorValue());
     }
 
+    [ContextMenu("Add Keyword Changer")]
+    private void AddKeywordChanger()
+    {
+        _materialValues.Add(new KeywordBoolValue());
+    }
+
     #endregion
-    
-    public async UniTaskVoid TriggerValueChange(string effectName)
+
+    public virtual async UniTaskVoid TriggerValueChangeAsync(string effectName)
     {
         if (_cancellationTokenSource == null)
         {
@@ -53,14 +60,14 @@ public class MaterialValueLerper : MonoBehaviour
         {
             _cancellationTokenSource.Cancel();
         }
-        
+
         await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
-        if(_cancellationTokenSource.IsCancellationRequested && !_cancellationToken.IsCancellationRequested)
+        if (_cancellationTokenSource.IsCancellationRequested && !_cancellationToken.IsCancellationRequested)
         {
             _cancellationTokenSource.Dispose();
             _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_cancellationToken);
         }
-        
+
         foreach (var materialValue in _materialValues)
         {
             if (string.Equals(effectName, materialValue.EffectName))
@@ -73,7 +80,7 @@ public class MaterialValueLerper : MonoBehaviour
     #region Material Value Classes
 
     [Serializable]
-    private abstract class MaterialValue
+    protected abstract class MaterialValue
     {
         [SerializeField]
         protected string _materialPropertyName;
@@ -91,6 +98,9 @@ public class MaterialValueLerper : MonoBehaviour
 
         public string EffectName => _effectName;
 
+        public UnityEvent<MaterialValue> started = new();
+        public UnityEvent<MaterialValue> completed = new();
+
         protected virtual void GetMaterialSettings(Material mat)
         {
             if (_materialProperty == 0)
@@ -98,7 +108,7 @@ public class MaterialValueLerper : MonoBehaviour
                 _materialProperty = Shader.PropertyToID(_materialPropertyName);
             }
         }
-        
+
         public virtual void StartLerpingValue(Material material, float speed, CancellationTokenSource cancellationSource,
             Action<Material, float> action = null)
         {
@@ -113,7 +123,7 @@ public class MaterialValueLerper : MonoBehaviour
             {
                 await UniTask.DelayFrame(1, cancellationToken: cancellationSource.Token);
             }
-            
+            started?.Invoke(this);
             for (var time = 0f; time <= 1; time += Time.smoothDeltaTime * _lerpSpeedModifier * speed)
             {
                 var lerpPoint = _animationCurve.Evaluate(time);
@@ -124,6 +134,7 @@ public class MaterialValueLerper : MonoBehaviour
                     return;
                 }
             }
+            completed?.Invoke(this);
         }
     }
 
@@ -192,6 +203,25 @@ public class MaterialValueLerper : MonoBehaviour
                 mat.SetVector(_materialProperty, Vector4.Lerp(_startValue, _endValue, lerpPoint));
             };
             base.StartLerpingValue(material, speed, cancellationSource, action);
+        }
+    }
+
+    [System.Serializable]
+    private class KeywordBoolValue : MaterialValue
+    {
+        [SerializeField]
+        private bool _value;
+
+        public override void StartLerpingValue(Material material, float speed, CancellationTokenSource cancellationSource, Action<Material, float> action = null)
+        {
+            if (_value)
+            {
+                material.EnableKeyword(_materialPropertyName);
+            }
+            else
+            {
+                material.DisableKeyword(_materialPropertyName);
+            }
         }
     }
 

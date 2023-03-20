@@ -49,6 +49,7 @@ public class PlaylistManager : MonoBehaviour
         {
             _currentPlaylist = value;
             currentPlaylistUpdated?.Invoke(value);
+            _activePlaylistIsTemp = false;
         }
     }
 
@@ -56,6 +57,8 @@ public class PlaylistManager : MonoBehaviour
     public UnityEvent<Playlist> currentPlaylistUpdated = new UnityEvent<Playlist>();
 
     private int _currentIndex = 0;
+
+    private bool _activePlaylistIsTemp = false;
 
     public int CurrentIndex => _currentIndex;
 
@@ -153,7 +156,7 @@ public class PlaylistManager : MonoBehaviour
     {
         _currentIndex = 0;
         _currentItem = new PlaylistItem();
-        _currentPlaylist = null;
+        //_currentPlaylist = null;
         SetOverrideDifficulty(false);
         SetOverrideGameMode(false);
     }
@@ -163,6 +166,7 @@ public class PlaylistManager : MonoBehaviour
         var targetEnvName = EnvironmentControlManager.Instance.GetTargetEnvName();
         var tempPlaylist = new Playlist(playlistItem, targetEnvName);
         CurrentPlaylist = tempPlaylist;
+        _activePlaylistIsTemp = true;
     }
 
     public void SetEnvironment(string envName)

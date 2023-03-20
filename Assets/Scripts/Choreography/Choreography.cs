@@ -81,8 +81,8 @@ public class Choreography
 
             if (!string.IsNullOrWhiteSpace(json))
             {
-                var first50 = json[..50].Replace(" ", "");
-                if (first50.Contains(V3V1))
+                var first150 = json[..150].Replace(" ", "");
+                if (first150.Contains(V3V1))
                 {
                     var v3Choreography = JsonUtility.FromJson<BeatsaberV3Choreography>(json);
                     if (v3Choreography.colorNotes != null)
@@ -90,7 +90,7 @@ public class Choreography
                         choreography = new Choreography(v3Choreography);
                     }
                 }
-                else if (first50.Contains(V1V1) || first50.Contains(V2V1))
+                else if (first150.Contains(V1V1) || first150.Contains(V2V1))
                 {
                     try
                     {

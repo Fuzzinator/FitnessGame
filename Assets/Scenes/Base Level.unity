@@ -3060,6 +3060,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _assignedHand: 1
   _glove: {fileID: 0}
+  _gloveSetUp:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!54 &69504088
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -4579,6 +4582,55 @@ Transform:
   - {fileID: 251219787}
   m_Father: {fileID: 1041961965}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &466530363
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 466530365}
+  - component: {fileID: 466530364}
+  m_Layer: 0
+  m_Name: Global Volume
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &466530364
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 466530363}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: 9ad2be2f3b3c7534683478f39addfd7c, type: 2}
+--- !u!4 &466530365
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 466530363}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &466902244
 GameObject:
@@ -6860,6 +6912,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _assignedHand: 0
   _glove: {fileID: 0}
+  _gloveSetUp:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!54 &876928971
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -6882,7 +6937,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh457426
+  m_Name: pb_Mesh555188
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -7335,7 +7390,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -7751,6 +7806,7 @@ GameObject:
   - component: {fileID: 983265259}
   - component: {fileID: 983265258}
   - component: {fileID: 983265264}
+  - component: {fileID: 983265265}
   m_Layer: 7
   m_Name: RightHand Controller
   m_TagString: Untagged
@@ -7803,6 +7859,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _assignedHand: 1
   _glove: {fileID: 0}
+  _gloveSetUp:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 983265265}
+        m_TargetAssemblyTypeName: GloveSpawnLerper, Assembly-CSharp
+        m_MethodName: SetRenderersAndSpawn
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Enable
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &983265260
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8161,6 +8232,116 @@ MonoBehaviour:
   _rayInteractor: {fileID: 983265262}
   _lineRenderer: {fileID: 983265261}
   _interactorLineVisual: {fileID: 983265260}
+--- !u!114 &983265265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 983265255}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 751f386bf5e6f254285f793d573964cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _targetMaterial: {fileID: 0}
+  _lerpSpeed: 0.5
+  _materialValues:
+  - rid: 5116675628597772288
+  - rid: 5116675628597772290
+  _gloves: []
+  _targetShader: {fileID: -6465566751694194690, guid: 86c42e08a0f497041afa673a821fd011,
+    type: 3}
+  _onEnableEventName: Enable
+  references:
+    version: 2
+    RefIds:
+    - rid: 5116675628597772288
+      type: {class: MaterialValueLerper/FloatValue, ns: , asm: Assembly-CSharp}
+      data:
+        _materialPropertyName: _Spawn_In
+        _effectName: Enable
+        _lerpSpeedModifier: 1
+        _animationCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 2
+            outSlope: 2
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        started:
+          m_PersistentCalls:
+            m_Calls: []
+        completed:
+          m_PersistentCalls:
+            m_Calls: []
+        _endValue: 3.5
+    - rid: 5116675628597772290
+      type: {class: MaterialValueLerper/FloatValue, ns: , asm: Assembly-CSharp}
+      data:
+        _materialPropertyName: _Spawn_In
+        _effectName: Disable
+        _lerpSpeedModifier: 0.5
+        _animationCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 2
+            outSlope: 2
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        started:
+          m_PersistentCalls:
+            m_Calls: []
+        completed:
+          m_PersistentCalls:
+            m_Calls:
+            - m_Target: {fileID: 983265259}
+              m_TargetAssemblyTypeName: Hand, Assembly-CSharp
+              m_MethodName: HideGlove
+              m_Mode: 1
+              m_Arguments:
+                m_ObjectArgument: {fileID: 0}
+                m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+                m_IntArgument: 0
+                m_FloatArgument: 0
+                m_StringArgument: 
+                m_BoolArgument: 0
+              m_CallState: 2
+        _endValue: -0.5
 --- !u!1 &1018819890
 GameObject:
   m_ObjectHideFlags: 0
@@ -13183,6 +13364,30 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 1993093614}
+        m_TargetAssemblyTypeName: GloveSpawnLerper, Assembly-CSharp
+        m_MethodName: TriggerValueChange
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Disable
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 983265265}
+        m_TargetAssemblyTypeName: GloveSpawnLerper, Assembly-CSharp
+        m_MethodName: TriggerValueChange
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Disable
+          m_BoolArgument: 1
+        m_CallState: 2
   _transitionCompleted:
     m_PersistentCalls:
       m_Calls:
@@ -15076,6 +15281,7 @@ GameObject:
   - component: {fileID: 1993093608}
   - component: {fileID: 1993093607}
   - component: {fileID: 1993093613}
+  - component: {fileID: 1993093614}
   m_Layer: 7
   m_Name: LeftHand Controller
   m_TagString: Untagged
@@ -15128,6 +15334,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _assignedHand: 0
   _glove: {fileID: 0}
+  _gloveSetUp:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1993093614}
+        m_TargetAssemblyTypeName: GloveSpawnLerper, Assembly-CSharp
+        m_MethodName: SetRenderersAndSpawn
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Enable
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1993093609
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15486,6 +15707,116 @@ MonoBehaviour:
   _rayInteractor: {fileID: 1993093611}
   _lineRenderer: {fileID: 1993093610}
   _interactorLineVisual: {fileID: 1993093609}
+--- !u!114 &1993093614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1993093605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 751f386bf5e6f254285f793d573964cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _targetMaterial: {fileID: 0}
+  _lerpSpeed: 0.5
+  _materialValues:
+  - rid: 5116675628597772288
+  - rid: 5116675628597772290
+  _gloves: []
+  _targetShader: {fileID: -6465566751694194690, guid: 86c42e08a0f497041afa673a821fd011,
+    type: 3}
+  _onEnableEventName: Enable
+  references:
+    version: 2
+    RefIds:
+    - rid: 5116675628597772288
+      type: {class: MaterialValueLerper/FloatValue, ns: , asm: Assembly-CSharp}
+      data:
+        _materialPropertyName: _Spawn_In
+        _effectName: Enable
+        _lerpSpeedModifier: 1
+        _animationCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 2
+            outSlope: 2
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        started:
+          m_PersistentCalls:
+            m_Calls: []
+        completed:
+          m_PersistentCalls:
+            m_Calls: []
+        _endValue: 3.5
+    - rid: 5116675628597772290
+      type: {class: MaterialValueLerper/FloatValue, ns: , asm: Assembly-CSharp}
+      data:
+        _materialPropertyName: _Spawn_In
+        _effectName: Disable
+        _lerpSpeedModifier: 0.5
+        _animationCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 2
+            outSlope: 2
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        started:
+          m_PersistentCalls:
+            m_Calls: []
+        completed:
+          m_PersistentCalls:
+            m_Calls:
+            - m_Target: {fileID: 1993093608}
+              m_TargetAssemblyTypeName: Hand, Assembly-CSharp
+              m_MethodName: HideGlove
+              m_Mode: 1
+              m_Arguments:
+                m_ObjectArgument: {fileID: 0}
+                m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+                m_IntArgument: 0
+                m_FloatArgument: 0
+                m_StringArgument: 
+                m_BoolArgument: 0
+              m_CallState: 2
+        _endValue: -0.5
 --- !u!1 &2001671567
 GameObject:
   m_ObjectHideFlags: 0

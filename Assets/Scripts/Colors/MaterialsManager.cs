@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
+using static UnityEngine.Rendering.DebugUI;
 
 public class MaterialsManager : MonoBehaviour
 {
@@ -13,9 +15,10 @@ public class MaterialsManager : MonoBehaviour
     
     [SerializeField]
     private List<HitSideAndMaterials> _materials;
-    
+        
+    private Dictionary<Renderer, MaterialAndInstance> _materialsBySource = new Dictionary<Renderer, MaterialAndInstance>();
     //private const string DISSOLVEKEYWORD = "_USEDISTANCEDISSOLVE";
-    
+
     private void Awake()
     {
         if (Instance == null)
@@ -61,6 +64,23 @@ public class MaterialsManager : MonoBehaviour
         return _materials[index].materials[subIndex].material;
     }
     
+    public Material GetInstancedMaterial(Renderer sourceRenderer)
+    {
+        if(!_materialsBySource.TryGetValue(sourceRenderer, out var materials))
+        {
+            materials = new MaterialAndInstance(sourceRenderer.sharedMaterial, sourceRenderer.material);
+            _materialsBySource[sourceRenderer] = materials;
+        }
+        return materials.Instanced;
+    }     
+
+    public bool TryGetOriginalMaterial(Renderer sourceRenderer, out Material original)
+    {
+        var found = _materialsBySource.TryGetValue(sourceRenderer, out var materials);
+        original = materials.Original;
+        return found;
+    }
+
     private void InstanceMaterials()
     {
         var hex = Shader.PropertyToID("_TextureIndex");
@@ -111,6 +131,18 @@ public class MaterialsManager : MonoBehaviour
         {
             this.material = material;
             this.isNote = isNote;
+        }
+    }
+
+    private struct MaterialAndInstance
+    {
+        public Material Original { get; private set; }
+        public Material Instanced { get; private set;}
+
+        public MaterialAndInstance(Material original, Material instanced)
+        {
+            Original = original;
+            Instanced = instanced;
         }
     }
 }

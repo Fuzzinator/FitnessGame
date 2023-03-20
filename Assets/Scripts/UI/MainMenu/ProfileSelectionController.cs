@@ -37,7 +37,7 @@ public class ProfileSelectionController : MonoBehaviour
         if (ProfileManager.Instance.ActiveProfile == null)
         {
             _fogActive = true;
-            _valueLerper.TriggerValueChange(_enableEffectName).Forget();
+            _valueLerper.TriggerValueChangeAsync(_enableEffectName).Forget();
         }
 
         ProfileManager.Instance.GetAllProfileSprites();
@@ -50,7 +50,7 @@ public class ProfileSelectionController : MonoBehaviour
         if (_fogActive)
         {
             _fogActive = false;
-            _valueLerper.TriggerValueChange(_disableEffectName).Forget();
+            _valueLerper.TriggerValueChangeAsync(_disableEffectName).Forget();
         }
 
         ProfileManager.Instance.UnloadProfileSprites();

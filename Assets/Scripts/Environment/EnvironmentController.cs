@@ -98,6 +98,11 @@ public class EnvironmentController : MonoBehaviour
         }
     }*/
 
+    public void UpdateObstacleTargetTextures()
+    {
+        EnvironmentControlManager.Instance.UpdateObstacleTargetTextures();
+    }
+
     public void FinishSceneLoad()
     {
         if (!_sceneInstanceHandle.IsValid())//_sceneLoadOperation == null)

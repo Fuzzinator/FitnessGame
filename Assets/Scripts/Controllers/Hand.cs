@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.XR;
 
 public class Hand : BaseGameStateListener
@@ -13,6 +14,9 @@ public class Hand : BaseGameStateListener
 
     [SerializeField]
     private Transform _glove;
+
+    [SerializeField]
+    private UnityEvent<Renderer[]> _gloveSetUp = new UnityEvent<Renderer[]>();
 
     public Collider MyCollider => _gloveController?.GloveCollider;
 
@@ -233,6 +237,12 @@ public class Hand : BaseGameStateListener
         _glove = _gloveController.transform;
         SetGloveColor();
         SetOffset();
+        _glove.gameObject.SetActive(true);
+        _gloveSetUp?.Invoke(_gloveController.Renderers);
+    }
+    public void HideGlove()
+    {
+        _glove.gameObject.SetActive(false);
     }
 
     private void SetGloveColor()
@@ -256,4 +266,5 @@ public class Hand : BaseGameStateListener
         UpdateDevices();
         SetOffset();
     }
+
 }
