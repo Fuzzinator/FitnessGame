@@ -1,5 +1,6 @@
 using UI.Scrollers;
 using UnityEngine;
+using UnityEngine.UI;
 using ColorSet = ColorsManager.ColorSet;
 
 namespace UI
@@ -14,10 +15,18 @@ namespace UI
 
         [SerializeField]
         private ColorSetEditor _colorSetEditor;
+
+        [SerializeField]
+        private MultiGraphicButton _deleteButton;
+        [SerializeField]
+        private MultiGraphicButton _resetButton;
+
         private void OnEnable()
         {
             _controller.Refresh();
             ColorsManager.Instance.availableColorSetsUpdated.AddListener(_controller.Refresh);
+            ColorsManager.Instance.activeColorSetUpdated.AddListener(CheckActiveColorSet);
+            CheckActiveColorSet(ColorsManager.Instance.ActiveColorSet);
         }
 
         private void OnDisable()
@@ -39,6 +48,13 @@ namespace UI
         public void RequestCloseSetEditor()
         {
             _colorSetEditor.CloseEditor();
+        }
+
+        private void CheckActiveColorSet(ColorSet set)
+        {
+            var notDefault = ColorsManager.Instance.ActiveSetIndex != 0;
+            _deleteButton.interactable = notDefault;
+            _resetButton.interactable = notDefault;
         }
     }
 }

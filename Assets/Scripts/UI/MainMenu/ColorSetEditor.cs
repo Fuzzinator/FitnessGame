@@ -43,6 +43,16 @@ namespace UI
             RequestShowEditor(colorSet, index);
         }
 
+        public void DeleteColorSet()
+        {
+            ColorsManager.Instance.RemoveCurrentColorSet();
+        }
+
+        public void ResetCurrentColorSet()
+        {
+            ColorsManager.Instance.UpdateColorSet(ColorsManager.ColorSet.Default, ColorsManager.Instance.ActiveSetIndex);
+        }
+
         public void RequestShowEditor(ColorsManager.ColorSet setToEdit, int index)
         {
             _activeColorSet = setToEdit;

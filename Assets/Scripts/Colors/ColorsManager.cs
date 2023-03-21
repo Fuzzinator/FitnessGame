@@ -97,18 +97,14 @@ public class ColorsManager : MonoBehaviour
     {
         _colorSets.Clear();
         _colorSets = SettingsManager.GetSetting(CUSTOMCOLORS, _colorSets);
-        /*_customColorCount = SettingsManager.GetSetting(CUSTOMCOLORSETCOUNT, 0);
-        if (_customColorCount == 0)
+        if (_colorSets.Count == 0)
         {
-            AddColorSet(ColorSet.Default);
+            _colorSets.Add(ColorSet.Default);
         }
-        else
+        else if (_colorSets[0] != ColorSet.Default)
         {
-            /*for (var i = 0; i < _customColorCount; i++)
-            {
-                _colorSets.Add(SettingsManager.GetSetting($"{CUSTOMCOLORSETNUMBERX}{i}", ColorSet.Default));
-            }#1#
-        }*/
+            _colorSets[0] = ColorSet.Default;
+        }
 
         ActiveSetIndex = SettingsManager.GetSetting(ACTIVECOLORSETINDEX, 0);
         SetActiveColorSet(ActiveSetIndex);
@@ -124,8 +120,25 @@ public class ColorsManager : MonoBehaviour
         return _colorSets.Count - 1;
     }
 
+    public void RemoveCurrentColorSet()
+    {
+        if(ActiveSetIndex != 0)
+        {
+            _colorSets.Remove(_currentColorSet);
+            ActiveColorSet = _colorSets[0];
+            ActiveSetIndex = 0;
+            availableColorSetsUpdated?.Invoke();
+            activeColorSetUpdated?.Invoke(_colorSets[0]);
+        }
+        SaveColorSets();
+    }
+
     public void UpdateColorSet(ColorSet colorSet, int index)
     {
+        if(index == 0)
+        {
+            return;
+        }
         _colorSets[index] = colorSet;
         availableColorSetsUpdated?.Invoke();
         SaveColorSets();
@@ -271,8 +284,8 @@ public class ColorsManager : MonoBehaviour
         }
 
         public static readonly ColorSet Default = new(
-            new Color(.1125f, .5374f, .75f),
-            new Color(.75f, .1125f, .1125f),
+            new Color(.45f, .68f, .8f),
+            new Color(.78f, .38f, .38f),
             new Color(.1921f, .749f, .1137f),
             new Color(0f, .949f, 1f),
             new Color(),
