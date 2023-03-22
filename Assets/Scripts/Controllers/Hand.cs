@@ -14,6 +14,8 @@ public class Hand : BaseGameStateListener
 
     [SerializeField]
     private Transform _glove;
+    [SerializeField]
+    private Transform _uiRaycaster;
 
     [SerializeField]
     private UnityEvent<Renderer[]> _gloveSetUp = new UnityEvent<Renderer[]>();
@@ -25,13 +27,25 @@ public class Hand : BaseGameStateListener
     public Vector3 GloveOffset
     {
         get => _glove.localPosition;
-        set => _glove.localPosition = value;
+        set 
+        {
+            _glove.localPosition = value;
+//#if !UNITY_ANDROID
+            _uiRaycaster.localPosition= value;
+//#endif
+        }
     }
 
     public Quaternion GloveRotationOffset
     {
         get => _glove.localRotation;
-        set => _glove.localRotation = value;
+        set
+        {
+            _glove.localRotation = value;
+//#if !UNITY_ANDROID
+            _uiRaycaster.localRotation= value;
+//#endif
+        }
     }
 
     public Vector3 ForwardDirection => _glove.forward;
@@ -100,7 +114,7 @@ public class Hand : BaseGameStateListener
     {
         //enabled = true;
         UpdateDevices();
-
+        ProfileManager.Instance.activeProfileUpdated.AddListener(SetOffset);
         SetOffset();
         TrackDirAndSpeed(_cancellationToken).Forget();
         if (_devices.Count == 0)
@@ -112,6 +126,7 @@ public class Hand : BaseGameStateListener
     private void OnDisable()
     {
         InputDevices.deviceDisconnected -= DeviceConnected;
+        ProfileManager.Instance.activeProfileUpdated.RemoveListener(SetOffset);
     }
 
 
@@ -254,11 +269,13 @@ public class Hand : BaseGameStateListener
     public void UnparentGlove()
     {
         _glove.SetParent(null);
+        _uiRaycaster.SetParent(null);
     }
 
     public void ParentGlove()
     {
         _glove.SetParent(transform);
+        _uiRaycaster.SetParent(transform);
     }
 
     private void DeviceConnected(InputDevice device)

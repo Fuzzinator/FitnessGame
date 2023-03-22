@@ -48,8 +48,8 @@ public class ControllerOffsetTracker : MonoBehaviour, ISaver
         InputManager.Instance.MainInput[RIGHTGRIPRELEASED].performed += RightGripReleased;
 
         SaveRequested = false;
-        
-#if UNITY_EDITOR
+
+#if UNITY_EDITOR && UNITY_ANDROID
         _leftStartPos = HandTracker.LeftEditorHand.GloveOffset;
         _rightStartPos = HandTracker.RightEditorHand.GloveOffset;
 #else
@@ -76,7 +76,7 @@ public class ControllerOffsetTracker : MonoBehaviour, ISaver
     private void LeftGripPressed(InputAction.CallbackContext obj)
     {
         _leftGripPressed = true;
-#if UNITY_EDITOR
+#if UNITY_EDITOR && UNITY_ANDROID
 
         TrackControllerPosition(HandTracker.LeftEditorHand);
 #else
@@ -87,7 +87,7 @@ public class ControllerOffsetTracker : MonoBehaviour, ISaver
     private void RightGripPressed(InputAction.CallbackContext obj)
     {
         _rightGripPressed = true;
-#if UNITY_EDITOR
+#if UNITY_EDITOR && UNITY_ANDROID
         TrackControllerPosition(HandTracker.RightEditorHand);
 #else
         TrackControllerPosition(HandTracker.RightHand);
@@ -98,7 +98,7 @@ public class ControllerOffsetTracker : MonoBehaviour, ISaver
     {
         _leftGripPressed = false;
         var leftHand = HandTracker.LeftHand;
-#if UNITY_EDITOR
+#if UNITY_EDITOR && UNITY_ANDROID
         leftHand = HandTracker.LeftEditorHand;
 #endif
         leftHand.ParentGlove();
@@ -110,7 +110,7 @@ public class ControllerOffsetTracker : MonoBehaviour, ISaver
     {
         _rightGripPressed = false;
         var rightHand = HandTracker.RightHand;
-#if UNITY_EDITOR
+#if UNITY_EDITOR && UNITY_ANDROID
         rightHand = HandTracker.RightEditorHand;
 #endif
         rightHand.ParentGlove();
@@ -159,7 +159,7 @@ public class ControllerOffsetTracker : MonoBehaviour, ISaver
 
     public void ResetLeftController()
     {
-#if UNITY_EDITOR
+#if UNITY_EDITOR && UNITY_ANDROID
         ResetController(HandTracker.LeftEditorHand);
 #else
         ResetController(HandTracker.LeftHand);
@@ -168,7 +168,7 @@ public class ControllerOffsetTracker : MonoBehaviour, ISaver
 
     public void ResetRightController()
     {
-#if UNITY_EDITOR
+#if UNITY_EDITOR && UNITY_ANDROID
         ResetController(HandTracker.RightEditorHand);
 #else
         ResetController(HandTracker.RightHand);
@@ -202,7 +202,7 @@ public class ControllerOffsetTracker : MonoBehaviour, ISaver
     {
         _leftOffset = SettingsManager.GetSetting(SettingsManager.LEFTGLOVEOFFSET, Vector3.zero);
         _rightOffset = SettingsManager.GetSetting(SettingsManager.RIGHTGLOVEOFFSET, Vector3.zero);
-#if UNITY_EDITOR
+#if UNITY_EDITOR && UNITY_ANDROID
         HandTracker.LeftEditorHand.GloveOffset = _leftOffset;
         HandTracker.RightEditorHand.GloveOffset = _rightOffset;
 #else
@@ -212,7 +212,7 @@ public class ControllerOffsetTracker : MonoBehaviour, ISaver
         var defaultRotation = HandTracker.GetDefaultRotation();
         _leftRotationOffset = SettingsManager.GetSetting(SettingsManager.LEFTGLOVEROTOFFSET, defaultRotation);
         _rightRotationOffset = SettingsManager.GetSetting(SettingsManager.RIGHTGLOVEROTOFFSET, defaultRotation);
-#if UNITY_EDITOR
+#if UNITY_EDITOR && UNITY_ANDROID
         HandTracker.LeftEditorHand.GloveRotationOffset = _leftRotationOffset;
         HandTracker.RightEditorHand.GloveRotationOffset = _rightRotationOffset;
 #else

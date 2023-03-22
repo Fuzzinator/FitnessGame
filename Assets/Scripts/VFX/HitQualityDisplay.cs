@@ -11,7 +11,6 @@ public class HitQualityDisplay : MonoBehaviour, IPoolable
     public PoolManager MyPoolManager { get; set; }
     public bool IsPooled { get; set; }
 
-    private const float FootInMeters = 0.3048f;
 
     #region Const Strings
     private const string Bad = "Bad";
@@ -34,7 +33,7 @@ public class HitQualityDisplay : MonoBehaviour, IPoolable
 
     public void SetDisplay(HitInfo info)
     {
-        var hitQuality = GetModifierRange(info);
+        var hitQuality = 1 - info.HitQuality;
         var qualityName = hitQuality switch
         {
             _ when hitQuality < .2f => Perfect,
@@ -55,15 +54,5 @@ public class HitQualityDisplay : MonoBehaviour, IPoolable
     {
         transform.localScale = Vector3.one* scale;
         _displayText.alpha = alpha;
-    }
-
-    private float GetModifierRange(HitInfo info)
-    {
-        var distance = 1f - Mathf.Clamp(info.DistanceFromOptimalHit, 0, FootInMeters) * 3.333f;
-        var impactValue = Mathf.Clamp(info.ImpactDotProduct, 0, 1);
-        var directionValue = Mathf.Clamp(info.DirectionDotProduct, 0, 1);
-        var final = 1f - ((distance + impactValue + directionValue) * .333f);
-        //var magnitudeBonusValue = 1- Mathf.Clamp(info.HitSpeed, 0, 30) * .1f;
-        return final;
     }
 }

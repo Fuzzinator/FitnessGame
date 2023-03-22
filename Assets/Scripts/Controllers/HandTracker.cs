@@ -12,15 +12,15 @@ public class HandTracker : MonoBehaviour
     [SerializeField]
     private Hand _rightHand;
 #if UNITY_EDITOR
-    
+
     [SerializeField]
     private Hand _leftEditorHand;
     [SerializeField]
     private Hand _rightEditorHand;
-    
-    public static Hand LeftEditorHand => Instance._leftEditorHand?? Instance._leftHand;
-    public static Hand RightEditorHand => Instance._rightEditorHand??Instance._leftHand;
-    #endif
+
+    public static Hand LeftEditorHand => Instance._leftEditorHand ?? Instance._leftHand;
+    public static Hand RightEditorHand => Instance._rightEditorHand ?? Instance._leftHand;
+#endif
     public static Hand LeftHand => Instance._leftHand;
     public static Hand RightHand => Instance._rightHand;
     public static HandTracker Instance { get; private set; }
@@ -43,16 +43,16 @@ public class HandTracker : MonoBehaviour
         {
             return;
         }
-        
+
         var dataContainer = EnvironmentControlManager.Instance.ActiveEnvironmentContainer;
         _leftHand.SetAndSpawnGlove(dataContainer.LeftGlove);
         _rightHand.SetAndSpawnGlove(dataContainer.RightGlove);
-        #if UNITY_EDITOR
+#if UNITY_EDITOR && UNITY_ANDROID
         _leftEditorHand.SetAndSpawnGlove(dataContainer.LeftGlove);
         _rightEditorHand.SetAndSpawnGlove(dataContainer.RightGlove);
-        #endif
+#endif
     }
-    
+
     public static bool TryGetHand(Collider collider, out Hand hand)
     {
         hand = null;
@@ -61,7 +61,7 @@ public class HandTracker : MonoBehaviour
             Debug.LogError("Hand Tracker has not been initialized.");
             return false;
         }
-        #if UNITY_EDITOR
+#if UNITY_EDITOR && UNITY_ANDROID
         if (collider == LeftEditorHand.MyCollider)
         {
             hand = LeftEditorHand;
@@ -72,7 +72,7 @@ public class HandTracker : MonoBehaviour
             hand = RightEditorHand;
             return true;
         }
-        #else
+#else
         if (collider == Instance._leftHand.MyCollider)
         {
             hand = Instance._leftHand;
@@ -83,10 +83,10 @@ public class HandTracker : MonoBehaviour
             hand = Instance._rightHand;
             return true;
         }
-        #endif
+#endif
         return false;
     }
-    
+
     public static Quaternion GetDefaultRotation()
     {
         var hasRightHand = RightHand != null;
