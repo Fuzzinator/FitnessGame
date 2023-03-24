@@ -50,7 +50,7 @@ ParticleSystem:
   emitterVelocityMode: 0
   looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -4869,7 +4869,7 @@ ParticleSystem:
   emitterVelocityMode: 0
   looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -9663,7 +9663,7 @@ PrefabInstance:
     - target: {fileID: 1804519056220288493, guid: ff63c74efb6e74440b2b720ea9336086,
         type: 3}
       propertyPath: playOnAwake
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1804519056220288493, guid: ff63c74efb6e74440b2b720ea9336086,
         type: 3}
@@ -11050,6 +11050,111 @@ PrefabInstance:
       propertyPath: _particleSystems.Array.data[2]
       value: 
       objectReference: {fileID: 4351266240365266947}
+    - target: {fileID: 5676336534310626216, guid: ff63c74efb6e74440b2b720ea9336086,
+        type: 3}
+      propertyPath: _particleSystemControls.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5676336534310626216, guid: ff63c74efb6e74440b2b720ea9336086,
+        type: 3}
+      propertyPath: _particleSystemControls.Array.data[0].<System>k__BackingField
+      value: 
+      objectReference: {fileID: 7395743142352151148}
+    - target: {fileID: 5676336534310626216, guid: ff63c74efb6e74440b2b720ea9336086,
+        type: 3}
+      propertyPath: _particleSystemControls.Array.data[1].<System>k__BackingField
+      value: 
+      objectReference: {fileID: 5170821371633420980}
+    - target: {fileID: 5676336534310626216, guid: ff63c74efb6e74440b2b720ea9336086,
+        type: 3}
+      propertyPath: _particleSystemControls.Array.data[2].<System>k__BackingField
+      value: 
+      objectReference: {fileID: 4351266240365266947}
+    - target: {fileID: 5676336534310626216, guid: ff63c74efb6e74440b2b720ea9336086,
+        type: 3}
+      propertyPath: _particleSystemControls.Array.data[0].<BurstCount>k__BackingField.m_ConstantMax
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5676336534310626216, guid: ff63c74efb6e74440b2b720ea9336086,
+        type: 3}
+      propertyPath: _particleSystemControls.Array.data[1].<BurstCount>k__BackingField.m_ConstantMax
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5676336534310626216, guid: ff63c74efb6e74440b2b720ea9336086,
+        type: 3}
+      propertyPath: _particleSystemControls.Array.data[2].<BurstCount>k__BackingField.m_ConstantMax
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5676336534310626216, guid: ff63c74efb6e74440b2b720ea9336086,
+        type: 3}
+      propertyPath: _particleSystemControls.Array.data[1].<BurstCount>k__BackingField.m_CurveMultiplier
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5676336534310626216, guid: ff63c74efb6e74440b2b720ea9336086,
+        type: 3}
+      propertyPath: _particleSystemControls.Array.data[2].<BurstCount>k__BackingField.m_CurveMultiplier
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5676336534310626216, guid: ff63c74efb6e74440b2b720ea9336086,
+        type: 3}
+      propertyPath: _particleSystemControls.Array.data[1].<BurstCount>k__BackingField.m_CurveMax.m_PreInfinity
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5676336534310626216, guid: ff63c74efb6e74440b2b720ea9336086,
+        type: 3}
+      propertyPath: _particleSystemControls.Array.data[1].<BurstCount>k__BackingField.m_CurveMin.m_PreInfinity
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5676336534310626216, guid: ff63c74efb6e74440b2b720ea9336086,
+        type: 3}
+      propertyPath: _particleSystemControls.Array.data[2].<BurstCount>k__BackingField.m_CurveMax.m_PreInfinity
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5676336534310626216, guid: ff63c74efb6e74440b2b720ea9336086,
+        type: 3}
+      propertyPath: _particleSystemControls.Array.data[2].<BurstCount>k__BackingField.m_CurveMin.m_PreInfinity
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5676336534310626216, guid: ff63c74efb6e74440b2b720ea9336086,
+        type: 3}
+      propertyPath: _particleSystemControls.Array.data[1].<BurstCount>k__BackingField.m_CurveMax.m_PostInfinity
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5676336534310626216, guid: ff63c74efb6e74440b2b720ea9336086,
+        type: 3}
+      propertyPath: _particleSystemControls.Array.data[1].<BurstCount>k__BackingField.m_CurveMin.m_PostInfinity
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5676336534310626216, guid: ff63c74efb6e74440b2b720ea9336086,
+        type: 3}
+      propertyPath: _particleSystemControls.Array.data[2].<BurstCount>k__BackingField.m_CurveMax.m_PostInfinity
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5676336534310626216, guid: ff63c74efb6e74440b2b720ea9336086,
+        type: 3}
+      propertyPath: _particleSystemControls.Array.data[2].<BurstCount>k__BackingField.m_CurveMin.m_PostInfinity
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5676336534310626216, guid: ff63c74efb6e74440b2b720ea9336086,
+        type: 3}
+      propertyPath: _particleSystemControls.Array.data[1].<BurstCount>k__BackingField.m_CurveMax.m_RotationOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5676336534310626216, guid: ff63c74efb6e74440b2b720ea9336086,
+        type: 3}
+      propertyPath: _particleSystemControls.Array.data[1].<BurstCount>k__BackingField.m_CurveMin.m_RotationOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5676336534310626216, guid: ff63c74efb6e74440b2b720ea9336086,
+        type: 3}
+      propertyPath: _particleSystemControls.Array.data[2].<BurstCount>k__BackingField.m_CurveMax.m_RotationOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5676336534310626216, guid: ff63c74efb6e74440b2b720ea9336086,
+        type: 3}
+      propertyPath: _particleSystemControls.Array.data[2].<BurstCount>k__BackingField.m_CurveMin.m_RotationOrder
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 6410121062567766204, guid: ff63c74efb6e74440b2b720ea9336086,
         type: 3}
       propertyPath: m_RootOrder

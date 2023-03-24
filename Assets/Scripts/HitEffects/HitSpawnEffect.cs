@@ -28,6 +28,8 @@ public class HitSpawnEffect : MonoBehaviour, IValidHit
 
         hitParticleTransform.rotation = thisTransform.rotation;
         hitParticleTransform.position = thisTransform.position;
+
+        hitParticle.SetHitQuality(info);
         
         hitParticle.SetParticleColor(_thisRenderer.sharedMaterial.color);
         

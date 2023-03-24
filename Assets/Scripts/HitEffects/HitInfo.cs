@@ -24,6 +24,8 @@ public struct HitInfo
 
     public float HitQuality { get; private set; }
 
+    public float MagnitudeBonus { get; private set; }
+
     private const float FootInMeters = 0.3048f;
 
     public HitInfo(float impact, float direction, float handDir, Hand hand, float distance, float speed)
@@ -47,6 +49,7 @@ public struct HitInfo
         DistanceFromOptimalHit = distance;
         HitSpeed = speed;
         HitQuality = GetModifierRange(impact, direction, distance);
+        MagnitudeBonus = GetMagnitudeBonus(speed);
     }
 
     public HitInfo(float impact, float direction, float handDir, Hand leftHand, Hand rightHand, float distance,
@@ -62,6 +65,7 @@ public struct HitInfo
         DistanceFromOptimalHit = distance;
         HitSpeed = speed;
         HitQuality = GetModifierRange(impact, direction, distance);
+        MagnitudeBonus = GetMagnitudeBonus(speed);
     }
 
     private static float GetModifierRange(float impact, float direction, float distance)
@@ -70,7 +74,11 @@ public struct HitInfo
         var impactValue = Mathf.Clamp(impact, 0, 1);
         var directionValue = Mathf.Clamp(direction, 0, 1);
         var final = (distance + impactValue + directionValue) * .333f;
-        //var magnitudeBonusValue = 1- Mathf.Clamp(info.HitSpeed, 0, 30) * .1f;
         return final;
+    }
+
+    private static float GetMagnitudeBonus(float speed)
+    {
+        return Mathf.Clamp(speed, 0, 30) * .25f;
     }
 }

@@ -90,7 +90,7 @@ public class Choreography
                         choreography = new Choreography(v3Choreography);
                     }
                 }
-                else if (first150.Contains(V1V1) || first150.Contains(V2V1))
+                else// if (first150.Contains(V1V1) || first150.Contains(V2V1))
                 {
                     try
                     {
