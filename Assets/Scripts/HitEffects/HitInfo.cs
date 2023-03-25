@@ -3,11 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable]
 public struct HitInfo
 {
+    [field:SerializeField]
     public float ImpactDotProduct { get; private set; }
 
+    [field: SerializeField]
     public float HandDirectionDotProd { get; private set; }
+    [field: SerializeField]
     public float DirectionDotProduct { get; private set; }
 
     public Hand HitHand => RightHand != null ? RightHand : LeftHand;
@@ -18,12 +22,16 @@ public struct HitInfo
     private Hand _rightHand;
     public Hand RightHand => _rightHand;
     // Collision CollisionData { get; private set; }
+    [field: SerializeField]
     public float DistanceFromOptimalHit { get; private set; }
 
+    [field: SerializeField]
     public float HitSpeed { get; private set; }
 
+    [field: SerializeField]
     public float HitQuality { get; private set; }
 
+    [field: SerializeField]
     public float MagnitudeBonus { get; private set; }
 
     private const float FootInMeters = 0.3048f;
@@ -79,6 +87,6 @@ public struct HitInfo
 
     private static float GetMagnitudeBonus(float speed)
     {
-        return Mathf.Clamp(speed, 0, 30) * .25f;
+        return Mathf.Clamp(speed, 0, 30) * .5f;
     }
 }

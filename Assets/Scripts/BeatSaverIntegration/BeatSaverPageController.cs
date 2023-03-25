@@ -416,6 +416,18 @@ public class BeatSaverPageController : MonoBehaviour
         }
 
         _downloadButton.interactable = !_downloadingIds.Contains(_activeBeatmap.ID);
+        WaitAndPlayPreview().Forget();
+    }
+
+    private async UniTaskVoid WaitAndPlayPreview()
+    {
+        var activeMap = _activeBeatmap;
+        await UniTask.Delay(TimeSpan.FromSeconds(1f));
+        if(activeMap != _activeBeatmap)
+        {
+            return;
+        }
+        PlaySongAudioAsync().Forget();
     }
 
     private async UniTask<bool> VerifyShouldDownload(string folderName)
