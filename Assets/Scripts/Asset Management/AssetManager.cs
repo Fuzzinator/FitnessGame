@@ -541,12 +541,14 @@ public class AssetManager : MonoBehaviour
 
     public static async UniTask DeleteCustomSong(SongInfo info)
     {
-        if (!Directory.Exists(SongsPath))
+        var path = $"{SongsPath}{info.fileLocation}";
+        if (!Directory.Exists(path))
         {
             Debug.LogWarning("Invalid path cannot delete");
+            return;
         }
 
-        await UniTask.RunOnThreadPool(() => Directory.Delete(SongsPath, true));
+        await UniTask.RunOnThreadPool(() => Directory.Delete(path, true));
     }
 
     public static void DeletePlaylist(string playlistName)

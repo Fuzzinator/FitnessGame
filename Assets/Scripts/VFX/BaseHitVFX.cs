@@ -38,10 +38,11 @@ public class BaseHitVFX : MonoBehaviour, IPoolable
         var magnitudeBonus = Mathf.Clamp(info.HitQuality * info.MagnitudeBonus, .5f, 3);
         foreach (var control in _particleSystemControls)
         {
-            /*var emission = control.System.emission;
-            var burst = control.BurstCount;
-            burst = (burst.constant + burst.constant*Mathf.Clamp(info.MagnitudeBonus, 0, 2));
-            emission.SetBurst(0, new ParticleSystem.Burst(0, burst));*/
+            var emission = control.System.emission;
+            var burst = emission.GetBurst(0);
+            burst.count = new ParticleSystem.MinMaxCurve(Mathf.Clamp(control.BurstCount * magnitudeBonus, 1, control.BurstCount*5));
+            emission.SetBurst(0, burst);
+
             var main = control.System.main;
             main.startSpeedMultiplier = (control.SpeedModifier* magnitudeBonus);
             main.startSizeMultiplier = (control.SizeModifier* magnitudeBonus);
@@ -92,8 +93,9 @@ public class BaseHitVFX : MonoBehaviour, IPoolable
 
         [field: SerializeField]
         public float SpeedModifier { get; private set; }
-        [field: SerializeField]
-        public ParticleSystem.MinMaxCurve BurstCount { get; private set; }
+
+        [field:SerializeField]
+        public float BurstCount { get; private set; }
 
         [field: SerializeField]
         public ParticleSystem System {get; private set;}
@@ -102,7 +104,7 @@ public class BaseHitVFX : MonoBehaviour, IPoolable
         {
             SizeModifier = sourceSystem.main.startSizeMultiplier;
             SpeedModifier = sourceSystem.main.startSpeedMultiplier;
-            BurstCount = sourceSystem.emission.GetBurst(0).count;
+            BurstCount = sourceSystem.emission.GetBurst(0).count.constant;
             System = sourceSystem;
         }
     }

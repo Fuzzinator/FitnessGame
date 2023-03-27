@@ -81,7 +81,7 @@ public struct HitInfo
         var distanceValue = 1f - Mathf.Clamp(distance, 0, FootInMeters) * 3.333f;
         var impactValue = Mathf.Clamp(impact, 0, 1);
         var directionValue = Mathf.Clamp(direction, 0, 1);
-        var final = (distance + impactValue + directionValue) * .333f;
+        var final = (distanceValue + impactValue + directionValue) * .333f;
         return final;
     }
 
