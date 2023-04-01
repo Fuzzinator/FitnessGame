@@ -116,11 +116,6 @@ public class PlaylistManager : MonoBehaviour
         }
     }
 
-    public void SetActivePlaylist(Playlist playlist)
-    {
-        CurrentPlaylist = playlist;
-    }
-
     public void SetFirstPlaylistItem()
 
     {
@@ -161,10 +156,10 @@ public class PlaylistManager : MonoBehaviour
         SetOverrideGameMode(false);
     }
 
-    public void SetTempSongPlaylist(PlaylistItem playlistItem)
+    public void SetTempSongPlaylist(PlaylistItem playlistItem, HitSideType forwardFootSide)
     {
         var targetEnvName = EnvironmentControlManager.Instance.GetTargetEnvName();
-        var tempPlaylist = new Playlist(playlistItem, targetEnvName);
+        var tempPlaylist = new Playlist(playlistItem, forwardFootSide, targetEnvName);
         CurrentPlaylist = tempPlaylist;
         _activePlaylistIsTemp = true;
     }

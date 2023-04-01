@@ -222,8 +222,9 @@ public class ChoreographySequencer : MonoBehaviour
 
     private void SetStartingFooting()
     {
-        var leftHanded = SettingsManager.GetSetting(LEFTHANDED, false);
-        _currentStance = leftHanded ? HitSideType.Left : HitSideType.Right;
+        CurrentStance = PlaylistManager.Instance.CurrentPlaylist.StartingSide;
+        /*var leftHanded = SettingsManager.GetSetting(LEFTHANDED, false);
+        _currentStance = leftHanded ? HitSideType.Left : HitSideType.Right;*/
     }
 
     public void InitializeSequence()
@@ -493,16 +494,17 @@ public class ChoreographySequencer : MonoBehaviour
 
     public void SwitchFootPlacement()
     {
+        var stance = _currentStance;
         if (_resetting)
         {
-            
-            var leftHanded = SettingsManager.GetSetting(LEFTHANDED, false);
-            CurrentStance = leftHanded ? HitSideType.Right : HitSideType.Left;
+            stance = PlaylistManager.Instance.CurrentPlaylist.StartingSide;
         }
-        else
+        CurrentStance = stance switch
         {
-            CurrentStance = _currentStance == HitSideType.Left ? HitSideType.Right : HitSideType.Left;
-        }
+            HitSideType.Left => HitSideType.Right,
+            HitSideType.Right => HitSideType.Left,
+            _ => HitSideType.Right
+        };
     }
 
     public void RotateSpawnSource(float angle)

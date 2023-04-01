@@ -111,6 +111,7 @@ public struct ChoreographyNote// : ISequenceable
     }
 }
 
+[Serializable]
 public enum HitSideType
 {
     Left = 0,

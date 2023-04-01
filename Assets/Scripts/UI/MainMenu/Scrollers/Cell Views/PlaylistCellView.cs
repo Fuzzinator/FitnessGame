@@ -40,7 +40,7 @@ namespace UI.Scrollers.Playlists
 
         public void SetActivePlaylist()
         {
-            PlaylistManager.Instance.SetActivePlaylist(_playlist);
+            PlaylistManager.Instance.CurrentPlaylist = _playlist;
             //DisplayPlaylistInfo.Instance.ShowInfo().Forget();
         }
     }

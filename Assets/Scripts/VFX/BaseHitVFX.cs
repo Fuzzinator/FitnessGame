@@ -29,18 +29,19 @@ public class BaseHitVFX : MonoBehaviour, IPoolable
     public void SetHitQuality(HitInfo info)
     {
         transform.localScale = Vector3.one + (Vector3.one * info.HitQuality);
+
 #if UNITY_EDITOR
         if(DebugHitRecorder.Instance != null)
         {
             DebugHitRecorder.Instance.AddToList(info);
         }
 #endif
-        var magnitudeBonus = Mathf.Clamp(info.HitQuality * info.MagnitudeBonus, .5f, 3);
+        var magnitudeBonus = Mathf.Clamp(info.HitQuality * info.MagnitudeBonus, .5f, 2);
         foreach (var control in _particleSystemControls)
         {
             var emission = control.System.emission;
             var burst = emission.GetBurst(0);
-            burst.count = new ParticleSystem.MinMaxCurve(Mathf.Clamp(control.BurstCount * magnitudeBonus, 1, control.BurstCount*5));
+            burst.count = new ParticleSystem.MinMaxCurve(Mathf.Clamp(control.BurstCount * magnitudeBonus, 1, control.BurstCount*2));
             emission.SetBurst(0, burst);
 
             var main = control.System.main;

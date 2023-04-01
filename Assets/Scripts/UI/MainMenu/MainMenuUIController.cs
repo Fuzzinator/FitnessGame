@@ -20,6 +20,8 @@ public class MainMenuUIController : BaseGameStateListener
     public int MenuPageCount => _menuPages.Length;
 
     private bool _activePageSet = false;
+
+    public static UnityEvent<int> OnMenuPageChange = new UnityEvent<int>();
     
     
     private void Awake()
@@ -60,6 +62,7 @@ public class MainMenuUIController : BaseGameStateListener
     public void SetActivePage(int targetPage)
     {
         SetActivePage(_menuPages[targetPage]);
+        OnMenuPageChange?.Invoke(targetPage);
     }
 
     private void SetActivePage(MenuPage targetPage)

@@ -35,6 +35,9 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     private DifficultyInfo.DifficultyEnum _difficulty = DifficultyInfo.DifficultyEnum.Unset;
 
     [SerializeField]
+    private HitSideType _startingSide = HitSideType.Right;
+
+    [SerializeField]
     private Texture2D _emptyTexture;
     
     public List<PlaylistItem> PlaylistItems => _playlistItems;
@@ -44,6 +47,9 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     public string PlaylistName => _playlistName;
     public GameMode TargetGameMode => _gameMode;
     public DifficultyInfo.DifficultyEnum Difficulty => _difficulty;
+
+    public HitSideType StartingSide => _startingSide;
+
     private string _playlistName;
     private string _originalName;
     private string _targetEnv;
@@ -144,6 +150,11 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         _targetEnv = envName;
     }
 
+    public void SetStartingType(HitSideType startingSide)
+    {
+        _startingSide = startingSide;
+    }
+
     public void CreatePlaylist()
     {
         CreatePlaylistAsync().Forget();
@@ -152,7 +163,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     private async UniTaskVoid CreatePlaylistAsync()
     {
         var sprite = await GetSprite();
-        var newPlaylist = new Playlist(_playlistItems, _gameMode, _difficulty, _playlistName, true, _targetEnv, sprite);
+        var newPlaylist = new Playlist(_playlistItems, _gameMode, _difficulty, _startingSide, _playlistName, true, _targetEnv, sprite);
         PlaylistManager.Instance.CurrentPlaylist = newPlaylist;
         
         if (_playlistItems == null || _playlistItems.Count == 0)
@@ -307,13 +318,10 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
             _playlistName = playlist.PlaylistName;
             _difficulty = playlist.DifficultyEnum;
             _gameMode = playlist.TargetGameMode;
+            _startingSide = playlist.StartingSide;
 
             _playlistItems.Clear();
-
-            foreach (var item in playlist.Items)
-            {
-                _playlistItems.Add(item);
-            }
+            _playlistItems.AddRange(playlist.Items);
 
             _playlistItemsUpdated?.Invoke();
         }
@@ -325,6 +333,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
             _playlistItemsUpdated?.Invoke();
             _gameMode = GameMode.Unset;
             _difficulty = DifficultyInfo.DifficultyEnum.Unset;
+            _startingSide = HitSideType.Right;
         }
     }
 

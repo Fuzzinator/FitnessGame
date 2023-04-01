@@ -22,6 +22,10 @@ public class SetAndShowSongOptions : MonoBehaviour
 
     [SerializeField]
     private DisplaySongRecords _songRecordsDisplay;
+
+    [SerializeField]
+    private SetTargetForwardFoot _forwardFootSetter;
+
     public string SelectedDifficulty => _selectedDifficulty;
     public DifficultyInfo.DifficultyEnum DifficultyAsEnum => _difficultyEnum;
     public GameMode SelectedGameMode => _activeDifficultySet.MapGameMode;
@@ -128,7 +132,7 @@ public class SetAndShowSongOptions : MonoBehaviour
             return;
         }
         
-        var toggleID = GetToggleID(toggle, _gameTypeToggles);
+        var toggleID = _gameTypeToggles.GetToggleID(toggle);
 
         if (toggleID < 0)
         {
@@ -169,7 +173,7 @@ public class SetAndShowSongOptions : MonoBehaviour
             return;
         }
         
-        var toggleID = GetToggleID(toggle, _typeDifficultyToggles);
+        var toggleID = _typeDifficultyToggles.GetToggleID(toggle);
 
         if (toggleID < 0)
         {
@@ -197,21 +201,6 @@ public class SetAndShowSongOptions : MonoBehaviour
        _difficultyEnum = _activeDifficultySet.DifficultyInfos[dificultyID].DifficultyAsEnum;
         _songRecordsDisplay?.RefreshDisplay();
     }
-
-    private int GetToggleID(Toggle toggle, Toggle[] togglesArray)
-    {
-        var toggleID = -1;
-        for (var i = 0; i < togglesArray.Length; i++)
-        {
-            if (togglesArray[i] == toggle)
-            {
-                toggleID = i;
-                break;
-            }
-        }
-
-        return toggleID;
-    }
     
     public void AddSelectedPlaylistItem()
     {
@@ -227,7 +216,7 @@ public class SetAndShowSongOptions : MonoBehaviour
         if (PlaylistManager.Instance != null)
         {
             var playlistItem = new PlaylistItem(_songInfo, _selectedDifficulty, _difficultyEnum, _activeDifficultySet.MapGameMode);
-            PlaylistManager.Instance.SetTempSongPlaylist(playlistItem);
+            PlaylistManager.Instance.SetTempSongPlaylist(playlistItem, _forwardFootSetter.TargetHitSideType);
         }
     }
 }

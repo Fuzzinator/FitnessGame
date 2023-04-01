@@ -42,6 +42,12 @@ public class Playlist
     [SerializeField]
     private ColorsManager.ColorSet _targetColors;
 
+    [SerializeField]
+    private bool _setStartingSide = false;
+
+    [SerializeField]
+    private HitSideType _startingSide = HitSideType.Right;
+
     public bool isValid;
 
     [SerializeField]
@@ -49,7 +55,7 @@ public class Playlist
 
     [SerializeField]
     private string _guid;
-    
+
     public bool IsCustomPlaylist => _isCustomPlaylist;
     public float Length => _length;
     public string PlaylistName => _playlistName;
@@ -62,12 +68,13 @@ public class Playlist
 
     public ColorsManager.ColorSet TargetColors => _targetColors;
 
+    public HitSideType StartingSide => _setStartingSide ? _startingSide: HitSideType.Right;
     public string ReadableLength
     {
         get
         {
-            var minutes = (int) Mathf.Floor(_length / MINUTE);
-            var seconds = (int) Mathf.Floor(_length % MINUTE);
+            var minutes = (int)Mathf.Floor(_length / MINUTE);
+            var seconds = (int)Mathf.Floor(_length % MINUTE);
             using (var sb = ZString.CreateStringBuilder(true))
             {
                 if (minutes < 10)
@@ -96,9 +103,9 @@ public class Playlist
 
     private const int MINUTE = 60;
     private const string DIVIDER = ":";
-    private const string PLAYLISTVERSION = "0.0.2";
+    private const string PLAYLISTVERSION = "0.0.3";
 
-    public Playlist(List<PlaylistItem> items, GameMode gameMode, DifficultyInfo.DifficultyEnum difficulty,
+    public Playlist(List<PlaylistItem> items, GameMode gameMode, DifficultyInfo.DifficultyEnum difficulty, HitSideType startingSide,
         string playlistName = null, bool isCustomPlaylist = true, string targetEnvName = null, Texture2D image = null)
     {
         _playlistName = string.IsNullOrWhiteSpace(playlistName)
@@ -119,6 +126,8 @@ public class Playlist
         SetIcon(image);
         _version = PLAYLISTVERSION;
         _guid = Guid.NewGuid().ToString();
+        _startingSide = startingSide;
+        _setStartingSide = true;
         isValid = true;
     }
 
@@ -127,13 +136,13 @@ public class Playlist
         CopyPlaylist(sourcePlaylist);
         _targetEnvName = targetEnvName;
     }
-    
+
     public Playlist(Playlist sourcePlaylist, GameMode gameMode)
     {
         CopyPlaylist(sourcePlaylist);
         _gameMode = gameMode;
     }
-    
+
     public Playlist(Playlist sourcePlaylist, DifficultyInfo.DifficultyEnum difficulty)
     {
         CopyPlaylist(sourcePlaylist);
@@ -144,8 +153,8 @@ public class Playlist
     {
         _playlistName = sourcePlaylist.PlaylistName;
         _items = new PlaylistItem[sourcePlaylist.Items.Length];
-        sourcePlaylist.Items.CopyTo(_items,0);
-        
+        sourcePlaylist.Items.CopyTo(_items, 0);
+
         _isCustomPlaylist = sourcePlaylist.IsCustomPlaylist;
         _length = sourcePlaylist.Length;
         _gameMode = sourcePlaylist.TargetGameMode;
@@ -153,21 +162,24 @@ public class Playlist
         _targetEnvName = sourcePlaylist.TargetEnvName;
         _targetColors = sourcePlaylist.TargetColors;
         _image = sourcePlaylist.PlaylistImage;
+        _startingSide = sourcePlaylist.StartingSide;
         _version = sourcePlaylist.Version;
         _guid = sourcePlaylist.GUID;
         isValid = true;
     }
-    
-    public Playlist(PlaylistItem singleSong, string targetEnvName = null, Sprite image = null)
+
+    public Playlist(PlaylistItem singleSong, HitSideType startingSide, string targetEnvName = null, Sprite image = null)
     {
         _playlistName = singleSong.SongName;
-        _items = new[] {singleSong};
+        _items = new[] { singleSong };
         _isCustomPlaylist = singleSong.IsCustomSong;
         _length = singleSong.SongInfo.SongLength;
         _gameMode = GameMode.Unset;
         _difficulty = DifficultyInfo.DifficultyEnum.Unset;
         _targetEnvName = targetEnvName;
         _targetColors = ColorsManager.Instance.ActiveColorSet;
+        _startingSide = startingSide;
+        _setStartingSide = true;
         _image = image;
         _version = PLAYLISTVERSION;
         _guid = null;
@@ -176,49 +188,10 @@ public class Playlist
 
     public void SetIcon(Texture2D texture)
     {
-        var sprite = Sprite.Create(texture, new Rect(0,0, texture.width, texture.height),
-            Vector2.one *.5f, 100f);
+        var sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height),
+            Vector2.one * .5f, 100f);
         _image = sprite;
     }
-    
-    /*public Playlist(Playlist sourcePlaylist, string targetEnvName)
-    {
-        _playlistName = sourcePlaylist.PlaylistName;
-        _items = sourcePlaylist.Items;
-        _isCustomPlaylist = sourcePlaylist.IsCustomPlaylist;
-        _length = sourcePlaylist.Length;
-        _gameMode = sourcePlaylist.GameModeOverride;
-        _difficulty = sourcePlaylist.DifficultyEnum;
-        _targetEnvName = targetEnvName;
-        _targetColors = ColorsManager.Instance.ActiveColorSet;
-        _image = sourcePlaylist.PlaylistImage;
-    }
-
-    public Playlist(Playlist sourcePlaylist, DifficultyInfo.DifficultyEnum difficultyEnum)
-    {
-        _playlistName = sourcePlaylist.PlaylistName;
-        _items = sourcePlaylist.Items;
-        _isCustomPlaylist = sourcePlaylist.IsCustomPlaylist;
-        _length = sourcePlaylist.Length;
-        _gameMode = sourcePlaylist.GameModeOverride;
-        _difficulty = difficultyEnum;
-        _targetEnvName = sourcePlaylist.TargetEnvName;
-        _targetColors = ColorsManager.Instance.ActiveColorSet;
-        _image = sourcePlaylist.PlaylistImage;
-    }
-
-    public Playlist(Playlist sourcePlaylist, GameMode gameMode)
-    {
-        _playlistName = sourcePlaylist.PlaylistName;
-        _items = sourcePlaylist.Items;
-        _isCustomPlaylist = sourcePlaylist.IsCustomPlaylist;
-        _length = sourcePlaylist.Length;
-        _gameMode = gameMode;
-        _difficulty = sourcePlaylist.DifficultyEnum;
-        _targetEnvName = sourcePlaylist.TargetEnvName;
-        _targetColors = ColorsManager.Instance.ActiveColorSet;
-        _image = sourcePlaylist.PlaylistImage;
-    }*/
 
     public void SetPlaylistName(string name)
     {
@@ -239,7 +212,7 @@ public class Playlist
     {
         _difficulty = difficultyEnum;
     }
-    
+
     public void SetEnvironment(string envName)
     {
         _targetEnvName = envName;
