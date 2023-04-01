@@ -2126,7 +2126,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4968748935982677278}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d909d4e2cb9a887439dcf6734237975f, type: 3}
+  m_Script: {fileID: 11500000, guid: 1aa08ab6e0800fa44ae55d278d1423e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Content: {fileID: 4968748934885549823}
@@ -2135,7 +2135,7 @@ MonoBehaviour:
   m_MovementType: 2
   m_Elasticity: 0.1
   m_Inertia: 1
-  m_DecelerationRate: 0.135
+  m_DecelerationRate: 10
   m_ScrollSensitivity: 5
   m_Viewport: {fileID: 0}
   m_HorizontalScrollbar: {fileID: 0}
@@ -2168,9 +2168,9 @@ MonoBehaviour:
     m_Bottom: 0
   loop: 0
   loopWhileDragging: 0
-  maxVelocity: 5
+  maxVelocity: 150
   scrollbarVisibility: 0
-  snapping: 1
+  snapping: 0
   snapVelocityThreshold: 0
   snapWatchOffset: 0
   snapJumpToOffset: 0
