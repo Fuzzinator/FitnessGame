@@ -300,7 +300,7 @@ public class AssetManager : MonoBehaviour
                     var imagePath = $"{PlaylistsPath}{playlist.PlaylistName}.jpg";
                     if (!File.Exists(imagePath))
                     {
-                        Debug.LogWarning($"No image found at\"{imagePath}\"");
+                        //Debug.LogWarning($"No image found at\"{imagePath}\"");
                     }
                     else
                     {

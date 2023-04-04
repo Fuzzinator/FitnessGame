@@ -123,7 +123,7 @@ namespace EnhancedUI.EnhancedScroller
         /// Whether the scroller should loop the cell views
         /// </summary>
         [SerializeField]
-        private bool loop;
+        protected bool loop;
 
 		/// <summary>
         /// Whether the scroller should process loop jumping while being dragged.
@@ -321,14 +321,14 @@ namespace EnhancedUI.EnhancedScroller
 					// if we are looping, we need to make sure the new position isn't past the jump trigger.
 					// if it is we need to reset back to the jump position on the other side of the area.
 
-					//if (value > _loopLastJumpTrigger)
-					//{
-					//	value = _loopFirstScrollPosition + (value - _loopLastJumpTrigger);
-					//}
-					//else if (value < _loopFirstJumpTrigger)
-					//{
-					//	value = _loopLastScrollPosition - (_loopFirstJumpTrigger - value);
-					//}
+					if (value > _loopLastJumpTrigger)
+					{
+						value = _loopFirstScrollPosition + (value - _loopLastJumpTrigger);
+					}
+					else if (value < _loopFirstJumpTrigger)
+					{
+						value = _loopLastScrollPosition - (_loopFirstJumpTrigger - value);
+					}
 				}
 				else
 				{
@@ -1138,7 +1138,7 @@ namespace EnhancedUI.EnhancedScroller
         /// Set after the scroller is first created. This allwos
         /// us to ignore OnValidate changes at the start
         /// </summary>
-        private bool _initialized = false;
+        protected bool _initialized = false;
 
         public bool Initialized => _initialized;
 
@@ -1152,7 +1152,7 @@ namespace EnhancedUI.EnhancedScroller
         /// <summary>
         /// Cached reference to the scrollRect
         /// </summary>
-        private ScrollRect _scrollRect;
+        protected ScrollRect _scrollRect;
 
         /// <summary>
         /// Cached reference to the scrollRect's transform
@@ -1163,6 +1163,7 @@ namespace EnhancedUI.EnhancedScroller
         /// Cached reference to the scrollbar if it exists
         /// </summary>
         private Scrollbar _scrollbar;
+        public Scrollbar Scrollbar => _scrollbar;
 
         /// <summary>
         /// Cached reference to the active cell view container
@@ -1238,12 +1239,12 @@ namespace EnhancedUI.EnhancedScroller
         /// <summary>
         /// The index of the first cell view that is being displayed
         /// </summary>
-        private int _activeCellViewsStartIndex;
+        protected int _activeCellViewsStartIndex;
 
         /// <summary>
         /// The index of the last cell view that is being displayed
         /// </summary>
-        private int _activeCellViewsEndIndex;
+        protected int _activeCellViewsEndIndex;
 
         /// <summary>
         /// The index of the first element of the middle section of cell view sizes.
@@ -1261,25 +1262,25 @@ namespace EnhancedUI.EnhancedScroller
         /// The scroll position of the first element of the middle seciotn of cell views.
         /// Used only when looping
         /// </summary>
-        private float _loopFirstScrollPosition;
+        protected float _loopFirstScrollPosition;
 
         /// <summary>
         /// The scroll position of the last element of the middle section of cell views.
         /// Used only when looping
         /// </summary>
-        private float _loopLastScrollPosition;
+        protected float _loopLastScrollPosition;
 
         /// <summary>
         /// The position that triggers the scroller to jump to the end of the middle section
         /// of cell views. This keeps the scroller in the middle section as much as possible.
         /// </summary>
-        private float _loopFirstJumpTrigger;
+        protected float _loopFirstJumpTrigger;
 
         /// <summary>
         /// The position that triggers the scroller to jump to the start of the middle section
         /// of cell views. This keeps the scroller in the middle section as much as possible.
         /// </summary>
-        private float _loopLastJumpTrigger;
+        protected float _loopLastJumpTrigger;
 
         /// <summary>
         /// The cached value of the last scroll rect size. This is checked every frame to see
@@ -1340,7 +1341,7 @@ namespace EnhancedUI.EnhancedScroller
         /// Flag to ignore the jump loop that gives the illusion
         /// of a continuous stream of cells
         /// </summary>
-        private bool _ignoreLoopJump;
+        protected bool _ignoreLoopJump;
 
         /// <summary>
         /// The number of fingers that are dragging the ScrollRect.
@@ -1531,7 +1532,7 @@ namespace EnhancedUI.EnhancedScroller
         /// <summary>
         /// This sets up the visible cells, adding and recycling as necessary
         /// </summary>
-        private void _ResetVisibleCellViews()
+        protected void _ResetVisibleCellViews()
         {
             int startIndex;
             int endIndex;
@@ -1729,7 +1730,7 @@ namespace EnhancedUI.EnhancedScroller
         /// <summary>
         /// This function is called if the scroller is scrolled, updating the active list of cells
         /// </summary>
-        private void _RefreshActive()
+        protected virtual void _RefreshActive()
         {
             //_refreshActive = false;
 
@@ -1769,7 +1770,7 @@ namespace EnhancedUI.EnhancedScroller
         /// </summary>
         /// <param name="startIndex">The index of the first cell visible</param>
         /// <param name="endIndex">The index of the last cell visible</param>
-        private void _CalculateCurrentActiveCellRange(out int startIndex, out int endIndex)
+        protected void _CalculateCurrentActiveCellRange(out int startIndex, out int endIndex)
         {
             startIndex = 0;
             endIndex = 0;

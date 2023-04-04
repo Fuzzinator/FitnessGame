@@ -27,24 +27,34 @@ namespace UI.Scrollers.BeatsaverIntegraton
         {
             _pageController = controller;
         }
-        public void SetBeatmaps(IReadOnlyList<Beatmap> beatmaps)
+        public void SetBeatmaps(IReadOnlyList<Beatmap> beatmaps, float scrollPosition = 0, bool resetPageIndex = false)
         {
             _beatmaps = beatmaps;
-            _scroller.ReloadData();
+            var velocity = _scroller.Velocity;
+            _scroller.ReloadData(scrollPosition);
+            _scroller.Velocity = velocity;
+            if(resetPageIndex)
+            {
+                var endlessScroller = _scroller as EndlessEnhancedScroller;
+                if(endlessScroller != null)
+                {
+                    endlessScroller.ResetPage();
+                }
+            }
         }
 
         public override int GetNumberOfCells(EnhancedScroller scroller)
         {
-            return _beatmaps?.Count??0;
+            return _beatmaps?.Count ?? 0;
         }
 
         public override EnhancedScrollerCellView GetCellView(EnhancedScroller scroller, int dataIndex, int cellIndex)
         {
             var cellView = base.GetCellView(scroller, dataIndex, cellIndex) as BeatSaverSongCellView;
             cellView.SetData(_beatmaps[dataIndex], this);
-            
-            
-            
+
+
+
             return cellView;
         }
 
@@ -56,6 +66,18 @@ namespace UI.Scrollers.BeatsaverIntegraton
         public void SetSelectedCellView(BeatSaverSongCellView cellView)
         {
             _pageController.SetSelectedCellView(cellView);
+        }
+
+        public void Disable()
+        {
+            _scroller.ScrollRect.enabled = false;
+            _scroller.Scrollbar.gameObject.SetActive(false);
+        }
+
+        public void Enable()
+        {
+            _scroller.ScrollRect.enabled = true;
+            _scroller.Scrollbar.gameObject.SetActive(true);
         }
     }
 }
