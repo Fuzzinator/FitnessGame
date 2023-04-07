@@ -157,7 +157,7 @@ public class BaseTarget : MonoBehaviour, IPoolable
         handDotProd = Vector3.Dot(transform.TransformDirection(_optimalHitDirection), hand.ForwardDirection);
         
 #if UNITY_EDITOR
-        return isSwinging && (!precisionMode || handDotProd<-.5f);; //true;
+        return /*isSwinging && (!precisionMode || handDotProd<-.5f); //*/true;
 #else
         return isSwinging && impactDotProd > _minMaxAllowance.x && hand.MovementSpeed>_minHitSpeed &&
                (!precisionMode || handDotProd<-.5f);

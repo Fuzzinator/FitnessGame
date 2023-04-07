@@ -4153,6 +4153,7 @@ GameObject:
   - component: {fileID: 78222455}
   - component: {fileID: 78222456}
   - component: {fileID: 78222457}
+  - component: {fileID: 78222458}
   m_Layer: 0
   m_Name: Main Menu
   m_TagString: Untagged
@@ -4306,6 +4307,19 @@ MonoBehaviour:
   _availableSongInfoScrollerController: {fileID: 1716144662}
   _availableSongsRecordDisplay: {fileID: 972979011}
   _availableSongsInfoDisplay: {fileID: 1790807269}
+--- !u!114 &78222458
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 78222451}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9962315bfeadd14886372064b5e1819, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _controller: {fileID: 7588806071409107278}
 --- !u!1 &78435082
 GameObject:
   m_ObjectHideFlags: 0
@@ -14877,6 +14891,11 @@ PrefabInstance:
       propertyPath: m_HorizontalAlignment
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 8526321131921798575, guid: dad9a76513d6d2944aec5500facc1644,
+        type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 963194227}
     - target: {fileID: 8649284267335952900, guid: dad9a76513d6d2944aec5500facc1644,
         type: 3}
       propertyPath: m_Mesh
@@ -20142,6 +20161,8 @@ MonoBehaviour:
   _rayInteractor: {fileID: 440387852}
   _lineRenderer: {fileID: 440387851}
   _interactorLineVisual: {fileID: 440387850}
+  _disable: 0
+  _isDisabled: 0
 --- !u!114 &440387850
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20389,7 +20410,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 440387847}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6803edce0201f574f923fd9d10e5b30a, type: 3}
   m_Name: 
@@ -20486,7 +20507,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RaycastTriggerInteraction: 1
-  m_HitClosestOnly: 0
+  m_HitClosestOnly: 1
   m_HoverToSelect: 0
   m_HoverTimeToSelect: 0.5
   m_EnableUIInteraction: 1
@@ -38839,6 +38860,7 @@ GameObject:
   - component: {fileID: 963194230}
   - component: {fileID: 963194231}
   - component: {fileID: 963194232}
+  - component: {fileID: 963194233}
   m_Layer: 6
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -39001,6 +39023,18 @@ MonoBehaviour:
   _hitHeadEvent:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &963194233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3fd4892ef7604443b9323df1fd50443, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &967297528
 GameObject:
   m_ObjectHideFlags: 0
@@ -39634,6 +39668,7 @@ GameObject:
   - component: {fileID: 983265259}
   - component: {fileID: 983265258}
   - component: {fileID: 983265265}
+  - component: {fileID: 983265266}
   m_Layer: 7
   m_Name: RightHand Controller
   m_TagString: Untagged
@@ -39848,6 +39883,18 @@ MonoBehaviour:
                 m_BoolArgument: 0
               m_CallState: 2
         _endValue: -0.5
+--- !u!114 &983265266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 983265255}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78248d6ffff89c6468aca600873968db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &990073139
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -50524,7 +50571,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh1100446
+  m_Name: pb_Mesh620078
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -54294,10 +54341,46 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _networkConnectionLost:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 138559030}
+        m_TargetAssemblyTypeName: UnityEngine.UI.Selectable, UnityEngine.UI
+        m_MethodName: set_interactable
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7588806071409107278}
+        m_TargetAssemblyTypeName: BeatSaverPageController, Assembly-CSharp
+        m_MethodName: NetworkConnectionLost
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   _networkConnectionGained:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 138559030}
+        m_TargetAssemblyTypeName: UnityEngine.UI.Selectable, UnityEngine.UI
+        m_MethodName: set_interactable
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!4 &1370553840
 Transform:
   m_ObjectHideFlags: 0
@@ -62887,7 +62970,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh32538
+  m_Name: pb_Mesh32808
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -64511,6 +64594,8 @@ MonoBehaviour:
   _rayInteractor: {fileID: 1644778462}
   _lineRenderer: {fileID: 1644778461}
   _interactorLineVisual: {fileID: 1644778460}
+  _disable: 0
+  _isDisabled: 0
 --- !u!114 &1644778460
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -64758,7 +64843,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1644778457}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6803edce0201f574f923fd9d10e5b30a, type: 3}
   m_Name: 
@@ -76562,6 +76647,7 @@ GameObject:
   - component: {fileID: 1993093608}
   - component: {fileID: 1993093607}
   - component: {fileID: 1993093614}
+  - component: {fileID: 1993093615}
   m_Layer: 7
   m_Name: LeftHand Controller
   m_TagString: Untagged
@@ -76776,6 +76862,18 @@ MonoBehaviour:
                 m_BoolArgument: 0
               m_CallState: 2
         _endValue: -0.5
+--- !u!114 &1993093615
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1993093605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 171b34747df864d4fae318c192bc7ab4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1994178428
 GameObject:
   m_ObjectHideFlags: 0

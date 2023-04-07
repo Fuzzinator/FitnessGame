@@ -33,7 +33,7 @@ public class NetworkConnectionValidator : MonoBehaviour
     {
         while (!_onDestroyToken.IsCancellationRequested)
         {
-            var networkConnected = GetNetworkConnection();
+            var networkConnected = HasNetworkConnection();
             if (_networkConnected == networkConnected)
             {
                 await UniTask.Delay(System.TimeSpan.FromSeconds(1), cancellationToken: _onDestroyToken);
@@ -55,7 +55,7 @@ public class NetworkConnectionValidator : MonoBehaviour
         }
     }
 
-    private bool GetNetworkConnection()
+    public static bool HasNetworkConnection()
     {
         return Application.internetReachability != NetworkReachability.NotReachable;
     }

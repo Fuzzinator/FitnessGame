@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using Stopwatch = System.Diagnostics.Stopwatch;
+using System.Threading;
 using BeatSaverSharp.Models;
 using Cysharp.Text;
 using Cysharp.Threading.Tasks;
@@ -22,6 +24,7 @@ namespace UI.Scrollers.BeatsaverIntegraton
 
         private Beatmap _beatmap;
         private BeatSaverSongsScrollerController _controller;
+        private CancellationTokenSource _cancellationSource;
         
         private const string SONGINFOFORMAT =
             "<align=left>{0}</style>\n<size=50%><b>Song Author:</b> {1}<line-indent=10%><b>Level Author:</b> {2}<line-indent=10%><b>Song Score:</b> {3}</size></align>";
@@ -46,7 +49,7 @@ namespace UI.Scrollers.BeatsaverIntegraton
             _beatmap = item;
             _controller = controller;
             SetDownloadedMarker();
-            GetAndSetImage(item).Forget();
+            UniTask.RunOnThreadPool(() => GetAndSetImage(item));
         }
 
         public void Selected()
@@ -68,10 +71,24 @@ namespace UI.Scrollers.BeatsaverIntegraton
         
         private async UniTaskVoid GetAndSetImage(Beatmap item)
         {
-            var imageBytes = await item.LatestVersion.DownloadCoverImage(token: _controller.CancellationToken);
+            await UniTask.DelayFrame(1);
+            if (_cancellationSource != null && !_controller.CancellationToken.IsCancellationRequested)
+            {
+                _cancellationSource.Cancel();
+                await UniTask.DelayFrame(1);
+                _cancellationSource.Dispose();
+            }
+
+            _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(_controller.CancellationToken);
+
+            var imageBytes = await item.LatestVersion.DownloadCoverImage(token: _cancellationSource.Token);
             if (imageBytes != null)
             {
                 await UniTask.SwitchToMainThread(_controller.CancellationToken);
+                if(item != _beatmap)
+                {
+                    return;
+                }
                 var image = new Texture2D(1, 1);
                 image.LoadImage(imageBytes);
                 _songImage.sprite = Sprite.Create(image, new Rect(0, 0, image.width, image.height), Vector2.one * .5f, 100f);

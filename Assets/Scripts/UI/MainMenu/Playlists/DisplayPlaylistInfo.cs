@@ -41,6 +41,7 @@ namespace UI.Scrollers.Playlists
         private void OnEnable()
         {
             PlaylistManager.Instance.currentPlaylistUpdated.AddListener(RequestShowInfo);
+            SongInfoFilesReader.Instance.SongAdded.AddListener(_scrollerController.CheckAddedSong);
             ShowInfo().Forget();
         }
 

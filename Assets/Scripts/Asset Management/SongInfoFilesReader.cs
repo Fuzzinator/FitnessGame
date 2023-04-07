@@ -32,6 +32,8 @@ public class SongInfoFilesReader : MonoBehaviour
     [SerializeField]
     private UnityEvent<SongInfo> _songRemoved = new UnityEvent<SongInfo>();
 
+    public UnityEvent<SongInfo> SongAdded => _songAdded;
+
     [Header("UI Thingy")]
     [SerializeField]
     private DisplaySongInfo _displaySongInfo;

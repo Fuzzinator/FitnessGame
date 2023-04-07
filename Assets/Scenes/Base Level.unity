@@ -7003,7 +7003,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh1029274
+  m_Name: pb_Mesh273622
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -7212,6 +7212,8 @@ MonoBehaviour:
   _rayInteractor: {fileID: 934832250}
   _lineRenderer: {fileID: 934832249}
   _interactorLineVisual: {fileID: 934832248}
+  _disable: 0
+  _isDisabled: 0
 --- !u!114 &934832248
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7469,7 +7471,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 32
   m_InteractionLayers:
-    m_Bits: 4294967295
+    m_Bits: 32
   m_AttachTransform: {fileID: 0}
   m_KeepSelectedTargetValid: 1
   m_StartingSelectedInteractable: {fileID: 0}
@@ -7734,6 +7736,7 @@ GameObject:
   - component: {fileID: 963194234}
   - component: {fileID: 963194233}
   - component: {fileID: 963194235}
+  - component: {fileID: 963194236}
   m_Layer: 6
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -7961,6 +7964,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTarget: 0
+--- !u!114 &963194236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3fd4892ef7604443b9323df1fd50443, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &970950204
 GameObject:
   m_ObjectHideFlags: 0
@@ -8274,6 +8289,7 @@ GameObject:
   - component: {fileID: 983265259}
   - component: {fileID: 983265258}
   - component: {fileID: 983265265}
+  - component: {fileID: 983265266}
   m_Layer: 7
   m_Name: RightHand Controller
   m_TagString: Untagged
@@ -8485,6 +8501,18 @@ MonoBehaviour:
                 m_BoolArgument: 0
               m_CallState: 2
         _endValue: -0.5
+--- !u!114 &983265266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 983265255}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78248d6ffff89c6468aca600873968db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1018819890
 GameObject:
   m_ObjectHideFlags: 0
@@ -14634,6 +14662,8 @@ MonoBehaviour:
   _rayInteractor: {fileID: 1729619551}
   _lineRenderer: {fileID: 1729619550}
   _interactorLineVisual: {fileID: 1729619549}
+  _disable: 0
+  _isDisabled: 0
 --- !u!114 &1729619549
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14891,7 +14921,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 32
   m_InteractionLayers:
-    m_Bits: 4294967295
+    m_Bits: 32
   m_AttachTransform: {fileID: 0}
   m_KeepSelectedTargetValid: 1
   m_StartingSelectedInteractable: {fileID: 0}
@@ -15891,6 +15921,7 @@ GameObject:
   - component: {fileID: 1993093608}
   - component: {fileID: 1993093607}
   - component: {fileID: 1993093614}
+  - component: {fileID: 1993093615}
   m_Layer: 7
   m_Name: LeftHand Controller
   m_TagString: Untagged
@@ -16102,6 +16133,18 @@ MonoBehaviour:
                 m_BoolArgument: 0
               m_CallState: 2
         _endValue: -0.5
+--- !u!114 &1993093615
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1993093605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 171b34747df864d4fae318c192bc7ab4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2001671567
 GameObject:
   m_ObjectHideFlags: 0

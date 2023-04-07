@@ -30,13 +30,17 @@ namespace UI.Scrollers.BeatsaverIntegraton
         public void SetBeatmaps(IReadOnlyList<Beatmap> beatmaps, float scrollPosition = 0, bool resetPageIndex = false)
         {
             _beatmaps = beatmaps;
-            var velocity = _scroller.Velocity;
-            _scroller.ReloadData(scrollPosition);
-            _scroller.Velocity = velocity;
-            if(resetPageIndex)
+            if (_scroller.Initialized)
+            {
+                var velocity = _scroller.Velocity;
+                _scroller.ReloadData(scrollPosition);
+                _scroller.Velocity = velocity;
+                _scroller.ScrollRect.velocity = velocity;
+            }
+            if (resetPageIndex)
             {
                 var endlessScroller = _scroller as EndlessEnhancedScroller;
-                if(endlessScroller != null)
+                if (endlessScroller != null)
                 {
                     endlessScroller.ResetPage();
                 }

@@ -50,7 +50,8 @@ public class BeatSaverPageController : MonoBehaviour
     private Page _activePage;
     private Page _nextPage;
 
-    private CancellationToken _cancellationToken;
+    private CancellationToken _token;
+    private CancellationTokenSource _cancellationTokenSource;
     private BeatSaver _beatSaver;
     private LevelFileManagement _levelFileManagement;
 
@@ -69,9 +70,9 @@ public class BeatSaverPageController : MonoBehaviour
     private const string SONGINFOFORMAT =
         "<voffset=10>Song Name:           {0}\nSong Author:<line-indent=1>         {1}<line-indent=0>\nLevel Author:<line-indent=1>         {2}<line-indent=0>\nSong Length:         <line-indent=1>{3}:{4}<line-indent=0>\nSong Score:          <line-indent=1> {5}<line-indent=0>\nUpload Date:         <line-indent=2>{6}<line-indent=0>";
 
-    private void Start()
+    public void Initialize()
     {
-        _cancellationToken = this.GetCancellationTokenOnDestroy();
+        _token = this.GetCancellationTokenOnDestroy();
         _beatSaver = new BeatSaver(Application.productName, Version.Parse(Application.version));
         _scrollerController.SetPageController(this);
 
@@ -103,9 +104,22 @@ public class BeatSaverPageController : MonoBehaviour
         SearchAsync(search).Forget();
     }
 
+    public void GainedNetworkConnection()
+    {
+        if(_cancellationTokenSource != null)
+        {
+            _cancellationTokenSource.Dispose();
+        }
+        _token = this.GetCancellationTokenOnDestroy();
+    }
+
     public void NetworkConnectionLost()
     {
-
+        _cancellationTokenSource.Cancel();
+        if (gameObject.activeInHierarchy)
+        {
+            MainMenuUIController.Instance.SetActivePage(0);
+        }
     }
 
     #region Webcalls
@@ -213,25 +227,29 @@ public class BeatSaverPageController : MonoBehaviour
 
     private async UniTaskVoid RequestLatestAsync()
     {
+        await RefreshToken();
+
         if (_beatSaver == null)
         {
-            await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
+            await UniTask.DelayFrame(1, cancellationToken: _cancellationTokenSource.Token);
         }
-        var request = await _beatSaver.LatestBeatmaps(token: _cancellationToken);
+        var request = await _beatSaver.LatestBeatmaps(token: _cancellationTokenSource.Token);
         if (request == null)
         {
             return;
         }
         _activePage = request;
-        _nextPage = await _activePage.Next(_cancellationToken);
+        _nextPage = await _activePage.Next(_cancellationTokenSource.Token);
         await UpdateDataForward();
     }
 
     private async UniTask RequestNextPageAsync(bool setData = true)
     {
+        await RefreshToken();
+
         _showLoadingObject.SetActive(true);
         _activePage = _nextPage;
-        _nextPage = await _activePage.Next(_cancellationToken);
+        _nextPage = await _activePage.Next(_cancellationTokenSource.Token);
         if (_activePage == null || !setData)
         {
             return;
@@ -242,9 +260,10 @@ public class BeatSaverPageController : MonoBehaviour
 
     private async UniTask RequestPreviousPageAsync(bool setData = true)
     {
+        await RefreshToken();
         _showLoadingObject.SetActive(true);
         _nextPage = _activePage;
-        _activePage = await _activePage.Previous(_cancellationToken);
+        _activePage = await _activePage.Previous(_cancellationTokenSource.Token);
 
         if (_activePage == null || !setData)
         {
@@ -257,21 +276,22 @@ public class BeatSaverPageController : MonoBehaviour
     {
         try
         {
+            await RefreshToken();
             if (_beatSaver == null)
             {
-                await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
+                await UniTask.DelayFrame(1, cancellationToken: _cancellationTokenSource.Token);
             }
-            var request = await _beatSaver.SearchBeatmaps(option, token: _cancellationToken);
+            var request = await _beatSaver.SearchBeatmaps(option, token: _cancellationTokenSource.Token);
             if (request == null)
             {
                 return;
             }
             _activePage = request;
-            _nextPage = await _activePage.Next(token: _cancellationToken);
+            _nextPage = await _activePage.Next(token: _cancellationTokenSource.Token);
         }
         catch (Exception e)
         {
-            await UniTask.SwitchToMainThread(_cancellationToken);
+            await UniTask.SwitchToMainThread(_cancellationTokenSource.Token);
 
             Debug.LogError(e);
             _showLoadingObject.SetActive(false);
@@ -288,8 +308,10 @@ public class BeatSaverPageController : MonoBehaviour
             _audioSource.Stop();
             return;
         }
+        
+        await RefreshToken();
 
-        var audioClip = await _activeBeatmap.LatestVersion.GetPlayablePreview(_cancellationToken);
+        var audioClip = await _activeBeatmap.LatestVersion.GetPlayablePreview(_cancellationTokenSource.Token);
         if (audioClip == null)
         {
             NotificationManager.RequestNotification(new Notification.NotificationVisuals("Preview failed."));
@@ -327,8 +349,10 @@ public class BeatSaverPageController : MonoBehaviour
             progress.ProgressChanged += (sender, d) => loadingDisplay.UpdateLoadingBar(d);
         }
 
-        var songBytes = await _activeBeatmap.LatestVersion.DownloadZIP(_cancellationToken, progress);
-        if (songBytes == null)
+        await RefreshToken();
+
+        var songBytes = await _activeBeatmap.LatestVersion.DownloadZIP(_cancellationTokenSource.Token, progress);
+        if (songBytes == null || _cancellationTokenSource.IsCancellationRequested)
         {
             NotificationManager.RequestNotification(new Notification.NotificationVisuals("Download failed."));
             Debug.LogError("Download Failed");
@@ -338,7 +362,7 @@ public class BeatSaverPageController : MonoBehaviour
         await UniTask.DelayFrame(1);
         ZipFileManagement.ExtractAndSaveZippedSongAsync(folderName, songBytes);
         await UniTask.DelayFrame(1);
-        await UniTask.SwitchToMainThread(_cancellationToken);
+        await UniTask.SwitchToMainThread(_cancellationTokenSource.Token);
         _downloadingIds.Remove(beatmapID);
         if (beatmapID == _activeBeatmap.ID)
         {
@@ -354,7 +378,7 @@ public class BeatSaverPageController : MonoBehaviour
 
     private async UniTask UpdateData()
     {
-        await UniTask.SwitchToMainThread(_cancellationToken);
+        await UniTask.SwitchToMainThread(_cancellationTokenSource.Token);
 
         _cellView = null;
 
@@ -364,7 +388,7 @@ public class BeatSaverPageController : MonoBehaviour
 
     private async UniTask UpdateDataForward()
     {
-        await UniTask.SwitchToMainThread(_cancellationToken);
+        await UniTask.SwitchToMainThread(_cancellationTokenSource.Token);
 
         _cellView = null;
 
@@ -381,7 +405,7 @@ public class BeatSaverPageController : MonoBehaviour
 
     private async UniTask UpdateDataBackwards()
     {
-        await UniTask.SwitchToMainThread(_cancellationToken);
+        await UniTask.SwitchToMainThread(_cancellationTokenSource.Token);
 
         _cellView = null;
 
@@ -422,7 +446,7 @@ public class BeatSaverPageController : MonoBehaviour
         {
             _allBeatmaps.AddRange(_nextPage.Beatmaps);
         }
-        await UniTask.SwitchToMainThread(_cancellationToken);
+        await UniTask.SwitchToMainThread(_cancellationTokenSource.Token);
         _showLoadingObject.SetActive(false);
         _scrollerController.Enable();
         _scrollerController.SetBeatmaps(_allBeatmaps, scrollValue);
@@ -488,10 +512,10 @@ public class BeatSaverPageController : MonoBehaviour
             _mapDifficulties.SetText(sb);
         }
 
-        var imageBytes = await _activeBeatmap.LatestVersion.DownloadCoverImage(token: _cancellationToken);
+        var imageBytes = await _activeBeatmap.LatestVersion.DownloadCoverImage(token: _cancellationTokenSource.Token);
         if (imageBytes != null)
         {
-            await UniTask.SwitchToMainThread(_cancellationToken);
+            await UniTask.SwitchToMainThread(_cancellationTokenSource.Token);
             _activeBeatmapImage = new Texture2D(1, 1);
             _activeBeatmapImage.LoadImage(imageBytes);
             _songImage.sprite = Sprite.Create(_activeBeatmapImage,
@@ -516,7 +540,7 @@ public class BeatSaverPageController : MonoBehaviour
     private async UniTask<bool> VerifyShouldDownload(string folderName)
     {
         var shouldDownload = true;
-        await UniTask.SwitchToMainThread(_cancellationToken);
+        await UniTask.SwitchToMainThread(_cancellationTokenSource.Token);
 
         if (_levelFileManagement.FolderExists(folderName))
         {
@@ -525,15 +549,27 @@ public class BeatSaverPageController : MonoBehaviour
                 "Song Already Exists", "Yes", "No");
             var notification = NotificationManager.RequestNotification(visuals, () => shouldDownload = true,
                 () => shouldDownload = false);
-            await UniTask.WaitUntil(() => notification.IsPooled, cancellationToken: _cancellationToken);
+            await UniTask.WaitUntil(() => notification.IsPooled, cancellationToken: _cancellationTokenSource.Token);
 
             if (shouldDownload)
             {
                 _levelFileManagement.DeleteFolder(folderName);
-                await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
+                await UniTask.DelayFrame(1, cancellationToken: _cancellationTokenSource.Token);
             }
         }
 
         return shouldDownload;
+    }
+
+    private async UniTask RefreshToken()
+    {
+        if (_cancellationTokenSource != null)
+        {
+            _cancellationTokenSource.Cancel();
+            await UniTask.DelayFrame(1);
+            _cancellationTokenSource.Dispose();
+        }
+
+        _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_token);
     }
 }

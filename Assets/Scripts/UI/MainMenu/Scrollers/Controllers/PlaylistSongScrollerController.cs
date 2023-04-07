@@ -13,7 +13,7 @@ namespace UI.Scrollers.Playlists
         public bool highlightActiveItem = false;
 
         private CancellationToken _cancellationToken;
-        
+
         protected override void Start()
         {
             _cancellationToken = gameObject.GetCancellationTokenOnDestroy();
@@ -42,7 +42,7 @@ namespace UI.Scrollers.Playlists
         {
             Refresh();
         }
-        
+
         public override int GetNumberOfCells(EnhancedScroller scroller)
         {
             if (PlaylistManager.Instance != null)
@@ -89,6 +89,24 @@ namespace UI.Scrollers.Playlists
         public void ReloadScroller()
         {
             _scroller.ReloadData();
+        }
+
+        public void CheckAddedSong(SongInfo info)
+        {
+            var items = PlaylistManager.Instance.CurrentPlaylist?.Items;
+            if (items == null)
+            {
+                return;
+            }
+            foreach (var item in items)
+            {
+                if(info != item)
+                {
+                    continue;
+                }
+                ReloadScroller();
+                return;
+            }
         }
     }
 }

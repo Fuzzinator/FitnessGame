@@ -73,8 +73,12 @@ namespace VRKB
 
         public void PointerDown()
         {
-            _keyboard.PressKey(this, null);
-            _keyboard.ReleaseKey(this, null);
+            if (_pressStartTime + .1f < Time.time)
+            {
+                _keyboard.PressKey(this, null);
+                _keyboard.ReleaseKey(this, null);
+                _pressStartTime = Time.time;
+            }
         }
 
         public void OnTriggerStay(Collider other)

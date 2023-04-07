@@ -16,8 +16,9 @@ namespace EnhancedUI.EnhancedScroller
         
         private int _currentPageNumber = 0;
 
-        private const float TopOffset = .820f;
-        private const float BottomOffset = .180f;
+        private const float TopOffset = .8f;
+        private const float BottomOffset = .2f;
+        private const float PlacementOffset = .02f;
 
 
         public void ResetPage()
@@ -37,13 +38,13 @@ namespace EnhancedUI.EnhancedScroller
                 if (_currentPageNumber > 0)
                 {
                     _currentPageNumber--;
-                    _loopingBackwards.Invoke(TopOffset);
+                    _loopingBackwards.Invoke(TopOffset-PlacementOffset);
                 }
             }
             else if (scroll < BottomOffset)
             {
                 _currentPageNumber++;
-                _loopingForward.Invoke(BottomOffset);
+                _loopingForward.Invoke(BottomOffset+ PlacementOffset);
             }
         }
     }
