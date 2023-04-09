@@ -10,14 +10,14 @@ namespace YUR.SDK.Core.Initialization
     {
         private void OnEnable()
         {
-            YURWatch.Head = gameObject;
+            YURWatch.head = gameObject;
         }
 
         private void OnDisable()
         {
-            if (YURWatch.Head == gameObject)
+            if (YURWatch.head == gameObject)
             {
-                YURWatch.Head = null;
+                YURWatch.head = null;
             }
         }
     } 

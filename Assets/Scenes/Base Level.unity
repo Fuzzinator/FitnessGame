@@ -7971,7 +7971,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b3fd4892ef7604443b9323df1fd50443, type: 3}
   m_Name: 
@@ -8289,7 +8289,6 @@ GameObject:
   - component: {fileID: 983265259}
   - component: {fileID: 983265258}
   - component: {fileID: 983265265}
-  - component: {fileID: 983265266}
   m_Layer: 7
   m_Name: RightHand Controller
   m_TagString: Untagged
@@ -8501,18 +8500,6 @@ MonoBehaviour:
                 m_BoolArgument: 0
               m_CallState: 2
         _endValue: -0.5
---- !u!114 &983265266
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 983265255}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 78248d6ffff89c6468aca600873968db, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1018819890
 GameObject:
   m_ObjectHideFlags: 0
@@ -15921,7 +15908,6 @@ GameObject:
   - component: {fileID: 1993093608}
   - component: {fileID: 1993093607}
   - component: {fileID: 1993093614}
-  - component: {fileID: 1993093615}
   m_Layer: 7
   m_Name: LeftHand Controller
   m_TagString: Untagged
@@ -16133,18 +16119,6 @@ MonoBehaviour:
                 m_BoolArgument: 0
               m_CallState: 2
         _endValue: -0.5
---- !u!114 &1993093615
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1993093605}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 171b34747df864d4fae318c192bc7ab4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2001671567
 GameObject:
   m_ObjectHideFlags: 0
@@ -17392,6 +17366,11 @@ PrefabInstance:
     - target: {fileID: 8478822547246551103, guid: 36cd4176249ef924cb4492fc602059d5,
         type: 3}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8478822547246551131, guid: 36cd4176249ef924cb4492fc602059d5,
+        type: 3}
+      propertyPath: m_PresetInfoIsWorld
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8587712778168317828, guid: 36cd4176249ef924cb4492fc602059d5,

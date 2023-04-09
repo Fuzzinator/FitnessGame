@@ -16,7 +16,9 @@ namespace YUR.SDK.Core.Watch
 
         public SleeveState InitialSleeve = SleeveState.PINSleeve;
 
-        [Header("Sleeve References")]        
+        [Header("Sleeve References")]
+        [SerializeField]
+        private YURSleeve[] _yurSleeves = System.Array.Empty<YURSleeve>();
         [SerializeField] private GameObject[] _sleeves = null;
         [SerializeField] private TriggerSleeveState[] _sleeveStateTriggers = null;
 
@@ -32,6 +34,18 @@ namespace YUR.SDK.Core.Watch
         private bool m_wasLoggedIn = false;
 
         private Coroutine _delayRouteCo;
+
+        private void OnValidate()
+        {
+            if (_yurSleeves.Length == 0 && _sleeves != null && _sleeves.Length > 0)
+            {
+                _yurSleeves = new YURSleeve[_sleeves.Length];
+                for (var i = 0; i < _yurSleeves.Length; i++)
+                {
+                    _sleeves[i].TryGetComponent(out _yurSleeves[i]);
+                }
+            }
+        }
 
         private void Awake()
         {
@@ -51,23 +65,25 @@ namespace YUR.SDK.Core.Watch
 
         private void OnDisable()
         {
-           if (_delayRouteCo != null)
+            if (_delayRouteCo != null)
             {
                 StopCoroutine(_delayRouteCo);
             }
-			m_wasLoggedIn = false;
-			m_previousSleeve = SleeveState.StartSleeve;
-			CurrentSleeveState = SleeveState.StartSleeve;
-			ResetToStartSleeve();		
+            m_wasLoggedIn = false;
+            m_previousSleeve = SleeveState.StartSleeve;
+            CurrentSleeveState = SleeveState.StartSleeve;
+            ResetToStartSleeve();
         }
 
         private IEnumerator DelayInitialSleeveRoute()
         {
+
+            var sleepTime = new WaitForSecondsRealtime(1);
             while (!CoreServiceManager.Initialized)
             {
-                yield return new WaitForSecondsRealtime(1);
+                yield return sleepTime;
             }
-            yield return new WaitForSecondsRealtime(1);
+            yield return sleepTime;
             if (!CoreServiceManager.IsLoggedIn)
             {
                 CurrentSleeveState = SleeveState.PINSleeve;
@@ -135,7 +151,8 @@ namespace YUR.SDK.Core.Watch
                     CurrentSleeveState = InitialSleeve;
                     TransitionToSleeve(InitialSleeve);
                 }
-            } catch(UnityException e)
+            }
+            catch (UnityException e)
             {
                 YUR_Manager.Instance.Log("Login State Change event couldn't swap. Here's why: " + e.Message);
             }
@@ -143,9 +160,9 @@ namespace YUR.SDK.Core.Watch
 
         private bool IsSleeveExpanded()
         {
-            foreach (GameObject sleeve in _sleeves)
+            foreach (var sleeve in _yurSleeves)
             {
-                if (sleeve.GetComponent<TriggerContent>().isActive)
+                if (sleeve.TriggerContent.isActive)
                     return true;
             }
             return false;
@@ -155,11 +172,11 @@ namespace YUR.SDK.Core.Watch
         {
             if (IsSleeveExpanded())
             {
-                StartCoroutine(RunSleeveRetract(SleeveState.None.ToString()));
+                StartCoroutine(RunSleeveRetract(SleeveState.None));
             }
             else
             {
-                StartCoroutine(RunSleeveExpand(m_previousSleeve.ToString()));
+                StartCoroutine(RunSleeveExpand(m_previousSleeve));
             }
         }
 
@@ -174,7 +191,7 @@ namespace YUR.SDK.Core.Watch
                 m_previousSleeve = currentSleeve;
             }
         }
-        
+
         /// Transitions watch from one sleeve to the next.
         internal void TransitionToSleeve(SleeveState sleeveToTransitionTo)
         {
@@ -183,12 +200,12 @@ namespace YUR.SDK.Core.Watch
                 if (m_co != null)
                     StopCoroutine(m_co);
 
-                m_co = StartCoroutine(RunSleeveRetract(sleeveToTransitionTo.ToString()));
+                m_co = StartCoroutine(RunSleeveRetract(sleeveToTransitionTo));
             }
         }
 
         /// Retracts and turns off content on sleeve.
-        private IEnumerator RunSleeveRetract(string sleeveName)
+        private IEnumerator RunSleeveRetract(SleeveState sleeveState)
         {
             /// Tell the objects to start their blend to retract.
             while (_sleeveAnchorBlend.BlendValue >= 0)
@@ -202,10 +219,11 @@ namespace YUR.SDK.Core.Watch
 
             /// If we are going to a None Sleeve State, continue blending the Metal Bars to 0.
             /// If we are not, then extend the new sleeve to show.
-            if (sleeveName != "None")
+            if (sleeveState != SleeveState.None)
             {
-                m_co = StartCoroutine(RunSleeveExpand(sleeveName));
-            } else
+                m_co = StartCoroutine(RunSleeveExpand(sleeveState));
+            }
+            else
             {
                 m_co = null;
 
@@ -221,29 +239,29 @@ namespace YUR.SDK.Core.Watch
         private void TurnOffAllSleeves()
         {
             /// Will always turn off all sleeves as a precautionary measure.
-            foreach (GameObject sleeve in _sleeves)
+            foreach (var sleeve in _yurSleeves)
             {
-                sleeve.GetComponent<TriggerContent>().Toggle(false);
+                sleeve.TriggerContent.Toggle(false);
             }
 
             /// Turns off mesh renderer if it is present
-            foreach (GameObject sleeve in _sleeves)
+            foreach (var sleeve in _yurSleeves)
             {
-                if (sleeve.GetComponent<MeshRenderer>() != null)
+                if (sleeve.HasMeshRenderer)
                 {
-                    sleeve.GetComponent<MeshRenderer>().enabled = false;
+                    sleeve.MeshRenderer.enabled = false;
                 }
             }
         }
 
         private void ResetToStartSleeve()
         {
-            GameObject startSleeve = null;
+            YURSleeve startSleeve = null;
 
             // Sets the correct sleeve
-            foreach (GameObject sleeve in _sleeves)
+            foreach (var sleeve in _yurSleeves)
             {
-                if (sleeve.name == SleeveState.StartSleeve.ToString())
+                if (sleeve.State == SleeveState.StartSleeve)
                 {
                     startSleeve = sleeve;
                 }
@@ -255,28 +273,30 @@ namespace YUR.SDK.Core.Watch
             }
 
             TurnOffAllSleeves();
-            MeshRenderer rend = startSleeve.GetComponent<MeshRenderer>();
-            rend.enabled = true;
-            startSleeve.GetComponent<TriggerContent>().Toggle(true);
+            if (startSleeve.HasMeshRenderer)
+            {
+                startSleeve.MeshRenderer.enabled = true;
+            }
+            startSleeve.TriggerContent.Toggle(true);
         }
 
-        private IEnumerator RunSleeveExpand(string sleeveName)
+        private IEnumerator RunSleeveExpand(SleeveState sleeveState)
         {
             yield return null;
 
-            GameObject thisSleeve = null;
+            YURSleeve thisSleeve = null;
+
 
             // Sets the correct sleeve
-            foreach (GameObject sleeve in _sleeves)
+            foreach (var sleeve in _yurSleeves)
             {
-                if (sleeve.name == sleeveName)
+                if (sleeve.State == sleeveState)
                 {
                     thisSleeve = sleeve;
                 }
             }
 
-            MeshRenderer rend = thisSleeve.GetComponent<MeshRenderer>();
-            bool turnedOn = false;
+            var turnedOn = false;
 
             // Tell the objects to start their blend to retract.
             while (_metalBarsBlend.BlendValue < 1.0f)
@@ -288,11 +308,11 @@ namespace YUR.SDK.Core.Watch
                     if (!turnedOn)
                     {
                         // Turns on the sleeve
-                        thisSleeve.GetComponent<TriggerContent>().Toggle(true);
+                        thisSleeve.TriggerContent.Toggle(true);
 
-                        if (rend != null)
+                        if (thisSleeve.HasMeshRenderer)
                         {
-                            rend.enabled = true;
+                            thisSleeve.MeshRenderer.enabled = true;
                         }
 
                         turnedOn = true;
@@ -300,7 +320,7 @@ namespace YUR.SDK.Core.Watch
 
                     _sleeveAnchorBlend.BlendValue += 0.035f;
                 }
-                
+
                 yield return null;
             }
 

@@ -4,6 +4,7 @@ using YUR.SDK.Core.Initialization;
 using YUR.SDK.Core.Enums;
 using UnityEngine.Events;
 using System;
+using UnityEngine.Serialization;
 
 namespace YUR.SDK.Core.Watch
 {
@@ -16,30 +17,33 @@ namespace YUR.SDK.Core.Watch
         internal UnityEvent OnHandChanged { get; set; }
 
         // Settings Field
-        public YUR_Settings YURSettingsAsset = null;
+        [SerializeField, FormerlySerializedAs("YURSettingsAsset")]
+        private YUR_Settings _yURSettingsAsset = null;
+        public YUR_Settings YURSettingsAsset => _yURSettingsAsset;
 
         //Default Watch
-        public GameObject DefaultWatch = null;
+        [SerializeField, FormerlySerializedAs("DefaultWatch")]
+        private GameObject _defaultWatch = null;
+        public GameObject DefaultWatch => _defaultWatch;
 
         // Hand Fields
-        internal static GameObject Head = null;
-        internal static Transform LeftHandAnchor = null;
-        internal static Transform RightHandAnchor = null;
+        internal static GameObject head = null;
+        internal static Transform leftHandAnchor = null;
+        internal static Transform rightHandAnchor = null;
 
         // Dynamically Set References
-        private GameObject m_watchContainer = null;
-        private GameObject m_watch = null;
-        private GameObject m_defaultWatch = null;
-        private Vector3
-            m_watchpos = Vector3.zero,
-            m_watcheuler = Vector3.zero,
-            m_watchscale = Vector3.one;
+        private GameObject _watchContainer = null;
+        private GameObject _watch = null;
+        private GameObject _defaultWatchInstance = null;
+        private Vector3 _watchpos = Vector3.zero;
+        private Vector3 _watcheuler = Vector3.zero;
+        private Vector3 _watchscale = Vector3.one;
 
-        private Action<GameObject, int> m_setLayer = null;
+        private Action<GameObject, int> _setLayer = null;
 
         private void Awake()
         {
-            if(Instance == null)
+            if (Instance == null)
             {
                 Instance = this;
             }
@@ -63,21 +67,22 @@ namespace YUR.SDK.Core.Watch
         {
             try
             {
-                m_watchContainer = new GameObject("YUR.WatchContainer");
-                m_watchContainer.transform.SetParent(transform);
+                _watchContainer = new GameObject("YUR.WatchContainer");
+                _watchContainer.transform.SetParent(transform);
 
-                m_watch = Instantiate(Resources.Load("YURWatch\\YUR.Watch", typeof(GameObject)) as GameObject);
-                m_watch.transform.SetParent(m_watchContainer.transform);
-                m_defaultWatch = Instantiate(DefaultWatch, m_watch.transform);
+                _watch = Instantiate(Resources.Load("YURWatch\\YUR.Watch", typeof(GameObject)) as GameObject);
+                _watch.transform.SetParent(_watchContainer.transform);
+                _defaultWatchInstance = Instantiate(_defaultWatch, _watch.transform);
                 if (YUR_Manager.Instance.YURSettings.DisableWatchModel)
                 {
-                    m_defaultWatch.SetActive(false);
+                    _defaultWatchInstance.SetActive(false);
                 }
-                m_watchpos = m_watch.transform.position;
-                m_watcheuler = m_watch.transform.eulerAngles;
-                m_watchscale = m_watch.transform.localScale;
+                _watchpos = _watch.transform.position;
+                _watcheuler = _watch.transform.eulerAngles;
+                _watchscale = _watch.transform.localScale;
 
-            } catch (UnityException e)
+            }
+            catch (UnityException e)
             {
                 Debug.Log("Error Creating Watch: " + e.Message);
             }
@@ -90,9 +95,10 @@ namespace YUR.SDK.Core.Watch
             {
                 if (YURSettingsAsset.WatchAndTileShaderOverride != null)
                 {
-                    for (int i = 0; i < DefaultWatch.transform.childCount; i++)
+                    var childCount = _defaultWatch.transform.childCount;
+                    for (int i = 0; i < childCount; i++)
                     {
-                        DefaultWatch.transform.GetChild(i).GetComponent<MeshRenderer>().sharedMaterial.shader = YURSettingsAsset.WatchAndTileShaderOverride;
+                        _defaultWatch.transform.GetChild(i).GetComponent<MeshRenderer>().sharedMaterial.shader = YURSettingsAsset.WatchAndTileShaderOverride;
                     }
                 }
             }
@@ -107,13 +113,13 @@ namespace YUR.SDK.Core.Watch
         {
             try
             {
-                m_setLayer = (go, layer) =>
+                _setLayer = (go, layer) =>
                 {
                     go.layer = layer;
                     for (int i = 0; i < go.transform.childCount; i++)
                     {
                         var t = go.transform.GetChild(i);
-                        m_setLayer(t.gameObject, layer);
+                        _setLayer(t.gameObject, layer);
                     }
                 };
 
@@ -123,8 +129,9 @@ namespace YUR.SDK.Core.Watch
                     setLayer = 0;
                 }
 
-                m_setLayer(m_watch, setLayer);
-            } catch(UnityException e)
+                _setLayer(_watch, setLayer);
+            }
+            catch (UnityException e)
             {
                 Debug.Log("Could not set layers on the watch. Please make sure you have a proper layer set in your YURSettings: " + e.Message);
             }
@@ -133,7 +140,7 @@ namespace YUR.SDK.Core.Watch
         // Follow the Hand Being Used (in the config asset)
         private void Update()
         {
-            if (m_watch != null && m_watch.activeSelf)
+            if (_watch != null && _watch.activeSelf)
             {
                 UpdateWatchTransform(YURSettingsAsset);
             }
@@ -144,33 +151,33 @@ namespace YUR.SDK.Core.Watch
         {
             try
             {
-                if (!(LeftHandAnchor is null) && !(RightHandAnchor is null))
+                if (!(leftHandAnchor is null) && !(rightHandAnchor is null))
                 {
                     switch (settings.HandBeingUsed)
                     {
                         case HandState.Left:
-                            m_watchpos = LeftHandAnchor.position;
-                            m_watcheuler = LeftHandAnchor.eulerAngles;
-                            m_watch.transform.localPosition = settings.LeftPositionOffset;
-                            m_watch.transform.localEulerAngles = settings.LeftEulerOffset;
-                            m_watch.transform.localScale = new Vector3(-m_watchscale.x, m_watchscale.y, -m_watchscale.z);
+                            _watchpos = leftHandAnchor.position;
+                            _watcheuler = leftHandAnchor.eulerAngles;
+                            _watch.transform.localPosition = settings.LeftPositionOffset;
+                            _watch.transform.localEulerAngles = settings.LeftEulerOffset;
+                            _watch.transform.localScale = new Vector3(-_watchscale.x, _watchscale.y, -_watchscale.z);
                             break;
                         case HandState.Right:
-                            m_watchpos = RightHandAnchor.position;
-                            m_watcheuler = RightHandAnchor.eulerAngles;
-                            m_watch.transform.localPosition = settings.RightPositionOffset;
-                            m_watch.transform.localEulerAngles = settings.RightEulerOffset;
-                            m_watch.transform.localScale = new Vector3(-m_watchscale.x, -m_watchscale.y, -m_watchscale.z);
+                            _watchpos = rightHandAnchor.position;
+                            _watcheuler = rightHandAnchor.eulerAngles;
+                            _watch.transform.localPosition = settings.RightPositionOffset;
+                            _watch.transform.localEulerAngles = settings.RightEulerOffset;
+                            _watch.transform.localScale = new Vector3(-_watchscale.x, -_watchscale.y, -_watchscale.z);
                             break;
                         default:
-                            m_watchpos = Vector3.zero;
-                            m_watcheuler = Vector3.zero;
-                            m_watch.transform.localScale = m_watchscale;
+                            _watchpos = Vector3.zero;
+                            _watcheuler = Vector3.zero;
+                            _watch.transform.localScale = _watchscale;
                             break;
                     }
 
-                    m_watchContainer.transform.position = m_watchpos;
-                    m_watchContainer.transform.eulerAngles = m_watcheuler;
+                    _watchContainer.transform.position = _watchpos;
+                    _watchContainer.transform.eulerAngles = _watcheuler;
                 }
             }
             catch (MissingReferenceException e)
@@ -182,10 +189,11 @@ namespace YUR.SDK.Core.Watch
 
         public void ToggleWatch(bool isActive)
         {
-            if (m_defaultWatch != null)
+            if (_defaultWatchInstance != null)
             {
-                m_defaultWatch.SetActive(isActive);
-            } else
+                _defaultWatchInstance.SetActive(isActive);
+            }
+            else
             {
                 Debug.Log("There is default watch to toggle!");
             }

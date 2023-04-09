@@ -330,9 +330,28 @@ public class SettingsManager : MonoBehaviour
         SetTargetFPS((FPSSetting)value);
     }
 
+    public static bool HasSetting(string settingName, bool isProfileSetting = true, Profile overrideProfile = null)
+    {
+        if (!isProfileSetting)
+        {
+            return ES3.KeyExists(settingName);
+        }
+
+        if (overrideProfile != null)
+        {
+            return ES3.KeyExists(settingName, ProfileManager.GetProfileSettings(overrideProfile));
+        }
+        if (ProfileManager.Instance.ProfileSettings == null)
+        {
+            return false;
+        }
+
+        return ES3.KeyExists(settingName, ProfileManager.Instance.ProfileSettings);
+    }
+
     public static Quaternion GetDefaultControllerRotation(string controllerName)
     {
-        if(string.IsNullOrEmpty(controllerName))
+        if (string.IsNullOrEmpty(controllerName))
         {
             return Quaternion.identity;
         }

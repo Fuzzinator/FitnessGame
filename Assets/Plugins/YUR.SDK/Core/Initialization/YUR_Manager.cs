@@ -35,8 +35,7 @@ namespace YUR.SDK.Core.Initialization
         /// <summary>
         /// Singleton Instance for easy static functions calls
         /// </summary>
-        private static YUR_Manager _instance = null;
-        public static YUR_Manager Instance { get { return _instance; } }
+        public static YUR_Manager Instance { get; private set; }
 
         /// <summary>
         /// Events for circumstances
@@ -52,30 +51,44 @@ namespace YUR.SDK.Core.Initialization
         internal UnityEvent OnLoginFailed = new UnityEvent();                       ///Fires when a login fails
 
         public YUR_Settings YURSettings;
-        
+
         [Header("DEBUG OPTIONS")]
         [Tooltip("Resource Heavy. Turn this off before making builds.")]
         public bool TurnOnDebugLogging = false;
 
         #region MonoBehaviour Callbacks
 
+        private void Awake()
+        {
+            if (Instance == null)
+            {
+                Instance = this;
+                DontDestroyOnLoad(gameObject);
+            }
+            else
+            {
+                Destroy(gameObject);
+                return;
+            }           
+        }
+
         // Create instance of YUR_Manager and begin the service
         private void OnEnable()
         {
             CoreServiceManager.WidgetAppsChangedAction += OnUpdateWidgetApps;
-            bool initCore = false;
+            //bool initCore = false;
             TurnOnDebugLogging = YURSettings.DebugLogging;
 
-            try
+            /*try
             {
-                if (_instance == null)
+                if (Instance == null)
                 {
-                    _instance = this;
+                    Instance = this;
                     DontDestroyOnLoad(gameObject);
 
                     initCore = true;
                 }
-                else if (_instance != this)
+                else if (Instance != this)
                 {
                     Destroy(gameObject);
                 }
@@ -86,13 +99,14 @@ namespace YUR.SDK.Core.Initialization
                         initCore = true;
                     }
                 }
-            } catch (UnityException e)
+            }
+            catch (UnityException e)
             {
                 Instance.Log("Could not create instance. Here's why: " + e);
             }
 
             if (initCore)
-            {
+            {*/
                 try
                 {
                     LatestOSU = null;
@@ -100,9 +114,9 @@ namespace YUR.SDK.Core.Initialization
                     // Magic line that makes the YUR service run
                     CoreServiceManager.RunServices
                     (
-                        OnOverlayUpdate: OnStatusUpdate /* Fires action every second */,
+                        OnOverlayUpdate: OnStatusUpdate, /*Fires action every second*/
                         OnServiceShutdown: OnServiceShutdown,
-                        OnUserPreferencesChanged : OnUserPreferencesChanged
+                        OnUserPreferencesChanged: OnUserPreferencesChanged
                     );
 
                     Instance.Log("YUR Services Started!");
@@ -111,7 +125,7 @@ namespace YUR.SDK.Core.Initialization
                 {
                     Instance.Log("YUR Could Not Start. Here's Why: " + e.Message);
                 }
-            }
+            //}
         }
 
         // If the object is disabled, check to see if the developer also wants to turn off our service
@@ -140,7 +154,8 @@ namespace YUR.SDK.Core.Initialization
 
                     LatestOSU = obj;
                 }
-            } catch (UnityException e)
+            }
+            catch (UnityException e)
             {
                 Instance.Log("Could not fire startup event. Here's why: " + e.Message);
             }
@@ -158,7 +173,8 @@ namespace YUR.SDK.Core.Initialization
                 );
 
                 OnYURUpdate.Invoke(obj);
-            } catch (UnityException e)
+            }
+            catch (UnityException e)
             {
                 Instance.Log("Couldn't fire update event. Here's why: " + e.Message);
             }
@@ -179,7 +195,8 @@ namespace YUR.SDK.Core.Initialization
                 Instance.Log("Preference Changed Requested!");
                 LatestPreferences = obj;
                 OnPreferenceUpdate.Invoke(LatestPreferences);
-            } catch (UnityException e)
+            }
+            catch (UnityException e)
             {
                 Instance.Log("Couldn't fire preference change event. Here's why: " + e.Message);
             }
@@ -189,7 +206,7 @@ namespace YUR.SDK.Core.Initialization
         private void OnServiceShutdown(ExecutionResult obj)
         {
             Instance.Log("Shutting Down...");
-        } 
+        }
         #endregion
 
         #region PINLogin
@@ -200,7 +217,7 @@ namespace YUR.SDK.Core.Initialization
         {
             try
             {
-                CoreServiceManager.ShortcodeLogin(OnLoginRequest, OnLoginResponseSuccess, OnLoginResponseFailure);
+                ShortcodeLogin(OnLoginRequest, OnLoginResponseSuccess, OnLoginResponseFailure);
             }
             catch (UnityException e)
             {
@@ -216,7 +233,8 @@ namespace YUR.SDK.Core.Initialization
             try
             {
                 CoreServiceManager.Logout();
-            } catch (UnityException e)
+            }
+            catch (UnityException e)
             {
                 Instance.Log("YUR could not log out. Here's why: " + e.Message);
             }
@@ -230,7 +248,8 @@ namespace YUR.SDK.Core.Initialization
             {
                 Instance.Log("Attempting to Log In...");
                 OnLoginAttempt.Invoke(obj);
-            } catch (UnityException e)
+            }
+            catch (UnityException e)
             {
                 Instance.Log("Could not get login request. Here's why: " + e.Message);
             }
@@ -262,7 +281,7 @@ namespace YUR.SDK.Core.Initialization
             {
                 Instance.Log("Could not fire login failure. Here's why: " + e.Message);
             }
-        } 
+        }
         #endregion
 
         /// <summary>

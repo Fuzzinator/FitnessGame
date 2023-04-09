@@ -35,16 +35,7 @@ namespace YUR.SDK.Core.Configuration
         }
         [SerializeField]
         private HandState _handBeingUsed = HandState.Left;
-
-        private void OnValidate()
-        {
-            if (HandBeingUsed != _lastHand)
-            {
-                _lastHand = HandBeingUsed;
-                WatchHandChanged?.Invoke();
-            }
-        }
-        
+                
         [Header("Left Configuration")]
         [SerializeField]
         private Vector3 _leftPositionOffset = new Vector3(-0.0708f, -0.0201f, -0.1337f);
@@ -212,5 +203,14 @@ namespace YUR.SDK.Core.Configuration
             }
         }
 
+
+        private void OnValidate()
+        {
+            if (HandBeingUsed != _lastHand)
+            {
+                _lastHand = HandBeingUsed;
+                WatchHandChanged?.Invoke();
+            }
+        }
     } 
 }

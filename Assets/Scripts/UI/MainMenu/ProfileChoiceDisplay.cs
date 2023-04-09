@@ -28,6 +28,12 @@ public class ProfileChoiceDisplay : MonoBehaviour, IPoolable
 
     public void SetSelectedProfile()
     {
+        if (!SettingsManager.HasSetting("TargetSideSetting", true, _profile))
+        {
+            _profileSelectionController.StartEditProfile(_profile);
+            _profileSelectionController.ProfileEditor.SetActivePage(2);
+            return;
+        }
         ProfileManager.Instance.SetActiveProfile(_profile);
     }
 

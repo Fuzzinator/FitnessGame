@@ -7,28 +7,31 @@ using UnityEngine.UI;
 public class UIMenuController : MonoBehaviour
 {
     [SerializeField]
-    private List<Toggle> _toggles;
+    protected List<Toggle> _toggles;
 
     [SerializeField]
-    private CanvasGroup[] _settingsPages;
-   
-    private CanvasGroup _activePage;
+    protected CanvasGroup[] _settingsPages;
 
-    private bool _initialized = false;
-    
-    
+    protected CanvasGroup _activePage;
+
+    protected bool _initialized = false;
+    protected int _activePageIndex;
+
+
     protected virtual void Start()
     {
         if (_settingsPages == null || _settingsPages.Length < 1)
         {
             return;
         }
-        
-        var canvas = GetComponent<Canvas>();
-        canvas.worldCamera = Head.Instance.HeadCamera;
+
+        if (TryGetComponent(out Canvas canvas))
+        {
+            canvas.worldCamera = Head.Instance.HeadCamera;
+        }
     }
 
-    protected void OnEnable()
+    protected virtual void OnEnable()
     {
         if (!_initialized)
         {
@@ -49,10 +52,20 @@ public class UIMenuController : MonoBehaviour
         }
         SetActivePage(0);
     }
-    
+
+    public void NextPage()
+    {
+        SetActivePage(_activePageIndex + 1);
+    }
+
+    public void PreviousPage()
+    {
+        SetActivePage(_activePageIndex - 1);
+    }
+
     public void SetActivePage(int pageNumber)
     {
-        if (pageNumber >= _settingsPages.Length)
+        if (pageNumber >= _settingsPages.Length || pageNumber < 0)
         {
             return;
         }
@@ -66,16 +79,18 @@ public class UIMenuController : MonoBehaviour
         _activePage = _settingsPages[pageNumber];
         _activePage.SetGroupState(1, true);
         _activePage.gameObject.SetActive(true);
+
+        _activePageIndex = pageNumber;
     }
-    
-    
+
+
     public void PageToggleChanged(Toggle toggle)
     {
         if (!toggle.isOn)
         {
             return;
         }
-        
+
         SetActivePage(_toggles.IndexOf(toggle));
     }
 }

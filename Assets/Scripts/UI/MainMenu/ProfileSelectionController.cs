@@ -32,6 +32,8 @@ public class ProfileSelectionController : MonoBehaviour
     private PoolManager _choicesPoolManager;
     private bool _fogActive = false;
 
+    public ProfileEditor ProfileEditor => _profileEditor;
+
     private void OnEnable()
     {
         if (ProfileManager.Instance.ActiveProfile == null)

@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ProfileEditor : MonoBehaviour
+public class ProfileEditor : UIMenuController
 {
     [SerializeField]
     private TMP_InputField _inputField;
@@ -26,6 +26,13 @@ public class ProfileEditor : MonoBehaviour
     private bool _isCustomIcon = false;
 
     public Profile ActiveProfile => _profile;
+
+    protected override void OnEnable()
+    {
+        _activePage = _settingsPages[0];
+        _activePage.SetGroupState(1, true);
+        _activePage.gameObject.SetActive(true);
+    }
 
     public void StartEditProfile(Profile profile)
     {

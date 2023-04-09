@@ -8,6 +8,6 @@ namespace YUR.SDK.Core.Initialization
     /// </summary>
     public class YUR_RightHand : YUR_Hand
     {
-        internal override Transform yurAnchor { get => YURWatch.RightHandAnchor; set => YURWatch.RightHandAnchor = value; }
+        internal override Transform yurAnchor { get => YURWatch.rightHandAnchor; set => YURWatch.rightHandAnchor = value; }
     } 
 }
