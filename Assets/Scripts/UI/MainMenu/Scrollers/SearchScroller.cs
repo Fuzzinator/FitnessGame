@@ -22,7 +22,9 @@ public class SearchScroller : MonoBehaviour
     
     public void StartEditTextField()
     {
+#if UNITY_STANDALONE_WIN
         KeyboardManager.Instance.ActivateKeyboard(_searchField, string.Empty);
+#endif
     }
 
     public void ResetSearch()

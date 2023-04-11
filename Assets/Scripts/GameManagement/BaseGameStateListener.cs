@@ -5,7 +5,7 @@ using UnityEngine;
 public abstract class BaseGameStateListener : MonoBehaviour
 {
     protected bool _useOnEnableDisable = true;
-    private void OnEnable()
+    protected virtual void OnEnable()
     {
         if(_useOnEnableDisable)
         {
@@ -13,7 +13,7 @@ public abstract class BaseGameStateListener : MonoBehaviour
         }
     }
 
-    private void OnDisable()
+    protected virtual void OnDisable()
     {
         if(_useOnEnableDisable)
         {

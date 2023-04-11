@@ -106,7 +106,7 @@ public class BeatSaverPageController : MonoBehaviour
 
     public void GainedNetworkConnection()
     {
-        if(_cancellationTokenSource != null)
+        if (_cancellationTokenSource != null)
         {
             _cancellationTokenSource.Dispose();
         }
@@ -293,7 +293,10 @@ public class BeatSaverPageController : MonoBehaviour
         {
             await UniTask.SwitchToMainThread(_cancellationTokenSource.Token);
 
-            Debug.LogError(e);
+            if (e is not System.Threading.Tasks.TaskCanceledException)
+            {
+                Debug.LogError(e);
+            }
             _showLoadingObject.SetActive(false);
             return;
         }
@@ -308,7 +311,7 @@ public class BeatSaverPageController : MonoBehaviour
             _audioSource.Stop();
             return;
         }
-        
+
         await RefreshToken();
 
         var audioClip = await _activeBeatmap.LatestVersion.GetPlayablePreview(_cancellationTokenSource.Token);

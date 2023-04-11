@@ -27,12 +27,12 @@ public class Hand : BaseGameStateListener
     public Vector3 GloveOffset
     {
         get => _glove.localPosition;
-        set 
+        set
         {
             _glove.localPosition = value;
-//#if !UNITY_ANDROID
-            _uiRaycaster.localPosition= value;
-//#endif
+            //#if !UNITY_ANDROID
+            _uiRaycaster.localPosition = value;
+            //#endif
         }
     }
 
@@ -42,9 +42,9 @@ public class Hand : BaseGameStateListener
         set
         {
             _glove.localRotation = value;
-//#if !UNITY_ANDROID
-            _uiRaycaster.localRotation= value;
-//#endif
+            //#if !UNITY_ANDROID
+            _uiRaycaster.localRotation = value;
+            //#endif
         }
     }
 
@@ -110,9 +110,9 @@ public class Hand : BaseGameStateListener
         _cancellationToken = this.GetCancellationTokenOnDestroy();
     }
 
-    private void OnEnable()
+    protected override void OnEnable()
     {
-        //enabled = true;
+        base.OnEnable();
         UpdateDevices();
         ProfileManager.Instance.activeProfileUpdated.AddListener(SetOffset);
         SetOffset();
@@ -123,8 +123,9 @@ public class Hand : BaseGameStateListener
         }
     }
 
-    private void OnDisable()
+    protected override void OnDisable()
     {
+        base.OnDisable();
         InputDevices.deviceDisconnected -= DeviceConnected;
         ProfileManager.Instance.activeProfileUpdated.RemoveListener(SetOffset);
     }
@@ -132,10 +133,17 @@ public class Hand : BaseGameStateListener
 
     protected override void GameStateListener(GameState oldState, GameState newState)
     {
+        if (newState != oldState && oldState == GameState.Unfocused)
+        {
+            SetGlovesVisible(true);
+        }
         switch (newState)
         {
             case GameState.Paused:
+                _trackingPaused = true;
+                break;
             case GameState.Unfocused:
+                SetGlovesVisible(false);
                 _trackingPaused = true;
                 break;
             case GameState.Playing:
@@ -258,6 +266,13 @@ public class Hand : BaseGameStateListener
     public void HideGlove()
     {
         _glove.gameObject.SetActive(false);
+    }
+
+    private void SetGlovesVisible(bool visible)
+    {
+        _glove.gameObject.SetActive(visible);
+        _uiRaycaster.gameObject.SetActive(visible);
+
     }
 
     private void SetGloveColor()
