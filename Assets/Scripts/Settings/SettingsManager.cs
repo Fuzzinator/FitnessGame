@@ -12,7 +12,7 @@ public class SettingsManager : MonoBehaviour
     [SerializeField]
     private AudioMixer _mixer;
 
-    private static float[] _volumes = new float[3];
+    private static float[] _volumes = new float[5];
 
     private static Dictionary<string, bool> _boolSettings;
     private static Dictionary<string, float> _floatSettings;
@@ -48,7 +48,7 @@ public class SettingsManager : MonoBehaviour
     private const string OculusTouchController = "Oculus Touch Controller";
     private const string IndexController = "Index Controller";
 
-    private static readonly string[] _volumeNames = new[] { MASTERVOLUME, MUSICVOLUME, SFXVOLUME };
+    private static readonly string[] _volumeNames = new[] { MASTERVOLUME, MUSICVOLUME, SFXVOLUME, MENUMUSICVOLUME, MENUSFXVOLUME };
 
     #endregion
 
@@ -113,10 +113,14 @@ public class SettingsManager : MonoBehaviour
                 break;
             case VolumeMixer.Music:
                 _mixer.SetFloat(MUSICVOLUME, convertedValue);
-                _mixer.SetFloat(MENUMUSICVOLUME, convertedValue);
                 break;
             case VolumeMixer.SFX:
                 _mixer.SetFloat(SFXVOLUME, convertedValue);
+                break;
+            case VolumeMixer.MenuMusic:
+                _mixer.SetFloat(MENUMUSICVOLUME, convertedValue);
+                break;
+            case VolumeMixer.MenuSFX:
                 _mixer.SetFloat(MENUSFXVOLUME, convertedValue);
                 break;
             default:
@@ -131,7 +135,7 @@ public class SettingsManager : MonoBehaviour
 
     public float LoadVolumeMixerValue(VolumeMixer mixer)
     {
-        return GetSetting(_volumeNames[(int)mixer], 1f);
+        return GetSetting(_volumeNames[(int)mixer], mixer < VolumeMixer.MenuMusic ? 1f : .5f);
     }
 
     public void SaveVolumeMixer(VolumeMixer mixer, float value)
@@ -141,11 +145,17 @@ public class SettingsManager : MonoBehaviour
 
     private void SetAudioSettings()
     {
+        var masterVolume = GetSetting(MASTERVOLUME, 1f);
         var musicVolume = GetSetting(MUSICVOLUME, 1f);
         var sfxVolume = GetSetting(SFXVOLUME, 1f);
-        SetVolumeMixer(VolumeMixer.Master, GetSetting(MASTERVOLUME, 1f));
+        var menuMusicVolume = GetSetting(MENUMUSICVOLUME, .5f);
+        var menuSfxVolume = GetSetting(MENUSFXVOLUME, .5f);
+
+        SetVolumeMixer(VolumeMixer.Master, masterVolume);
         SetVolumeMixer(VolumeMixer.Music, musicVolume);
         SetVolumeMixer(VolumeMixer.SFX, sfxVolume);
+        SetVolumeMixer(VolumeMixer.MenuMusic, menuMusicVolume);
+        SetVolumeMixer(VolumeMixer.MenuSFX, menuSfxVolume);
     }
 
     public static string GetVolumeMixerName(VolumeMixer mixer)
@@ -410,7 +420,9 @@ public enum VolumeMixer
 {
     Master = 0,
     Music = 1,
-    SFX = 2
+    SFX = 2,
+    MenuMusic = 3,
+    MenuSFX = 4
 }
 
 public enum FPSSetting

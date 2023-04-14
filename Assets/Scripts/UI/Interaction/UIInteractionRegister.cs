@@ -15,19 +15,34 @@ public class UIInteractionRegister : MonoBehaviour
     private LineRenderer _lineRenderer;
     [SerializeField]
     private XRInteractorLineVisual _interactorLineVisual;
-    [SerializeField]
-    private bool _disable;
-    [SerializeField]
-    private bool _isDisabled;
-    
+    [field: SerializeField]
+    public bool IsEnabled { get; private set; }
+    private bool _targetOnState;
+    private bool _awaiting;
+
     public void SetInteractionState(bool on)
     {
-        _rayInteractor.enabled = on;
-        _lineRenderer.enabled = on;
-        _interactorLineVisual.enabled = on;
+        _targetOnState = on;
+        if (on == IsEnabled || _awaiting)
+        {
+            return;
+        }
+        WaitAndSet().Forget();
     }
 
-    private void Start()
+    private async UniTaskVoid WaitAndSet()
+    {
+        _awaiting = true;
+        await UniTask.DelayFrame(1);
+        _awaiting = false;
+        
+        _rayInteractor.enableUIInteraction = _targetOnState;
+        _lineRenderer.enabled = _targetOnState;
+        _interactorLineVisual.enabled = _targetOnState;
+        IsEnabled = _targetOnState;
+    }
+
+    /*private void Start()
     {
         Disable().Forget();
     }
@@ -38,16 +53,7 @@ public class UIInteractionRegister : MonoBehaviour
         _rayInteractor.enableUIInteraction = false;
         await UniTask.DelayFrame(1);
         _rayInteractor.enableUIInteraction = true;
-        /*while (!_disable)
-        {
-            await UniTask.DelayFrame(1);
-        }
-        if (_disable && !_isDisabled)
-        {
-            _isDisabled = true;
-            _rayInteractor.enableUIInteraction = false;
-        }*/
-    }
+    }*/
 
     private void OnEnable()
     {

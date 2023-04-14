@@ -27,10 +27,12 @@ namespace VRKB
         protected KeyConfig _config;
         public KeyConfig Config
         {
-            get {
+            get
+            {
                 return _config;
             }
-            set {
+            set
+            {
                 _config = value;
                 ApplyConfig(_config);
             }
@@ -63,7 +65,8 @@ namespace VRKB
             // up-bounce.
 
             if (other.bounds.center.y > _collider.bounds.center.y
-                && _keyboard.PressKey(this, other)) {
+                && _keyboard.PressKey(this, other))
+            {
                 _pressed = true;
                 _pressStartTime = Time.time;
                 _prevRepeatTime = Time.time;
@@ -73,12 +76,9 @@ namespace VRKB
 
         public void PointerDown()
         {
-            if (_pressStartTime + .1f < Time.time)
-            {
-                _keyboard.PressKey(this, null);
-                _keyboard.ReleaseKey(this, null);
-                _pressStartTime = Time.time;
-            }
+            _keyboard.PressKey(this, null);
+            _keyboard.ReleaseKey(this, null);
+            _pressStartTime = Time.time;
         }
 
         public void OnTriggerStay(Collider other)
@@ -102,7 +102,8 @@ namespace VRKB
 
             _repeating = _pressed && delay > 0 && pressedTime >= delay;
 
-            if (_repeating && timeSinceRepeat > repeatInterval) {
+            if (_repeating && timeSinceRepeat > repeatInterval)
+            {
                 _prevRepeatTime = Time.time;
                 _keyboard.PressKey(this, other, true);
             }
@@ -127,8 +128,10 @@ namespace VRKB
         protected void VisitComponentsWithTagPrefix<T>(string tagPrefix, Action<T, int> action)
             where T : MonoBehaviour
         {
-            foreach (var o in GetComponentsInChildren<T>()) {
-                if (o.tag.StartsWith(tagPrefix)) {
+            foreach (var o in GetComponentsInChildren<T>())
+            {
+                if (o.tag.StartsWith(tagPrefix))
+                {
 
 #if UNITY_EDITOR
                     Undo.RecordObject(o, "apply key config from JSON file");
@@ -151,7 +154,8 @@ namespace VRKB
             // update label texts and colors
 
             VisitComponentsWithTagPrefix<TextMeshProUGUI>("vrkb_label",
-                (label, index) => {
+                (label, index) =>
+                {
 
                     label.text = null;
                     if (config.Labels != null && index < config.Labels.Length)
@@ -172,13 +176,15 @@ namespace VRKB
             // update image sprites and their background colors
 
             VisitComponentsWithTagPrefix<Image>("vrkb_image",
-                (image, index) => {
+                (image, index) =>
+                {
 
                     image.sprite = null;
                     // set image background color to clear so that image
                     // is invisible by default
                     image.color = Color.clear;
-                    if (config.Images != null && index < config.Images.Length) {
+                    if (config.Images != null && index < config.Images.Length)
+                    {
                         image.sprite = Resources.Load<Sprite>(config.Images[index]);
                         image.preserveAspect = true;
                         // set background to white by to show the image
@@ -187,7 +193,7 @@ namespace VRKB
                         if (config.ImageColors != null && index < config.ImageColors.Length)
                             image.color = config.ImageColors[index];
                     }
-                    
+
                 });
         }
     }
