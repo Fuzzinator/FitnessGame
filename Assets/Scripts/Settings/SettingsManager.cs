@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.Events;
+using static SettingsManager;
 
 public class SettingsManager : MonoBehaviour
 {
@@ -24,6 +26,11 @@ public class SettingsManager : MonoBehaviour
 #elif UNITY_STANDALONE_WIN
     private static readonly Quaternion ViveWandRotation = new Quaternion(.615f, 0f, 0f, .8f);
 #endif
+
+    public static UnityEvent<string, bool> CachedBoolSettingChanged { get; private set; } = new UnityEvent<string, bool>();
+    public static UnityEvent<string, int> IntSettingChanged { get; private set; } = new UnityEvent<string, int>();
+    public static UnityEvent<string, float> CachedFloatSettingChanged { get; private set; } = new UnityEvent<string, float>();
+
     #region Const Strings
 
     private const string MASTERVOLUME = "MasterVolume";
@@ -168,12 +175,14 @@ public class SettingsManager : MonoBehaviour
     public static void SetCachedBool(string settingName, bool value)
     {
         CacheBool(settingName, value);
+        CachedBoolSettingChanged.Invoke(settingName, value);
         SetSetting(settingName, value);
     }
 
     public static void SetCachedFloat(string settingName, float value)
     {
         CacheFloat(settingName, value);
+        CachedFloatSettingChanged.Invoke(settingName, value);
         SetSetting(settingName, value);
     }
 
@@ -181,6 +190,7 @@ public class SettingsManager : MonoBehaviour
     public static void SetCachedInt(string settingName, int value, Profile overrideProfile = null)
     {
         CacheInt(settingName, value);
+        IntSettingChanged.Invoke(settingName, value);
         SetSetting(settingName, value);
     }
 

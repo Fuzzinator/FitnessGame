@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 
@@ -19,6 +20,7 @@ public class UIInteractionRegister : MonoBehaviour
     public bool IsEnabled { get; private set; }
     private bool _targetOnState;
     private bool _awaiting;
+    private CancellationToken _cancellationToken;
 
     public void SetInteractionState(bool on)
     {
@@ -33,7 +35,12 @@ public class UIInteractionRegister : MonoBehaviour
     private async UniTaskVoid WaitAndSet()
     {
         _awaiting = true;
-        await UniTask.DelayFrame(1);
+        await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
+        if(_cancellationToken.IsCancellationRequested)
+        {
+            return;
+        }
+
         _awaiting = false;
         
         _rayInteractor.enableUIInteraction = _targetOnState;
@@ -42,18 +49,10 @@ public class UIInteractionRegister : MonoBehaviour
         IsEnabled = _targetOnState;
     }
 
-    /*private void Start()
+    private void Start()
     {
-        Disable().Forget();
+        _cancellationToken = this.GetCancellationTokenOnDestroy();
     }
-
-    private async UniTaskVoid Disable()
-    {
-        await UniTask.DelayFrame(1);
-        _rayInteractor.enableUIInteraction = false;
-        await UniTask.DelayFrame(1);
-        _rayInteractor.enableUIInteraction = true;
-    }*/
 
     private void OnEnable()
     {
