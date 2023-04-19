@@ -355,6 +355,7 @@ public class Notification : MonoBehaviour, IPoolable
         }
     }
 
+    [System.Serializable]
     public class NotificationVisualInfo
     {
         public string header;

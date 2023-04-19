@@ -19,9 +19,6 @@ namespace YUR.Core
 
         public void Start()
         {
-            //HMDAnchor = GameObject.FindObjectOfType<YURHMD>().transform;
-            //LeftHandAnchor = YURLeftHand.Instance.transform;//GameObject.FindObjectOfType<YURLeftHand>().transform;
-            //RightHandAnchor = YURRightHand.Instance.transform;//GameObject.FindObjectOfType<YURRightHand>().transform;
             Begin(GetUniqueEcosystemID());
         }
 
@@ -37,9 +34,6 @@ namespace YUR.Core
         public void Begin(string UserID)
         {
             watch = Instantiate(Settings.WatchSetup, gameObject.transform);
-            //YURInterface.Instance.HMD = HMDAnchor;
-            //YURInterface.Instance.Left = LeftHandAnchor;
-            //YURInterface.Instance.Right = RightHandAnchor;
             YURInterface.Instance.Begin(new GameInfo(Settings.GameName, Settings.YurLicense, Settings.GameVersion,Settings.SubPlatform), UserID);
         }
 
