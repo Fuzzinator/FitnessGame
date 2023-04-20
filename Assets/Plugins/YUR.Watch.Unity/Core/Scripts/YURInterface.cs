@@ -154,7 +154,7 @@ namespace YUR.Core
 
         private static string GetPublicDataPath()
         {
-#if UNITY_WINDOWS || UNITY_EDITOR_WIN
+#if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
             string path = Application.persistentDataPath; // default
             path = Environment.ExpandEnvironmentVariables(@"%AppData%");
             return Path.Combine(path, ".yur/watch/");
