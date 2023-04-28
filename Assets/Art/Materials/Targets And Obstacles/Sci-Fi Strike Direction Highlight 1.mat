@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-3406502674557679272
+--- !u!114 &-8023729512684159411
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -20,33 +20,27 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Left Base Target
-  m_Shader: {fileID: -6465566751694194690, guid: 484375f57bc0ac74f86bba3b66c843ab,
+  m_Name: Sci-Fi Strike Direction Highlight 1
+  m_Shader: {fileID: -6465566751694194690, guid: c100fed54c5613d45ab1eb38fbc71b8c,
     type: 3}
   m_ValidKeywords:
-  - _ALPHATEST_ON
-  - _SHOWNOTES
-  - _SURFACE_TYPE_TRANSPARENT
-  - _TEXTURESET_TARGETS
   - _USEDISTANCEOFFSET
   m_InvalidKeywords: []
-  m_LightmapFlags: 2
-  m_EnableInstancingVariants: 1
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: 3000
-  stringTagMap:
-    RenderType: Transparent
-  disabledShaderPasses:
-  - SHADOWCASTER
+  stringTagMap: {}
+  disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: 6344bf96fbda94141a525046d088fb23, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: 08318d252eb3b444b989b47e5168244c, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _CubemapAsset_3811a4838c3e4a94bb50417046ec64f3_Out_0:
@@ -65,20 +59,16 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _Emission:
-        m_Texture: {fileID: 2800000, guid: e4e90e4b0d2cfbd439f1b76669ac9d89, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _EmissionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Lighting:
-        m_Texture: {fileID: 8900000, guid: f80d450648ef8104da89eccf8560cbcb, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 04af44ae3d1bd8e4aa1fe81e182ef169, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -97,18 +87,6 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _Tenmp:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Texture2DAsset_4f38e793ace7425ab55b7a0ed47010d6_Out_0:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Texture2D_Array:
-        m_Texture: {fileID: 18700000, guid: c20004db87ee21a4dbe852a7f7aa0e00, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -123,68 +101,67 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Alpha: 0.5
     - _AlphaClip: 1
     - _AlphaStrength: 1
     - _Alpha_Clip: 0.5
-    - _Appear_Distance: 12
+    - _Appear_Distance: 8
     - _Base_Color_Strength: 1
     - _Blend: 0
+    - _BlendOp: 0
     - _BumpScale: 1
     - _CastShadows: 0
+    - _ClearCoatMask: 0
+    - _ClearCoatSmoothness: 0
     - _Color_Strength: 10
     - _Cull: 2
     - _Cutoff: 0.5
+    - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _Dissolve_Power: 0.5
-    - _Dissolve_Range: 1.5
-    - _DistanceRotation: -45
-    - _DstBlend: 10
+    - _Dissolve_Range: 0.15
+    - _DstBlend: 0
+    - _EnvironmentReflections: 1
     - _GlossMapScale: 1
-    - _Glossiness: 0.5
-    - _GlossinessSource: 0
+    - _Glossiness: 0
     - _GlossyReflections: 1
     - _Highlight_Multiply: 1
-    - _Highlight_Power: 1
     - _Metallic: 0
     - _Mode: 0
     - _Normal_Strength: 1
     - _OcclusionStrength: 1
+    - _POwer: 5
     - _Parallax: 0.02
     - _Position_Change_Distance: 2.5
     - _Position_Change_Range: 10
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _Rotation: 90
-    - _SHOWNOTES: 1
-    - _Shininess: 0
+    - _Rotation: 180
+    - _SampleGI: 0
     - _Smoothness: 0.5
-    - _SmoothnessSource: 0
     - _SmoothnessTextureChannel: 0
-    - _SpecSource: 0
     - _SpecularHighlights: 1
-    - _SrcBlend: 5
-    - _Surface: 1
+    - _SrcBlend: 1
+    - _Surface: 0
     - _TEXTURESET: 0
-    - _TextureIndex: 0
+    - _TextureIndex: 1
     - _USEDISTANCEDISSOLVE: 0
     - _USEDISTANCEOFFSET: 1
     - _UVSec: 0
     - _WorkflowMode: 1
     - _ZTest: 4
     - _ZWrite: 1
-    - _ZWriteControl: 1
+    - _ZWriteControl: 0
     m_Colors:
-    - _BaseColor: {r: 0.11249998, g: 0.5374999, b: 0.75, a: 1}
-    - _Base_Color: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 1}
-    - _Base_Color_2: {r: 0.20392157, g: 0.20392157, b: 0.20392157, a: 1}
+    - _BaseColor: {r: 0.7353569, g: 0.7353569, b: 0.7353569, a: 1}
+    - _Base_Color: {r: 1, g: 1, b: 1, a: 0}
     - _CenterPosition: {r: 0, g: 0, b: 0, a: 0}
-    - _Color: {r: 0.1180509, g: 0.11825249, b: 0.78700644, a: 1}
-    - _Color_1: {r: 4.7038727, g: 0.0922328, b: 0, a: 0}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DissolveColor: {r: 3.979057, g: 0.3141361, b: 0, a: 1}
-    - _EmissionColor: {r: 0, g: 0.112500004, b: 0.15, a: 1}
-    - _Position_Change: {r: -2, g: 1, b: 0, a: 0}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _Position_Change: {r: -1, g: 2, b: 0, a: 0}
     - _Rotation_Axis: {r: 1, g: 0, b: 0, a: 0}
-    - _SpecColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
+    - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _Tiling: {r: 1, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []

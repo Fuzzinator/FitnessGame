@@ -58,6 +58,15 @@ public class EnvironmentAssetContainer : ScriptableObject
     [SerializeField]
     private BaseHitVFX _baseHitVFX;
 
+    [SerializeField]
+    private Material _targetMaterial;
+
+    [SerializeField]
+    private Material _obstacleMaterial;
+
+    [SerializeField]
+    private Material _superTargetMaterial;
+
     public string EnvironmentName => _environmentName;
 
     public AssetReference SceneAsset => _sceneAsset;
@@ -77,4 +86,7 @@ public class EnvironmentAssetContainer : ScriptableObject
     public BaseObstacle DodgeLeftObstacle => _dodgeLeftObstacle;
     public BaseObstacle DodgeRightObstacle => _dodgeRightObstacle;
     public BaseHitVFX BaseHitVFX => _baseHitVFX;
+    public Material TargetMaterial => _targetMaterial;
+    public Material ObstacleMaterial => _obstacleMaterial;
+    public Material SuperTargetMaterial => _superTargetMaterial;
 }

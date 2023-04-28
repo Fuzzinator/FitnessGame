@@ -71,6 +71,10 @@ public class FormationHolder : MonoBehaviour, IPoolable
         {
             SetCallbacks();
         }
+        if(children != null)
+        {
+            children.Clear();
+        }
 
         _sequencer = sequencer;
         _formation = formation;
@@ -116,7 +120,7 @@ public class FormationHolder : MonoBehaviour, IPoolable
 
     public void Add(IPoolable poolable)
     {
-        if (children != null)
+        if (children != null && !children.Contains(poolable))
         {
             children.Add(poolable);
         }

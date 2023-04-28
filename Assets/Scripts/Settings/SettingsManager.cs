@@ -59,6 +59,9 @@ public class SettingsManager : MonoBehaviour
 
     #endregion
 
+    public static bool UseEnlongatedCollider;
+    public static bool UseFixedHitDirection;
+
     private void Awake()
     {
         if (Instance == null)

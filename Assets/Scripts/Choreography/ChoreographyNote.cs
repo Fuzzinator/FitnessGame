@@ -11,9 +11,10 @@ public struct ChoreographyNote// : ISequenceable
     public float Time => _time;
     public int LineIndex => _lineIndex;
     public LineLayerType LineLayer => _lineLayer;
-    public HitSideType Type => _type;
     public CutDirection CutDir => _cutDirection;
     public HitSideType HitSideType => _type;
+
+    public bool IsSuperNote => _isSuperNote;
 
     [SerializeField]
     private float _time;
@@ -25,15 +26,18 @@ public struct ChoreographyNote// : ISequenceable
     private HitSideType _type;
     [SerializeField]
     private CutDirection _cutDirection;
+    [SerializeField]
+    private bool _isSuperNote;
     
     public ChoreographyNote(float time, int lineIndex, LineLayerType lineLayer, HitSideType hitSide,
-        CutDirection cutDirection)
+        CutDirection cutDirection, bool isSuperNote)
     {
         _time = time;
         _lineIndex = lineIndex;
         _lineLayer = lineLayer;
         _type = hitSide;
         _cutDirection = cutDirection;
+        _isSuperNote = isSuperNote;
     }
 
     public enum LineLayerType
@@ -83,7 +87,14 @@ public struct ChoreographyNote// : ISequenceable
         _type = type;
         return this;
     }
-    
+
+    public ChoreographyNote SetSuperNote(bool isSuperNote)
+    {
+        _isSuperNote = isSuperNote;
+        return this;
+    }
+
+
     public ChoreographyNote SwapSides()
     {
         _type = _type switch
@@ -108,6 +119,11 @@ public struct ChoreographyNote// : ISequenceable
         HookLeftDown = 6,//Will be treated as Jab(8) {Only exists for BeatSaber map support}
         HookRightDown = 7,//Will be treated as Jab(8) {Only exists for BeatSaber map support}
         Jab = 8
+    }
+
+    public bool TypeMatches(ChoreographyNote noteB)
+    {
+        return HitSideType == noteB.HitSideType && CutDir == noteB.CutDir;
     }
 }
 

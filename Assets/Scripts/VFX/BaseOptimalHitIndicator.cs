@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class BaseOptimalHitIndicator : MonoBehaviour
+public class BaseOptimalHitIndicator : MonoBehaviour, ITargetInitializer
 {
     [SerializeField]
     private BaseTarget _baseTarget;
@@ -13,13 +13,13 @@ public class BaseOptimalHitIndicator : MonoBehaviour
 
     private int _propertyHash;
 
-    internal void Initialize()
+    public void Initialize(BaseTarget target)
     {
         if (_renderer == null)
         {
             return;
         }
-
+        _baseTarget = target;
         _propertyHash = Shader.PropertyToID(_propertyName);
         _renderer.material.SetVector(_propertyHash, Vector3.zero);
 

@@ -145,6 +145,8 @@ public class EnvironmentControlManager : MonoBehaviour
             }
         }
 
+        MaterialsManager.Instance.SetUpMaterials(ActiveEnvironmentContainer.TargetMaterial, ActiveEnvironmentContainer.ObstacleMaterial, ActiveEnvironmentContainer.SuperTargetMaterial);
+
         LoadingEnvironmentContainer = false;
     }
 

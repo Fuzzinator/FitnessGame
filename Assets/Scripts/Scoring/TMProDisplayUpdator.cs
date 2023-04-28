@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Cysharp.Text;
 using TMPro;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
 public class TMProDisplayUpdator : MonoBehaviour
 {
@@ -28,6 +29,7 @@ public class TMProDisplayUpdator : MonoBehaviour
             _targetText.SetCharArray(buffer.Array, buffer.Offset, buffer.Count);
         }
     }
+
     public void UpdateText(ulong value)
     {
         using (var sb = ZString.CreateStringBuilder(true))
@@ -44,6 +46,17 @@ public class TMProDisplayUpdator : MonoBehaviour
         using (var sb = ZString.CreateStringBuilder(true))
         {
             sb.AppendFormat(FORMAT, _prefix, value, _suffix);
+
+            var buffer = sb.AsArraySegment();
+            _targetText.SetCharArray(buffer.Array, buffer.Offset, buffer.Count);
+        }
+    }
+
+    public void UpdateText(TextHolder textHolder)
+    {
+        using (var sb = ZString.CreateStringBuilder(true))
+        {
+            sb.AppendFormat(FORMAT, _prefix, textHolder.Text, _suffix);
 
             var buffer = sb.AsArraySegment();
             _targetText.SetCharArray(buffer.Array, buffer.Offset, buffer.Count);

@@ -42,11 +42,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 1804287623901804099, guid: 587d90671ab6a2f41bd6f3e162d52355,
-        type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 0e392b8c7aa00c742b5bb947109afc25, type: 2}
     - target: {fileID: 2179546095687377523, guid: 587d90671ab6a2f41bd6f3e162d52355,
         type: 3}
       propertyPath: m_RootOrder
@@ -131,7 +126,7 @@ PrefabInstance:
     - target: {fileID: 7070346352395033538, guid: 587d90671ab6a2f41bd6f3e162d52355,
         type: 3}
       propertyPath: m_Name
-      value: Jab Target Simulator Variant
+      value: Jab Target Space Variant
       objectReference: {fileID: 0}
     - target: {fileID: 7808860882321832570, guid: 587d90671ab6a2f41bd6f3e162d52355,
         type: 3}
@@ -158,7 +153,8 @@ PrefabInstance:
       propertyPath: _targetRenderers.Array.data[2]
       value: 
       objectReference: {fileID: 3915302840963181554}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1748663966098693846, guid: 587d90671ab6a2f41bd6f3e162d52355, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 587d90671ab6a2f41bd6f3e162d52355, type: 3}
 --- !u!23 &3915302840963181554 stripped
 MeshRenderer:

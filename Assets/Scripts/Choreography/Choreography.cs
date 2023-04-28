@@ -402,7 +402,7 @@ public class Choreography
                 }
             }
 
-            _notes[i] = new ChoreographyNote(time, lineIndex, lineLayer, type, cutDir);
+            _notes[i] = new ChoreographyNote(time, lineIndex, lineLayer, type, cutDir, false);
         }
 
         for (var i = 0; i < _obstacles.Length; i++)

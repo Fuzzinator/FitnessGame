@@ -9,15 +9,13 @@ public class UpdateNotifier : MonoBehaviour
     private Notification.NotificationVisualInfo _notification;
     [SerializeField]
     private Toggle _updatesDisplayToggle;
-    [SerializeField]
-    private DisplayUpdates _updatesDisplay;
 
     private const int HelpPage = 5;
     private const int UpdatesPage = 4;
 
     public void NotifyOfUpdate()
     {
-        _notification.message = _updatesDisplay.MostRecentUpdate.ShortDescription;
+        _notification.message = VersionController.Instance.MostRecentUpdate.ShortDescription;
         NotificationManager.RequestNotification(_notification, ViewUpdateInfo);
     }
 

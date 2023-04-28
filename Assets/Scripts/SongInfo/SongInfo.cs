@@ -250,7 +250,6 @@ public class SongInfo
 
             _difficultyBeatmapSets = maps;
         }
-
         for (var index = 1; index <= length; index++)
         {
             var gameMode = (GameMode) index;
@@ -272,7 +271,7 @@ public class SongInfo
 
             for (var i = 0; i < _difficultyBeatmapSets.Length; i++)
             {
-                if (_difficultyBeatmapSets[i].MapGameMode == GameMode.Unset)
+                if (_difficultyBeatmapSets[i].MapGameMode is GameMode.Unset or GameMode.LightShow or GameMode.Lawless)
                 {
                     _difficultyBeatmapSets[i] = difficultySet;
                     string newFileName = null;
@@ -353,6 +352,7 @@ public class SongInfo
                             _difficultyBeatmapSets[i].SetFileName(newFileName);
                             break;
                         case GameMode.NoObstacles:
+
                             break;
                         case GameMode.Lawless:
                             break;

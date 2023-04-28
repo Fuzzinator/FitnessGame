@@ -18,7 +18,7 @@ public class BaseObstacle : MonoBehaviour, IPoolable
 
     public void Initialize()
     {
-        _setRendererMaterial.Initialize(HitSideType.Unused);
+        _setRendererMaterial.Initialize(HitSideType.Unused, false);
         _setRendererColor?.Initialize();
     }
     public void ReturnToPool()

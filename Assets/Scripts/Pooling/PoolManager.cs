@@ -49,6 +49,10 @@ public class PoolManager
     public void ReturnToPool(IPoolable poolable)
     {
         poolable.IsPooled = true;
+        if(_pooledObjs.Contains(poolable))
+        {
+            return;
+        }
         _pooledObjs.Add(poolable);
     }
 

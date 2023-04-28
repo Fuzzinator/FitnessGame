@@ -60,16 +60,16 @@ public class SetAndShowSongOptions : MonoBehaviour
         var lowest = 10;
         for (var i = 0; i < _difficultySets.Length; i++)
         {
-            if (_difficultySets[i].MapGameMode == GameMode.LightShow)
+            if (_difficultySets[i].MapGameMode is GameMode.LightShow or GameMode.Lawless)
             {
                 continue;
             }
             var toggleID = (int)_difficultySets[i].MapGameMode-1;
             
-            if (_difficultySets[i].MapGameMode == GameMode.Lawless)
+            /*if (_difficultySets[i].MapGameMode == GameMode.Lawless)
             {
                 toggleID--;
-            }
+            }*/
 
             if (toggleID < lowest)
             {

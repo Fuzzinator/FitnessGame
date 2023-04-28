@@ -3,12 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.TextCore.Text;
 
 public class VersionController : MonoBehaviour
 {
     public static VersionController Instance { get; private set; }
     [field: SerializeField] 
     public string CurrentVersion { get; private set; }
+
+    [field: SerializeField]
+    public UpdateDescriptionObject[] VersionDescriptions { get; private set; }
+    public UpdateDescriptionObject MostRecentUpdate => VersionDescriptions?[^1];
 
     [SerializeField]
     private UnityEvent _versionChanged = new UnityEvent();
@@ -29,9 +34,7 @@ public class VersionController : MonoBehaviour
 
     private void OnValidate()
     {
-#if UNITY_EDITOR
-        CurrentVersion = UnityEditor.PlayerSettings.bundleVersion;
-#endif
+        CurrentVersion = MostRecentUpdate?.name;
     }
 
     private void OnEnable()

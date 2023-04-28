@@ -9,10 +9,6 @@ public class DisplayUpdates : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI _textField;
 
-    [SerializeField]
-    private UpdateDescriptionObject[] _textAssets;
-
-    public UpdateDescriptionObject MostRecentUpdate => _textAssets?[^1];
 
     private void OnEnable()
     {
@@ -22,9 +18,10 @@ public class DisplayUpdates : MonoBehaviour
     {
         using (var sb = ZString.CreateStringBuilder(true))
         {
-            for (var i = _textAssets.Length-1; i >=0; i--)
+            var length = VersionController.Instance.VersionDescriptions.Length;
+            for (var i = length-1; i >=0; i--)
             {
-                var asset = _textAssets[i];
+                var asset = VersionController.Instance.VersionDescriptions[i];
                 sb.Append(asset.VersionNumber);
                 sb.AppendLine();
                 sb.Append(asset.Description);

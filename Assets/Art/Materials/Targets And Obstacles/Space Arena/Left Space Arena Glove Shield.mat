@@ -15,7 +15,7 @@ MonoBehaviour:
   version: 5
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -23,7 +23,11 @@ Material:
   m_Name: Left Space Arena Glove Shield
   m_Shader: {fileID: -6465566751694194690, guid: 484375f57bc0ac74f86bba3b66c843ab,
     type: 3}
-  m_ShaderKeywords: _SHOWNOTES _SURFACE_TYPE_TRANSPARENT _TEXTURESET_TARGETS
+  m_ValidKeywords:
+  - _SHOWNOTES
+  - _SURFACE_TYPE_TRANSPARENT
+  - _TEXTURESET_TARGETS
+  m_InvalidKeywords: []
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
@@ -171,8 +175,8 @@ Material:
     - _ZWriteControl: 0
     m_Colors:
     - _BaseColor: {r: 0.11249998, g: 0.5374999, b: 0.75, a: 1}
-    - _Base_Color: {r: 1, g: 1, b: 1, a: 0}
-    - _Base_Color_2: {r: 1, g: 1, b: 1, a: 0}
+    - _Base_Color: {r: 0.21568628, g: 0.21568628, b: 0.21568628, a: 1}
+    - _Base_Color_2: {r: 0.03529412, g: 0.03529412, b: 0.03529412, a: 1}
     - _CenterPosition: {r: 0, g: 0, b: 0, a: 0}
     - _Color: {r: 0.1180509, g: 0.11825249, b: 0.78700644, a: 1}
     - _Color_1: {r: 4.7038727, g: 0.0922328, b: 0, a: 0}

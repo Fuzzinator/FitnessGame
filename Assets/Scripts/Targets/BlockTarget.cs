@@ -72,13 +72,13 @@ public class BlockTarget : BaseTarget
         }
     }
 
-    public override void SetUpTarget(HitSideType hitSideType, Vector3 hitPoint, FormationHolder holder)
+    public override void SetUpTarget(HitSideType hitSideType, Vector3 hitPoint, FormationHolder holder, float overrideHitSpeed = -1f)
     {
         _hitLeft = false;
         _hitRight = false;
         _rightHand = null;
         _leftHand = null;
         OptimalHitPoint = hitPoint;
-        base.SetUpTarget(hitSideType, hitPoint, holder);
+        base.SetUpTarget(hitSideType, hitPoint, holder, -1);
     }
 }

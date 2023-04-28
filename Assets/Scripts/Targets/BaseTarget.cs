@@ -19,9 +19,6 @@ public class BaseTarget : MonoBehaviour, IPoolable
     private SetRendererMaterial _setMaterial;
 
     [SerializeField]
-    private BaseOptimalHitIndicator _optimalHitIndicator;
-
-    [SerializeField]
     protected Vector3 _optimalHitDirection;
 
     [SerializeField]
@@ -30,16 +27,21 @@ public class BaseTarget : MonoBehaviour, IPoolable
     [SerializeField]
     protected float _minHitSpeed = 1f;
 
-    [SerializeField]
-    private SetTargetHighlightColor _highlightColorSetter;
+    private float _overrideHitSpeed = -1f;
 
     protected bool _wasHit = false;
 
+    protected List<ITargetInitializer> _targetInitializers = new List<ITargetInitializer>();
     protected List<IValidHit> _validHitEffects = new List<IValidHit>();
     protected List<IMissedHit> _missedHitEffects = new List<IMissedHit>();
 
     private const string PrecisionMode = "PrecisionMode";
+
+    public HitSideType HitSideType => _noteType;
+    public ChoreographyNote.CutDirection CutDirection => _cutDirection;
     public bool WasHit => _wasHit;
+    public virtual bool IsSuperNote => _overrideHitSpeed > 0f;
+
     public PoolManager MyPoolManager { get; set; }
     public Vector3 OptimalHitPoint { get; protected set; }
 
@@ -61,10 +63,11 @@ public class BaseTarget : MonoBehaviour, IPoolable
 
     public void Initialize()
     {
+        GetComponents(_targetInitializers);
         GetComponents(_validHitEffects);
         GetComponents(_missedHitEffects);
         _nameLayer = LayerMask.NameToLayer("Hand");
-        _optimalHitIndicator.Initialize();
+        //_optimalHitIndicator.Initialize();
     }
 
     public bool IsPooled { get; set; }
@@ -109,6 +112,11 @@ public class BaseTarget : MonoBehaviour, IPoolable
 
     public void ReturnToPool()
     {
+        if (parentFormation != null)
+        {
+            parentFormation.Remove(this);
+        }
+        
         gameObject.SetActive(false);
         if (MyPoolManager.poolParent.gameObject.activeSelf)
         {
@@ -116,11 +124,7 @@ public class BaseTarget : MonoBehaviour, IPoolable
         }
 
         ActiveTargetManager.Instance.RemoveActiveTarget(this);
-        MyPoolManager.ReturnToPool(this);
-        if (parentFormation != null)
-        {
-            parentFormation.Remove(this);
-        }
+        MyPoolManager.ReturnToPool(this);        
     }
 
     protected bool IsHit(Collider col, out Hand hand)
@@ -155,22 +159,29 @@ public class BaseTarget : MonoBehaviour, IPoolable
         var collisionDirection = Vector3.Normalize(other.GetContact(0).point - transform.position);
         dirDotProd = Vector3.Dot(collisionDirection, _optimalHitDirection);
         handDotProd = Vector3.Dot(transform.TransformDirection(_optimalHitDirection), hand.ForwardDirection);
-        
+
 #if UNITY_EDITOR
         return /*isSwinging && (!precisionMode || handDotProd<-.5f); //*/true;
 #else
-        return isSwinging && impactDotProd > _minMaxAllowance.x && hand.MovementSpeed>_minHitSpeed &&
-               (!precisionMode || handDotProd<-.5f);
+        var requiredSpeed = _overrideHitSpeed > 0 ? _overrideHitSpeed : _minHitSpeed;
+        return isSwinging && impactDotProd > _minMaxAllowance.x && hand.MovementSpeed > requiredSpeed &&
+               (!precisionMode || handDotProd < -.5f);
 #endif
     }
 
-    public virtual void SetUpTarget(HitSideType hitSideType, Vector3 hitPoint, FormationHolder holder)
+    public virtual void SetUpTarget(HitSideType hitSideType, Vector3 hitPoint, FormationHolder holder, float overrideHitSpeed = -1f)
     {
         _noteType = hitSideType;
         _wasHit = false;
         parentFormation = holder;
         OptimalHitPoint = hitPoint;
-        _setMaterial.Initialize(hitSideType);
-        _highlightColorSetter?.Initialize();
+        if (overrideHitSpeed > 0f)
+        {
+            _overrideHitSpeed = overrideHitSpeed;
+        }
+        foreach (var initializer in _targetInitializers)
+        {
+            initializer.Initialize(this);
+        }
     }
 }

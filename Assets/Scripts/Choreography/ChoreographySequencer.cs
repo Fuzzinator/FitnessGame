@@ -108,7 +108,7 @@ public class ChoreographySequencer : MonoBehaviour
             _currentStance = value;
             var temp = value;
             temp++;
-            _stanceUpdated?.Invoke((int) temp);
+            _stanceUpdated?.Invoke((int)temp);
         }
     }
 
@@ -121,7 +121,7 @@ public class ChoreographySequencer : MonoBehaviour
 
     private bool _sequenceUnstartedOrFinished = true;
     private bool _resetting = false;
-    
+
     private Dictionary<float, ActiveLaneIndicator> _laneIndicators = new Dictionary<float, ActiveLaneIndicator>(20);
     public bool SequenceRunning { get; private set; }
     private BaseTarget GetTargetSwitch(ChoreographyNote.CutDirection cutDirection) => cutDirection switch
@@ -179,7 +179,7 @@ public class ChoreographySequencer : MonoBehaviour
     {
         GameStateManager.Instance.gameStateChanged.RemoveListener(GameStateListener);
     }
-    
+
     private void OnDestroy()
     {
         _tweenPool.CompleteAllActive();
@@ -223,8 +223,6 @@ public class ChoreographySequencer : MonoBehaviour
     private void SetStartingFooting()
     {
         CurrentStance = PlaylistManager.Instance.CurrentPlaylist.StartingSide;
-        /*var leftHanded = SettingsManager.GetSetting(LEFTHANDED, false);
-        _currentStance = leftHanded ? HitSideType.Left : HitSideType.Right;*/
     }
 
     public void InitializeSequence()
@@ -338,14 +336,27 @@ public class ChoreographySequencer : MonoBehaviour
 
         if (formation.HasNote)
         {
-            var target = GetTarget(formation.Note);
-            target.SetUpTarget(formation.Note.Type, formationHolder.StrikePoint, formationHolder);
-            target.layer = formation.Note.LineLayer;
+            var targetSideType = formation.Note.HitSideType;
+            var hasDodgeObstacle = formation.HasObstacle && formation.Obstacle.Type == ChoreographyObstacle.ObstacleType.Dodge;
+            var note = formation.Note;
+            if (hasDodgeObstacle && note.HitSideType != HitSideType.Block)
+            {
+                targetSideType = _currentStance == HitSideType.Left ? HitSideType.Left : HitSideType.Right;
+                note = formation.Note.SetType(targetSideType);
+            }
+
+            var target = GetTarget(note);
+            target.layer = note.LineLayer;
 
             var targetTransform = target.transform;
             targetTransform.SetParent(formationHolder.transform);
             targetTransform.localRotation = quaternion.identity;
-            targetTransform.localPosition = (GetTargetPosition(formation.Note));
+            
+
+            targetTransform.localPosition = (GetTargetPosition(note, hasDodgeObstacle));
+
+
+            target.SetUpTarget(targetSideType, formationHolder.StrikePoint, formationHolder, note.IsSuperNote ? 5 : -1);
 
             target.gameObject.SetActive(true);
             ActiveTargetManager.Instance.AddActiveTarget(target);
@@ -393,7 +404,7 @@ public class ChoreographySequencer : MonoBehaviour
         return obstacle.Type switch
         {
             ChoreographyObstacle.ObstacleType.Crouch => _baseObstaclePool.GetNewPoolable(),
-            ChoreographyObstacle.ObstacleType.Dodge => _currentStance == HitSideType.Left
+            ChoreographyObstacle.ObstacleType.Dodge => /*obstacle.HitSideType*/_currentStance == HitSideType.Left
                 ? _leftObstaclePool.GetNewPoolable()
                 : _rightObstaclePool.GetNewPoolable(),
             _ => _baseObstaclePool.GetNewPoolable()
@@ -412,20 +423,15 @@ public class ChoreographySequencer : MonoBehaviour
         }
     }
 
-    private Vector3 GetTargetPosition(ChoreographyNote note)
+    private Vector3 GetTargetPosition(ChoreographyNote note, bool hasDodgeObstacle)
     {
         var targetSides = TargetSideInfo.GetSetting();
-        int leftSide;
+        /*int leftSide;
         int rightSide;
         switch (targetSides)
         {
             case TargetSide.Uncrossed:
-                leftSide = 3;
-                rightSide = 2;
-                break;
-            case TargetSide.Mixed:
-                if (note.CutDir is ChoreographyNote.CutDirection.Jab or ChoreographyNote.CutDirection.JabDown or
-                    ChoreographyNote.CutDirection.HookLeftDown or ChoreographyNote.CutDirection.HookRightDown)
+                if (!hasDodgeObstacle || (hasDodgeObstacle && _currentStance == HitSideType.Right))
                 {
                     leftSide = 3;
                     rightSide = 2;
@@ -436,25 +442,73 @@ public class ChoreographySequencer : MonoBehaviour
                     rightSide = 3;
                 }
                 break;
+            case TargetSide.Mixed:
+                if (note.CutDir is ChoreographyNote.CutDirection.Jab or ChoreographyNote.CutDirection.JabDown or
+                    ChoreographyNote.CutDirection.HookLeftDown or ChoreographyNote.CutDirection.HookRightDown)
+                {
+                    if (!hasDodgeObstacle || (hasDodgeObstacle && _currentStance == HitSideType.Right))
+                    {
+                        leftSide = 3;
+                        rightSide = 2;
+                    }
+                    else
+                    {
+                        leftSide = 2;
+                        rightSide = 3;
+                    }
+                }
+                else
+                {
+                    if (!hasDodgeObstacle || (hasDodgeObstacle && _currentStance == HitSideType.Right))
+                    {
+                        leftSide = 2;
+                        rightSide = 3;
+                    }
+                    else
+                    {
+                        leftSide = 3;
+                        rightSide = 2;
+                    }
+                }
+                break;
             case TargetSide.Crossed:
             default:
-                leftSide = 2;
-                rightSide = 3;
+                if (!hasDodgeObstacle || (hasDodgeObstacle && _currentStance == HitSideType.Right))
+                {
+                    leftSide = 2;
+                    rightSide = 3;
+                }
+                else
+                {
+                    leftSide = 3;
+                    rightSide = 2;
+                }
                 break;
-        }
-        
+        }*/
+
+        var (leftSide, rightSide) = targetSides switch// wrapping (leftSide, rightSide) together like that causes the switch statement to allow us to assign both variables
+        {
+            TargetSide.Crossed => (2,3),
+            TargetSide.Uncrossed => !hasDodgeObstacle ? (3, 2) : (2, 3),
+            TargetSide.Mixed => (note.CutDir is ChoreographyNote.CutDirection.Jab or ChoreographyNote.CutDirection.JabDown or
+                            ChoreographyNote.CutDirection.HookLeftDown or ChoreographyNote.CutDirection.HookRightDown)
+                            ? (!hasDodgeObstacle ? (3, 2) : (2, 3)) : (2, 3),
+            _ => (2,3)//!hasDodgeObstacle ? (2, 3) : (3, 2),
+        };
+
+        var lineLayer = (int)note.LineLayer * 4;
         switch (note.HitSideType)
         {
             case HitSideType.Block:
                 var lineLayerObj =
-                    _sequenceStartPoses[Mathf.Min(1 + (int) note.LineLayer * 4, _sequenceStartPoses.Length - 3)]
+                    _sequenceStartPoses[Mathf.Min(1 + lineLayer, _sequenceStartPoses.Length - 3)]
                         .localPosition;
                 return new Vector3(0, lineLayerObj.y, 0);
             case HitSideType.Left:
-                return _sequenceStartPoses[Mathf.Min(4-leftSide + (int) note.LineLayer * 4, _sequenceStartPoses.Length - leftSide)]
+                return _sequenceStartPoses[Mathf.Min(4 - leftSide + lineLayer, _sequenceStartPoses.Length - leftSide)]
                     .localPosition;
             case HitSideType.Right:
-                return _sequenceStartPoses[Mathf.Min(4-rightSide + (int) note.LineLayer * 4, _sequenceStartPoses.Length - rightSide)]
+                return _sequenceStartPoses[Mathf.Min(4 - rightSide + lineLayer, _sequenceStartPoses.Length - rightSide)]
                     .localPosition;
             default:
                 return Vector3.zero;
@@ -514,7 +568,7 @@ public class ChoreographySequencer : MonoBehaviour
             Debug.LogError("CurrentPlaylist is null. This is game breaking");
             return;
         }
-        
+
         var targetGameMode = PlaylistManager.Instance.TargetGameMode;
 
         if (targetGameMode == GameMode.Degrees90 &&

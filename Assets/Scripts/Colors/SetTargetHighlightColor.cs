@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SetTargetHighlightColor : MonoBehaviour
+public class SetTargetHighlightColor : MonoBehaviour, ITargetInitializer
 {
     [SerializeField]
     private Renderer _baseTarget;
@@ -16,7 +16,7 @@ public class SetTargetHighlightColor : MonoBehaviour
     private readonly int _positionChange = Shader.PropertyToID("_Position_Change");
     
     // Start is called before the first frame update
-    public void Initialize()
+    public void Initialize(BaseTarget target)
     {
         var color = _baseTarget.sharedMaterial.color;
         var offset = _baseTarget.sharedMaterial.GetVector(_positionChange);

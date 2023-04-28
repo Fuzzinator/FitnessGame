@@ -119,7 +119,7 @@ public class YUR_SDK : MonoBehaviour
     };
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public class CDeviceSampleInput
+    public struct CDeviceSampleInput
     {
         /// The X/Y/Z position of the device in 3D space
         public float PositionX;
@@ -154,7 +154,7 @@ public class YUR_SDK : MonoBehaviour
     };
 
 
-    public class CDeviceSample
+    public struct CDeviceSample
     {
         /// The X/Y/Z position of the device in 3D space
         public Vector3 Position;
