@@ -12,9 +12,9 @@ public class PoolManager
     private List<IPoolable> _pooledObjs = new List<IPoolable>();
     private const string FAILEDTOCAST = "Failed to cast instance of _poolableObj back to IPoolable";
 
-    public IPoolable GetNewPoolable()
+    public IPoolable GetNewPoolable(bool forceCreateNew = false)
     {
-        if (_pooledObjs.Count > 0)
+        if (!forceCreateNew && _pooledObjs.Count > 0)
         {
             var objToReturn = _pooledObjs[0];
             _pooledObjs.Remove(objToReturn);
@@ -23,13 +23,13 @@ public class PoolManager
         }
         else
         {
-            var obj = CreateNewPoolable();
-            if (obj == null)
+            var objToReturn = CreateNewPoolable();
+
+            if (objToReturn == null)
             {
                 Debug.LogError(FAILEDTOCAST);
             }
-
-            return obj;
+            return objToReturn;
         }
     }
 
@@ -49,7 +49,7 @@ public class PoolManager
     public void ReturnToPool(IPoolable poolable)
     {
         poolable.IsPooled = true;
-        if(_pooledObjs.Contains(poolable))
+        if (_pooledObjs.Contains(poolable))
         {
             return;
         }
@@ -63,7 +63,7 @@ public class PoolManager
 
         for (var i = 0; i < initialSize; i++)
         {
-            var tempPoolable = CreateNewPoolable();
+            var tempPoolable = GetNewPoolable(true);
             tempPoolable.ReturnToPool();
         }
     }

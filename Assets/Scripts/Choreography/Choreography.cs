@@ -56,9 +56,9 @@ public class Choreography
 
     private const string V1V1 = "version\":\"1.";
     private const string V2V1 = "version\":\"2.";
-    
+
     private const string V3V1 = "\"version\":\"3.";
-    
+
     #endregion
 
     public static async UniTask<Choreography> AsyncLoadFromSongInfo(SongInfo info, DifficultyInfo difficultyInfo,
@@ -118,7 +118,7 @@ public class Choreography
 
             return choreography;
         }
-        catch (Exception e)when (e is OperationCanceledException)
+        catch (Exception e) when (e is OperationCanceledException)
         {
         }
 
@@ -153,7 +153,7 @@ public class Choreography
 
             return JsonUtility.FromJson<Choreography>((json).text);
         }
-        catch (Exception e)when (e is OperationCanceledException)
+        catch (Exception e) when (e is OperationCanceledException)
         {
         }
 
@@ -174,7 +174,7 @@ public class Choreography
 
             return true;
         }
-        catch (Exception e)when (e is OperationCanceledException)
+        catch (Exception e) when (e is OperationCanceledException)
         {
         }
 
@@ -189,7 +189,7 @@ public class Choreography
             var targetLength = _notes.Length / 20;
             var events = new NativeArray<ChoreographyEvent>(targetLength, Allocator.TempJob);
             var notes = new NativeArray<ChoreographyNote>(_notes, Allocator.TempJob);
-            var jobHandle = new CreateNewRotationEventsJob(events, notes, eventTypes);
+            var jobHandle = new CreateNewRotationEventsJob(ref events, notes.AsReadOnly(), eventTypes.AsReadOnly());
             try
             {
                 await jobHandle.Schedule(events.Length, 8);
@@ -215,7 +215,7 @@ public class Choreography
         else
         {
             var events = new NativeArray<ChoreographyEvent>(_events, Allocator.TempJob);
-            var jobHandle = new ReplaceRotationEventsJob(events, eventTypes);
+            var jobHandle = new ReplaceRotationEventsJob(ref events, eventTypes);
             try
             {
                 await jobHandle.Schedule(events.Length, 8);
@@ -250,7 +250,7 @@ public class Choreography
 
         var obstacles = new NativeArray<ChoreographyObstacle>((_notes.Length / 5) + beatCount, Allocator.TempJob);
         var notes = new NativeArray<ChoreographyNote>(_notes, Allocator.TempJob);
-        var jobHandle = new AddObstaclesJob(obstacles, notes, modifiedBPS);
+        var jobHandle = new AddObstaclesJob(ref obstacles, notes.AsReadOnly(), modifiedBPS);
         try
         {
             await jobHandle.Schedule(obstacles.Length, 8);
@@ -290,7 +290,7 @@ public class Choreography
             nativeArray[i] = notes[i];
         }
 
-        var job = new SetNotesCutDirection(nativeArray, cutDirection);
+        var job = new SetNotesCutDirection(ref nativeArray, cutDirection);
         var jobHandler = job.Schedule(nativeArray.Length, 8);
         jobHandler.Complete();
         var tweakedNotes = job.Notes.ToArray();
@@ -306,7 +306,7 @@ public class Choreography
             nativeArray[i] = notes[i];
         }
 
-        var job = new SetNotesCutSideTypeJob(nativeArray, hitSideType);
+        var job = new SetNotesCutSideTypeJob(ref nativeArray, hitSideType);
         var jobHandler = job.Schedule(nativeArray.Length, 8);
         jobHandler.Complete();
         var tweakedNotes = job.Notes.ToArray();
@@ -408,7 +408,7 @@ public class Choreography
         for (var i = 0; i < _obstacles.Length; i++)
         {
             var obstacle = v3Choreography.obstacles[i];
-            var obstacleType = (int) obstacle.y < 1
+            var obstacleType = (int)obstacle.y < 1
                 ? ChoreographyObstacle.ObstacleType.Dodge
                 : ChoreographyObstacle.ObstacleType.Crouch;
 
@@ -430,7 +430,7 @@ public struct ReplaceRotationEventsJob : IJobParallelFor
 
     private readonly NativeArray<int> _rotateEventValues;
 
-    public ReplaceRotationEventsJob(NativeArray<ChoreographyEvent> events, NativeArray<int> rotateEventValues)
+    public ReplaceRotationEventsJob(ref NativeArray<ChoreographyEvent> events, NativeArray<int> rotateEventValues)
     {
         _events = events;
         _rotateEventValues = rotateEventValues;
@@ -450,40 +450,40 @@ public struct ReplaceRotationEventsJob : IJobParallelFor
     {
         if (index + _seed > uint.MaxValue)
         {
-            index = (int) (index * .5);
+            index = (int)(index * .5);
         }
 
-        var random = new Unity.Mathematics.Random((uint) (_seed + index));
+        var random = new Unity.Mathematics.Random((uint)(_seed + index));
         var randValue = random.NextInt(EARLYROTATION, LATEROTATION);
         for (var i = 0; i < INTERVAL; i++)
         {
             randValue = random.NextInt(EARLYROTATION, LATEROTATION);
         }
 
-        return (ChoreographyEvent.EventType) randValue;
+        return (ChoreographyEvent.EventType)randValue;
     }
 
     private ChoreographyEvent.RotateEventValue GetRotationEvent(int index)
     {
         if (index + _seed > uint.MaxValue)
         {
-            index = (int) (index * .5);
+            index = (int)(index * .5);
         }
 
-        var random = new Unity.Mathematics.Random((uint) (_seed + index));
+        var random = new Unity.Mathematics.Random((uint)(_seed + index));
         var randValue = random.NextInt(0, _rotateEventValues.Length - 1);
         for (var i = 0; i < INTERVAL; i++)
         {
             randValue = random.NextInt(0, _rotateEventValues.Length - 1);
         }
 
-        var value = (ChoreographyEvent.RotateEventValue) _rotateEventValues[randValue];
+        var value = (ChoreographyEvent.RotateEventValue)_rotateEventValues.AsReadOnly()[randValue];
         return value;
     }
 }
 
 
-//[BurstCompile]
+[BurstCompile]
 public struct CreateNewRotationEventsJob : IJobParallelFor
 {
     public readonly NativeArray<ChoreographyEvent> Events => _events;
@@ -494,11 +494,11 @@ public struct CreateNewRotationEventsJob : IJobParallelFor
     private const int EARLYROTATION = 14;
     private const int LATEROTATION = 15;
 
-    private readonly NativeArray<int> _rotateEventValues;
-    private readonly NativeArray<ChoreographyNote> _notes;
+    private readonly NativeArray<int>.ReadOnly _rotateEventValues;
+    private readonly NativeArray<ChoreographyNote>.ReadOnly _notes;
 
-    public CreateNewRotationEventsJob(NativeArray<ChoreographyEvent> events, NativeArray<ChoreographyNote> notes,
-        NativeArray<int> rotateEventValues)
+    public CreateNewRotationEventsJob(ref NativeArray<ChoreographyEvent> events, NativeArray<ChoreographyNote>.ReadOnly notes,
+        NativeArray<int>.ReadOnly rotateEventValues)
     {
         _events = events;
         _notes = notes;
@@ -523,34 +523,34 @@ public struct CreateNewRotationEventsJob : IJobParallelFor
     {
         if (index + _seed > uint.MaxValue)
         {
-            index = (int) (index * .5);
+            index = (int)(index * .5);
         }
 
-        var random = new Unity.Mathematics.Random((uint) (_seed + index));
+        var random = new Unity.Mathematics.Random((uint)(_seed + index));
         var randValue = random.NextInt(EARLYROTATION, LATEROTATION);
         for (var i = 0; i < INTERVAL; i++)
         {
             randValue = random.NextInt(EARLYROTATION, LATEROTATION);
         }
 
-        return (ChoreographyEvent.EventType) randValue;
+        return (ChoreographyEvent.EventType)randValue;
     }
 
     private ChoreographyEvent.RotateEventValue GetRotationEvent(int index)
     {
         if (index + _seed > uint.MaxValue)
         {
-            index = (int) (index * .5);
+            index = (int)(index * .5);
         }
 
-        var random = new Unity.Mathematics.Random((uint) (_seed + index));
+        var random = new Unity.Mathematics.Random((uint)(_seed + index));
         var randValue = random.NextInt(0, _rotateEventValues.Length - 1);
         for (var i = 0; i < INTERVAL; i++)
         {
             randValue = random.NextInt(0, _rotateEventValues.Length - 1);
         }
 
-        var value = (ChoreographyEvent.RotateEventValue) _rotateEventValues[randValue];
+        var value = (ChoreographyEvent.RotateEventValue)_rotateEventValues[randValue];
         return value;
     }
 }
@@ -560,7 +560,7 @@ public struct AddObstaclesJob : IJobParallelFor
 {
     public readonly NativeArray<ChoreographyObstacle> Obstacles => _obstacles;
     private NativeArray<ChoreographyObstacle> _obstacles;
-    private readonly NativeArray<ChoreographyNote> _notes;
+    private readonly NativeArray<ChoreographyNote>.ReadOnly _notes;
 
     private uint _seed;
     private readonly float _bps;
@@ -570,7 +570,7 @@ public struct AddObstaclesJob : IJobParallelFor
     [DeallocateOnJobCompletion]
     private readonly NativeArray<int> _obstacleOptions;
 
-    public AddObstaclesJob(NativeArray<ChoreographyObstacle> obstacles, NativeArray<ChoreographyNote> sourceNotes,
+    public AddObstaclesJob(ref NativeArray<ChoreographyObstacle> obstacles, NativeArray<ChoreographyNote>.ReadOnly sourceNotes,
         float bps)
     {
         _obstacles = obstacles;
@@ -606,10 +606,10 @@ public struct AddObstaclesJob : IJobParallelFor
     {
         if (index + _seed > uint.MaxValue)
         {
-            index = (int) (index * .5);
+            index = (int)(index * .5);
         }
 
-        var random = new Unity.Mathematics.Random((uint) (_seed + index));
+        var random = new Unity.Mathematics.Random((uint)(_seed + index));
         var length = _obstacleOptions.Length - 1;
         var randValue = random.NextInt(0, length);
         for (var i = 0; i < INTERVAL; i++)
@@ -617,7 +617,7 @@ public struct AddObstaclesJob : IJobParallelFor
             randValue = random.NextInt(0, length);
         }
 
-        var value = (ChoreographyObstacle.ObstacleType) _obstacleOptions[randValue];
+        var value = (ChoreographyObstacle.ObstacleType)_obstacleOptions.AsReadOnly()[randValue];
         return value;
     }
 }
@@ -630,7 +630,7 @@ public struct SetNotesCutDirection : IJobParallelFor
 
     private ChoreographyNote.CutDirection _cutDirection;
 
-    public SetNotesCutDirection(NativeArray<ChoreographyNote> notes, ChoreographyNote.CutDirection cutDirection)
+    public SetNotesCutDirection(ref NativeArray<ChoreographyNote> notes, ChoreographyNote.CutDirection cutDirection)
     {
         _notes = notes;
         _cutDirection = cutDirection;
@@ -646,14 +646,14 @@ public struct SetNotesCutDirection : IJobParallelFor
 
         if (_notes[index].HitSideType == HitSideType.Block)
         {
-            var random = new Unity.Mathematics.Random((uint) (index));
+            var random = new Unity.Mathematics.Random((uint)(index));
             var randValue = random.NextInt(0, 1);
             for (var i = 0; i < 5; i++)
             {
                 randValue = random.NextInt(0, 1);
             }
 
-            _notes[index] = _notes[index].SetType((HitSideType) randValue);
+            _notes[index] = _notes[index].SetType((HitSideType)randValue);
         }
     }
 }
@@ -666,7 +666,7 @@ public struct SetNotesCutSideTypeJob : IJobParallelFor
 
     private HitSideType _hitSideType;
 
-    public SetNotesCutSideTypeJob(NativeArray<ChoreographyNote> notes, HitSideType hitSideType)
+    public SetNotesCutSideTypeJob(ref NativeArray<ChoreographyNote> notes, HitSideType hitSideType)
     {
         _notes = notes;
         _hitSideType = hitSideType;

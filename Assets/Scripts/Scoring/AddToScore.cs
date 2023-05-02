@@ -5,6 +5,8 @@ using UnityEngine;
 public class AddToScore : MonoBehaviour, IValidHit
 {
     [SerializeField]
+    private BaseTarget _baseTarget;
+    [SerializeField]
     private int _minValue = 1;
 
     [SerializeField]
@@ -26,14 +28,14 @@ public class AddToScore : MonoBehaviour, IValidHit
     {
         var impactValue = Mathf.Clamp(info.ImpactDotProduct, 0, 1);
         var directionValue = Mathf.Clamp(info.DirectionDotProduct, 0, 1);
-        var magnitudeBonusValue = Mathf.Clamp(info.HitSpeed, 0,MAXPUNCHSPEED) * .1f;
+        var magnitudeBonusValue = Mathf.Clamp(info.HitSpeed, 0, MAXPUNCHSPEED) * .1f;
         var valueAsFloat = (impactValue + directionValue) * _minValue + magnitudeBonusValue;
 
         var hitValue = Mathf.Clamp(valueAsFloat * GetOptimalHitModifier(info.DistanceFromOptimalHit), _minValue, _maxValue);
 
         if (ScoringManager.Instance != null)
         {
-            hitValue *= GetDifficultyModifier();
+            hitValue *= GetDifficultyModifier() * (_baseTarget.IsSuperNote ? 2 : 1);
             ScoringManager.Instance.AddToScore(hitValue);
         }
     }

@@ -177,6 +177,21 @@ public class Hand : BaseGameStateListener
             }
         }
     }
+    public void SendMissedHaptics()
+    {
+        foreach (var device in _devices)
+        {
+            HapticCapabilities capabilities;
+            if (device.TryGetHapticCapabilities(out capabilities))
+            {
+                if (capabilities.supportsImpulse)
+                {
+                    uint channel = 0;
+                    device.SendHapticBuffer(channel, HapticsController.Instance.MissHaptics.Samples);
+                }
+            }
+        }
+    }
 
     private async UniTask TrackDirAndSpeed(CancellationToken token)
     {

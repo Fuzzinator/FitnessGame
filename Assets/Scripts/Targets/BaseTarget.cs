@@ -34,13 +34,15 @@ public class BaseTarget : MonoBehaviour, IPoolable
     protected List<ITargetInitializer> _targetInitializers = new List<ITargetInitializer>();
     protected List<IValidHit> _validHitEffects = new List<IValidHit>();
     protected List<IMissedHit> _missedHitEffects = new List<IMissedHit>();
+    protected List<IBadHit> _badHitEffects = new List<IBadHit>();
 
     private const string PrecisionMode = "PrecisionMode";
 
     public HitSideType HitSideType => _noteType;
     public ChoreographyNote.CutDirection CutDirection => _cutDirection;
     public bool WasHit => _wasHit;
-    public virtual bool IsSuperNote => _overrideHitSpeed > 0f;
+    public virtual bool IsSuperNote =>
+            SettingsManager.GetCachedBool("AllowSuperStrikeTargets", true) && _overrideHitSpeed > 0f;
 
     public PoolManager MyPoolManager { get; set; }
     public Vector3 OptimalHitPoint { get; protected set; }
@@ -66,6 +68,7 @@ public class BaseTarget : MonoBehaviour, IPoolable
         GetComponents(_targetInitializers);
         GetComponents(_validHitEffects);
         GetComponents(_missedHitEffects);
+        GetComponents(_badHitEffects);
         _nameLayer = LayerMask.NameToLayer("Hand");
         //_optimalHitIndicator.Initialize();
     }
@@ -80,10 +83,10 @@ public class BaseTarget : MonoBehaviour, IPoolable
             return;
         }
 
+        var currentDistance = Vector3.Distance(transform.position, OptimalHitPoint);
         if (IsValidDirection(other, hand, out var impactDotProduct, out var dirDotProduct, out var handDotProd))
         {
             _wasHit = true;
-            var currentDistance = Vector3.Distance(transform.position, OptimalHitPoint);
             var hitInfo = new HitInfo(impactDotProduct, dirDotProduct, handDotProd, hand, currentDistance,
                 hand.MovementSpeed);
 
@@ -92,7 +95,17 @@ public class BaseTarget : MonoBehaviour, IPoolable
                 hitEffect.TriggerHitEffect(hitInfo);
             }
         }
+        else
+        {
+            var hitInfo = new HitInfo(impactDotProduct, dirDotProduct, handDotProd, hand, currentDistance,
+                hand.MovementSpeed);
+            foreach (var hitEffect in _badHitEffects)
+            {
+                hitEffect.TriggerBadHitEffect(hitInfo);
+            }
+        }
     }
+
 
     public void Complete()
     {
@@ -116,7 +129,7 @@ public class BaseTarget : MonoBehaviour, IPoolable
         {
             parentFormation.Remove(this);
         }
-        
+
         gameObject.SetActive(false);
         if (MyPoolManager.poolParent.gameObject.activeSelf)
         {
@@ -124,7 +137,7 @@ public class BaseTarget : MonoBehaviour, IPoolable
         }
 
         ActiveTargetManager.Instance.RemoveActiveTarget(this);
-        MyPoolManager.ReturnToPool(this);        
+        MyPoolManager.ReturnToPool(this);
     }
 
     protected bool IsHit(Collider col, out Hand hand)
@@ -163,7 +176,7 @@ public class BaseTarget : MonoBehaviour, IPoolable
 #if UNITY_EDITOR
         return /*isSwinging && (!precisionMode || handDotProd<-.5f); //*/true;
 #else
-        var requiredSpeed = _overrideHitSpeed > 0 ? _overrideHitSpeed : _minHitSpeed;
+        var requiredSpeed = IsSuperNote ? _overrideHitSpeed : _minHitSpeed;
         return isSwinging && impactDotProd > _minMaxAllowance.x && hand.MovementSpeed > requiredSpeed &&
                (!precisionMode || handDotProd < -.5f);
 #endif
@@ -175,10 +188,7 @@ public class BaseTarget : MonoBehaviour, IPoolable
         _wasHit = false;
         parentFormation = holder;
         OptimalHitPoint = hitPoint;
-        if (overrideHitSpeed > 0f)
-        {
-            _overrideHitSpeed = overrideHitSpeed;
-        }
+        _overrideHitSpeed = overrideHitSpeed;
         foreach (var initializer in _targetInitializers)
         {
             initializer.Initialize(this);

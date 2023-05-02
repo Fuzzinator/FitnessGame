@@ -6,6 +6,7 @@ using GameModeManagement;
 using UI;
 using UnityEngine;
 using UnityEngine.UI;
+using static DifficultyInfo;
 
 public class SetAndShowSongOptions : MonoBehaviour
 {
@@ -95,8 +96,12 @@ public class SetAndShowSongOptions : MonoBehaviour
         var lowest = 10;
         var hasCurrentID = -1;
         for (var i = 0; i < _activeDifficultySet.DifficultyInfos.Length; i++)
-        {
+        {            
             var difficulty = (int)_activeDifficultySet.DifficultyInfos[i].DifficultyAsEnum -1;
+            if(difficulty<0)
+            {
+                continue;
+            }
 
             if (difficulty< lowest)
             {

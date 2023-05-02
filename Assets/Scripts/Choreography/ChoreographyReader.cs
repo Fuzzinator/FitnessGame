@@ -235,8 +235,6 @@ public class ChoreographyReader : MonoBehaviour
         var superNotePriority = 0;
 
         var minTargetDistance = _difficultyInfo.MinTargetSpace;
-        var isSuperNote = false;
-
         for (var i = 0; i < _sequenceables.Count; i++)
         {
             var sequenceable = _sequenceables[i];
@@ -550,43 +548,32 @@ public class ChoreographyReader : MonoBehaviour
             if ((i + 1 < _sequenceables.Count && _sequenceables[1 + i].Time > lastTime) || i + 1 == _sequenceables.Count)
             {
                 //Check if should convert to super note
-                if (!isSuperNote && thisSequence.HasNote && thisSequence.Note.HitSideType != HitSideType.Block)
+                var isSuperNote = false;
+                
+                if (thisSequence.HasNote && thisSequence.Note.HitSideType != HitSideType.Block)
                 {
                     if (Mathf.Abs(lastSequence.Time - thisSequence.Time) > minTargetDistance * 2)
                     {
+                        var targetDifficulty = PlaylistManager.Instance.TargetDifficulty;
+                        var minSpace = 6 - (int)targetDifficulty;
+                        var note = thisSequence.Note;
+
                         if (superNotePriority > 20)
                         {
                             isSuperNote = true;
                             thisSequence.SetNote(thisSequence.Note.SetSuperNote(isSuperNote));
                             superNotePriority = 0;
                         }
-                        else
+                        else if(superNotePriority >= minSpace && !(note.HitSideType is HitSideType.Unused or HitSideType.Block))
                         {
                             for (var j = 0; j < _formationsThisTime.Count; j++)
                             {
                                 var formationA = _formationsThisTime[j];
-                                if (!formationA.HasNote || formationA.Note.HitSideType is HitSideType.Unused or HitSideType.Block)
+                                if (formationA.HasNote && formationA.Note.TypeMatches(formationA.Note))
                                 {
-                                    continue;
-                                }
-
-                                for (var k = 0; k < _formationsThisTime.Count; k++)
-                                {
-                                    if (j == k)
-                                    {
-                                        continue;
-                                    }
-                                    var formationB = _formationsThisTime[k];
-                                    if (formationB.HasNote && formationA.Note.TypeMatches(formationB.Note))
-                                    {
-                                        isSuperNote = true;
-                                        thisSequence.SetNote(thisSequence.Note.SetSuperNote(isSuperNote));
-                                        superNotePriority = 0;
-                                        break;
-                                    }
-                                }
-                                if (isSuperNote)
-                                {
+                                    isSuperNote = true;
+                                    thisSequence.SetNote(thisSequence.Note.SetSuperNote(isSuperNote));
+                                    superNotePriority = 0;
                                     break;
                                 }
                             }
@@ -599,7 +586,6 @@ public class ChoreographyReader : MonoBehaviour
                 }
 
                 _formations.Add(thisSequence);
-                isSuperNote = false;
 
                 lastSequence = thisSequence;
                 thisSequence = new ChoreographyFormation();

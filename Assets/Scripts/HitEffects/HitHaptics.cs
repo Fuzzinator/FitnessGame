@@ -2,8 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
-public class HitHaptics : MonoBehaviour, IValidHit
+public class HitHaptics : MonoBehaviour, IValidHit//, IBadHit
 {
     //[SerializeField]
     private float _amplitude = .4f;
@@ -24,6 +25,19 @@ public class HitHaptics : MonoBehaviour, IValidHit
         if (info.LeftHand != null)
         {
             info.LeftHand.SendHapticPulse(amplitude, length);
+        }
+    }
+
+    public void TriggerBadHitEffect(HitInfo info)
+    {
+        if (info.RightHand != null)
+        {
+            info.RightHand.SendMissedHaptics();
+        }
+
+        if (info.LeftHand != null)
+        {
+            info.LeftHand.SendMissedHaptics();
         }
     }
     

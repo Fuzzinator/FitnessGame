@@ -282,7 +282,7 @@ MonoBehaviour:
   focusChanged:
     m_PersistentCalls:
       m_Calls: []
-  _trackFocus: 0
+  _trackFocus: 1
 --- !u!4 &811981821
 Transform:
   m_ObjectHideFlags: 0
@@ -303,6 +303,7 @@ Transform:
   - {fileID: 1377366318}
   - {fileID: 1146735732}
   - {fileID: 285954520}
+  - {fileID: 1823180470}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -677,7 +678,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e981a2cfefbe43443b99ddf420a9d17a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _textureSets: []
+  _textureSets:
+  - _textureName: _GlobalNoiseTexture
+    _texture: {fileID: 2800000, guid: 025fae425a6fa07498c742aafbb45512, type: 3}
   _textureArraySets:
   - _textureArrayName: _ObstacleTextures
     _textureArray: {fileID: 18700000, guid: 7d1f9b5693a5c4744b7ee62b2bba7133, type: 3}
@@ -860,6 +863,51 @@ MonoBehaviour:
     type: 3}
   _basePosition: {fileID: 1940300354}
   _popUpPosition: {fileID: 943962902}
+--- !u!1 &1823180469
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1823180470}
+  - component: {fileID: 1823180471}
+  m_Layer: 0
+  m_Name: Haptics Control
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &1823180470
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1823180469}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 811981821}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1823180471
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1823180469}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5db875595aec214f89a518b5269a2c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _missClip: {fileID: 8300000, guid: a53ec754cbd7c86438a5023b0891fc60, type: 3}
 --- !u!1 &1940300353
 GameObject:
   m_ObjectHideFlags: 0

@@ -14,7 +14,7 @@ public struct ChoreographyNote// : ISequenceable
     public CutDirection CutDir => _cutDirection;
     public HitSideType HitSideType => _type;
 
-    public bool IsSuperNote => _isSuperNote;
+    public bool IsSuperNote => _isSuperNote == 1;
 
     [SerializeField]
     private float _time;
@@ -27,7 +27,7 @@ public struct ChoreographyNote// : ISequenceable
     [SerializeField]
     private CutDirection _cutDirection;
     [SerializeField]
-    private bool _isSuperNote;
+    private int _isSuperNote;
     
     public ChoreographyNote(float time, int lineIndex, LineLayerType lineLayer, HitSideType hitSide,
         CutDirection cutDirection, bool isSuperNote)
@@ -37,7 +37,7 @@ public struct ChoreographyNote// : ISequenceable
         _lineLayer = lineLayer;
         _type = hitSide;
         _cutDirection = cutDirection;
-        _isSuperNote = isSuperNote;
+        _isSuperNote = isSuperNote?1:0;
     }
 
     public enum LineLayerType
@@ -90,7 +90,7 @@ public struct ChoreographyNote// : ISequenceable
 
     public ChoreographyNote SetSuperNote(bool isSuperNote)
     {
-        _isSuperNote = isSuperNote;
+        _isSuperNote = isSuperNote ? 1 : 0;
         return this;
     }
 

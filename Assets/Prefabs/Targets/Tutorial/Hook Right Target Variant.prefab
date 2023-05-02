@@ -110,6 +110,11 @@ PrefabInstance:
       propertyPath: _optimalHitDirection.z
       value: -0.25
       objectReference: {fileID: 0}
+    - target: {fileID: 1610917870735394196, guid: 587d90671ab6a2f41bd6f3e162d52355,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2179546095687377523, guid: 587d90671ab6a2f41bd6f3e162d52355,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -159,13 +164,14 @@ PrefabInstance:
         type: 3}
       propertyPath: _targetRenderers.Array.data[1]
       value: 
-      objectReference: {fileID: 6110736119534003211}
+      objectReference: {fileID: 0}
     - target: {fileID: 8637629535997174142, guid: 587d90671ab6a2f41bd6f3e162d52355,
         type: 3}
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5850640565549118496, guid: 587d90671ab6a2f41bd6f3e162d52355, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 587d90671ab6a2f41bd6f3e162d52355, type: 3}
 --- !u!23 &788261301103138445 stripped
 MeshRenderer:
@@ -205,7 +211,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _baseTarget: {fileID: 788261301103138445}
   _highlight:
-  - {fileID: 6110736119534003211}
+  - {fileID: 0}
 --- !u!1001 &4831280198238058639
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -275,9 +281,3 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 48e632a4dfd7ac14db8b256c85ee34ef, type: 3}
---- !u!23 &6110736119534003211 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: 48e632a4dfd7ac14db8b256c85ee34ef,
-    type: 3}
-  m_PrefabInstance: {fileID: 4831280198238058639}
-  m_PrefabAsset: {fileID: 0}

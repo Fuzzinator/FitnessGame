@@ -37,7 +37,7 @@ public class SuperTargetSetter : MonoBehaviour, ITargetInitializer
         }
 
         var ps = _particleSystem.main;
-        ps.startColor = ColorsManager.Instance.GetAppropriateColor(_baseTarget.HitSideType);
+        ps.startColor = ColorsManager.Instance.GetAppropriateColor(_baseTarget.HitSideType)*2;
 
         if(_positionOffsetID == int.MinValue)
         {

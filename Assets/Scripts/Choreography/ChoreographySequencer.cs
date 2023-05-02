@@ -355,8 +355,7 @@ public class ChoreographySequencer : MonoBehaviour
 
             targetTransform.localPosition = (GetTargetPosition(note, hasDodgeObstacle));
 
-
-            target.SetUpTarget(targetSideType, formationHolder.StrikePoint, formationHolder, note.IsSuperNote ? 5 : -1);
+            target.SetUpTarget(targetSideType, formationHolder.StrikePoint, formationHolder, note.IsSuperNote ? 3 : -1);
 
             target.gameObject.SetActive(true);
             ActiveTargetManager.Instance.AddActiveTarget(target);
