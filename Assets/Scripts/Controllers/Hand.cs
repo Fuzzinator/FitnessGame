@@ -14,6 +14,7 @@ public class Hand : BaseGameStateListener
 
     [SerializeField]
     private Transform _glove;
+
     [SerializeField]
     private Transform _uiRaycaster;
 
@@ -68,6 +69,8 @@ public class Hand : BaseGameStateListener
     {
         get
         {
+            //if (_devices == null || _devices.Count == 0)
+            //{
             var speed = 0f;
             foreach (var previousSpeed in _previousSpeeds)
             {
@@ -75,6 +78,12 @@ public class Hand : BaseGameStateListener
             }
 
             return speed / _previousSpeeds.Length;
+            /*}
+            else
+            {
+                _devices[0].TryGetFeatureValue(CommonUsages.deviceAcceleration, out var acceleration)
+                return acceleration.magnitude;
+            }*/
         }
     }
 
@@ -87,6 +96,7 @@ public class Hand : BaseGameStateListener
                 var controllerName = (_devices.Count > 0 ? _devices[0].name : null);
                 _defaultRotation = SettingsManager.GetDefaultControllerRotation(controllerName);
             }
+
             return _defaultRotation;
         }
     }
@@ -137,6 +147,7 @@ public class Hand : BaseGameStateListener
         {
             SetGlovesVisible(true);
         }
+
         switch (newState)
         {
             case GameState.Paused:
@@ -177,6 +188,7 @@ public class Hand : BaseGameStateListener
             }
         }
     }
+
     public void SendMissedHaptics()
     {
         foreach (var device in _devices)
@@ -278,6 +290,7 @@ public class Hand : BaseGameStateListener
         _glove.gameObject.SetActive(true);
         _gloveSetUp?.Invoke(_gloveController.Renderers);
     }
+
     public void HideGlove()
     {
         _glove.gameObject.SetActive(false);
@@ -287,7 +300,6 @@ public class Hand : BaseGameStateListener
     {
         _glove.gameObject.SetActive(visible);
         _uiRaycaster.gameObject.SetActive(visible);
-
     }
 
     private void SetGloveColor()
@@ -313,5 +325,4 @@ public class Hand : BaseGameStateListener
         UpdateDevices();
         SetOffset();
     }
-
 }

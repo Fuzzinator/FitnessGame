@@ -203,13 +203,14 @@ public class MusicManager : BaseGameStateListener
 
     protected override void GameStateListener(GameState oldState, GameState newState)
     {
-        if (oldState == GameState.Paused && newState == GameState.Playing)
+        switch (oldState)
         {
-            ToggleMusic(true);
-        }
-        else if (oldState == GameState.Playing && (newState == GameState.Paused || newState == GameState.Unfocused))
-        {
-            ToggleMusic(false);
+            case GameState.Paused when newState == GameState.Playing:
+                ToggleMusic(true);
+                break;
+            case GameState.Playing when (newState == GameState.Paused || newState == GameState.Unfocused):
+                ToggleMusic(false);
+                break;
         }
     }
 
