@@ -137,7 +137,7 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
         }
         else
         {
-            songScore = ScoringManager.Instance.ScoreThisSong;
+            songScore = ScoringAndHitStatsManager.Instance.SongScore;
             bestStreak = StreakManager.Instance.RecordCurrentSongStreak;
 
             scoreIndexToUpdate = 0;
@@ -216,7 +216,7 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
             }
             else
             {
-                songScore = ScoringManager.Instance.CurrentScore;
+                songScore = ScoringAndHitStatsManager.Instance.CurrentScore;
                 bestStreak = StreakManager.Instance.RecordStreak;
                 scoreIndex = 0;
                 streakIndex = 0;
@@ -293,7 +293,7 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
 
     private static bool ShouldUpdateScoreFile(SongAndPlaylistScoreRecord oldRecord, bool playlist, out ulong songScore)
     {
-        songScore = playlist ? ScoringManager.Instance.CurrentScore : ScoringManager.Instance.ScoreThisSong;
+        songScore = playlist ? ScoringAndHitStatsManager.Instance.CurrentScore : ScoringAndHitStatsManager.Instance.SongScore;
 
         var newScoreHigher = oldRecord.Score < songScore;
 

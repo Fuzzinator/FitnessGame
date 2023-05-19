@@ -55,9 +55,15 @@ public class SettingsManager : MonoBehaviour
     private const string OculusTouchController = "Oculus Touch Controller";
     private const string IndexController = "Index Controller";
 
+    public const string UseAdaptiveStrikeMode = "AdaptiveStrikeMode";
+
     private static readonly string[] _volumeNames = new[] { MASTERVOLUME, MUSICVOLUME, SFXVOLUME, MENUMUSICVOLUME, MENUSFXVOLUME };
 
     #endregion
+
+    public const float DefaultMinHitSpeed = 1.5f;
+    public const float DefaultMaxHitSpeed = 10f;
+    public const float DefaultSuperStrikeHitSpeed = 3f;
 
     public static bool UseEnlongatedCollider;
     public static bool UseFixedHitDirection;
@@ -175,26 +181,32 @@ public class SettingsManager : MonoBehaviour
 
     #endregion
 
-    public static void SetCachedBool(string settingName, bool value)
+    public static void SetCachedBool(string settingName, bool value, Profile overrideProfile = null)
     {
         CacheBool(settingName, value);
         CachedBoolSettingChanged.Invoke(settingName, value);
-        SetSetting(settingName, value);
+        SetSetting(settingName, value, true, overrideProfile);
     }
 
-    public static void SetCachedFloat(string settingName, float value)
+    public static void SetCachedFloat(string settingName, float value, Profile overrideProfile = null)
     {
         CacheFloat(settingName, value);
         CachedFloatSettingChanged.Invoke(settingName, value);
-        SetSetting(settingName, value);
+        SetSetting(settingName, value, true, overrideProfile);
     }
 
-    //TODO Make OverrideProfiles do something
     public static void SetCachedInt(string settingName, int value, Profile overrideProfile = null)
     {
         CacheInt(settingName, value);
         IntSettingChanged.Invoke(settingName, value);
-        SetSetting(settingName, value);
+        SetSetting(settingName, value, true, overrideProfile);
+    }
+
+    public static void ClearCachedValues()
+    {
+        _boolSettings?.Clear();
+        _floatSettings?.Clear();
+        _intSettings?.Clear();
     }
 
     private static void CacheBool(string settingName, bool value)
@@ -215,31 +227,30 @@ public class SettingsManager : MonoBehaviour
         _intSettings[settingName] = value;
     }
 
-    public static bool GetCachedBool(string settingName, bool defaultValue)
+    public static bool GetCachedBool(string settingName, bool defaultValue, Profile overrideProfile = null)
     {
         if (_boolSettings != null && _boolSettings.TryGetValue(settingName, out var cachedValue))
         {
             return cachedValue;
         }
 
-        var setting = GetSetting(settingName, defaultValue);
+        var setting = GetSetting(settingName, defaultValue, true, overrideProfile);
         CacheBool(settingName, setting);
         return setting;
     }
 
-    public static float GetCachedFloat(string settingName, float defaultValue)
+    public static float GetCachedFloat(string settingName, float defaultValue, Profile overrideProfile = null)
     {
         if (_floatSettings != null && _floatSettings.TryGetValue(settingName, out var cachedValue))
         {
             return cachedValue;
         }
 
-        var setting = GetSetting(settingName, defaultValue);
+        var setting = GetSetting(settingName, defaultValue, true, overrideProfile);
         CacheFloat(settingName, setting);
         return setting;
     }
 
-    //TODO Make OverrideProfiles do something
     public static int GetCachedInt(string settingName, int defaultValue, Profile overrideProfile = null)
     {
         if (_intSettings != null && _intSettings.TryGetValue(settingName, out var cachedValue))
@@ -247,7 +258,7 @@ public class SettingsManager : MonoBehaviour
             return cachedValue;
         }
 
-        var setting = GetSetting(settingName, defaultValue);
+        var setting = GetSetting(settingName, defaultValue, true, overrideProfile);
         CacheInt(settingName, setting);
         return setting;
     }
@@ -414,6 +425,30 @@ public class SettingsManager : MonoBehaviour
             ((int)(headset == OVRPlugin.SystemHeadset.Oculus_Quest ? FPSSetting._72 : FPSSetting._90)));
 #endif
         return FPSSetting._90;
+    }
+
+    public static float GetMinHitSpeed()
+    {
+        var minSpeed = DefaultMinHitSpeed;
+        var useAdaptive = GetCachedBool(UseAdaptiveStrikeMode, false);
+        if(useAdaptive)
+        {
+            minSpeed = Mathf.Clamp(ScoringAndHitStatsManager.Instance.AverageLeftHitSpeed * .65f, DefaultMinHitSpeed, DefaultMaxHitSpeed);
+        }
+
+        return minSpeed;
+    }
+
+    public static float GetSuperStrikeHitSpeed()
+    {
+        var minSpeed = DefaultSuperStrikeHitSpeed;
+        var useAdaptive = GetCachedBool(UseAdaptiveStrikeMode, false);
+        if (useAdaptive)
+        {
+            minSpeed = Mathf.Clamp(ScoringAndHitStatsManager.Instance.AverageLeftHitSpeed * 1.15f, DefaultMinHitSpeed, DefaultMaxHitSpeed);
+        }
+
+        return minSpeed;
     }
 
     private struct CachedBoolSetting

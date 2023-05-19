@@ -517,6 +517,21 @@ PrefabInstance:
       propertyPath: _setRendererMaterial
       value: 
       objectReference: {fileID: 399677591555112980}
+    - target: {fileID: 8097425124036323223, guid: 157d7ad46ecc97f4185e04f3a2e827cf,
+        type: 3}
+      propertyPath: _colliders.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8097425124036323223, guid: 157d7ad46ecc97f4185e04f3a2e827cf,
+        type: 3}
+      propertyPath: _colliders.Array.data[0]
+      value: 
+      objectReference: {fileID: 453453566940041094}
+    - target: {fileID: 8097425124036323223, guid: 157d7ad46ecc97f4185e04f3a2e827cf,
+        type: 3}
+      propertyPath: _colliders.Array.data[1]
+      value: 
+      objectReference: {fileID: 453453566940041094}
     - target: {fileID: 8917401295761063102, guid: 157d7ad46ecc97f4185e04f3a2e827cf,
         type: 3}
       propertyPath: _isTarget
@@ -632,7 +647,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
 --- !u!95 &8931206932156394133
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -649,7 +664,8 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &6159171607018218381
 MonoBehaviour:
   m_ObjectHideFlags: 0

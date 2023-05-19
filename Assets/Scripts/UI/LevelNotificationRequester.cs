@@ -58,10 +58,10 @@ public class LevelNotificationRequester : MonoBehaviour
     
     public void DisplayEndSongStats()
     {
-        var score = ScoringManager.Instance.ScoreThisSong;
-        var goodHits = (int)ScoringManager.Instance.GoodHitsThisSong;
-        var missedHits = (int)ScoringManager.Instance.MissedTargetsThisSong;
-        var hitObstacles = (int)ScoringManager.Instance.HitObstaclesThisSong;
+        var score = ScoringAndHitStatsManager.Instance.SongScore;
+        var goodHits = (int)ScoringAndHitStatsManager.Instance.SongHitTargets;
+        var missedHits = (int)ScoringAndHitStatsManager.Instance.SongMissedTargets;
+        var hitObstacles = (int)ScoringAndHitStatsManager.Instance.SongHitObstacles;
         
         
         string message;
@@ -86,10 +86,10 @@ public class LevelNotificationRequester : MonoBehaviour
 
     public void DisplayEndLevelStats()
     {
-        var totalScore = ScoringManager.Instance.CurrentScore;
-        var goodHits = (int)ScoringManager.Instance.GoodHits;
-        var missedHits = (int)ScoringManager.Instance.MissedTargets;
-        var hitObstacles = (int)ScoringManager.Instance.HitObstacles;
+        var totalScore = ScoringAndHitStatsManager.Instance.CurrentScore;
+        var goodHits = (int)ScoringAndHitStatsManager.Instance.WorkoutHitTargets;
+        var missedHits = (int)ScoringAndHitStatsManager.Instance.WorkoutMissedTargets;
+        var hitObstacles = (int)ScoringAndHitStatsManager.Instance.WorkoutHitObstacles;
 
         string message;
         //ArraySegment<char> chars;

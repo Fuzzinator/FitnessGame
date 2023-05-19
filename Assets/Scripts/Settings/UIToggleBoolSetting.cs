@@ -25,6 +25,9 @@ public class UIToggleBoolSetting : MonoBehaviour, ISaver
     [SerializeField]
     private SettingsDisplay _settingsDisplay;
 
+    [SerializeField]
+    private ProfileEditor _profileEditor;
+
     protected bool _currentValue;
 
     public bool SaveRequested { get; set; }
@@ -52,7 +55,7 @@ public class UIToggleBoolSetting : MonoBehaviour, ISaver
         {
             _currentValue = isOn;
             _text.SetText(isOn ? ON : OFF);
-            _settingsDisplay.ChangeWasMade(this);
+            _settingsDisplay?.ChangeWasMade(this);
 
             SaveRequested = true;
         }
@@ -62,11 +65,11 @@ public class UIToggleBoolSetting : MonoBehaviour, ISaver
     {
         if (_cached)
         {
-            SettingsManager.SetCachedBool(_settingName, _currentValue);
+            SettingsManager.SetCachedBool(_settingName, _currentValue, overrideProfile);
         }
         else
         {
-            SettingsManager.SetSetting(_settingName, _currentValue);
+            SettingsManager.SetSetting(_settingName, _currentValue, true, overrideProfile);
         }
 
         SaveRequested = false;
@@ -74,12 +77,16 @@ public class UIToggleBoolSetting : MonoBehaviour, ISaver
 
     public virtual void Revert()
     {
-        _currentValue = _cached
-            ? SettingsManager.GetCachedBool(_settingName, _defaultValue)
-            : SettingsManager.GetSetting(_settingName, _defaultValue);
-        
+        GetDefaultValue();
         _toggle.SetIsOnWithoutNotify(_currentValue);
         _text.SetText(_currentValue ? ON : OFF);
         SaveRequested = false;
+    }
+
+    protected void GetDefaultValue()
+    {
+        _currentValue = _cached
+            ? SettingsManager.GetCachedBool(_settingName, _defaultValue, _profileEditor?.ActiveProfile)
+            : SettingsManager.GetSetting(_settingName, _defaultValue, true, _profileEditor?.ActiveProfile);
     }
 }

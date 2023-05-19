@@ -42,8 +42,8 @@ namespace YUR.Core
         private YURWidgets _widgets;
 
         public Transform HMD => YURHMD.Instance.transform;
-        public Transform Left => YURLeftHand.Instance?.transform;
-        public Transform Right => YURRightHand.Instance?.transform;
+        public Transform Left => YURLeftHand.Instance.transform;
+        public Transform Right => YURRightHand.Instance.transform;
 
         private YUR_SDK.CResults _cResults;
 
@@ -452,6 +452,10 @@ namespace YUR.Core
         // update the hmd, l, & r, device samples with position info from the xr rig
         private void UpdateDeviceSamples()
         {
+            if(YURHMD.IsNull || YURLeftHand.IsNull || YURRightHand.IsNull)
+            {
+                return;
+            }
             //YUR_SDK.CResults results = sdk.Calculator(HMD.AsYURDeviceSample(), Left.AsYURDeviceSample(), Right.AsYURDeviceSample());
 	        sdk.CalculatorAsync(HMD.AsYURDeviceSample(), Left.AsYURDeviceSample(), Right.AsYURDeviceSample());
 

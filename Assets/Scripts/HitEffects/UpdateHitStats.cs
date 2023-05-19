@@ -2,18 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UpdateHitStats : MonoBehaviour, IValidHit, IMissedHit
-{
-    [SerializeField]
-    private bool _isTarget;
-    
+public class UpdateHitStats : MonoBehaviour, IValidHit, IMissedHit, IBadHit
+{    
     public void TriggerHitEffect(HitInfo info)
     {
-        ScoringManager.Instance.RegisterHit();
+        ScoringAndHitStatsManager.Instance.RegisterHitTarget(info);
+        ScoringAndHitStatsManager.Instance.RecordHitSpeed(info);
     }
 
     public void TriggerMissEffect()
     {
-        ScoringManager.Instance.RegisterMiss(_isTarget);
+        ScoringAndHitStatsManager.Instance.RegisterMissedTarget();
+    }
+
+    public void HitObstacle(Collider hitObstacle)
+    {
+        ScoringAndHitStatsManager.Instance.RegisterHitObstacle();        
+    }
+
+    public void TriggerBadHitEffect(HitInfo info)
+    {
+        ScoringAndHitStatsManager.Instance.RecordHitSpeed(info);
     }
 }

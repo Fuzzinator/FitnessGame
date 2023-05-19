@@ -33,10 +33,10 @@ public class AddToScore : MonoBehaviour, IValidHit
 
         var hitValue = Mathf.Clamp(valueAsFloat * GetOptimalHitModifier(info.DistanceFromOptimalHit), _minValue, _maxValue);
 
-        if (ScoringManager.Instance != null)
+        if (ScoringAndHitStatsManager.Instance != null)
         {
             hitValue *= GetDifficultyModifier() * (_baseTarget.IsSuperNote ? 2 : 1);
-            ScoringManager.Instance.AddToScore(hitValue);
+            ScoringAndHitStatsManager.Instance.AddToScore(hitValue);
         }
     }
 

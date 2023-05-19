@@ -2,6 +2,7 @@ using Cysharp.Text;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static HitInfo;
 
 public class HitQualityDisplay : MonoBehaviour, IPoolable
 {
@@ -33,14 +34,13 @@ public class HitQualityDisplay : MonoBehaviour, IPoolable
 
     public void SetDisplay(HitInfo info)
     {
-        var hitQuality = 1 - info.HitQuality;
-        var qualityName = hitQuality switch
+        var qualityName = info.QualityName switch
         {
-            _ when hitQuality < .2f => Perfect,
-            _ when hitQuality < .4f => Great,
-            _ when hitQuality < .6f => Good,
-            _ when hitQuality < .8f => Okay,
-            _ when hitQuality >= .8f => Bad,
+            HitQualityName.Perfect => Perfect,
+            HitQualityName.Great => Great,
+            HitQualityName.Good => Good,
+            HitQualityName.Okay => Okay,
+            HitQualityName.Bad => Bad,
             _ => null
         };
         using (var sb = ZString.CreateStringBuilder(true))

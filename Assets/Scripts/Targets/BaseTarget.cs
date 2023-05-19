@@ -24,7 +24,7 @@ public class BaseTarget : MonoBehaviour, IPoolable
     [SerializeField]
     protected Vector2 _minMaxAllowance;
 
-    [SerializeField]
+    //[SerializeField]
     protected float _minHitSpeed = 1f;
 
     private float _overrideHitSpeed = -1f;
@@ -188,6 +188,7 @@ public class BaseTarget : MonoBehaviour, IPoolable
         _wasHit = false;
         parentFormation = holder;
         OptimalHitPoint = hitPoint;
+        _minHitSpeed = SettingsManager.GetMinHitSpeed();
         _overrideHitSpeed = overrideHitSpeed;
         foreach (var initializer in _targetInitializers)
         {

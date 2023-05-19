@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,15 +11,25 @@ namespace YUR.Core
     {
         public YURSettings Settings;
 
-        internal static Transform HMDAnchor => YURHMD.Instance?.transform;
-        internal static Transform RightHandAnchor => YURRightHand.Instance?.transform;
-        internal static Transform LeftHandAnchor => YURLeftHand.Instance?.transform;
+        //internal static Transform HMDAnchor => YURHMD.IsNull ? null : YURHMD.Instance.transform;
+        //internal static Transform RightHandAnchor => YURRightHand.IsNull ? null : YURRightHand.Instance.transform;
+        //internal static Transform LeftHandAnchor => YURLeftHand.IsNull ? null : YURLeftHand.Instance.transform;
 
         private GameObject watch;
 
 
         public void Start()
         {
+            WaitForInitialize().Forget();
+        }
+
+        private async UniTaskVoid WaitForInitialize()
+        {
+
+#if YUR_ECO_META
+            await UniTask.WaitUntil(() => Oculus.Platform.Core.IsInitialized());
+#endif
+
             Begin(GetUniqueEcosystemID());
         }
 
@@ -34,7 +45,7 @@ namespace YUR.Core
         public void Begin(string UserID)
         {
             watch = Instantiate(Settings.WatchSetup, gameObject.transform);
-            YURInterface.Instance.Begin(new GameInfo(Settings.GameName, Settings.YurLicense, Settings.GameVersion,Settings.SubPlatform), UserID);
+            YURInterface.Instance.Begin(new GameInfo(Settings.GameName, Settings.YurLicense, Settings.GameVersion, Settings.SubPlatform), UserID);
         }
 
         private void Update()
@@ -44,11 +55,17 @@ namespace YUR.Core
             switch (Settings.handInUse)
             {
                 case HandSide.Left:
-                    SetWatchRelativePosition(LeftHandAnchor.position, LeftHandAnchor.eulerAngles, Settings.LeftHandPositionOffset, Settings.LeftHandEulerOffset);
+                    if (YURLeftHand.IsNull) { return; }
+                    SetWatchRelativePosition(YURLeftHand.Instance.transform.position,
+                        YURLeftHand.Instance.transform.eulerAngles, Settings.LeftHandPositionOffset,
+                        Settings.LeftHandEulerOffset);
                     break;
 
                 case HandSide.Right:
-                    SetWatchRelativePosition(RightHandAnchor.position, RightHandAnchor.eulerAngles, Settings.RightHandPositionOffset, Settings.RightHandEulerOffset);
+                    if (YURRightHand.IsNull) { return; }
+                    SetWatchRelativePosition(YURRightHand.Instance.transform.position,
+                        YURRightHand.Instance.transform.eulerAngles, Settings.RightHandPositionOffset,
+                        Settings.RightHandEulerOffset);
                     break;
             }
         }
@@ -77,7 +94,7 @@ namespace YUR.Core
 
         public static bool IsConnected()
         {
-            return YURInterface.Instance._bIsTokenReaded;
+            return YURInterface.Instance != null ? YURInterface.Instance._bIsTokenReaded : false;
         }
 
         public YUR_SDK.CResults GetResults()

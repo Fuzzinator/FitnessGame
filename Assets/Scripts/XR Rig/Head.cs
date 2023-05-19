@@ -9,24 +9,24 @@ public class Head : MonoBehaviour
 {
     public static Head Instance { get; private set; }
     public Camera HeadCamera => _camera;
-    
+
     [SerializeField]
     private Camera _camera;
     [SerializeField]
     private LayerMask _layerMask;
-    
+
     [SerializeField]
     private string _flyBySound;
 
     [SerializeField]
     private LayerMask _flyByLayerMask;
-    
-    
+
+
     [SerializeField]
     private AudioMixerGroup _audioMixer;
-    
+
     [SerializeField]
-    protected UnityEvent _hitHeadEvent = new UnityEvent();
+    protected UnityEvent<Collider> _hitHeadEvent = new UnityEvent<Collider>();
 
     private void Awake()
     {
@@ -37,7 +37,11 @@ public class Head : MonoBehaviour
     {
         if (IsHit(other, _layerMask))
         {
-            _hitHeadEvent?.Invoke();
+            if (ActiveTargetManager.Instance.TryGetObstacle(other, out var obstacle))
+            {
+                obstacle.RegisterHit();
+            }
+            _hitHeadEvent?.Invoke(other);            
         }
         else if (IsHit(other, _flyByLayerMask))
         {

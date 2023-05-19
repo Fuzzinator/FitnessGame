@@ -110,5 +110,9 @@ public enum GameState
     InMainMenu = 1,
     Playing = 2,
     Paused = 3,
-    Unfocused = 4
+    Unfocused = 4,
+    MenuToGameTransition = 5,
+    PreparingToPlay = 6,
+    TransitionBetweenSongs = 7,
+    GameToMenuTransition = 8,
 }

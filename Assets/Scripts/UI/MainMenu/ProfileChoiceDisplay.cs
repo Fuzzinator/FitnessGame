@@ -34,6 +34,13 @@ public class ProfileChoiceDisplay : MonoBehaviour, IPoolable
             _profileSelectionController.ProfileEditor.SetActivePage(2);
             return;
         }
+        else if(!SettingsManager.HasSetting(SettingsManager.UseAdaptiveStrikeMode, true, _profile))
+        {
+            _profileSelectionController.StartEditProfile(_profile);
+            _profileSelectionController.ProfileEditor.SetActivePage(3);
+            return;
+        }
+
         ProfileManager.Instance.SetActiveProfile(_profile);
     }
 

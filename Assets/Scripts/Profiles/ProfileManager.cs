@@ -132,6 +132,7 @@ public class ProfileManager : MonoBehaviour
 
     public void SetActiveProfile(Profile profile)
     {
+        SettingsManager.ClearCachedValues();
         _activeProfile = profile;
         ProfileSettings = GetProfileSettings(profile);
         activeProfileUpdated?.Invoke();

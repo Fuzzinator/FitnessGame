@@ -45,7 +45,7 @@ public class UpdateScoreDisplay : MonoBehaviour
         
         if (_delayingUpdate)
         {
-            SetScoreDisplay(ScoringManager.Instance.CurrentScore-increaseAmount);
+            SetScoreDisplay(ScoringAndHitStatsManager.Instance.CurrentScore-increaseAmount);
         }
 
         _update = true;
@@ -53,9 +53,9 @@ public class UpdateScoreDisplay : MonoBehaviour
 
     private void UpdateToNewestScore(uint increaseAmount)
     {
-        if (ScoringManager.Instance.CurrentScore == _previousScore)
+        if (ScoringAndHitStatsManager.Instance.CurrentScore == _previousScore)
         {
-            SetScoreDisplay(ScoringManager.Instance.CurrentScore);
+            SetScoreDisplay(ScoringAndHitStatsManager.Instance.CurrentScore);
 
             _scoreIncrease.SetText(string.Empty);
         }
@@ -70,7 +70,7 @@ public class UpdateScoreDisplay : MonoBehaviour
             await UniTask.Delay(TimeSpan.FromSeconds(_delayLength), cancellationToken: _token);
             if (_increaseAmount == increaseAmount)
             {
-                SetScoreDisplay(ScoringManager.Instance.CurrentScore);
+                SetScoreDisplay(ScoringAndHitStatsManager.Instance.CurrentScore);
 
                 _scoreIncrease.SetText(string.Empty);
             }
@@ -93,7 +93,7 @@ public class UpdateScoreDisplay : MonoBehaviour
             }
 
             _update = false;
-            _previousScore = ScoringManager.Instance.CurrentScore;
+            _previousScore = ScoringAndHitStatsManager.Instance.CurrentScore;
             await UniTask.Delay(TimeSpan.FromSeconds(_delayLength), cancellationToken: _token);
             UpdateToNewestScore(_increaseAmount);
         }

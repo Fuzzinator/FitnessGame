@@ -317,6 +317,7 @@ public class ChoreographySequencer : MonoBehaviour
         if (formation.HasObstacle)
         {
             var obstacle = GetObstacle(formation.Obstacle);
+            obstacle.SetUpObstacle();
 
             var obstacleTransform = obstacle.transform;
             obstacleTransform.SetParent(formationHolder.transform);
@@ -354,8 +355,8 @@ public class ChoreographySequencer : MonoBehaviour
             
 
             targetTransform.localPosition = (GetTargetPosition(note, hasDodgeObstacle));
-
-            target.SetUpTarget(targetSideType, formationHolder.StrikePoint, formationHolder, note.IsSuperNote ? 3 : -1);
+            var strikeSpeed = note.IsSuperNote ? SettingsManager.GetSuperStrikeHitSpeed() : -1;
+            target.SetUpTarget(targetSideType, formationHolder.StrikePoint, formationHolder, strikeSpeed);
 
             target.gameObject.SetActive(true);
             ActiveTargetManager.Instance.AddActiveTarget(target);

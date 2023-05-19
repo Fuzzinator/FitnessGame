@@ -103,6 +103,10 @@ public class UIToggleGroupSetting : MonoBehaviour, ISaver
     {
         if (_currentValue < _toggles.Length)
         {
+            if(_toggles == null || _toggles[_currentValue] == null)
+            {
+                Debug.LogError("Over Here", this); return;
+            }
             _toggles[_currentValue].isOn = true;
         }
     }

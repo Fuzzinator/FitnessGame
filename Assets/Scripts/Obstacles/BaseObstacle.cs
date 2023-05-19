@@ -11,10 +11,26 @@ public class BaseObstacle : MonoBehaviour, IPoolable
 
     [SerializeField]
     private SetRendererColor _setRendererColor;
+
+    [SerializeField]
+    private Collider[] _colliders;
+
     public PoolManager MyPoolManager { get; set; }
 
     public SetRendererMaterial RendererSetter => _setRendererMaterial;
+    public Collider[] Colliders => _colliders;
     public bool IsPooled { get; set; }
+    public bool WasHit { get; private set; }
+
+    private void OnValidate()
+    {
+        if(_colliders != null && _colliders.Length != 0)
+        {
+            return;
+        }
+
+        _colliders = GetComponentsInChildren<Collider>();
+    }
 
     public void Initialize()
     {
@@ -23,6 +39,11 @@ public class BaseObstacle : MonoBehaviour, IPoolable
     }
     public void ReturnToPool()
     {
+        if(!WasHit)
+        {
+            ScoringAndHitStatsManager.Instance.RegisterDodgedObstacle();
+        }
+
         gameObject.SetActive(false);
         if (MyPoolManager.poolParent != null)
         {
@@ -30,5 +51,15 @@ public class BaseObstacle : MonoBehaviour, IPoolable
         }
         ActiveTargetManager.Instance.RemoveActiveObstacle(this);
         MyPoolManager.ReturnToPool(this);
+    }
+
+    public virtual void SetUpObstacle()
+    {
+        WasHit = false;
+    }
+
+    public void RegisterHit()
+    {
+        WasHit = true;        
     }
 }
