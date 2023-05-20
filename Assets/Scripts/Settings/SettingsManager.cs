@@ -427,25 +427,29 @@ public class SettingsManager : MonoBehaviour
         return FPSSetting._90;
     }
 
-    public static float GetMinHitSpeed()
+    public static float GetMinHitSpeed(HitSideType hitSide)
     {
         var minSpeed = DefaultMinHitSpeed;
         var useAdaptive = GetCachedBool(UseAdaptiveStrikeMode, false);
-        if(useAdaptive)
+        if (useAdaptive)
         {
-            minSpeed = Mathf.Clamp(ScoringAndHitStatsManager.Instance.AverageLeftHitSpeed * .65f, DefaultMinHitSpeed, DefaultMaxHitSpeed);
+            var average = hitSide == HitSideType.Left ? ScoringAndHitStatsManager.Instance.AverageLeftHitSpeed :
+                                                        ScoringAndHitStatsManager.Instance.AverageRightHitSpeed;
+            minSpeed = Mathf.Clamp(average * .75f, DefaultMinHitSpeed, DefaultMaxHitSpeed);
         }
 
         return minSpeed;
     }
 
-    public static float GetSuperStrikeHitSpeed()
+    public static float GetSuperStrikeHitSpeed(HitSideType hitSide)
     {
         var minSpeed = DefaultSuperStrikeHitSpeed;
         var useAdaptive = GetCachedBool(UseAdaptiveStrikeMode, false);
         if (useAdaptive)
         {
-            minSpeed = Mathf.Clamp(ScoringAndHitStatsManager.Instance.AverageLeftHitSpeed * 1.15f, DefaultMinHitSpeed, DefaultMaxHitSpeed);
+            var average = hitSide == HitSideType.Left ? ScoringAndHitStatsManager.Instance.AverageLeftHitSpeed :
+                                                        ScoringAndHitStatsManager.Instance.AverageRightHitSpeed;
+            minSpeed = Mathf.Clamp(average * 1.25f, DefaultMinHitSpeed, DefaultMaxHitSpeed);
         }
 
         return minSpeed;

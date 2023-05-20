@@ -212,11 +212,19 @@ public class ScoringAndHitStatsManager : MonoBehaviour
         WorkoutHitObstacles++;
     }
 
-    public void RecordHitSpeed(HitInfo hit)
+    public void RecordHitSpeed(HitInfo hit, bool wasHit)
     {
         if (hit.HitHand.AssignedHand == HitSideType.Left)
         {
-            RollingTotalLeftHitSpeed += hit.HitSpeed;
+            if(wasHit)
+            {
+                RollingTotalLeftHitSpeed += hit.HitSpeed;
+            }
+            else
+            {
+                RollingTotalLeftHitSpeed -= hit.HitSpeed;
+            }
+
             _leftHitSpeeds.Insert(0, hit.HitSpeed);
             if (_leftHitSpeeds.Count > MaxHistorySize)
             {
@@ -234,7 +242,15 @@ public class ScoringAndHitStatsManager : MonoBehaviour
         }
         else if (hit.HitHand.AssignedHand == HitSideType.Right)
         {
-            RollingTotalRightHitSpeed += hit.HitSpeed;
+            if (wasHit)
+            {
+                RollingTotalRightHitSpeed += hit.HitSpeed;
+            }
+            else
+            {
+                RollingTotalRightHitSpeed -= hit.HitSpeed;
+            }
+
             _rightHitSpeeds.Insert(0, hit.HitSpeed);
             if (_rightHitSpeeds.Count > MaxHistorySize)
             {

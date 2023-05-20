@@ -84,7 +84,7 @@ public class BaseTarget : MonoBehaviour, IPoolable
         }
 
         var currentDistance = Vector3.Distance(transform.position, OptimalHitPoint);
-        if (IsValidDirection(other, hand, out var impactDotProduct, out var dirDotProduct, out var handDotProd))
+        if (IsValidDirection(other, hand, out var impactDotProduct, out var dirDotProduct, out var handDotProd, out ValidHit validHit))
         {
             _wasHit = true;
             var hitInfo = new HitInfo(impactDotProduct, dirDotProduct, handDotProd, hand, currentDistance,
@@ -97,11 +97,12 @@ public class BaseTarget : MonoBehaviour, IPoolable
         }
         else
         {
+            //var missInfo = new MissInfo();
             var hitInfo = new HitInfo(impactDotProduct, dirDotProduct, handDotProd, hand, currentDistance,
                 hand.MovementSpeed);
             foreach (var hitEffect in _badHitEffects)
             {
-                hitEffect.TriggerBadHitEffect(hitInfo);
+                hitEffect.TriggerBadHitEffect(hitInfo, validHit);
             }
         }
     }
@@ -163,7 +164,7 @@ public class BaseTarget : MonoBehaviour, IPoolable
     }
 
     protected bool IsValidDirection(Collision other, Hand hand, out float impactDotProd, out float dirDotProd,
-        out float handDotProd)
+        out float handDotProd, out ValidHit validHit)
     {
         var precisionMode = SettingsManager.GetCachedBool(PrecisionMode, false);
         var handDirection = transform.InverseTransformDirection(hand.MovementDirection);
@@ -172,13 +173,12 @@ public class BaseTarget : MonoBehaviour, IPoolable
         var collisionDirection = Vector3.Normalize(other.GetContact(0).point - transform.position);
         dirDotProd = Vector3.Dot(collisionDirection, _optimalHitDirection);
         handDotProd = Vector3.Dot(transform.TransformDirection(_optimalHitDirection), hand.ForwardDirection);
-
-#if UNITY_EDITOR
-        return /*isSwinging && (!precisionMode || handDotProd<-.5f); //*/true;
-#else
         var requiredSpeed = IsSuperNote ? _overrideHitSpeed : _minHitSpeed;
-        return isSwinging && impactDotProd > _minMaxAllowance.x && hand.MovementSpeed > requiredSpeed &&
-               (!precisionMode || handDotProd < -.5f);
+        validHit = new ValidHit(isSwinging, impactDotProd > _minMaxAllowance.x, hand.MovementSpeed > requiredSpeed, !precisionMode || handDotProd < -.5f);
+#if UNITY_EDITOR
+        return true;
+#else
+        return validHit.IsValidHit;
 #endif
     }
 
@@ -188,7 +188,7 @@ public class BaseTarget : MonoBehaviour, IPoolable
         _wasHit = false;
         parentFormation = holder;
         OptimalHitPoint = hitPoint;
-        _minHitSpeed = SettingsManager.GetMinHitSpeed();
+        _minHitSpeed = SettingsManager.GetMinHitSpeed(hitSideType);
         _overrideHitSpeed = overrideHitSpeed;
         foreach (var initializer in _targetInitializers)
         {

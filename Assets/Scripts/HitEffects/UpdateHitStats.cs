@@ -7,7 +7,7 @@ public class UpdateHitStats : MonoBehaviour, IValidHit, IMissedHit, IBadHit
     public void TriggerHitEffect(HitInfo info)
     {
         ScoringAndHitStatsManager.Instance.RegisterHitTarget(info);
-        ScoringAndHitStatsManager.Instance.RecordHitSpeed(info);
+        ScoringAndHitStatsManager.Instance.RecordHitSpeed(info, true);
     }
 
     public void TriggerMissEffect()
@@ -20,8 +20,8 @@ public class UpdateHitStats : MonoBehaviour, IValidHit, IMissedHit, IBadHit
         ScoringAndHitStatsManager.Instance.RegisterHitObstacle();        
     }
 
-    public void TriggerBadHitEffect(HitInfo info)
+    public void TriggerBadHitEffect(HitInfo info, ValidHit validHit)
     {
-        ScoringAndHitStatsManager.Instance.RecordHitSpeed(info);
+        ScoringAndHitStatsManager.Instance.RecordHitSpeed(info, false);
     }
 }

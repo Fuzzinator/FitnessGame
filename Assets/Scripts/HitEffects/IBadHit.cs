@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IBadHit
 {
-    public void TriggerBadHitEffect(HitInfo info);
+    public void TriggerBadHitEffect(HitInfo info, ValidHit validHit);
 }

@@ -19,6 +19,11 @@ public class HitQualityDisplay : MonoBehaviour, IPoolable
     private const string Good = "Good";
     private const string Great = "Great";
     private const string Perfect = "Perfect";
+
+    private const string SwingMore = "Swing More!";
+    private const string WrongWay = "Wrong Way!";
+    private const string TooSlow = "Too Slow!";
+    private const string BadForm = "Bad Form!";
     #endregion
 
     public void Initialize()
@@ -32,7 +37,7 @@ public class HitQualityDisplay : MonoBehaviour, IPoolable
         MyPoolManager.ReturnToPool(this);
     }
 
-    public void SetDisplay(HitInfo info)
+    public void SetHitDisplay(HitInfo info)
     {
         var qualityName = info.QualityName switch
         {
@@ -46,6 +51,32 @@ public class HitQualityDisplay : MonoBehaviour, IPoolable
         using (var sb = ZString.CreateStringBuilder(true))
         {
             sb.Append(qualityName);
+            _displayText.SetText(sb);
+        }
+    }
+
+    public void SetMissedDisplay(ValidHit validHit)
+    {
+        var missName = string.Empty;
+        if(!validHit.IsSwinging)
+        {
+            missName = SwingMore;
+        }
+        else if(!validHit.InHitAllowance)
+        {
+            missName = WrongWay;
+        }
+        else if(!validHit.FastEnough)
+        {
+            missName = TooSlow;
+        }
+        else if(!validHit.GoodForm)
+        {
+            missName = BadForm;
+        }
+        using (var sb = ZString.CreateStringBuilder(true))
+        {
+            sb.Append(missName);
             _displayText.SetText(sb);
         }
     }

@@ -355,7 +355,7 @@ public class ChoreographySequencer : MonoBehaviour
             
 
             targetTransform.localPosition = (GetTargetPosition(note, hasDodgeObstacle));
-            var strikeSpeed = note.IsSuperNote ? SettingsManager.GetSuperStrikeHitSpeed() : -1;
+            var strikeSpeed = note.IsSuperNote ? SettingsManager.GetSuperStrikeHitSpeed(note.HitSideType) : -1;
             target.SetUpTarget(targetSideType, formationHolder.StrikePoint, formationHolder, strikeSpeed);
 
             target.gameObject.SetActive(true);
