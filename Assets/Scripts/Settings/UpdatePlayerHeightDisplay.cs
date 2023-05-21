@@ -85,8 +85,10 @@ public class UpdatePlayerHeightDisplay : MonoBehaviour, ISaver
     public void UpdateHeadHeight(float increment)
     {
         _setHeight += increment;
+        SaveRequested = true;
         _settingsDisplay?.ChangeWasMade(this);
         UpdateDisplay();
+
     }
 
     public void RefreshDisplayType()

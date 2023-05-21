@@ -75,7 +75,7 @@ public class ProfileEditor : UIMenuController
 
         foreach (ISaver setting in _settings)
         {
-            if (setting == null)
+            if (setting == null || !setting.SaveRequested)
             {
                 continue;
             }
