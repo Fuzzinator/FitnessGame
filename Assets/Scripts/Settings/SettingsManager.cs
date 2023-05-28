@@ -56,14 +56,16 @@ public class SettingsManager : MonoBehaviour
     private const string IndexController = "Index Controller";
 
     public const string UseAdaptiveStrikeMode = "AdaptiveStrikeMode";
+    public const string MinHitSpeed = "MinHitSpeed";
 
     private static readonly string[] _volumeNames = new[] { MASTERVOLUME, MUSICVOLUME, SFXVOLUME, MENUMUSICVOLUME, MENUSFXVOLUME };
 
     #endregion
 
-    public const float DefaultMinHitSpeed = 1.5f;
-    public const float DefaultMaxHitSpeed = 10f;
-    public const float DefaultSuperStrikeHitSpeed = 3f;
+    public static float CurrentMinHitSpeed => GetCachedFloat(MinHitSpeed, DefaultMinHitSpeed);
+    public static float DefaultMinHitSpeed = 1.5f;
+    public static float DefaultMaxHitSpeed = 10f;
+    public static float SuperStrikeHitSpeed => CurrentMinHitSpeed * 2f;
 
     public static bool UseEnlongatedCollider;
     public static bool UseFixedHitDirection;
@@ -429,13 +431,13 @@ public class SettingsManager : MonoBehaviour
 
     public static float GetMinHitSpeed(HitSideType hitSide)
     {
-        var minSpeed = DefaultMinHitSpeed;
+        var minSpeed = CurrentMinHitSpeed;
         var useAdaptive = GetCachedBool(UseAdaptiveStrikeMode, false);
         if (useAdaptive)
         {
             var average = hitSide == HitSideType.Left ? ScoringAndHitStatsManager.Instance.AverageLeftHitSpeed :
                                                         ScoringAndHitStatsManager.Instance.AverageRightHitSpeed;
-            minSpeed = Mathf.Clamp(average * .75f, DefaultMinHitSpeed, DefaultMaxHitSpeed);
+            minSpeed = Mathf.Clamp(average * .75f, CurrentMinHitSpeed, DefaultMaxHitSpeed);
         }
 
         return minSpeed;
@@ -443,13 +445,13 @@ public class SettingsManager : MonoBehaviour
 
     public static float GetSuperStrikeHitSpeed(HitSideType hitSide)
     {
-        var minSpeed = DefaultSuperStrikeHitSpeed;
+        var minSpeed = SuperStrikeHitSpeed;
         var useAdaptive = GetCachedBool(UseAdaptiveStrikeMode, false);
         if (useAdaptive)
         {
             var average = hitSide == HitSideType.Left ? ScoringAndHitStatsManager.Instance.AverageLeftHitSpeed :
                                                         ScoringAndHitStatsManager.Instance.AverageRightHitSpeed;
-            minSpeed = Mathf.Clamp(average * 1.25f, DefaultMinHitSpeed, DefaultMaxHitSpeed);
+            minSpeed = Mathf.Clamp(average * 1.25f, CurrentMinHitSpeed, DefaultMaxHitSpeed);
         }
 
         return minSpeed;

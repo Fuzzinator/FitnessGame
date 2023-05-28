@@ -47,13 +47,13 @@ public class StatsManager : MonoBehaviour
     {
         hitSpeeds = SettingsManager.GetSetting(RollingLeftHitSpeeds, hitSpeeds);
         rollingTotalHits = SettingsManager.GetSetting(RollingTotalLeftHits, 1);
-        rollingTotalHitSpeed = SettingsManager.GetSetting(RollingTotalLeftHitSpeed, SettingsManager.DefaultMinHitSpeed);
+        rollingTotalHitSpeed = SettingsManager.GetSetting(RollingTotalLeftHitSpeed, SettingsManager.CurrentMinHitSpeed);
     }
     public void GetRightHitSpeedStats(ref List<float> hitSpeeds, out int rollingTotalHits, out float rollingTotalHitSpeed)
     {
         hitSpeeds = SettingsManager.GetSetting(RollingRightHitSpeeds, hitSpeeds);
         rollingTotalHits = SettingsManager.GetSetting(RollingTotalRightHits, 1);
-        rollingTotalHitSpeed = SettingsManager.GetSetting(RollingTotalRightHitSpeed, SettingsManager.DefaultMinHitSpeed);
+        rollingTotalHitSpeed = SettingsManager.GetSetting(RollingTotalRightHitSpeed, SettingsManager.CurrentMinHitSpeed);
     }
     
     public void RecordWorkoutTime(float timeInSeconds)

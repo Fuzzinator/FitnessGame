@@ -3,11 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class UpdateHitStats : MonoBehaviour, IValidHit, IMissedHit, IBadHit
-{    
+{
+    [SerializeField]
+    private bool _recordHitSpeed = true;
     public void TriggerHitEffect(HitInfo info)
     {
         ScoringAndHitStatsManager.Instance.RegisterHitTarget(info);
-        ScoringAndHitStatsManager.Instance.RecordHitSpeed(info, true);
+        if(!_recordHitSpeed)
+        {
+            return;
+        }
+        ScoringAndHitStatsManager.Instance.RecordHitSpeed(info);
     }
 
     public void TriggerMissEffect()
@@ -22,6 +28,10 @@ public class UpdateHitStats : MonoBehaviour, IValidHit, IMissedHit, IBadHit
 
     public void TriggerBadHitEffect(HitInfo info, ValidHit validHit)
     {
-        ScoringAndHitStatsManager.Instance.RecordHitSpeed(info, false);
+        if (!_recordHitSpeed)
+        {
+            return;
+        }
+        ScoringAndHitStatsManager.Instance.RecordHitSpeed(info);
     }
 }

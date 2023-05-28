@@ -44,7 +44,7 @@ public class MainMenuUIController : BaseGameStateListener
             return;
         }
         
-        SetActivePage(8);
+        SetActivePage(0);
     }
 
     private void OnDisable()

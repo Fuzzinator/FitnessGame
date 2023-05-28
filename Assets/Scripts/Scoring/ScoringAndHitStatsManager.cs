@@ -44,8 +44,39 @@ public class ScoringAndHitStatsManager : MonoBehaviour
     public uint SongDodgedObstacles { get; private set; }
     public uint SongHitObstacles { get; private set; }
 
-    public float RollingTotalLeftHitSpeed { get; private set; } = SettingsManager.DefaultMinHitSpeed;
-    public float RollingTotalRightHitSpeed { get; private set; } = SettingsManager.DefaultMinHitSpeed;
+    private float _rollingTotalLeftHitSpeed = -1;
+    private float _rollingTotalRightHitSpeed = -1;
+    public float RollingTotalLeftHitSpeed
+    {
+        get
+        {
+            if (_rollingTotalLeftHitSpeed <= 0)
+            {
+                _rollingTotalLeftHitSpeed = SettingsManager.CurrentMinHitSpeed;
+            }
+            return _rollingTotalLeftHitSpeed;
+        }
+        private set
+        {
+            _rollingTotalLeftHitSpeed = value;
+        }
+    }
+    public float RollingTotalRightHitSpeed
+    {
+        get
+        {
+            if (_rollingTotalRightHitSpeed <= 0)
+            {
+                _rollingTotalRightHitSpeed = SettingsManager.CurrentMinHitSpeed;
+            }
+            return _rollingTotalRightHitSpeed;
+        }
+        private set
+        {
+            _rollingTotalRightHitSpeed = value;
+        }
+    }
+
     public int RollingTotalLeftHits { get; private set; } = 1;
     public int RollingTotalRightHits { get; private set; } = 1;
 
@@ -212,18 +243,12 @@ public class ScoringAndHitStatsManager : MonoBehaviour
         WorkoutHitObstacles++;
     }
 
-    public void RecordHitSpeed(HitInfo hit, bool wasHit)
+    public void RecordHitSpeed(HitInfo hit)
     {
         if (hit.HitHand.AssignedHand == HitSideType.Left)
         {
-            if(wasHit)
-            {
-                RollingTotalLeftHitSpeed += hit.HitSpeed;
-            }
-            else
-            {
-                RollingTotalLeftHitSpeed -= hit.HitSpeed;
-            }
+            RollingTotalLeftHitSpeed += hit.HitSpeed;
+
 
             _leftHitSpeeds.Insert(0, hit.HitSpeed);
             if (_leftHitSpeeds.Count > MaxHistorySize)
@@ -231,25 +256,12 @@ public class ScoringAndHitStatsManager : MonoBehaviour
                 RollingTotalLeftHitSpeed -= _leftHitSpeeds[MaxHistorySize];
                 _leftHitSpeeds.RemoveAt(MaxHistorySize);
             }
-            if (RollingTotalLeftHits < MaxHistorySize)
-            {
-                RollingTotalLeftHits++;
-            }
-            else
-            {
-                RollingTotalLeftHits = MaxHistorySize;
-            }
+
+            RollingTotalLeftHits = Mathf.Clamp(RollingTotalLeftHits + 1, 1, MaxHistorySize);
         }
         else if (hit.HitHand.AssignedHand == HitSideType.Right)
         {
-            if (wasHit)
-            {
-                RollingTotalRightHitSpeed += hit.HitSpeed;
-            }
-            else
-            {
-                RollingTotalRightHitSpeed -= hit.HitSpeed;
-            }
+            RollingTotalRightHitSpeed += hit.HitSpeed;
 
             _rightHitSpeeds.Insert(0, hit.HitSpeed);
             if (_rightHitSpeeds.Count > MaxHistorySize)
@@ -257,14 +269,8 @@ public class ScoringAndHitStatsManager : MonoBehaviour
                 RollingTotalRightHitSpeed -= _rightHitSpeeds[MaxHistorySize];
                 _rightHitSpeeds.RemoveAt(MaxHistorySize);
             }
-            if (RollingTotalRightHits < MaxHistorySize)
-            {
-                RollingTotalRightHits++;
-            }
-            else
-            {
-                RollingTotalRightHits = MaxHistorySize;
-            }
+
+            RollingTotalRightHits = Mathf.Clamp(RollingTotalRightHits + 1, 1, MaxHistorySize);
         }
         UpdatedHitSpeed.Invoke(hit.HitSpeed);
     }

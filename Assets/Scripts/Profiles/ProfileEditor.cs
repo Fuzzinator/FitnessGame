@@ -29,9 +29,7 @@ public class ProfileEditor : UIMenuController
 
     protected override void OnEnable()
     {
-        _activePage = _settingsPages[0];
-        _activePage.SetGroupState(1, true);
-        _activePage.gameObject.SetActive(true);
+        SetActivePage(0);
     }
 
     public void StartEditProfile(Profile profile)

@@ -17,7 +17,7 @@ public class UIToggleFPSSetting : UIToggleGroupSetting
     public override void Revert()
     {
         _currentValue = (int)SettingsManager.GetFPSSetting();
-        SetActiveToggle();
+        TrySetActiveToggle();
     }
 
     protected override async UniTaskVoid DelayDisplayUpdateAsync()

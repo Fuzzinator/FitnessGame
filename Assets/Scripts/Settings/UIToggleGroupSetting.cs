@@ -24,6 +24,9 @@ public class UIToggleGroupSetting : MonoBehaviour, ISaver
 
     [SerializeField]
     protected int _defaultValue;
+
+    [SerializeField]
+    protected bool _setSettingOnEnable = false;
     
     protected int _currentValue;
     protected int _index;
@@ -87,7 +90,14 @@ public class UIToggleGroupSetting : MonoBehaviour, ISaver
             return;
         }
         GetDefaultValue();
-        SetActiveToggle();
+        var changedToggle = TrySetActiveToggle();
+        if(_setSettingOnEnable && !changedToggle)
+        {
+            await UniTask.DelayFrame(1);
+            TryDisableActiveToggle();
+            await UniTask.DelayFrame(1);
+            TrySetActiveToggle();
+        }
         SaveRequested = false;
     }
 
@@ -95,20 +105,46 @@ public class UIToggleGroupSetting : MonoBehaviour, ISaver
     {
         GetDefaultValue();
         _updated = true;
-        SetActiveToggle();
+        TrySetActiveToggle();
         SaveRequested = false;
     }
 
-    protected void SetActiveToggle()
+    protected bool TrySetActiveToggle()
     {
         if (_currentValue < _toggles.Length)
         {
             if(_toggles == null || _toggles[_currentValue] == null)
             {
-                Debug.LogError("Over Here", this); return;
+                Debug.LogError("Over Here", this);
+                return false;
+            }
+            if(_toggles[_currentValue].isOn)
+            {
+                return false;
             }
             _toggles[_currentValue].isOn = true;
+            return true;
         }
+        return false;
+    }
+
+    protected bool TryDisableActiveToggle()
+    {
+        if (_currentValue < _toggles.Length)
+        {
+            if (_toggles == null || _toggles[_currentValue] == null)
+            {
+                Debug.LogError("Over Here", this);
+                return false;
+            }
+            if (!_toggles[_currentValue].isOn)
+            {
+                return false;
+            }
+            _toggles[_currentValue].isOn = false;
+            return true;
+        }
+        return false;
     }
 
     protected void GetDefaultValue()
