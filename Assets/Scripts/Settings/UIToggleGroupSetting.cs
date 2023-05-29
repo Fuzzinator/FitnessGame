@@ -39,7 +39,7 @@ public class UIToggleGroupSetting : MonoBehaviour, ISaver
 
     protected virtual void OnEnable()
     {
-        DelayDisplayUpdateAsync().Forget();
+        DelayDisplayUpdateAsync(_setSettingOnEnable).Forget();
     }
 
     public virtual void ToggleSet(Toggle selectedToggle)
@@ -81,7 +81,7 @@ public class UIToggleGroupSetting : MonoBehaviour, ISaver
         SaveRequested = false;
     }
 
-    protected async virtual UniTaskVoid DelayDisplayUpdateAsync()
+    protected async virtual UniTaskVoid DelayDisplayUpdateAsync(bool saveWhenDone = false)
     {
         _updated = true;
         await UniTask.DelayFrame(1);
@@ -91,14 +91,8 @@ public class UIToggleGroupSetting : MonoBehaviour, ISaver
         }
         GetDefaultValue();
         var changedToggle = TrySetActiveToggle();
-        if(_setSettingOnEnable && !changedToggle)
-        {
-            await UniTask.DelayFrame(1);
-            TryDisableActiveToggle();
-            await UniTask.DelayFrame(1);
-            TrySetActiveToggle();
-        }
-        SaveRequested = false;
+        
+        SaveRequested = saveWhenDone;
     }
 
     public virtual void Revert()

@@ -20,7 +20,7 @@ public class UIToggleFPSSetting : UIToggleGroupSetting
         TrySetActiveToggle();
     }
 
-    protected override async UniTaskVoid DelayDisplayUpdateAsync()
+    protected override async UniTaskVoid DelayDisplayUpdateAsync(bool saveOnSet = false)
     {
         _updated = true;
         await UniTask.DelayFrame(1);

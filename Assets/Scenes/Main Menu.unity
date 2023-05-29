@@ -7865,6 +7865,7 @@ MonoBehaviour:
   _profileEditor: {fileID: 1345209021}
   _metersOrFeet: {fileID: 154496771}
   _currentText: {fileID: 950839126}
+  _setSettingOnEnable: 1
 --- !u!114 &154496770
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9552,7 +9553,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0.85, g: 0.85, b: 0.85, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -19164,6 +19165,7 @@ MonoBehaviour:
   _text: {fileID: 802307649}
   _settingsDisplay: {fileID: 0}
   _profileEditor: {fileID: 1345209021}
+  _setSettingOnEnable: 1
 --- !u!1 &367626052
 GameObject:
   m_ObjectHideFlags: 0
@@ -23194,7 +23196,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0.85, g: 0.85, b: 0.85, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -29804,6 +29806,7 @@ MonoBehaviour:
   _text: {fileID: 620194624}
   _settingsDisplay: {fileID: 0}
   _profileEditor: {fileID: 1345209021}
+  _setSettingOnEnable: 1
 --- !u!1 &631960442
 GameObject:
   m_ObjectHideFlags: 0
@@ -33047,7 +33050,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0.85, g: 0.85, b: 0.85, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -43435,7 +43438,6 @@ GameObject:
   - component: {fileID: 963194232}
   - component: {fileID: 963194233}
   - component: {fileID: 963194234}
-  - component: {fileID: 963194235}
   m_Layer: 6
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -43625,62 +43627,6 @@ MonoBehaviour:
   _enabledOnEnable: 1
   _enabledOnDisable: 0
   _settings: {fileID: 11400000, guid: 2c5698d122ad8144087266a7939ab227, type: 2}
---- !u!114 &963194235
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 963194225}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb25729348190f342bef502f85fadcf5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  projectionSurfaceType: 0
-  overlayType: 1
-  compositionDepth: 0
-  hidden: 0
-  overridePerLayerColorScaleAndOffset: 0
-  colorScale: {x: 1, y: 1, z: 1, w: 1}
-  colorOffset: {x: 0, y: 0, z: 0, w: 0}
-  colorMapEditorType_: 0
-  colorMapEditorGradient:
-    serializedVersion: 2
-    key0: {r: 0, g: 0, b: 0, a: 1}
-    key1: {r: 1, g: 1, b: 1, a: 1}
-    key2: {r: 0, g: 0, b: 0, a: 0}
-    key3: {r: 0, g: 0, b: 0, a: 0}
-    key4: {r: 0, g: 0, b: 0, a: 0}
-    key5: {r: 0, g: 0, b: 0, a: 0}
-    key6: {r: 0, g: 0, b: 0, a: 0}
-    key7: {r: 0, g: 0, b: 0, a: 0}
-    ctime0: 0
-    ctime1: 65535
-    ctime2: 0
-    ctime3: 0
-    ctime4: 0
-    ctime5: 0
-    ctime6: 0
-    ctime7: 0
-    atime0: 0
-    atime1: 65535
-    atime2: 0
-    atime3: 0
-    atime4: 0
-    atime5: 0
-    atime6: 0
-    atime7: 0
-    m_Mode: 0
-    m_NumColorKeys: 2
-    m_NumAlphaKeys: 2
-  colorMapEditorContrast: 0
-  colorMapEditorBrightness: 0
-  colorMapEditorPosterize: 0
-  textureOpacity_: 1
-  edgeRenderingEnabled_: 0
-  edgeColor_: {r: 1, g: 1, b: 1, a: 1}
-  colorMapType: 0
 --- !u!1 &963253468
 GameObject:
   m_ObjectHideFlags: 0
@@ -70183,7 +70129,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7330f5f6638fb1d449fa60bdc13f92d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <CurrentVersion>k__BackingField: Update 0.1.25
+  <CurrentVersion>k__BackingField: Update 0.1.24.2
   <VersionDescriptions>k__BackingField:
   - {fileID: 11400000, guid: b312488dbef9197419334b6aa8dc6515, type: 2}
   - {fileID: 11400000, guid: 036502f9292e83e4381f9dda351be834, type: 2}
@@ -70192,7 +70138,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 8ab414fa4e34d4a45994dbe66cdb7ddf, type: 2}
   - {fileID: 11400000, guid: f18496f831081a6449c088027fd7a934, type: 2}
   - {fileID: 11400000, guid: d5d1acb59852e264792349c29fdcda32, type: 2}
-  - {fileID: 11400000, guid: 5405b30998a6d804a8cacee53b9c7285, type: 2}
+  - {fileID: 11400000, guid: 9f77816fa8a2a3942ab74cf571203ed6, type: 2}
   _versionChanged:
     m_PersistentCalls:
       m_Calls:
@@ -83660,7 +83606,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -91588,6 +91534,7 @@ MonoBehaviour:
   _text: {fileID: 869611512}
   _settingsDisplay: {fileID: 0}
   _profileEditor: {fileID: 1345209021}
+  _setSettingOnEnable: 1
 --- !u!1 &2063833932
 GameObject:
   m_ObjectHideFlags: 0

@@ -28,6 +28,9 @@ public class UIToggleBoolSetting : MonoBehaviour, ISaver
     [SerializeField]
     private ProfileEditor _profileEditor;
 
+    [SerializeField]
+    protected bool _setSettingOnEnable = false;
+
     protected bool _currentValue;
 
     public bool SaveRequested { get; set; }
@@ -38,7 +41,7 @@ public class UIToggleBoolSetting : MonoBehaviour, ISaver
     private void OnEnable()
     {
         Revert();
-        SaveRequested = false;
+        SaveRequested = _setSettingOnEnable;
     }
 
     private void OnDisable()
@@ -51,7 +54,12 @@ public class UIToggleBoolSetting : MonoBehaviour, ISaver
 
     public virtual void ToggleSet(bool isOn)
     {
-        if (_currentValue != isOn)
+        ToggleSet(isOn, true);
+    }
+
+    protected virtual void ToggleSet(bool isOn, bool onlyIfDifferent)
+    {
+        if (!onlyIfDifferent || _currentValue != isOn)
         {
             _currentValue = isOn;
             _text.SetText(isOn ? ON : OFF);
@@ -79,8 +87,16 @@ public class UIToggleBoolSetting : MonoBehaviour, ISaver
     {
         GetDefaultValue();
         _toggle.SetIsOnWithoutNotify(_currentValue);
-        _text.SetText(_currentValue ? ON : OFF);
-        SaveRequested = false;
+
+        if (_setSettingOnEnable)
+        {
+            ToggleSet(_currentValue, false);
+        }
+        else
+        {
+            _text.SetText(_currentValue ? ON : OFF);
+            SaveRequested = false;
+        }
     }
 
     protected void GetDefaultValue()

@@ -19,6 +19,8 @@ public class UpdatePlayerHeightDisplay : MonoBehaviour, ISaver
     private UIToggleGroupSetting _metersOrFeet;
     [SerializeField]
     private TextMeshProUGUI _currentText;
+    [SerializeField]
+    protected bool _setSettingOnEnable = false;
     private float _setHeight;
     private bool _pressed;
 
@@ -34,7 +36,7 @@ public class UpdatePlayerHeightDisplay : MonoBehaviour, ISaver
     private void OnEnable()
     {
         Revert();
-        SaveRequested = false;
+        SaveRequested = _setSettingOnEnable;
     }
 
     private void OnDisable()
