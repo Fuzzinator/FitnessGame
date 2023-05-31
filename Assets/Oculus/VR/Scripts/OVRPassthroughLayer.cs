@@ -467,12 +467,12 @@ public class OVRPassthroughLayer : MonoBehaviour
 
 		if (!cameraRigInitialized)
 		{
-			cameraRig = OVRManager.instance.GetComponentInParent<OVRCameraRig>();
+			cameraRig = OVRManager.instance.GetComponentInChildren<Camera>();
 			cameraRigInitialized = true;
 		}
 
 		Matrix4x4 trackingSpaceFromWorld = (cameraRig != null) ?
-			cameraRig.trackingSpace.worldToLocalMatrix :
+			cameraRig.transform.parent.worldToLocalMatrix :
 			Matrix4x4.identity;
 
 		// Use model matrix to switch from left-handed coordinate system (Unity)
@@ -748,7 +748,7 @@ public class OVRPassthroughLayer : MonoBehaviour
 	#endregion
 
 	#region Internal Fields/Properties
-	private OVRCameraRig cameraRig;
+	private Camera cameraRig;
 	private bool cameraRigInitialized = false;
 	private GameObject auxGameObject;
 	private OVROverlay passthroughOverlay;

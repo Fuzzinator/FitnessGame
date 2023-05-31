@@ -1417,7 +1417,7 @@ public class OVRManager : MonoBehaviour, OVRMixedRealityCaptureConfiguration
     [Tooltip("If true, each scene load will cause the head pose to reset. This function only works on Rift.")]
     public bool resetTrackerOnLoad = false;
 
-    /// <summary>
+    /*/// <summary>
     /// If true, the Reset View in the universal menu will cause the pose to be reset in PC VR. This should
     /// generally be enabled for applications with a stationary position in the virtual world and will allow
     /// the View Reset command to place the person back to a predefined location (such as a cockpit seat).
@@ -1425,7 +1425,7 @@ public class OVRManager : MonoBehaviour, OVRMixedRealityCaptureConfiguration
     /// the player to potentially invalid locations.
     /// </summary>
     [Tooltip("If true, the Reset View in the universal menu will cause the pose to be reset in PC VR. This should generally be enabled for applications with a stationary position in the virtual world and will allow the View Reset command to place the person back to a predefined location (such as a cockpit seat). Set this to false if you have a locomotion system because resetting the view would effectively teleport the player to potentially invalid locations.")]
-    public bool AllowRecenter = true;
+    public bool AllowRecenter = true;*/
 
     /// <summary>
     /// If true, a lower-latency update will occur right before rendering. If false, the only controller pose update will occur at the start of simulation for a given frame.
@@ -1720,8 +1720,8 @@ public class OVRManager : MonoBehaviour, OVRMixedRealityCaptureConfiguration
         Debug.LogFormat("Current display frequency {0}, available frequencies [{1}]",
             display.displayFrequency, string.Join(", ", display.displayFrequenciesAvailable.Select(f => f.ToString()).ToArray()));
 
-        if (resetTrackerOnLoad)
-            display.RecenterPose();
+        /*if (resetTrackerOnLoad)
+            display.RecenterPose();*/
 
         if (Debug.isDebugBuild)
         {
@@ -1900,10 +1900,10 @@ public class OVRManager : MonoBehaviour, OVRMixedRealityCaptureConfiguration
             Application.Quit();
         }
 
-        if (AllowRecenter && OVRPlugin.shouldRecenter)
+        /*if (AllowRecenter && OVRPlugin.shouldRecenter)
         {
             OVRManager.display.RecenterPose();
-        }
+        }*/
 
         if (trackingOriginType != _trackingOriginType)
             trackingOriginType = _trackingOriginType;
@@ -2264,52 +2264,41 @@ public class OVRManager : MonoBehaviour, OVRMixedRealityCaptureConfiguration
             return lastCamera;
         }
 
-        Camera result = instance.GetComponentInChildren<Camera>();
-        /*
-                GameObject[] objects = GameObject.FindGameObjectsWithTag("MainCamera");
-                List<Camera> cameras = new List<Camera>(4);
-                foreach (GameObject obj in objects)
-                {
-                    Camera camera = obj.GetComponent<Camera>();
-                    if (camera != null && camera.enabled)
-                    {
-                        var cameraRig = camera.GetComponentInParent<XROrigin>();
-                        if (cameraRig != null && cameraRig.trackingSpace != null)
-                        {
-                            cameras.Add(camera);
-                        }
-                    }
-                }
-                if (cameras.Count == 0)
-                {
-                    result = Camera.main; // pick one of the cameras which tagged as "MainCamera"
-                }
-                else if (cameras.Count == 1)
-                {
-                    result = cameras[0];
-                }
-                else
-                {
-                    if (!multipleMainCameraWarningPresented)
-                    {
-                        Debug.LogWarning("Multiple MainCamera found. Assume the real MainCamera is the camera with the least depth");
-                        multipleMainCameraWarningPresented = true;
-                    }
-                    // return the camera with least depth
-                    cameras.Sort((Camera c0, Camera c1) => { return c0.depth < c1.depth ? -1 : (c0.depth > c1.depth ? 1 : 0); });
-                    result = cameras[0];
-                }*/
-
-        if (result != null)
-        {
-            Debug.LogFormat("[OVRManager] mainCamera found for MRC: {0}", result.gameObject.name);
-            suppressUnableToFindMainCameraMessage = false;
-        }
-        else if (!suppressUnableToFindMainCameraMessage)
-        {
-            Debug.Log("[OVRManager] unable to find a valid camera");
-            suppressUnableToFindMainCameraMessage = true;
-        }
+		Camera result = instance.GetComponentInChildren<Camera>();
+/*
+		GameObject[] objects = GameObject.FindGameObjectsWithTag("MainCamera");
+		List<Camera> cameras = new List<Camera>(4);
+		foreach (GameObject obj in objects)
+		{
+			Camera camera = obj.GetComponent<Camera>();
+			if (camera != null && camera.enabled)
+			{
+				var cameraRig = camera.GetComponentInParent<XROrigin>();
+				if (cameraRig != null && cameraRig.trackingSpace != null)
+				{
+					cameras.Add(camera);
+				}
+			}
+		}
+		if (cameras.Count == 0)
+		{
+			result = Camera.main; // pick one of the cameras which tagged as "MainCamera"
+		}
+		else if (cameras.Count == 1)
+		{
+			result = cameras[0];
+		}
+		else
+		{
+			if (!multipleMainCameraWarningPresented)
+			{
+				Debug.LogWarning("Multiple MainCamera found. Assume the real MainCamera is the camera with the least depth");
+				multipleMainCameraWarningPresented = true;
+			}
+			// return the camera with least depth
+			cameras.Sort((Camera c0, Camera c1) => { return c0.depth < c1.depth ? -1 : (c0.depth > c1.depth ? 1 : 0); });
+			result = cameras[0];
+		}*/
 
         lastFoundMainCamera = new WeakReference<Camera>(result);
         return result;

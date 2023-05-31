@@ -107,9 +107,9 @@ public class OVRDisplay
 
 	private bool needsConfigureTexture;
 	private EyeRenderDesc[] eyeDescs = new EyeRenderDesc[2];
-	private bool recenterRequested = false;
+/*	private bool recenterRequested = false;
 	private int recenterRequestedFrameCount = int.MaxValue;
-	private int localTrackingSpaceRecenterCount = 0;
+	private int localTrackingSpaceRecenterCount = 0;*/
 
 	/// <summary>
 	/// Creates an instance of OVRDisplay. Called by OVRManager.
@@ -126,7 +126,7 @@ public class OVRDisplay
 	{
 		UpdateTextures();
 
-		if (recenterRequested && Time.frameCount > recenterRequestedFrameCount)
+		/*if (recenterRequested && Time.frameCount > recenterRequestedFrameCount)
 		{
 			Debug.Log("Recenter event detected");
 			if (RecenteredPose != null)
@@ -150,15 +150,15 @@ public class OVRDisplay
 				}
 				localTrackingSpaceRecenterCount = recenterCount;
 			}
-		}
+		}*/
 	}
-
+/*
 	/// <summary>
 	/// Occurs when the head pose is reset.
 	/// </summary>
-	public event System.Action RecenteredPose;
+	public event System.Action RecenteredPose;*/
 
-	/// <summary>
+	/*/// <summary>
 	/// Recenters the head pose.
 	/// </summary>
 	public void RecenterPose()
@@ -185,7 +185,7 @@ public class OVRDisplay
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
 		OVRMixedReality.RecenterPose();
 #endif
-	}
+	}*/
 
 	/// <summary>
 	/// Gets the current linear acceleration of the head.

@@ -59,6 +59,7 @@ public class ActiveSceneManager : MonoBehaviour
         _gameSceneLoader = SceneManager.LoadSceneAsync(newSceneName, additive ? LoadSceneMode.Additive : LoadSceneMode.Single);
         await _gameSceneLoader;
         newSceneLoaded?.Invoke();
+        await Resources.UnloadUnusedAssets();
     }
 
     /*public void CompleteSceneLoad()
