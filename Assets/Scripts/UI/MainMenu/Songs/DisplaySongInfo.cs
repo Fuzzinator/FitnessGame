@@ -31,6 +31,8 @@ namespace UI.Scrollers.Playlists
 
         [SerializeField]
         private Button _deleteButton;
+        [SerializeField]
+        private TextMeshProUGUI _deleteButtonText;
 
         private SongInfo _currentSongInfo;
 
@@ -78,6 +80,7 @@ namespace UI.Scrollers.Playlists
             _songOptions.UpdateDifficultyOptions(info, info.DifficultySets);
             //_difficultyScroller.UpdateDifficultyOptions(info, info.DifficultySets, _selectedGameMode);
             _deleteButton.gameObject.SetActive(info.isCustomSong);
+            _deleteButtonText.gameObject.SetActive(info.isCustomSong);
         }
 
         private void ClearDisplayedInfo()
@@ -90,6 +93,7 @@ namespace UI.Scrollers.Playlists
             _songOptions.HideOptions();
             //_difficultyScroller.UpdateDifficultyOptions(_currentSongInfo, Array.Empty<SongInfo.DifficultySet>(),GameMode.Normal);
             _deleteButton.gameObject.SetActive(false);
+            _deleteButtonText.gameObject.SetActive(false);
         }
     }
 }

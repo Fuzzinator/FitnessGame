@@ -12,8 +12,13 @@ public class AddressableEnvAssetRef : ScriptableObject
     [SerializeField]
     private AssetReference _assetReference;
 
+    [SerializeField]
+    private TargetPlatform _targetPlatform;
+
     public string EnvironmentName => _environmentName;
     public AssetReference AssetReference => _assetReference;
+
+    public TargetPlatform TargetPlatform => _targetPlatform;
 
 #if UNITY_EDITOR
     private void OnValidate()
@@ -22,4 +27,12 @@ public class AddressableEnvAssetRef : ScriptableObject
             _environmentName = ((EnvironmentAssetContainer) AssetReference.editorAsset).EnvironmentName;
     }
 #endif
+
+    
+}
+public enum TargetPlatform
+{
+    All = 0,
+    Android = 1,
+    PCVR = 2,
 }

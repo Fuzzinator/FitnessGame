@@ -72,8 +72,8 @@ public class XRPassthroughController : MonoBehaviour
 
     public void SetCameraToPassthrough()
     {
-        _camera.backgroundColor = new Color(0, 0, 0, 0);
-        _camera.clearFlags = CameraClearFlags.SolidColor;
+        //_camera.backgroundColor = new Color(0, 0, 0, 0);
+        //_camera.clearFlags = CameraClearFlags.SolidColor;
         _camera.allowHDR = false;
         _camera.GetUniversalAdditionalCameraData().renderPostProcessing = false;
         if (OVRManager.instance != null)
@@ -89,7 +89,7 @@ public class XRPassthroughController : MonoBehaviour
 
     private void DisableCameraPassthrough()
     {
-        _camera.clearFlags = CameraClearFlags.Skybox;
+        //_camera.clearFlags = CameraClearFlags.Skybox;
         _camera.allowHDR = true;
         _camera.GetUniversalAdditionalCameraData().renderPostProcessing = _cameraAllowedPP;
         if (OVRManager.instance != null)

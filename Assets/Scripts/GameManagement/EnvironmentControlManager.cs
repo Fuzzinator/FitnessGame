@@ -44,6 +44,8 @@ public class EnvironmentControlManager : MonoBehaviour
     private async UniTaskVoid UpdateEnvironments()
     {
         await GetBuiltInEnvironments();
+
+        _availableReferences.Sort((x, y) => x.EnvironmentName.CompareTo(y.EnvironmentName));
     }
 
     public void SetTargetEnvironmentIndex(int index)
@@ -106,7 +108,21 @@ public class EnvironmentControlManager : MonoBehaviour
                 return;
             }
 
-            _availableReferences.Add(asset);
+            switch (asset.TargetPlatform)
+            {
+                case TargetPlatform.All:
+#if UNITY_ANDROID
+                case TargetPlatform.Android:
+#elif UNITY_STANDALONE_WIN
+                case TargetPlatform.PCVR:
+#endif
+                    _availableReferences.Add(asset);
+                    break;
+                default:
+                Addressables.Release(asset);
+                break;
+            }
+
         });
     }
 
