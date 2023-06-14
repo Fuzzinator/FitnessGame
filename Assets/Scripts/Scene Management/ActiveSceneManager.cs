@@ -45,6 +45,7 @@ public class ActiveSceneManager : MonoBehaviour
         if (EnvironmentController.Instance.SceneLoadHandle.IsValid())
         {
             await Addressables.UnloadSceneAsync(EnvironmentController.Instance.SceneLoadHandle);
+            Addressables.Release(EnvironmentController.Instance.SceneLoadHandle);
         }
     }
     

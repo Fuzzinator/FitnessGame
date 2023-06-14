@@ -8,6 +8,7 @@ using Cysharp.Threading.Tasks.Linq;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 #if UNITY_ANDROID
 using UnityEngine.Android;
@@ -39,9 +40,9 @@ public class AssetManager : MonoBehaviour
 #else
     private const string SONGSFOLDER = "/Resources/Songs/";
     private const string PLAYLISTSFOLDER = "/Resources/Playlists/";
-    #if UNITY_ANDROID
+#if UNITY_ANDROID
     private const string ANDROIDPATHSTART = "file://";
-    #endif
+#endif
 
 #endif
 
@@ -114,17 +115,17 @@ public class AssetManager : MonoBehaviour
 #if UNITY_EDITOR
             var path = $"{SongsPath}{parentDirectory}/{info.SongFilename}";
 #else
-    #if UNITY_ANDROID
+#if UNITY_ANDROID
             var path =
             $"{ANDROIDPATHSTART}{SongsPath}{parentDirectory}/{info.SongFilename}";
-    #elif UNITY_STANDALONE_WIN
+#elif UNITY_STANDALONE_WIN
             var path = $"{SongsPath}{parentDirectory}/{info.SongFilename}";
-    #endif
+#endif
 
 #endif
 
             var uwr = UnityWebRequestMultimedia.GetAudioClip(path, AudioType.OGGVORBIS);
-            ((DownloadHandlerAudioClip) uwr.downloadHandler).streamAudio = true;
+            ((DownloadHandlerAudioClip)uwr.downloadHandler).streamAudio = true;
             var request = uwr.SendWebRequest();
             await request.ToUniTask(cancellationToken: cancellationToken);
 
@@ -151,27 +152,34 @@ public class AssetManager : MonoBehaviour
         }
     }
 
-    public static async UniTask<AudioClip> LoadBuiltInSong(SongInfo item, CancellationToken cancellationToken)
+    public static async UniTask<AudioClipRequest> LoadBuiltInSong(SongInfo item, CancellationToken cancellationToken)
     {
+        AsyncOperationHandle requestHandle = new AsyncOperationHandle();
         try
         {
             var fileName = item.SongFilename;
             var request = Addressables.LoadAssetAsync<AudioClip>($"{LOCALSONGSFOLDER}{item.fileLocation}/{fileName}");
+            requestHandle = request;
             await request.ToUniTask(cancellationToken: cancellationToken);
 
             var clip = request.Result;
             if (clip == null)
             {
+                Addressables.Release(request);
                 Debug.LogError("Failed to load local resource file");
-                return null;
+                return new AudioClipRequest();
             }
 
             clip.name = item.SongName;
-            return clip;
+            return new AudioClipRequest(clip, request);
         }
         catch (Exception e) when (e is OperationCanceledException)
         {
-            return null;
+            if (requestHandle.IsValid())
+            {
+                Addressables.Release(requestHandle);
+            }
+            return new AudioClipRequest();
         }
     }
 
@@ -221,51 +229,71 @@ public class AssetManager : MonoBehaviour
         }
     }
 
-    public static async UniTask<Texture2D> LoadBuiltInSongImage(SongInfo item, CancellationToken cancellationToken)
+    public static async UniTask<Texture2DRequest> LoadBuiltInSongImage(SongInfo item, CancellationToken cancellationToken)
     {
+        AsyncOperationHandle requestHandle = new AsyncOperationHandle();
         try
         {
             var fileName = item.ImageFilename;
             var request = Addressables.LoadAssetAsync<Texture2D>($"{LOCALSONGSFOLDER}{item.fileLocation}/{fileName}");
+            requestHandle = request;
             await request.ToUniTask(cancellationToken: cancellationToken);
 
             var texture = request.Result;
             if (texture == null)
             {
                 Debug.LogError($"Failed to load local resource file for {item.SongName}");
-                return null;
+                if (requestHandle.IsValid())
+                {
+                    Addressables.Release(requestHandle);
+                }
+                return new Texture2DRequest();
             }
 
             texture.name = item.SongName;
-            return texture;
+            return new Texture2DRequest(texture, requestHandle);
         }
         catch (Exception e) when (e is OperationCanceledException)
         {
-            return null;
+            if (requestHandle.IsValid())
+            {
+                Addressables.Release(requestHandle);
+            }
+            return new Texture2DRequest();
         }
     }
 
-    public static async UniTask<Texture2D> LoadBuiltInPlaylistImage(string playlistName,
+    public static async UniTask<Texture2DRequest> LoadBuiltInPlaylistImage(string playlistName,
         CancellationToken cancellationToken)
     {
+        AsyncOperationHandle requestHandle = new AsyncOperationHandle();
         try
         {
             var request = Addressables.LoadAssetAsync<Texture2D>($"{LOCALPLAYLISTSFOLDER}{playlistName}.jpg");
+            requestHandle = request;
             await request.ToUniTask(cancellationToken: cancellationToken);
 
             var texture = request.Result;
             if (texture == null)
             {
                 Debug.LogError($"Failed to load local resource file for {playlistName}");
-                return null;
+                if (requestHandle.IsValid())
+                {
+                    Addressables.Release(requestHandle);
+                }
+                return new Texture2DRequest();
             }
 
             texture.name = playlistName;
-            return texture;
+            return new Texture2DRequest(texture, requestHandle);
         }
         catch (Exception e) when (e is OperationCanceledException)
         {
-            return null;
+            if (requestHandle.IsValid())
+            {
+                Addressables.Release(requestHandle);
+            }
+            return new Texture2DRequest();
         }
     }
 
@@ -356,10 +384,11 @@ public class AssetManager : MonoBehaviour
         }
     }
 
-    public static async UniTask GetBuiltInPlaylists(string label, Action<Playlist> playlistLoaded,
+    public static async UniTask<List<AsyncOperationHandle>> GetBuiltInPlaylists(string label, Action<Playlist> playlistLoaded,
         CancellationToken cancellationToken)
     {
-        await Addressables.LoadAssetsAsync<TextAsset>(label, async asset =>
+        List<AsyncOperationHandle> asyncHandles = null;
+        var request = Addressables.LoadAssetsAsync<TextAsset>(label, async asset =>
         {
             if (asset == null)
             {
@@ -375,17 +404,31 @@ public class AssetManager : MonoBehaviour
             }
 
             playlist.isValid = await PlaylistValidator.IsValid(playlist); //This is a temporary solution.
-            var texture = await LoadBuiltInPlaylistImage(playlist.PlaylistName, cancellationToken);
-            playlist.SetIcon(texture);
+            var textureRequest = await LoadBuiltInPlaylistImage(playlist.PlaylistName, cancellationToken);
+            if (asyncHandles == null)
+            {
+                asyncHandles = new List<AsyncOperationHandle>();
+            }
+            if (textureRequest.IsValid)
+            {
+                asyncHandles.Add(textureRequest.OperationHandle);
+            }
+            playlist.SetIcon(textureRequest.Texture);
 
             playlistLoaded?.Invoke(playlist);
             await UniTask.DelayFrame(1, cancellationToken: cancellationToken);
         });
+        if (request.IsValid())
+        {
+            Addressables.Release(request);
+        }
+        await request;
+        return asyncHandles;
     }
 
     public static async UniTask GetBuiltInSongs(AssetLabelReference label, Action<SongInfo> songLoaded)
     {
-        await Addressables.LoadAssetsAsync<TextAsset>(label, asset =>
+        var request = Addressables.LoadAssetsAsync<TextAsset>(label, asset =>
         {
             if (asset == null)
             {
@@ -397,6 +440,11 @@ public class AssetManager : MonoBehaviour
 
             songLoaded?.Invoke(item);
         });
+        if (request.IsValid())
+        {
+            Addressables.Release(request);
+        }
+        await request;
     }
 
     public static async UniTask GetCustomSongs(Action<SongInfo> songLoaded, CancellationTokenSource cancellationSource)
@@ -538,7 +586,6 @@ public class AssetManager : MonoBehaviour
         return null;
     }
 
-
     public static async UniTask DeleteCustomSong(SongInfo info)
     {
         var path = $"{SongsPath}{info.fileLocation}";
@@ -585,5 +632,34 @@ public class AssetManager : MonoBehaviour
         await writingTask;
 
         streamWriter.Close();
+    }
+}
+
+public struct AudioClipRequest
+{
+    public AudioClip AudioClip { get; private set; }
+    public AsyncOperationHandle OperationHandle { get; private set; }
+    public readonly bool IsValid { get; }
+
+    public AudioClipRequest(AudioClip audioClip, AsyncOperationHandle operationHandle)
+    {
+        AudioClip = audioClip;
+        OperationHandle = operationHandle;
+        IsValid = true;
+    }
+}
+
+public struct Texture2DRequest
+{
+    public Texture2D Texture { get; private set; }
+    public AsyncOperationHandle OperationHandle { get; private set; }
+
+    public readonly bool IsValid { get; }
+
+    public Texture2DRequest(Texture2D texture, AsyncOperationHandle operationHandle)
+    {
+        Texture = texture;
+        OperationHandle = operationHandle;
+        IsValid = true;
     }
 }

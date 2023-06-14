@@ -7,7 +7,7 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
-using UnityEngine.ResourceManagement.ResourceLocations;
+using UnityEngine.ResourceManagement.AsyncOperations;
 using Random = UnityEngine.Random;
 
 public class PlaylistFilesReader : MonoBehaviour
@@ -16,7 +16,7 @@ public class PlaylistFilesReader : MonoBehaviour
 
     [SerializeField]
     private Playlist.SortingMethod _sortingMethod = Playlist.SortingMethod.PlaylistName;
-    
+
     public List<Playlist> availablePlaylists = new List<Playlist>();
 
     [SerializeField]
@@ -28,7 +28,9 @@ public class PlaylistFilesReader : MonoBehaviour
     public Playlist.SortingMethod CurrentSortingMethod => _sortingMethod;
 
     private CancellationToken _cancellationToken;
-    
+
+    private List<AsyncOperationHandle> _assetHandles = new List<AsyncOperationHandle>();
+
     private void Awake()
     {
         if (Instance == null)
@@ -44,6 +46,15 @@ public class PlaylistFilesReader : MonoBehaviour
     private void Start()
     {
         _cancellationToken = this.GetCancellationTokenOnDestroy();
+    }
+
+    private void OnDestroy()
+    {
+        foreach (var assetHandle in _assetHandles)
+        {
+            Addressables.Release(assetHandle);
+        }
+        _assetHandles.Clear();
     }
 
     public void RequestPlaylistsUpdate()
@@ -78,25 +89,30 @@ public class PlaylistFilesReader : MonoBehaviour
             {
                 return;
             }
-            
+
             availablePlaylists.Add(playlist);
             _playlistsUpdated?.Invoke();
         }
 
-        await AssetManager.GetBuiltInPlaylists(_labelReference.labelString, AddPlaylist, _cancellationToken);
+        var handles = await AssetManager.GetBuiltInPlaylists(_labelReference.labelString, AddPlaylist, _cancellationToken);
         await AssetManager.GetCustomPlaylists(AddPlaylist, _cancellationToken);
-        
+
+        if (handles != null)
+        {
+            _assetHandles.AddRange(handles);
+        }
+
         SortPlaylists();
         _playlistsUpdated?.Invoke();
     }
-    
+
     public void AddNewPlaylist(Playlist playlist)
     {
         if (playlist == null)
         {
             return;
         }
-        
+
         //var existingIndex = availablePlaylists.IndexOf(playlist);//Find((i) => i.PlaylistName == playlist.PlaylistName);
         if (!availablePlaylists.Contains(playlist))
         {
@@ -111,11 +127,11 @@ public class PlaylistFilesReader : MonoBehaviour
         {
             return;
         }
-        
+
         availablePlaylists.Remove(playlist);
         _playlistsUpdated?.Invoke();
     }
-    
+
     public void SetSortMethod(Playlist.SortingMethod method)
     {
         if (_sortingMethod != method)
@@ -130,14 +146,14 @@ public class PlaylistFilesReader : MonoBehaviour
         switch (_sortingMethod)
         {
             case Playlist.SortingMethod.None:
-                availablePlaylists.Sort((x,y) => Random.Range(-1,1));
+                availablePlaylists.Sort((x, y) => Random.Range(-1, 1));
                 return;
             case Playlist.SortingMethod.PlaylistName:
-                availablePlaylists.Sort((x, y) => 
+                availablePlaylists.Sort((x, y) =>
                     string.Compare(x.PlaylistName, y.PlaylistName, StringComparison.InvariantCulture));
                 break;
             case Playlist.SortingMethod.InversePlaylistName:
-                availablePlaylists.Sort((x, y) => 
+                availablePlaylists.Sort((x, y) =>
                     string.Compare(y.PlaylistName, x.PlaylistName, StringComparison.InvariantCulture));
                 break;
             case Playlist.SortingMethod.PlaylistLength:

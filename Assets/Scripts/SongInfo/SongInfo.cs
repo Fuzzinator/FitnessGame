@@ -8,6 +8,8 @@ using Cysharp.Threading.Tasks;
 using GameModeManagement;
 using Unity.Burst;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 [Serializable]
 public class SongInfo
@@ -126,6 +128,8 @@ public class SongInfo
     private DifficultySet[] _difficultyBeatmapSets;
 
     private Sprite _songArt;
+
+    private AsyncOperationHandle _textureLoadHandle;
 
     public DifficultyInfo TryGetActiveDifficultyInfo(string difficulty, GameMode gameMode)
     {
@@ -463,7 +467,9 @@ public class SongInfo
         else
         {
             //await UniTask.SwitchToMainThread(token);
-            image = await AssetManager.LoadBuiltInSongImage(this, token);
+            var imageRequest = await AssetManager.LoadBuiltInSongImage(this, token);
+            _textureLoadHandle = imageRequest.OperationHandle;
+            image = imageRequest.Texture;
         }
 
         return image;
@@ -473,6 +479,19 @@ public class SongInfo
     {
         _songArt = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height),
             Vector2.one * .5f, 100f);
+    }
+
+    public void UnloadImage()
+    {
+        if(!_textureLoadHandle.IsValid())
+        {
+            return;
+        }
+        Addressables.Release(_textureLoadHandle);
+        if(_songArt != null )
+        {
+            _songArt = null;
+        }
     }
 
     [Serializable]
@@ -742,4 +761,5 @@ public class SongInfo
 
         return levelMatches;
     }
+
 }

@@ -5,6 +5,7 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class EnvironmentControlManager : MonoBehaviour
 {
@@ -21,6 +22,8 @@ public class EnvironmentControlManager : MonoBehaviour
     public EnvironmentAssetContainer ActiveEnvironmentContainer { get; private set; }
 
     public bool LoadingEnvironmentContainer { get; private set; }
+
+    private List<AsyncOperationHandle> _assetHandles = new List<AsyncOperationHandle>();
 
     private const string ADDRESSABLELABEL = "Environment Asset";
 
@@ -39,6 +42,15 @@ public class EnvironmentControlManager : MonoBehaviour
     private void Start()
     {
         UpdateEnvironments().Forget();
+    }
+
+    private void OnDestroy()
+    {
+        foreach (var assetHandle in _assetHandles)
+        {
+            Addressables.Release(assetHandle);
+        }
+        _assetHandles.Clear();
     }
 
     private async UniTaskVoid UpdateEnvironments()
@@ -101,7 +113,7 @@ public class EnvironmentControlManager : MonoBehaviour
     {
         _availableReferences.Clear();
 
-        await Addressables.LoadAssetsAsync<AddressableEnvAssetRef>(ADDRESSABLELABEL, asset =>
+        var results = Addressables.LoadAssetsAsync<AddressableEnvAssetRef>(ADDRESSABLELABEL, asset =>
         {
             if (asset == null)
             {
@@ -119,17 +131,19 @@ public class EnvironmentControlManager : MonoBehaviour
                     _availableReferences.Add(asset);
                     break;
                 default:
-                Addressables.Release(asset);
-                break;
+                    Addressables.Release(asset);
+                    break;
             }
 
         });
+        _assetHandles.Add(results);
+        await results;
     }
 
     private async UniTask LoadEnvironmentDataAsync(int index)
     {
         LoadingEnvironmentContainer = true;
-        await Addressables.LoadAssetsAsync<EnvironmentAssetContainer>(_availableReferences[index].AssetReference,
+        var results = Addressables.LoadAssetsAsync<EnvironmentAssetContainer>(_availableReferences[index].AssetReference,
             asset =>
             {
                 if (asset == null)
@@ -142,6 +156,8 @@ public class EnvironmentControlManager : MonoBehaviour
 
                 ActiveEnvironmentContainer = asset;
             });
+        _assetHandles.Add(results);
+        await results;
         //ColorsManager.Instance.SetAndUpdateTextureSets(ActiveEnvironmentContainer.TargetTextures,
         //    ActiveEnvironmentContainer.ObstacleTextures);
 

@@ -5,33 +5,49 @@ using System.IO;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 public static class CustomSongsManager
 {
     public static async UniTask<float> TryGetSongLength(SongInfo info,
         CancellationToken token, bool customSong = true)
     {
-        UniTask<AudioClip> clipRequest;
+        float clipLength;
         if (customSong)
         {
-            clipRequest = AssetManager.LoadCustomSong(info.fileLocation, info, token);
+            var clipRequest = AssetManager.LoadCustomSong(info.fileLocation, info, token);
+            var audioClip = await clipRequest;
+            if (audioClip == null)
+            {
+                if (!token.IsCancellationRequested)
+                {
+                    Debug.LogError($"Failed to load {info.SongName}");
+                }
+
+                return 0;
+            }
+            clipLength = audioClip.length;
         }
         else
         {
-            clipRequest = AssetManager.LoadBuiltInSong(info, token);
-        }
-
-        var audioClip = await clipRequest;
-        if (audioClip == null)
-        {
-            if (!token.IsCancellationRequested)
+            var clipRequest = await AssetManager.LoadBuiltInSong(info, token);
+            var audioClip = clipRequest.AudioClip;
+            if(audioClip == null)
             {
-                Debug.LogError($"Failed to load {info.SongName}");
-            }
+                Addressables.Release(clipRequest.OperationHandle);
+                if (!token.IsCancellationRequested)
+                {
+                    Debug.LogError($"Failed to load {info.SongName}");
+                }
 
-            return 0;
+                return 0;
+            }
+            clipLength = audioClip.length;
+            Addressables.Release(clipRequest.OperationHandle);
         }
 
-        return audioClip.length;
+        
+
+        return clipLength;
     }
 }

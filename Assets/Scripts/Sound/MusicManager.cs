@@ -1,14 +1,10 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
-using UnityEngine.InputSystem;
-using UnityEngine.Networking;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class MusicManager : BaseGameStateListener
 {
@@ -23,6 +19,7 @@ public class MusicManager : BaseGameStateListener
 
     private CancellationTokenSource _cancellationSource;
     private CancellationToken _cancellationToken;
+    private AsyncOperationHandle _currentSongRequestHandle = new AsyncOperationHandle();
 
     private bool _awaitingSongEnd = false;
     private bool _musicPaused = false;
@@ -109,7 +106,9 @@ public class MusicManager : BaseGameStateListener
         }
         else
         {
-            audioClip = await AssetManager.LoadBuiltInSong(item.SongInfo, _cancellationSource.Token);
+            var clipRequest = await AssetManager.LoadBuiltInSong(item.SongInfo, _cancellationSource.Token);
+            _currentSongRequestHandle = clipRequest.OperationHandle;
+            audioClip = clipRequest.AudioClip;
         }
 
 
@@ -199,6 +198,10 @@ public class MusicManager : BaseGameStateListener
         _musicAudioSource.Stop();
         _musicPaused = false;
         _awaitingSongEnd = false;
+        if(_currentSongRequestHandle.IsValid())
+        {
+            Addressables.Release(_currentSongRequestHandle);
+        }
     }
 
     protected override void GameStateListener(GameState oldState, GameState newState)

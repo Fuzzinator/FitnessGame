@@ -11,6 +11,7 @@ using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 using Debug = UnityEngine.Debug;
 
 [Serializable]
@@ -130,9 +131,10 @@ public class Choreography
     {
         if (item.IsCustomSong)
         {
-            return await AsyncLoadCustomSong(item.FileLocation, difficultyInfo.FileName, item.SongName, token);
+            var result = await AsyncLoadCustomSong(item.FileLocation, difficultyInfo.FileName, item.SongName, token);
+            return result;
         }
-
+        AsyncOperationHandle requestHandle = new AsyncOperationHandle();
         try
         {
             var txtVersion = difficultyInfo.FileName;
@@ -141,20 +143,23 @@ public class Choreography
                 txtVersion = txtVersion.Replace(DAT, TXT);
             }
 
-            var request =
-                Addressables.LoadAssetAsync<TextAsset>($"{LOCALSONGSFOLDER}{item.FileLocation}/{txtVersion}")
-                    .WithCancellation(token);
-
-            var json = await request;
+            var request = Addressables.LoadAssetAsync<TextAsset>($"{LOCALSONGSFOLDER}{item.FileLocation}/{txtVersion}");
+            requestHandle = request;
+            var json = await request.WithCancellation(token);
             if (json == null)
             {
                 NotificationManager.ReportFailedToLoadInGame($"{item.SongName}'s choreography failed to load.");
             }
-
-            return JsonUtility.FromJson<Choreography>((json).text);
+            var choreography = JsonUtility.FromJson<Choreography>((json).text);
+            Addressables.Release(requestHandle);
+            return choreography;
         }
         catch (Exception e) when (e is OperationCanceledException)
         {
+            if(requestHandle.IsValid())
+            {
+                Addressables.Release(requestHandle);
+            }
         }
 
         return null;

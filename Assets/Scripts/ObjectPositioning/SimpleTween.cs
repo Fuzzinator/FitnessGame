@@ -90,6 +90,12 @@ namespace SimpleTweens
                     {
                         var time = Time.time;
                         await UniTask.DelayFrame(1, cancellationToken: _internalCancelTokenSource.Token);
+                        if (_internalCancelTokenSource.Token.IsCancellationRequested)
+                        {
+                            InternalCancel();
+                            continue;
+                        }
+
                         var step = data.Speed * (Time.time - time);
                         data.MyTransform.position = Vector3.MoveTowards(data.MyTransform.position, data.EndPosition, step);
                     }

@@ -7,7 +7,9 @@ using Unity.Burst;
 using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
+using UnityEngine.ResourceManagement.AsyncOperations;
 using static ChoreographyNote;
 
 public class ChoreographyReader : MonoBehaviour
@@ -22,6 +24,7 @@ public class ChoreographyReader : MonoBehaviour
     private List<ChoreographyFormation> _sequenceables;
     private List<ChoreographyFormation> _formations;
     private List<ChoreographyFormation> _formationsThisTime;
+
     public ChoreographyNote[] Notes => _choreography.Notes;
     public ChoreographyEvent[] Events => _choreography.Events;
     public ChoreographyObstacle[] Obstacles => _choreography.Obstacles;
@@ -98,6 +101,7 @@ public class ChoreographyReader : MonoBehaviour
         }
 
         _choreography = await Choreography.AsyncLoadFromPlaylist(item, _difficultyInfo, _cancellationSource.Token);
+
 
         finishedLoadingSong?.Invoke();
     }
@@ -549,7 +553,7 @@ public class ChoreographyReader : MonoBehaviour
             {
                 //Check if should convert to super note
                 var isSuperNote = false;
-                
+
                 if (thisSequence.HasNote && thisSequence.Note.HitSideType != HitSideType.Block)
                 {
                     if (Mathf.Abs(lastSequence.Time - thisSequence.Time) > minTargetDistance * 2)
@@ -564,7 +568,7 @@ public class ChoreographyReader : MonoBehaviour
                             thisSequence.SetNote(thisSequence.Note.SetSuperNote(isSuperNote));
                             superNotePriority = 0;
                         }
-                        else if(superNotePriority >= minSpace && !(note.HitSideType is HitSideType.Unused or HitSideType.Block))
+                        else if (superNotePriority >= minSpace && !(note.HitSideType is HitSideType.Unused or HitSideType.Block))
                         {
                             for (var j = 0; j < _formationsThisTime.Count; j++)
                             {

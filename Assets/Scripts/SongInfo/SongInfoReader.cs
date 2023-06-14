@@ -117,24 +117,24 @@ public class SongInfoReader : MonoBehaviour
             }
             else
             {
-                var request =
-                    Addressables.LoadAssetAsync<TextAsset>($"{AssetManager.LOCALSONGSFOLDER}{item.FileLocation}{INFO}{TXT}")
-                        .ToUniTask().AttachExternalCancellation(_cancellationSource.Token);
-                var json = await request;
+                var request = Addressables.LoadAssetAsync<TextAsset>($"{AssetManager.LOCALSONGSFOLDER}{item.FileLocation}{INFO}{TXT}");
+                var json = await request.ToUniTask().AttachExternalCancellation(_cancellationSource.Token);
                 if (json == null)
                 {
+                    Addressables.Release(request);
                     LevelManager.Instance.LoadFailed();
                     NotificationManager.ReportFailedToLoadInGame($"{item.SongName}'s info failed to load.");
                     return;
                 }
 
                 UpdateSongInfo(json.text, item);
+                Addressables.Release(request);
             }
 
             item.SongInfo = songInfo;
             finishedLoadingSongInfo?.Invoke(item);
         }
-        catch (Exception e)when (e is OperationCanceledException)
+        catch (Exception e) when (e is OperationCanceledException)
         {
             if (_cancellationSource.IsCancellationRequested && this?.gameObject != null)
             {
@@ -152,7 +152,7 @@ public class SongInfoReader : MonoBehaviour
         info = json;
         songInfo = JsonUtility.FromJson<SongInfo>(json);
         var playlist = PlaylistManager.Instance.CurrentPlaylist;
-        
+
         if (playlist == null)
         {
             return;
@@ -189,11 +189,11 @@ public class SongInfoReader : MonoBehaviour
     {
         using (var sb = ZString.CreateStringBuilder(true))
         {
-            if(!string.IsNullOrWhiteSpace(prefix))
+            if (!string.IsNullOrWhiteSpace(prefix))
             {
                 sb.Append(prefix);
             }
-            
+
             sb.Append(info.SongName);
             sb.Append(DASH);
             sb.Append(difficultyEnum.Readable());
@@ -204,7 +204,7 @@ public class SongInfoReader : MonoBehaviour
             sb.Append(DASH);
             sb.Append(info.SongLength);
 
-            if(!string.IsNullOrWhiteSpace(suffix))
+            if (!string.IsNullOrWhiteSpace(suffix))
             {
                 sb.Append(suffix);
             }

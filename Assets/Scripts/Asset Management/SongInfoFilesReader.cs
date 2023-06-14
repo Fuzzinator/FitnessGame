@@ -74,6 +74,11 @@ public class SongInfoFilesReader : MonoBehaviour
         {
             Instance = null;
         }
+
+        foreach(var song in availableSongs)
+        {
+            song.UnloadImage();
+        }
     }
 
     private void OnEnable()

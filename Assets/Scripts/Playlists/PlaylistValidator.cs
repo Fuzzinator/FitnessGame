@@ -93,20 +93,28 @@ public static class PlaylistValidator
         else
         {
             var fileLocation = $"{AssetManager.LOCALSONGSFOLDER}{item.FileLocation}{INFO}{TXT}";
-            var resourceLocations = await Addressables.LoadResourceLocationsAsync(fileLocation);
+            var locationResults = Addressables.LoadResourceLocationsAsync(fileLocation);
+            var resourceLocations = await locationResults;
             if (resourceLocations.Count == 0)
             {
+                Addressables.Release(locationResults);
                 return null;
             }
 
-            var json = await Addressables.LoadAssetAsync<TextAsset>(fileLocation);
+            var assetResults = Addressables.LoadAssetAsync<TextAsset>(fileLocation);
+            var json = await assetResults;
             if (json == null)
             {
+                Addressables.Release(locationResults);
+                Addressables.Release(assetResults);
                 Debug.LogError("Failed to load local resource file");
                 return null;
             }
 
-            return JsonUtility.FromJson<SongInfo>(json.text);
+            var songInfo = JsonUtility.FromJson<SongInfo>(json.text);
+            Addressables.Release(locationResults);
+            Addressables.Release(assetResults);
+            return songInfo;
         }
 
         return null;
@@ -138,8 +146,7 @@ public static class PlaylistValidator
             }
 
             var path = $"{AssetManager.LOCALSONGSFOLDER}{item.FileLocation}/{txtVersion}";
-            var resourceLocations = await Addressables.LoadResourceLocationsAsync(path);
-            return resourceLocations.Count > 0;
+            return await AsyncFileCheck(path);
         }
     }
 
@@ -153,8 +160,16 @@ public static class PlaylistValidator
         else
         {
             var path = $"{AssetManager.LOCALSONGSFOLDER}{item.SongInfo.fileLocation}/{item.SongInfo.SongFilename}";
-            var resourceLocations = await Addressables.LoadResourceLocationsAsync(path);
-            return resourceLocations.Count > 0;
+            return await AsyncFileCheck(path);
         }
+    }
+
+    private static async UniTask<bool> AsyncFileCheck(string path)
+    {
+        var results = Addressables.LoadResourceLocationsAsync(path);
+        var resourceLocations = await results;
+        var isValid = resourceLocations.Count > 0;
+        Addressables.Release(results);
+        return isValid;
     }
 }
