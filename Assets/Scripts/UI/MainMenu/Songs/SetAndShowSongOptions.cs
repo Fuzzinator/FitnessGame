@@ -2,12 +2,17 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using GameModeManagement;
 using TMPro;
 using UI;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.UI;
 using static DifficultyInfo;
+using static UnityEditor.Progress;
 
 public class SetAndShowSongOptions : MonoBehaviour
 {
@@ -39,6 +44,17 @@ public class SetAndShowSongOptions : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI _playButtonText;
 
+    [SerializeField]
+    private Button _previewButton;
+    [SerializeField]
+    private TextMeshProUGUI _previewButtonText;
+
+    [SerializeField]
+    private AudioSource _audioSource;
+
+    [SerializeField]
+    private bool _autoPlayPreview = false;
+
     public string SelectedDifficulty => _selectedDifficulty;
     public DifficultyInfo.DifficultyEnum DifficultyAsEnum => _difficultyEnum;
     public GameMode SelectedGameMode => _activeDifficultySet.MapGameMode;
@@ -48,6 +64,31 @@ public class SetAndShowSongOptions : MonoBehaviour
     private SongInfo.DifficultySet _activeDifficultySet;
     private string _selectedDifficulty;
     private DifficultyInfo.DifficultyEnum _difficultyEnum;
+    private CancellationToken _cancellationToken;
+    private CancellationTokenSource _cancellationSource;
+    private AsyncOperationHandle _currentSongRequestHandle = new AsyncOperationHandle();
+
+    private bool _loadingSongPreview = false;
+
+    #region Const Strings
+    private const string Preview = "Listen";
+    private const string Loading = "Loading";
+    private const string Stop = "Stop";
+    #endregion
+
+    private void Start()
+    {
+        _cancellationToken = this.GetCancellationTokenOnDestroy();
+        _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(_cancellationToken);
+    }
+
+    private void OnDisable()
+    {
+        if (_autoPlayPreview)
+        {
+            StopSongPreview();
+        }
+    }
 
     public void UpdateDifficultyOptions(SongInfo songInfo, SongInfo.DifficultySet[] difficultySets)
     {
@@ -58,10 +99,16 @@ public class SetAndShowSongOptions : MonoBehaviour
         _difficultyToggleGroup.gameObject.SetActive(true);
         _playButton.gameObject.SetActive(true);
         _playButtonText.gameObject.SetActive(true);
+        _previewButton.gameObject.SetActive(true);
+        _previewButtonText.gameObject.SetActive(true);
         _gameTypeTexts[0].transform.parent.gameObject.SetActive(true);
         _typeDifficultyTexts[0].transform.parent.gameObject.SetActive(true);
-
         UpdateAvailableGameModes();
+
+        if (_autoPlayPreview && gameObject.activeInHierarchy)
+        {
+            WaitAndPlayPreview().Forget();
+        }
     }
 
     public void HideOptions()
@@ -71,8 +118,15 @@ public class SetAndShowSongOptions : MonoBehaviour
         _difficultyToggleGroup.gameObject.SetActive(false);
         _playButton.gameObject.SetActive(false);
         _playButtonText.gameObject.SetActive(false);
+        _previewButton.gameObject.SetActive(false);
+        _previewButtonText.gameObject.SetActive(false);
         _gameTypeTexts[0].transform.parent.gameObject.SetActive(false);
         _typeDifficultyTexts[0].transform.parent.gameObject.SetActive(false);
+
+        if (_autoPlayPreview && gameObject.activeInHierarchy)
+        {
+            StopSongPreview();
+        }
     }
 
     private void UpdateAvailableGameModes()
@@ -267,5 +321,121 @@ public class SetAndShowSongOptions : MonoBehaviour
             var playlistItem = new PlaylistItem(_songInfo, _selectedDifficulty, _difficultyEnum, _activeDifficultySet.MapGameMode);
             PlaylistManager.Instance.SetTempSongPlaylist(playlistItem, _forwardFootSetter.TargetHitSideType);
         }
+    }
+
+    public void ToggleSongPreview()
+    {
+        if (_audioSource.isPlaying)
+        {
+            StopSongPreview();
+            return;
+        }
+        PlaySongAudioAsync().Forget();
+    }
+    public void PreviewSong()
+    {
+        if (_loadingSongPreview || _audioSource.isPlaying)
+        {
+            StopSongPreview();
+        }
+        PlaySongAudioAsync().Forget();
+    }
+
+    public void StopSongPreview()
+    {
+        _audioSource.Stop();
+        _previewButtonText.SetText(Preview);
+        if (_currentSongRequestHandle.IsValid())
+        {
+            Addressables.Release(_currentSongRequestHandle);
+        }
+        if (_cancellationSource.IsCancellationRequested)
+        {
+            _cancellationSource.Dispose();
+            _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(_cancellationToken);
+        }
+        else
+        {
+            RefreshTokenAsync().Forget();
+        }
+        _loadingSongPreview = false;
+    }
+
+    private async UniTaskVoid RefreshTokenAsync()
+    {
+        _cancellationSource.Cancel(); 
+        await UniTask.DelayFrame(1);
+        _cancellationSource.Dispose();
+        _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(_cancellationToken);
+    }
+
+    private async UniTaskVoid PlaySongAudioAsync()
+    {
+        AudioClip audioClip;
+        if (_cancellationSource.IsCancellationRequested)
+        {
+            _cancellationSource.Dispose();
+            _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(_cancellationToken);
+        }
+        _previewButtonText.SetText(Loading);
+        _loadingSongPreview = true;
+
+        if (_songInfo.isCustomSong)
+        {
+            audioClip = await AssetManager.LoadCustomSong(_songInfo.fileLocation, _songInfo, _cancellationSource.Token);
+        }
+        else
+        {
+            var clipRequest = await AssetManager.LoadBuiltInSong(_songInfo, _cancellationSource.Token);
+            _currentSongRequestHandle = clipRequest.OperationHandle;
+            audioClip = clipRequest.AudioClip;
+        }
+
+        await UniTask.DelayFrame(1, cancellationToken: _cancellationSource.Token);
+        if (_cancellationSource.IsCancellationRequested)
+        {
+            if (_cancellationToken.IsCancellationRequested)
+            {
+                return;
+            }
+            StopSongPreview();
+            return;
+        }
+        _audioSource.clip = audioClip;
+        _audioSource.Play();
+
+        _previewButtonText.SetText(Stop);
+        _loadingSongPreview = false;
+        await UniTask.WaitUntil(() => _audioSource.isPlaying, cancellationToken: _cancellationSource.Token);
+
+        if (_cancellationSource.IsCancellationRequested)
+        {
+            if (_cancellationToken.IsCancellationRequested)
+            {
+                return;
+            }
+            StopSongPreview();
+            return;
+        }
+
+        await UniTask.WaitUntil(() => !_audioSource.isPlaying && FocusTracker.Instance.IsFocused, cancellationToken: _cancellationSource.Token);
+
+        if (_cancellationToken.IsCancellationRequested)
+        {
+            return;
+        }
+
+        StopSongPreview();
+    }
+
+    private async UniTaskVoid WaitAndPlayPreview()
+    {
+        var activeMap = _songInfo;
+        await UniTask.Delay(TimeSpan.FromSeconds(2.5f), cancellationToken: _cancellationSource.Token);
+        if (_cancellationSource.IsCancellationRequested || activeMap != _songInfo)
+        {
+            return;
+        }
+        PreviewSong();
     }
 }

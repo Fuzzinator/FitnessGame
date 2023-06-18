@@ -58,4 +58,13 @@ public class LoadingDisplay : MonoBehaviour, IPoolable
         await UniTask.Delay(TimeSpan.FromSeconds(2.5));
         ReturnToPool();
     }
+    public async UniTaskVoid DisplayFailedAsync()
+    {
+        _isCompleted = true;
+        await UniTask.SwitchToMainThread();
+        _loadingBar.fillAmount = 1;
+        _textField.text = $"{_textField.text} - FAILED";
+        await UniTask.Delay(TimeSpan.FromSeconds(2.5));
+        ReturnToPool();
+    }
 }

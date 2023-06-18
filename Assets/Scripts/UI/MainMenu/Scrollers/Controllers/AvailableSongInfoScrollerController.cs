@@ -89,5 +89,10 @@ namespace UI.Scrollers.Playlists
             _scroller.GetScrollPositionForDataIndex(dataIndex, EnhancedScroller.CellViewPositionEnum.After);
             _scroller.SetScrollPositionImmediately(dataIndex);
         }
+
+        public void ToggleSongPreview()
+        {
+            _displaySongInfo.ToggleSongPreview();
+        }
     }
 }

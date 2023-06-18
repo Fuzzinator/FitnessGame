@@ -30,4 +30,12 @@ public class LoadingDisplaysController : MonoBehaviour
         
         return display;
     }
+
+    public void CancelAll()
+    {
+        foreach (LoadingDisplay item in _poolManager.ActiveObjs)
+        {
+            item.DisplayFailedAsync().Forget();
+        }
+    }
 }

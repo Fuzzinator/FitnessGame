@@ -95,5 +95,10 @@ namespace UI.Scrollers.Playlists
             _deleteButton.gameObject.SetActive(false);
             _deleteButtonText.gameObject.SetActive(false);
         }
+
+        public void ToggleSongPreview()
+        {
+            _songOptions.ToggleSongPreview();
+        }
     }
 }

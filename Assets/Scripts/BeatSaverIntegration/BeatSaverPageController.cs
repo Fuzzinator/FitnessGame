@@ -52,6 +52,7 @@ public class BeatSaverPageController : MonoBehaviour
 
     private CancellationToken _token;
     private CancellationTokenSource _cancellationTokenSource;
+    private CancellationTokenSource _downloadsTokenSource;
     private BeatSaver _beatSaver;
     private LevelFileManagement _levelFileManagement;
 
@@ -116,6 +117,7 @@ public class BeatSaverPageController : MonoBehaviour
     public void NetworkConnectionLost()
     {
         _cancellationTokenSource.Cancel();
+        CancelDownloads();
         if (gameObject.activeInHierarchy)
         {
             MainMenuUIController.Instance.SetActivePage(0);
@@ -352,10 +354,13 @@ public class BeatSaverPageController : MonoBehaviour
             progress.ProgressChanged += (sender, d) => loadingDisplay.UpdateLoadingBar(d);
         }
 
-        await RefreshToken();
+        if (_downloadsTokenSource == null || _downloadsTokenSource.IsCancellationRequested)
+        {
+            await RefreshDownloadsToken();
+        }
 
-        var songBytes = await _activeBeatmap.LatestVersion.DownloadZIP(_cancellationTokenSource.Token, progress);
-        if (songBytes == null || _cancellationTokenSource.IsCancellationRequested)
+        var songBytes = await _activeBeatmap.LatestVersion.DownloadZIP(_downloadsTokenSource.Token, progress);
+        if (songBytes == null || _downloadsTokenSource.IsCancellationRequested)
         {
             NotificationManager.RequestNotification(new Notification.NotificationVisuals("Download failed."));
             Debug.LogError("Download Failed");
@@ -365,7 +370,7 @@ public class BeatSaverPageController : MonoBehaviour
         await UniTask.DelayFrame(1);
         ZipFileManagement.ExtractAndSaveZippedSongAsync(folderName, songBytes);
         await UniTask.DelayFrame(1);
-        await UniTask.SwitchToMainThread(_cancellationTokenSource.Token);
+        await UniTask.SwitchToMainThread(_downloadsTokenSource.Token);
         _downloadingIds.Remove(beatmapID);
         if (beatmapID == _activeBeatmap.ID)
         {
@@ -392,7 +397,10 @@ public class BeatSaverPageController : MonoBehaviour
     private async UniTask UpdateDataForward()
     {
         await UniTask.SwitchToMainThread(_cancellationTokenSource.Token);
-
+        if (_token.IsCancellationRequested)
+        {
+            return;
+        }
         _cellView = null;
 
         _showLoadingObject.SetActive(false);
@@ -574,5 +582,27 @@ public class BeatSaverPageController : MonoBehaviour
         }
 
         _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_token);
+    }
+
+    private async UniTask RefreshDownloadsToken()
+    {
+        {
+            if (_downloadsTokenSource != null)
+            {
+                _downloadsTokenSource.Cancel();
+                await UniTask.DelayFrame(1);
+                _downloadsTokenSource.Dispose();
+                CancelDownloads();
+            }
+
+            _downloadsTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_token);
+        }
+    }
+
+    private void CancelDownloads()
+    {
+        _loadingDisplays.CancelAll();
+        _downloadingIds.Clear();
+        _downloadButton.interactable = true;
     }
 }

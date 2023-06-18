@@ -20,6 +20,14 @@ namespace UI.Scrollers.Playlists
         [SerializeField]
         private Button _button;
 
+        [SerializeField]
+        private Image _previewImage;
+
+        [SerializeField]
+        private Sprite _listenSprite;
+        [SerializeField]
+        private Sprite _muteSprite;
+
         private SongInfo _songInfo;
         private AvailableSongInfoScrollerController _controller;
         private CancellationToken _cancellationToken;
@@ -71,6 +79,11 @@ namespace UI.Scrollers.Playlists
             var sprite = await _songInfo.LoadImage(_cancellationToken);
             //await UniTask.SwitchToMainThread(_cancellationToken);
             _songArt.sprite = sprite;
+        }
+
+        public void ToggleSongPreview()
+        {
+            _controller.ToggleSongPreview();
         }
     }
 }
