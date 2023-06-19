@@ -11,8 +11,6 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.UI;
-using static DifficultyInfo;
-using static UnityEditor.Progress;
 
 public class SetAndShowSongOptions : MonoBehaviour
 {
@@ -320,6 +318,10 @@ public class SetAndShowSongOptions : MonoBehaviour
         {
             var playlistItem = new PlaylistItem(_songInfo, _selectedDifficulty, _difficultyEnum, _activeDifficultySet.MapGameMode);
             PlaylistManager.Instance.SetTempSongPlaylist(playlistItem, _forwardFootSetter.TargetHitSideType);
+            if(_autoPlayPreview)
+            {
+                StopSongPreview();
+            }
         }
     }
 

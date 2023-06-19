@@ -9,6 +9,8 @@ using UnityEngine.SceneManagement;
 
 public class ActiveSceneManager : MonoBehaviour
 {
+    [SerializeField]
+    private bool _trailer;
     public static ActiveSceneManager Instance { get; private set; }
     public UnityEvent newSceneLoaded = new UnityEvent();
 
@@ -16,6 +18,7 @@ public class ActiveSceneManager : MonoBehaviour
 
     private const string MAINMENUNAME = "Main Menu";
     private const string BASELEVELNAME = "Base Level";
+    private const string BASELEVELTRAILERNAME = "Base Level (For Trailer)";
 
     private void Awake()
     {
@@ -36,7 +39,7 @@ public class ActiveSceneManager : MonoBehaviour
 
     public void SetScene(string newSceneName, bool additive = false)
     {
-        
+
     }
 
     public async void LoadMainMenu()
@@ -48,13 +51,13 @@ public class ActiveSceneManager : MonoBehaviour
             Addressables.Release(EnvironmentController.Instance.SceneLoadHandle);
         }
     }
-    
+
     public async void LoadBaseLevel()
     {
         await SceneManager.UnloadSceneAsync(MAINMENUNAME);
-        await LoadSceneAsync(BASELEVELNAME, true);
+        await LoadSceneAsync(_trailer ? BASELEVELTRAILERNAME : BASELEVELNAME, true);
     }
-    
+
     private async UniTask LoadSceneAsync(string newSceneName, bool additive = false)
     {
         _gameSceneLoader = SceneManager.LoadSceneAsync(newSceneName, additive ? LoadSceneMode.Additive : LoadSceneMode.Single);
