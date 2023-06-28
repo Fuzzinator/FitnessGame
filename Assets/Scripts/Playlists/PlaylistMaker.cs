@@ -39,7 +39,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
 
     [SerializeField]
     private Texture2D _emptyTexture;
-    
+
     public List<PlaylistItem> PlaylistItems => _playlistItems;
 
     private bool _editMode = false;
@@ -55,7 +55,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     private string _targetEnv;
 
     private CancellationToken _cancallationToken;
-    
+
     #region Const Strings
 
     private const string NEWPLAYLISTNAME = "New Playlist";
@@ -105,8 +105,18 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
 
     public void AddPlaylistItem(PlaylistItem item)
     {
-        _playlistItems.Add(item);
-        _playlistItemsUpdated?.Invoke();
+        if (GameManager.Instance.DemoMode && _playlistItems.Count >= GameManager.DemoModeMaxPlaylistLength)
+        {
+            var visuals = new Notification.NotificationVisuals(
+                        $"Song cannot be added. The maximum number of songs in a custom playlist in this demo is {GameManager.DemoModeMaxPlaylistLength}. To create longer playlists, please consider buying the full game.",
+                        "Demo Mode", autoTimeOutTime: 5f, button1Txt: "Okay");
+            NotificationManager.RequestNotification(visuals);
+        }
+        else
+        {
+            _playlistItems.Add(item);
+            _playlistItemsUpdated?.Invoke();
+        }
     }
 
     public void RemovePlaylistItem(PlaylistItem item)
@@ -165,7 +175,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         var sprite = await GetSprite();
         var newPlaylist = new Playlist(_playlistItems, _gameMode, _difficulty, _startingSide, _playlistName, true, _targetEnv, sprite);
         PlaylistManager.Instance.CurrentPlaylist = newPlaylist;
-        
+
         if (_playlistItems == null || _playlistItems.Count == 0)
         {
             //Debug.LogError("Cannot create empty playlist");
@@ -226,7 +236,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         _startWritingPlaylist?.Invoke();
 
         await writingTask;
-        
+
         streamWriter.Close();
         if (newPlaylist.PlaylistImage != null)
         {
@@ -253,14 +263,14 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         var texture4 = _playlistItems.Count > 3
             ? await _playlistItems[3].SongInfo.LoadTexture(_cancallationToken)
             : _emptyTexture;
-        
+
         var combinedTexture = new Texture2D(512, 512, TextureFormat.RGB24, false);
-        combinedTexture.SetPixels(0,0, 256, 256, texture1.GetPixels(), 0);
-        combinedTexture.SetPixels(256,0, 256, 256, texture2.GetPixels(), 0);
-        combinedTexture.SetPixels(0,256, 256, 256, texture3.GetPixels(), 0);
-        combinedTexture.SetPixels(256,256, 256, 256, texture4.GetPixels(), 0);
+        combinedTexture.SetPixels(0, 0, 256, 256, texture1.GetPixels(), 0);
+        combinedTexture.SetPixels(256, 0, 256, 256, texture2.GetPixels(), 0);
+        combinedTexture.SetPixels(0, 256, 256, 256, texture3.GetPixels(), 0);
+        combinedTexture.SetPixels(256, 256, 256, 256, texture4.GetPixels(), 0);
         combinedTexture.Apply(false, false);
-        
+
         if (combinedTexture == null)
         {
             Debug.LogError($"Created texture is null for some reason");
@@ -285,8 +295,8 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     {
         var length = GetLength();
 
-        var minutes = (int) Mathf.Floor(length / MINUTE);
-        var seconds = (int) Mathf.Floor(length % MINUTE);
+        var minutes = (int)Mathf.Floor(length / MINUTE);
+        var seconds = (int)Mathf.Floor(length % MINUTE);
         using (var sb = ZString.CreateStringBuilder(true))
         {
             if (minutes < 10)
@@ -351,7 +361,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     {
         Debug.Log(value);
     }
-    
+
     /*private async UniTask<Texture2D> CombineTextures(Texture2D texture1,Texture2D texture2,Texture2D texture3,Texture2D texture4)
     {
         

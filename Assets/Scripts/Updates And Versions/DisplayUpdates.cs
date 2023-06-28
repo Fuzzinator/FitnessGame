@@ -18,13 +18,28 @@ public class DisplayUpdates : MonoBehaviour
     {
         using (var sb = ZString.CreateStringBuilder(true))
         {
+
             var length = VersionController.Instance.VersionDescriptions.Length;
             for (var i = length-1; i >=0; i--)
             {
-                var asset = VersionController.Instance.VersionDescriptions[i];
-                sb.Append(asset.VersionNumber);
+
+                var description = VersionController.Instance.VersionDescriptions[i];
+                switch (description.TargetPlatform)
+                {
+                    case TargetPlatform.All:
+#if UNITY_ANDROID
+                case TargetPlatform.Android:
+#elif UNITY_STANDALONE_WIN
+                    case TargetPlatform.PCVR:
+#endif
+                        break;
+                    default:
+                        continue;
+                }
+
+                sb.Append(description.VersionNumber);
                 sb.AppendLine();
-                sb.Append(asset.Description);
+                sb.Append(description.Description);
                 sb.AppendLine();
                 sb.AppendLine();
             }

@@ -90,13 +90,13 @@ public class OVRSceneLoader : MonoBehaviour
 	private void LoadScene(SceneInfo sceneInfo)
 	{
 		AssetBundle mainSceneBundle = null;
-		Debug.Log("[OVRSceneLoader] Loading main scene: " + sceneInfo.scenes[0] + " with version " + sceneInfo.version.ToString());
+		//Debug.Log("[OVRSceneLoader] Loading main scene: " + sceneInfo.scenes[0] + " with version " + sceneInfo.version.ToString());
 
 		logTextBox.text += "Target Scene: " + sceneInfo.scenes[0] + "\n";
 		logTextBox.text += "Version: " + sceneInfo.version.ToString() + "\n";
 
 		// Load main scene and dependent additive scenes (if any)
-		Debug.Log("[OVRSceneLoader] Loading scene bundle files.");
+		//Debug.Log("[OVRSceneLoader] Loading scene bundle files.");
 		// Fetch all files under scene cache path, excluding unnecessary files such as scene metadata file
 		string[] bundles = Directory.GetFiles(scenePath, "*_*");
 		logTextBox.text += "Loading " + bundles.Length + " bundle(s) . . . ";
@@ -108,7 +108,7 @@ public class OVRSceneLoader : MonoBehaviour
 				var assetBundle = AssetBundle.LoadFromFile(b);
 				if (assetBundle != null)
 				{
-					Debug.Log("[OVRSceneLoader] Loading file bundle: " + assetBundle.name == null ? "null" : assetBundle.name);
+					//Debug.Log("[OVRSceneLoader] Loading file bundle: " + assetBundle.name == null ? "null" : assetBundle.name);
 					loadedAssetBundles.Add(assetBundle);
 				}
 				else
@@ -248,7 +248,7 @@ public class OVRSceneLoader : MonoBehaviour
 			newSceneInfo = GetSceneInfo();
 			if (newSceneInfo.version != currentSceneInfo.version)
 			{
-				Debug.Log("[OVRSceneLoader] Scene change detected.");
+				//Debug.Log("[OVRSceneLoader] Scene change detected.");
 
 				// Unload all asset bundles
 				foreach (var b in loadedAssetBundles)

@@ -96,7 +96,7 @@ public class OVRMixedRealityCaptureSettings : ScriptableObject, OVRMixedRealityC
 		try
 		{
 			string configPath = Path.Combine(Application.dataPath, configFileName);
-			Debug.Log("Write OVRMixedRealityCaptureSettings to " + configPath);
+			//Debug.Log("Write OVRMixedRealityCaptureSettings to " + configPath);
 			File.WriteAllText(configPath, text);
 		}
 		catch(Exception e)
@@ -112,14 +112,14 @@ public class OVRMixedRealityCaptureSettings : ScriptableObject, OVRMixedRealityC
 			string configPath = Path.Combine(Application.dataPath, configFileName);
 			if (File.Exists(configPath))
 			{
-				Debug.Log("MixedRealityCapture configuration file found at " + configPath);
+				//Debug.Log("MixedRealityCapture configuration file found at " + configPath);
 				string text = File.ReadAllText(configPath);
-				Debug.Log("Apply MixedRealityCapture configuration");
+				//Debug.Log("Apply MixedRealityCapture configuration");
 				JsonUtility.FromJsonOverwrite(text, this);
 			}
 			else
 			{
-				Debug.Log("MixedRealityCapture configuration file doesn't exist at " + configPath);
+				//Debug.Log("MixedRealityCapture configuration file doesn't exist at " + configPath);
 			}
 		}
 		catch(Exception e)

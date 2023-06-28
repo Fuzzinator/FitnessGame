@@ -87,7 +87,7 @@ public class OVRPlatformMenu : MonoBehaviour
 	void ShowConfirmQuitMenu()
 	{
 #if UNITY_ANDROID && !UNITY_EDITOR
-		Debug.Log("[PlatformUI-ConfirmQuit] Showing @ " + Time.time);
+		//Debug.Log("[PlatformUI-ConfirmQuit] Showing @ " + Time.time);
 		OVRManager.PlatformUIConfirmQuit();
 #endif
 	}

@@ -12,7 +12,14 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private InputManager _inputManager;
 
+
+    [field: SerializeField]
+    public bool DemoMode { get; private set; }
+
     public bool GameIsPaused { get; private set; }
+
+    public const int DemoModeMaxCustomSongs = 3;
+    public const int DemoModeMaxPlaylistLength = 3;
 
     #region Const Strings
 

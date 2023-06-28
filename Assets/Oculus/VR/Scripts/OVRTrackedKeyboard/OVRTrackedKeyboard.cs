@@ -475,11 +475,11 @@ public class OVRTrackedKeyboard : MonoBehaviour
 				bool systemKeyboardSwitched = false;
 				if (SystemKeyboardInfo.Identifier != keyboardInfo.Identifier || SystemKeyboardInfo.KeyboardFlags != keyboardInfo.KeyboardFlags)
 				{
-					Debug.Log(String.Format("New System keyboard info: [{0}] {1} (Flags {2}) ({3} {4})",
+					/*Debug.Log(String.Format("New System keyboard info: [{0}] {1} (Flags {2}) ({3} {4})",
 						keyboardInfo.Identifier, keyboardInfo.Name,
 						keyboardInfo.KeyboardFlags,
 						(keyboardInfo.SupportedPresentationStyles & OVRPlugin.TrackedKeyboardPresentationStyles.Opaque) != 0 ? "Supports Opaque" : "",
-						(keyboardInfo.SupportedPresentationStyles & OVRPlugin.TrackedKeyboardPresentationStyles.KeyLabel) != 0 ? "Supports Key Label" : ""));
+						(keyboardInfo.SupportedPresentationStyles & OVRPlugin.TrackedKeyboardPresentationStyles.KeyLabel) != 0 ? "Supports Key Label" : ""));*/
 					if (TrackingState == TrackedKeyboardState.NoTrackableKeyboard){
 						SetKeyboardState(TrackedKeyboardState.Offline);
 					}
@@ -536,7 +536,7 @@ public class OVRTrackedKeyboard : MonoBehaviour
 	{
 		if (KeyboardTrackerIsRunning())
 		{
-			Debug.Log("StartKeyboardTracking(): Keyboard already being tracked");
+			//Debug.Log("StartKeyboardTracking(): Keyboard already being tracked");
 			yield break;
 		}
 
@@ -550,7 +550,7 @@ public class OVRTrackedKeyboard : MonoBehaviour
 		InitializeKeyboardInfo();
 		RegisterPassthroughMeshToSDK();
 
-		Debug.Log("Calling StartKeyboardTracking with id " + SystemKeyboardInfo.Identifier);
+		//Debug.Log("Calling StartKeyboardTracking with id " + SystemKeyboardInfo.Identifier);
 
 		if (!OVRPlugin.StartKeyboardTracking(SystemKeyboardInfo.Identifier))
 		{
@@ -588,7 +588,7 @@ public class OVRTrackedKeyboard : MonoBehaviour
 
 		TrackedKeyboardActiveChanged?.Invoke(new TrackedKeyboardSetActiveEvent(isEnabled: false));
 
-		Debug.Log($"StopKeyboardTracking {ActiveKeyboardInfo.Name}");
+		//Debug.Log($"StopKeyboardTracking {ActiveKeyboardInfo.Name}");
 
 		StopCoroutine(updateKeyboardRoutine_);
 		updateKeyboardRoutine_ = null;
@@ -708,7 +708,7 @@ public class OVRTrackedKeyboard : MonoBehaviour
 
 	private void LoadKeyboardMesh()
 	{
-		Debug.Log("LoadKeyboardMesh");
+		//Debug.Log("LoadKeyboardMesh");
 		activeKeyboardMesh_ = LoadRuntimeKeyboardMesh();
 		if(activeKeyboardMesh_ == null) {
 			Debug.LogError("Failed to load keyboard mesh.");
@@ -809,7 +809,7 @@ public class OVRTrackedKeyboard : MonoBehaviour
 
 	private GameObject LoadRuntimeKeyboardMesh()
 	{
-		Debug.Log("LoadRuntimekeyboardMesh");
+		//Debug.Log("LoadRuntimekeyboardMesh");
 		string[] modelPaths = OVRPlugin.GetRenderModelPaths();
 		if (modelPaths != null)
 		{

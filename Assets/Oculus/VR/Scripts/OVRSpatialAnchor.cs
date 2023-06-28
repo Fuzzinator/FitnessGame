@@ -700,7 +700,7 @@ public class OVRSpatialAnchor : MonoBehaviour
 #endif
 
             OVRPlugin.GetSpaceComponentStatus(result.space, OVRPlugin.SpaceComponentType.Locatable, out var enabled, out var changePending);
-            Debug.Log($"{result.uuid}: locatable enabled? {enabled} changePending? {changePending}");
+            //Debug.Log($"{result.uuid}: locatable enabled? {enabled} changePending? {changePending}");
 
             UnboundAnchorBuffer.Add(new UnboundAnchor(result.space, result.uuid));
         }

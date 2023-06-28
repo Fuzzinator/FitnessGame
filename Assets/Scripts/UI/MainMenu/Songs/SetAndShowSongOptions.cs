@@ -351,7 +351,7 @@ public class SetAndShowSongOptions : MonoBehaviour
         {
             Addressables.Release(_currentSongRequestHandle);
         }
-        if (_cancellationSource.IsCancellationRequested)
+        if (_cancellationSource != null && _cancellationSource.IsCancellationRequested)
         {
             _cancellationSource.Dispose();
             _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(_cancellationToken);
@@ -365,9 +365,9 @@ public class SetAndShowSongOptions : MonoBehaviour
 
     private async UniTaskVoid RefreshTokenAsync()
     {
-        _cancellationSource.Cancel(); 
+        _cancellationSource?.Cancel(); 
         await UniTask.DelayFrame(1);
-        _cancellationSource.Dispose();
+        _cancellationSource?.Dispose();
         _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(_cancellationToken);
     }
 

@@ -67,7 +67,7 @@ internal static class OVRMixedReality
 			OVRPlugin.InitializeMixedReality();
 			if (OVRPlugin.IsMixedRealityInitialized())
 			{
-				Debug.Log("OVRPlugin_MixedReality initialized");
+				//Debug.Log("OVRPlugin_MixedReality initialized");
 			}
 			else
 			{

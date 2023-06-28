@@ -216,7 +216,7 @@ public abstract class OVRCameraComposition : OVRComposition {
 				{
 					if (nullcameraRigWarningDisplayed)
 					{
-						Debug.Log("OVRCameraRig/CenterEyeAnchor object found. Virtual green screen is activated");
+						//Debug.Log("OVRCameraRig/CenterEyeAnchor object found. Virtual green screen is activated");
 						nullcameraRigWarningDisplayed = false;
 					}
 

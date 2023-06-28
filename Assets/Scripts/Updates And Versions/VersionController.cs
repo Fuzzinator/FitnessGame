@@ -1,19 +1,38 @@
 using Cysharp.Threading.Tasks;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.TextCore.Text;
 
 public class VersionController : MonoBehaviour
 {
     public static VersionController Instance { get; private set; }
-    [field: SerializeField] 
+    [field: SerializeField]
     public string CurrentVersion { get; private set; }
 
     [field: SerializeField]
     public UpdateDescriptionObject[] VersionDescriptions { get; private set; }
-    public UpdateDescriptionObject MostRecentUpdate => VersionDescriptions?[^1];
+    public UpdateDescriptionObject MostRecentUpdate
+    {
+        get
+        {
+            for (var i = VersionDescriptions.Length - 1; i >= 0; i--)
+            {
+                var description = VersionDescriptions[i];
+                switch (description.TargetPlatform)
+                {
+                    case TargetPlatform.All:
+#if UNITY_ANDROID
+                case TargetPlatform.Android:
+#elif UNITY_STANDALONE_WIN
+                    case TargetPlatform.PCVR:
+#endif
+                        return description;
+                    default:
+                        continue;
+                }
+            }
+            return null;
+        }
+    }
 
     [SerializeField]
     private UnityEvent _versionChanged = new UnityEvent();
@@ -46,7 +65,7 @@ public class VersionController : MonoBehaviour
     {
         await UniTask.DelayFrame(1);
 
-        if(MainMenuUIController.Instance.ActivePage != 0)
+        if (MainMenuUIController.Instance.ActivePage != 0)
         {
             return;
         }
@@ -70,7 +89,7 @@ public class VersionController : MonoBehaviour
 
     private void RequestCheckVersioning(int activePage)
     {
-        if(activePage != 0)
+        if (activePage != 0)
         {
             return;
         }

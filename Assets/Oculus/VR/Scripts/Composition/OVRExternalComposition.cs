@@ -483,7 +483,7 @@ public class OVRExternalComposition : OVRComposition
 		backgroundCamera = null;
 		OVRCompositionUtil.SafeDestroy(ref foregroundCameraGameObject);
 		foregroundCamera = null;
-		Debug.Log("ExternalComposition deactivated");
+		//Debug.Log("ExternalComposition deactivated");
 
 #if OVR_ANDROID_MRC
 		if (lastMrcEncodeFrameSyncId != -1)

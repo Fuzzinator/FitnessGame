@@ -10,7 +10,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UI.Scrollers.BeatsaverIntegraton;
-using UnityEngine.Events;
 using UnityEngine.Serialization;
 
 public class BeatSaverPageController : MonoBehaviour
@@ -207,6 +206,21 @@ public class BeatSaverPageController : MonoBehaviour
         PlaySongAudioAsync().Forget();
     }
 
+    public void TryDownloadSong()
+    {
+        if(GameManager.Instance.DemoMode && SongInfoFilesReader.Instance.CustomSongsCount >= GameManager.DemoModeMaxCustomSongs)
+        {
+            var visuals = new Notification.NotificationVisuals(
+                        $"Cannot download song. The maximum number of custom songs in this demo is {GameManager.DemoModeMaxCustomSongs}. To download more custom songs, please consider buying the full game.",
+                        "Demo Mode", autoTimeOutTime: 5f, button1Txt: "Okay");
+            NotificationManager.RequestNotification(visuals);
+        }
+        else
+        {
+            DownloadSong();
+        }
+    }
+
     public void DownloadSong()
     {
         if (_activeBeatmap == null)
@@ -378,7 +392,7 @@ public class BeatSaverPageController : MonoBehaviour
         }
         activeCell.SetDownloaded(true);
         await SongInfoFilesReader.Instance.LoadNewSong(folderName);
-        //await SongInfoFilesReader.Instance.UpdateSongs();
+
         PlaylistFilesReader.Instance.RefreshPlaylistsValidStates().Forget();
     }
 

@@ -107,9 +107,9 @@ namespace Oculus.XR
 		{
 			OVRPlugin.UnityOpenXR.Enabled = true;
 
-			Debug.Log($"[OculusXRFeature] HookGetInstanceProcAddr: {func}");
+			//Debug.Log($"[OculusXRFeature] HookGetInstanceProcAddr: {func}");
 
-			Debug.Log($"[OculusXRFeature] SetClientVersion");
+			//Debug.Log($"[OculusXRFeature] SetClientVersion");
 			OVRPlugin.UnityOpenXR.SetClientVersion();
 
 			return OVRPlugin.UnityOpenXR.HookGetInstanceProcAddr(func);
@@ -119,7 +119,7 @@ namespace Oculus.XR
 		protected override bool OnInstanceCreate(ulong xrInstance)
 		{
 			// here's one way you can grab the instance
-			Debug.Log($"[OculusXRFeature] OnInstanceCreate: {xrInstance}");
+			//Debug.Log($"[OculusXRFeature] OnInstanceCreate: {xrInstance}");
 			return OVRPlugin.UnityOpenXR.OnInstanceCreate(xrInstance);
 		}
 
@@ -127,7 +127,7 @@ namespace Oculus.XR
 		protected override void OnInstanceDestroy(ulong xrInstance)
 		{
 			// here's one way you can grab the instance
-			Debug.Log($"[OculusXRFeature] OnInstanceDestroy: {xrInstance}");
+			//Debug.Log($"[OculusXRFeature] OnInstanceDestroy: {xrInstance}");
 			OVRPlugin.UnityOpenXR.OnInstanceDestroy(xrInstance);
 		}
 
@@ -135,49 +135,49 @@ namespace Oculus.XR
 		protected override void OnSessionCreate(ulong xrSession)
 		{
 			// here's one way you can grab the session
-			Debug.Log($"[OculusXRFeature] OnSessionCreate: {xrSession}");
+			//Debug.Log($"[OculusXRFeature] OnSessionCreate: {xrSession}");
 			OVRPlugin.UnityOpenXR.OnSessionCreate(xrSession);
 		}
 
 		/// <inheritdoc />
 		protected override void OnAppSpaceChange(ulong xrSpace)
 		{
-			Debug.Log($"[OculusXRFeature] OnAppSpaceChange: {xrSpace}");
+			//Debug.Log($"[OculusXRFeature] OnAppSpaceChange: {xrSpace}");
 			OVRPlugin.UnityOpenXR.OnAppSpaceChange(xrSpace);
 		}
 
 		/// <inheritdoc />
 		protected override void OnSessionStateChange(int oldState, int newState)
 		{
-			Debug.Log($"[OculusXRFeature] OnSessionStateChange: {oldState} -> {newState}");
+			//Debug.Log($"[OculusXRFeature] OnSessionStateChange: {oldState} -> {newState}");
 			OVRPlugin.UnityOpenXR.OnSessionStateChange(oldState, newState);
 		}
 
 		/// <inheritdoc />
 		protected override void OnSessionBegin(ulong xrSession)
 		{
-			Debug.Log($"[OculusXRFeature] OnSessionBegin: {xrSession}");
+			//Debug.Log($"[OculusXRFeature] OnSessionBegin: {xrSession}");
 			OVRPlugin.UnityOpenXR.OnSessionBegin(xrSession);
 		}
 
 		/// <inheritdoc />
 		protected override void OnSessionEnd(ulong xrSession)
 		{
-			Debug.Log($"[OculusXRFeature] OnSessionEnd: {xrSession}");
+			//Debug.Log($"[OculusXRFeature] OnSessionEnd: {xrSession}");
 			OVRPlugin.UnityOpenXR.OnSessionEnd(xrSession);
 		}
 
 		/// <inheritdoc />
 		protected override void OnSessionExiting(ulong xrSession)
 		{
-			Debug.Log($"[OculusXRFeature] OnSessionExiting: {xrSession}");
+			//Debug.Log($"[OculusXRFeature] OnSessionExiting: {xrSession}");
 			OVRPlugin.UnityOpenXR.OnSessionExiting(xrSession);
 		}
 
 		/// <inheritdoc />
 		protected override void OnSessionDestroy(ulong xrSession)
 		{
-			Debug.Log($"[OculusXRFeature] OnSessionDestroy: {xrSession}");
+			//Debug.Log($"[OculusXRFeature] OnSessionDestroy: {xrSession}");
 			OVRPlugin.UnityOpenXR.OnSessionDestroy(xrSession);
 		}
 

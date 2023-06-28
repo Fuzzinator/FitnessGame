@@ -430,7 +430,7 @@ public class OVRGLTFAccessor
 			case OVRGLTFComponentType.UNSIGNED_INT:
 				return BitConverter.ToUInt32(data, index);
 			default:
-				Debug.Log(String.Format("Failed to read Component Type {0} as a uint.", type));
+				//Debug.Log(String.Format("Failed to read Component Type {0} as a uint.", type));
 				return 0;
 		}
 	}

@@ -79,7 +79,7 @@ public class OVRModeParms : MonoBehaviour
 		if (OVRPlugin.powerSaving)
 		{
 			// The device has been throttled
-			Debug.Log("POWER SAVE MODE ACTIVATED");
+			//Debug.Log("POWER SAVE MODE ACTIVATED");
 		}
 	}
 }

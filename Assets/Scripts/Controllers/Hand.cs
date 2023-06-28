@@ -287,18 +287,18 @@ public class Hand : BaseGameStateListener
         _glove = _gloveController.transform;
         SetGloveColor();
         SetOffset();
-        _glove.gameObject.SetActive(true);
+        _glove?.gameObject.SetActive(true);
         _gloveSetUp?.Invoke(_gloveController.Renderers);
     }
 
     public void HideGlove()
     {
-        _glove.gameObject.SetActive(false);
+        _glove?.gameObject.SetActive(false);
     }
 
     private void SetGlovesVisible(bool visible)
     {
-        _glove.gameObject.SetActive(visible);
+        _glove?.gameObject.SetActive(visible);
         _uiRaycaster.gameObject.SetActive(visible);
     }
 
@@ -310,13 +310,13 @@ public class Hand : BaseGameStateListener
 
     public void UnparentGlove()
     {
-        _glove.SetParent(null);
+        _glove?.SetParent(null);
         _uiRaycaster.SetParent(null);
     }
 
     public void ParentGlove()
     {
-        _glove.SetParent(transform);
+        _glove?.SetParent(transform);
         _uiRaycaster.SetParent(transform);
     }
 

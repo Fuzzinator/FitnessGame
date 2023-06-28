@@ -729,7 +729,7 @@ public class OVRPassthroughLayer : MonoBehaviour
 			if (projectionSurfaceType == ProjectionSurfaceType.Reconstructed)
 			{
 				// Ensure there are no custom surface geometries when switching to reconstruction passthrough.
-				Debug.Log("Removing user defined surface geometries");
+				//Debug.Log("Removing user defined surface geometries");
 				DestroySurfaceGeometries(false);
 			}
 

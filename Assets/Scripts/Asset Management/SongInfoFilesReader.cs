@@ -42,6 +42,7 @@ public class SongInfoFilesReader : MonoBehaviour
     private CancellationToken _destructionCancellationToken;
 
     public SongInfo.SortingMethod CurrentSortingMethod => _sortingMethod;
+    public int CustomSongsCount { get; private set; }
 
     #region Const Strings
 
@@ -75,7 +76,7 @@ public class SongInfoFilesReader : MonoBehaviour
             Instance = null;
         }
 
-        foreach(var song in availableSongs)
+        foreach (var song in availableSongs)
         {
             song.UnloadImage();
         }
@@ -95,6 +96,7 @@ public class SongInfoFilesReader : MonoBehaviour
     private async UniTask UpdateAvailableSongs()
     {
         availableSongs.Clear();
+        CustomSongsCount = 0;
 
         void AddSongs(SongInfo info)
         {
@@ -102,8 +104,15 @@ public class SongInfoFilesReader : MonoBehaviour
             _songAdded?.Invoke(info);
         }
 
+        void AddCustomSongs(SongInfo info)
+        {
+            availableSongs.Add(info);
+            _songAdded?.Invoke(info);
+            CustomSongsCount++;
+        }
+
         await AssetManager.GetBuiltInSongs(_labelReference, AddSongs);
-        await AssetManager.GetCustomSongs(AddSongs, _cancellationSource);
+        await AssetManager.GetCustomSongs(AddCustomSongs, _cancellationSource);
         SortSongs();
         _songsUpdated?.Invoke();
     }
@@ -128,6 +137,8 @@ public class SongInfoFilesReader : MonoBehaviour
         MainMenuUIController.Instance.RequestDisableUI(this);
 
         availableSongs.Remove(targetSongInfo);
+        CustomSongsCount--;
+        
         _songRemoved?.Invoke(targetSongInfo);
         _songsUpdated?.Invoke();
 
@@ -143,6 +154,8 @@ public class SongInfoFilesReader : MonoBehaviour
         if (songInfo != null)
         {
             availableSongs.Add(songInfo);
+            CustomSongsCount++;
+
             _songAdded?.Invoke(songInfo);
             SortSongs();
             _songsUpdated?.Invoke();

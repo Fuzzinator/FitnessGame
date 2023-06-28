@@ -6,11 +6,14 @@ using UnityEngine;
 public class UpdateDescriptionObject : ScriptableObject
 {
     [field: SerializeField]
+    public TargetPlatform TargetPlatform { get; private set; }
+
+    [field: SerializeField]
     public string VersionNumber { get; private set; }
-    [field: SerializeField, TextArea(2,10)]
+    [field: SerializeField, TextArea(2, 10)]
     public string ShortDescription { get; private set; }
 
-    [field: SerializeField, TextArea(5,20)]
+    [field: SerializeField, TextArea(5, 20)]
     public string Description { get; private set; }
 
 #if UNITY_EDITOR

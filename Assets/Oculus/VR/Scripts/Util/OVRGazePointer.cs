@@ -90,7 +90,7 @@ public class OVRGazePointer : OVRCursor {
         {
             if (_instance == null)
             {
-                Debug.Log(string.Format("Instanciating GazePointer", 0));
+                //Debug.Log(string.Format("Instanciating GazePointer", 0));
                 _instance = (OVRGazePointer)GameObject.Instantiate((OVRGazePointer)Resources.Load("Prefabs/GazePointerRing", typeof(OVRGazePointer)));
             }
             return _instance;

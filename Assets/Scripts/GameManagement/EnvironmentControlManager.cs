@@ -131,7 +131,6 @@ public class EnvironmentControlManager : MonoBehaviour
                     _availableReferences.Add(asset);
                     break;
                 default:
-                    Addressables.Release(asset);
                     break;
             }
 

@@ -97,7 +97,7 @@ public class OVRDirectComposition : OVRCameraComposition
 			directCompositionCamera.cullingMask = (directCompositionCamera.cullingMask & ~configuration.extraHiddenLayers) | configuration.extraVisibleLayers;
 
 
-			Debug.Log("DirectComposition activated : useDynamicLighting " + (configuration.useDynamicLighting ? "ON" : "OFF"));
+			//Debug.Log("DirectComposition activated : useDynamicLighting " + (configuration.useDynamicLighting ? "ON" : "OFF"));
 			RefreshCameraFramePlaneObject(parentObject, directCompositionCamera, configuration);
 
 			previousMainCameraObject = mainCamera.gameObject;
@@ -196,7 +196,7 @@ public class OVRDirectComposition : OVRCameraComposition
 		OVRCompositionUtil.SafeDestroy(ref directCompositionCameraGameObject);
 		directCompositionCamera = null;
 
-		Debug.Log("DirectComposition deactivated");
+		//Debug.Log("DirectComposition deactivated");
 	}
 }
 

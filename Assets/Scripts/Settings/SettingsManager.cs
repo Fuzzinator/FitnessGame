@@ -65,7 +65,7 @@ public class SettingsManager : MonoBehaviour
     public static float CurrentMinHitSpeed => GetCachedFloat(MinHitSpeed, DefaultMinHitSpeed);
     public static float DefaultMinHitSpeed = 1.5f;
     public static float DefaultMaxHitSpeed = 10f;
-    public static float SuperStrikeHitSpeed => CurrentMinHitSpeed * 2f;
+    public static float SuperStrikeHitSpeed => CurrentMinHitSpeed + 1.5f;
 
     public static bool UseEnlongatedCollider;
     public static bool UseFixedHitDirection;
@@ -451,7 +451,7 @@ public class SettingsManager : MonoBehaviour
         {
             var average = hitSide == HitSideType.Left ? ScoringAndHitStatsManager.Instance.AverageLeftHitSpeed :
                                                         ScoringAndHitStatsManager.Instance.AverageRightHitSpeed;
-            minSpeed = Mathf.Clamp(average * 1.25f, CurrentMinHitSpeed, DefaultMaxHitSpeed);
+            minSpeed = Mathf.Clamp(average + 1.5f, CurrentMinHitSpeed, DefaultMaxHitSpeed);
         }
 
         return minSpeed;

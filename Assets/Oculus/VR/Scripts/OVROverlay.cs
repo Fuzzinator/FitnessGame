@@ -860,7 +860,7 @@ public class OVROverlay : MonoBehaviour
 
 	void Awake()
 	{
-		Debug.Log("Overlay Awake");
+		//Debug.Log("Overlay Awake");
 
 		if (Application.isPlaying)
 		{
