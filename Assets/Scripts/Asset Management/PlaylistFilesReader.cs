@@ -117,6 +117,7 @@ public class PlaylistFilesReader : MonoBehaviour
         if (!availablePlaylists.Contains(playlist))
         {
             availablePlaylists.Add(playlist);
+            SortPlaylists();
         }
         _playlistsUpdated?.Invoke();
     }

@@ -519,7 +519,7 @@ public class AssetManager : MonoBehaviour
                 }
 
                 var updatedMaps = false;
-                if (file.Directory != null)
+                if (file.Directory != null && string.IsNullOrWhiteSpace(item.fileLocation))
                 {
                     item.fileLocation = file.Directory.Name;
                     updatedMaps = true;
@@ -554,7 +554,7 @@ public class AssetManager : MonoBehaviour
                 {
                     var visuals = new Notification.NotificationVisuals(
                         $"\"{item.SongName}\" was unable to be read and will not be imported.",
-                        $"Failed To Load Song \"{item.SongName}\"", autoTimeOutTime: 2.5f);
+                        $"Failed To Load Song", autoTimeOutTime: 2.5f);
                     NotificationManager.RequestNotification(visuals);
                     return null;
                 }

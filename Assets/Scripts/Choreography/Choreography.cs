@@ -68,6 +68,11 @@ public class Choreography
         return await AsyncLoadCustomSong(info.fileLocation, difficultyInfo.FileName, info.SongName, token);
     }
 
+    public static Choreography LoadFromSongInfo(SongInfo info, DifficultyInfo difficultyInfo)
+    {
+        return LoadCustomSong(info.fileLocation, difficultyInfo.FileName, info.SongName);
+    }
+
     private static async UniTask<Choreography> AsyncLoadCustomSong(string fileLocation, string fileName,
         string songName, CancellationToken token)
     {
@@ -77,53 +82,74 @@ public class Choreography
             var streamReader = new StreamReader(path);
 
             var json = await streamReader.ReadToEndAsync().AsUniTask().AttachExternalCancellation(token);
-            Choreography choreography = null;
-
-
-            if (!string.IsNullOrWhiteSpace(json))
-            {
-                var first150 = json[..150].Replace(" ", "");
-                if (first150.Contains(V3V1))
-                {
-                    var v3Choreography = JsonUtility.FromJson<BeatsaberV3Choreography>(json);
-                    if (v3Choreography.colorNotes != null)
-                    {
-                        choreography = new Choreography(v3Choreography);
-                    }
-                }
-                else// if (first150.Contains(V1V1) || first150.Contains(V2V1))
-                {
-                    try
-                    {
-                        choreography = JsonUtility.FromJson<Choreography>(json);
-                    }
-                    catch (Exception e)
-                    {
-                        if (LevelManager.Instance != null)
-                        {
-                            LevelManager.Instance.LoadFailed();
-                            NotificationManager.ReportFailedToLoadInGame($"{songName}'s choreography failed to load.");
-                        }
-
-                        Debug.LogError(e);
-                        return choreography;
-                    }
-                }
-            }
-
-            if (LevelManager.Instance != null && choreography?.Notes == null)
-            {
-                LevelManager.Instance.LoadFailed();
-                NotificationManager.ReportFailedToLoadInGame($"{songName}'s choreography failed to load.");
-            }
-
-            return choreography;
+            return ReadJsonToChoreography(json, songName);
         }
         catch (Exception e) when (e is OperationCanceledException)
         {
         }
 
         return null;
+    }
+
+    private static Choreography LoadCustomSong(string fileLocation, string fileName, string songName)
+    {
+        var path = $"{AssetManager.SongsPath}/{fileLocation}/{fileName}";
+        try
+        {
+            var streamReader = new StreamReader(path);
+
+            var json = streamReader.ReadToEnd();
+            return ReadJsonToChoreography(json, songName);
+        }
+        catch (Exception e) when (e is OperationCanceledException)
+        {
+        }
+
+        return null;
+    }
+
+    private static Choreography ReadJsonToChoreography(string json, string songName)
+    {
+        Choreography choreography = null;
+
+        if (!string.IsNullOrWhiteSpace(json))
+        {
+            var first150 = json[..150].Replace(" ", "");
+            if (first150.Contains(V3V1))
+            {
+                var v3Choreography = JsonUtility.FromJson<BeatsaberV3Choreography>(json);
+                if (v3Choreography.colorNotes != null)
+                {
+                    choreography = new Choreography(v3Choreography);
+                }
+            }
+            else// if (first150.Contains(V1V1) || first150.Contains(V2V1))
+            {
+                try
+                {
+                    choreography = JsonUtility.FromJson<Choreography>(json);
+                }
+                catch (Exception e)
+                {
+                    if (LevelManager.Instance != null)
+                    {
+                        LevelManager.Instance.LoadFailed();
+                        NotificationManager.ReportFailedToLoadInGame($"{songName}'s choreography failed to load.");
+                    }
+
+                    Debug.LogError(e);
+                    return choreography;
+                }
+            }
+        }
+
+        if (LevelManager.Instance != null && choreography?.Notes == null)
+        {
+            LevelManager.Instance.LoadFailed();
+            NotificationManager.ReportFailedToLoadInGame($"{songName}'s choreography failed to load.");
+        }
+
+        return choreography;
     }
 
     public static async UniTask<Choreography> AsyncLoadFromPlaylist(PlaylistItem item, DifficultyInfo difficultyInfo,

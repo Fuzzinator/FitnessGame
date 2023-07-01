@@ -52,6 +52,7 @@ public class SetAndShowSongOptions : MonoBehaviour
 
     [SerializeField]
     private bool _autoPlayPreview = false;
+    private bool _stopAutoPlay = false;
 
     public string SelectedDifficulty => _selectedDifficulty;
     public DifficultyInfo.DifficultyEnum DifficultyAsEnum => _difficultyEnum;
@@ -82,7 +83,7 @@ public class SetAndShowSongOptions : MonoBehaviour
 
     private void OnDisable()
     {
-        if (_autoPlayPreview)
+        if (_autoPlayPreview && _stopAutoPlay)
         {
             StopSongPreview();
         }
@@ -105,6 +106,7 @@ public class SetAndShowSongOptions : MonoBehaviour
 
         if (_autoPlayPreview && gameObject.activeInHierarchy)
         {
+            StopSongPreview();
             WaitAndPlayPreview().Forget();
         }
     }
@@ -129,6 +131,7 @@ public class SetAndShowSongOptions : MonoBehaviour
 
     private void UpdateAvailableGameModes()
     {
+        _stopAutoPlay = false;
         gameObject.SetActive(false);
         _gameTypeTexts[0].transform.parent.gameObject.SetActive(false);
         _typeDifficultyTexts[0].transform.parent.gameObject.SetActive(false);
@@ -167,6 +170,7 @@ public class SetAndShowSongOptions : MonoBehaviour
         gameObject.SetActive(true);
         _gameTypeTexts[0].transform.parent.gameObject.SetActive(true);
         _typeDifficultyTexts[0].transform.parent.gameObject.SetActive(true);
+        _stopAutoPlay = true;
 
         _gameTypeToggles[lowest].SetIsOnWithoutNotify(true);
         SetSelectedType(_gameTypeToggles[lowest]);
@@ -174,7 +178,9 @@ public class SetAndShowSongOptions : MonoBehaviour
 
     private void UpdateAvailableDifficulties()
     {
+        _stopAutoPlay = false;
         gameObject.SetActive(false);
+
         _gameTypeTexts[0].transform.parent.gameObject.SetActive(false);
         _typeDifficultyTexts[0].transform.parent.gameObject.SetActive(false);
 
@@ -213,6 +219,8 @@ public class SetAndShowSongOptions : MonoBehaviour
         gameObject.SetActive(true);
         _gameTypeTexts[0].transform.parent.gameObject.SetActive(true);
         _typeDifficultyTexts[0].transform.parent.gameObject.SetActive(true);
+
+        _stopAutoPlay = true;
 
         if (hasCurrentID > 0)
         {
@@ -318,7 +326,7 @@ public class SetAndShowSongOptions : MonoBehaviour
         {
             var playlistItem = new PlaylistItem(_songInfo, _selectedDifficulty, _difficultyEnum, _activeDifficultySet.MapGameMode);
             PlaylistManager.Instance.SetTempSongPlaylist(playlistItem, _forwardFootSetter.TargetHitSideType);
-            if(_autoPlayPreview)
+            if (_autoPlayPreview)
             {
                 StopSongPreview();
             }
@@ -343,7 +351,7 @@ public class SetAndShowSongOptions : MonoBehaviour
         PlaySongAudioAsync().Forget();
     }
 
-    public void StopSongPreview()
+    public async void StopSongPreview()
     {
         _audioSource.Stop();
         _previewButtonText.SetText(Preview);
@@ -354,6 +362,7 @@ public class SetAndShowSongOptions : MonoBehaviour
         if (_cancellationSource != null && _cancellationSource.IsCancellationRequested)
         {
             _cancellationSource.Dispose();
+            await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
             _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(_cancellationToken);
         }
         else
@@ -365,7 +374,7 @@ public class SetAndShowSongOptions : MonoBehaviour
 
     private async UniTaskVoid RefreshTokenAsync()
     {
-        _cancellationSource?.Cancel(); 
+        _cancellationSource?.Cancel();
         await UniTask.DelayFrame(1);
         _cancellationSource?.Dispose();
         _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(_cancellationToken);
@@ -432,12 +441,25 @@ public class SetAndShowSongOptions : MonoBehaviour
 
     private async UniTaskVoid WaitAndPlayPreview()
     {
-        var activeMap = _songInfo;
-        await UniTask.Delay(TimeSpan.FromSeconds(2.5f), cancellationToken: _cancellationSource.Token);
-        if (_cancellationSource.IsCancellationRequested || activeMap != _songInfo)
+        try
         {
-            return;
+            await UniTask.DelayFrame(2, cancellationToken: _cancellationToken);
+            var activeMap = _songInfo;
+            await UniTask.Delay(TimeSpan.FromSeconds(2.5f), cancellationToken: _cancellationSource.Token);
+            if (_cancellationSource.IsCancellationRequested || activeMap != _songInfo)
+            {
+                return;
+            }
+            PreviewSong();
         }
-        PreviewSong();
+        catch (Exception e)
+        {
+            if (e is OperationCanceledException or ObjectDisposedException || _cancellationSource == null)
+            {
+                return;
+            }
+
+            Debug.LogError($"failed to play song preview\n {e.Message}");
+        }
     }
 }

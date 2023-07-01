@@ -13,19 +13,19 @@ namespace UI.Scrollers.Playlists
 {
     public class DisplayPlaylistInfo : MonoBehaviour
     {
-        [SerializeField] 
+        [SerializeField]
         private CanvasGroup _playlistTitleCard;
 
-        [SerializeField] 
+        [SerializeField]
         TextMeshProUGUI _playlistTitle;
 
-        [SerializeField] 
+        [SerializeField]
         TextMeshProUGUI _playlistName;
-        [SerializeField] 
+        [SerializeField]
         private TextMeshProUGUI _playlistLength;
-        [SerializeField] 
+        [SerializeField]
         private TextMeshProUGUI _playlistRecordScore;
-        [SerializeField] 
+        [SerializeField]
         TextMeshProUGUI _playlistRecordStreak;
 
         [SerializeField] private Button _playButton;
@@ -35,7 +35,7 @@ namespace UI.Scrollers.Playlists
         [SerializeField] private Button _deleteButton;
 
         [SerializeField] private PlaylistSongScrollerController _scrollerController;
-        
+
         private CancellationToken _cancellationToken;
 
         private void OnEnable()
@@ -54,14 +54,21 @@ namespace UI.Scrollers.Playlists
         {
             //_playButton.onClick.AddListener(TryLoadBaseLevel);
             _cancellationToken = this.GetCancellationTokenOnDestroy();
-            _playlistTitleCard.interactable = PlaylistManager.Instance.CurrentPlaylist.isValid;
+            if (PlaylistManager.Instance.CurrentPlaylist != null)
+            {
+                _playlistTitleCard.interactable = PlaylistManager.Instance.CurrentPlaylist.isValid;
+            }
+            else
+            {
+                _playlistTitleCard.interactable = false;
+            }
         }
 
         public void RequestShowInfo(Playlist playlist)
         {
             ShowInfo().Forget();
         }
-        
+
         public async UniTaskVoid ShowInfo()
         {
             await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
@@ -71,7 +78,7 @@ namespace UI.Scrollers.Playlists
                 _playlistTitleCard.interactable = false;
                 return;
             }
-            
+
             _playlistTitleCard.interactable = true;
             //_playlistTitleCard.interactable = currentPlaylist.isValid;
             _playlistTitle.SetText(currentPlaylist.PlaylistName);
@@ -86,7 +93,7 @@ namespace UI.Scrollers.Playlists
 
             ulong score = 0;
             var streak = 0;
-            if (playlistRecords.scores != null && playlistRecords.scores.Length>0)
+            if (playlistRecords.scores != null && playlistRecords.scores.Length > 0)
             {
                 score = playlistRecords.scores[0].Score;
                 streak = playlistRecords.streaks[0].Streak;

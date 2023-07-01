@@ -68,6 +68,10 @@ public class SetTargetForwardFoot : MonoBehaviour
 
     private void UpdateFromPlaylist(Playlist playlist)
     {
+        if(playlist == null)
+        {
+            return;
+        }
         SetActiveToggle((int)playlist.StartingSide);
     }
 

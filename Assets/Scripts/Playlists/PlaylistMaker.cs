@@ -54,6 +54,8 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     private string _originalName;
     private string _targetEnv;
 
+    private bool _changesMade = false;
+
     private CancellationToken _cancallationToken;
 
     #region Const Strings
@@ -114,6 +116,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         }
         else
         {
+            _changesMade = true;
             _playlistItems.Add(item);
             _playlistItemsUpdated?.Invoke();
         }
@@ -126,7 +129,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
             Debug.LogWarning("Playlist not contained but trying to remove it. This shouldnt happen.");
             return;
         }
-
+        _changesMade = true;
         _playlistItems.Remove(item);
         _playlistItemsUpdated?.Invoke();
     }
@@ -141,32 +144,38 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         {
             _playlistItems.Add(item);
         }
-
+        
+        _changesMade = true;
         _playlistItemsUpdated?.Invoke();
     }
 
     public void ShufflePlaylistItems()
     {
+        _changesMade = true;
         _playlistItems.Shuffle();
     }
 
     public void SetPlaylistName(string newName)
     {
+        _changesMade = true;
         _playlistName = newName;
     }
 
     public void SetTargetEnvironment(string envName)
     {
+        _changesMade = true;
         _targetEnv = envName;
     }
 
     public void SetStartingType(HitSideType startingSide)
     {
+        _changesMade = true;
         _startingSide = startingSide;
     }
 
     public void CreatePlaylist()
     {
+        _changesMade = false;
         CreatePlaylistAsync().Forget();
     }
 
@@ -198,9 +207,9 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         var filePath = $"{AssetManager.PlaylistsPath}{_playlistName}.txt";
         if (_editMode)
         {
+            PlaylistFilesReader.Instance.RemovePlaylistByName(_originalName);
             if (_originalName != _playlistName && File.Exists($"{AssetManager.PlaylistsPath}{_originalName}.txt"))
             {
-                PlaylistFilesReader.Instance.RemovePlaylistByName(_originalName);
                 AssetManager.DeletePlaylist(_originalName);
             }
         }
@@ -330,6 +339,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
             _gameMode = playlist.TargetGameMode;
             _startingSide = playlist.StartingSide;
 
+            _changesMade = false;
             _playlistItems.Clear();
             _playlistItems.AddRange(playlist.Items);
 
@@ -339,6 +349,8 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         {
             _originalName = null;
             _playlistName = string.Empty;
+
+            _changesMade = false;
             _playlistItems.Clear();
             _playlistItemsUpdated?.Invoke();
             _gameMode = GameMode.Unset;
@@ -349,17 +361,38 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
 
     public void SetDifficulty(DifficultyInfo.DifficultyEnum difficultyEnum)
     {
+        _changesMade = true;
         _difficulty = difficultyEnum;
     }
 
     public void SetGameMode(GameMode gameMode)
     {
+        _changesMade = true;
         _gameMode = gameMode;
     }
 
     public void Report(float value)
     {
         Debug.Log(value);
+    }
+
+    public void TryReturnToHome()
+    {
+        if (_changesMade)
+        {
+            var visuals = new Notification.NotificationVisuals("Unsaved changes in playlist. Would you like to save?", "Unsaved Changes", "Yes", "No", "Cancel");
+            NotificationManager.RequestNotification(visuals, () => CreatePlaylistAndGoHome(), () => MainMenuUIController.Instance.SetActivePage(0));
+        }
+        else
+        {
+            MainMenuUIController.Instance.SetActivePage(0);
+        }
+    }
+
+    private void CreatePlaylistAndGoHome()
+    {
+        CreatePlaylist();
+        MainMenuUIController.Instance.SetActivePage(0);
     }
 
     /*private async UniTask<Texture2D> CombineTextures(Texture2D texture1,Texture2D texture2,Texture2D texture3,Texture2D texture4)
