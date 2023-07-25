@@ -80,7 +80,10 @@ public class EnvironmentController : MonoBehaviour
             await Addressables.UnloadSceneAsync(_sceneInstanceHandle);
         }
         
-        await Addressables.LoadSceneAsync(_sceneReference, LoadSceneMode.Additive, true);
+        var sceneInstance =  await Addressables.LoadSceneAsync(_sceneReference, LoadSceneMode.Additive, true);
+
+        SceneManager.SetActiveScene(sceneInstance.Scene);
+
         _sceneInstanceHandle = new AsyncOperationHandle<SceneInstance>();
         //_sceneLoadOperation = SceneManager.LoadSceneAsync(_targetSceneName, LoadSceneMode.Additive);
         //LoadTracker().Forget();

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class SetRendererMaterial : MonoBehaviour, ITargetInitializer
+public class SetRendererMaterial : MonoBehaviour, IInitializer
 {
     [SerializeField]
     private Renderer[] _targetRenderers;
@@ -23,9 +23,9 @@ public class SetRendererMaterial : MonoBehaviour, ITargetInitializer
 
     public Renderer[] Renderers => _targetRenderers;
 
-    public void Initialize(HitSideType type, bool superNote)
+    public void Initialize(BaseObstacle obstacle) 
     {
-        SetMaterial(type, superNote);
+        SetMaterial(HitSideType.Unused, false);
     }
 
     public void Initialize(BaseTarget target)

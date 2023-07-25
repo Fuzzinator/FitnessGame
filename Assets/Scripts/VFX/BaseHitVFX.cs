@@ -101,12 +101,16 @@ public class BaseHitVFX : MonoBehaviour, IPoolable
         [field: SerializeField]
         public ParticleSystem System {get; private set;}
 
+        [field: SerializeField]
+        public bool SetColor { get; private set; }
+
         public ParticleSystemControls(ParticleSystem sourceSystem)
         {
             SizeModifier = sourceSystem.main.startSizeMultiplier;
             SpeedModifier = sourceSystem.main.startSpeedMultiplier;
             BurstCount = sourceSystem.emission.GetBurst(0).count.constant;
             System = sourceSystem;
+            SetColor = true;
         }
     }
 }

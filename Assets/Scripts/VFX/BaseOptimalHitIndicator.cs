@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class BaseOptimalHitIndicator : MonoBehaviour, ITargetInitializer
+public class BaseOptimalHitIndicator : MonoBehaviour, IInitializer
 {
     [SerializeField]
     private BaseTarget _baseTarget;
@@ -25,6 +25,9 @@ public class BaseOptimalHitIndicator : MonoBehaviour, ITargetInitializer
 
         OnEnable();
     }
+
+    public void Initialize(BaseObstacle obstacle) { }
+
 
     private void OnEnable()
     {

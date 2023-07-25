@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(BaseTarget))]
+//[RequireComponent(typeof(BaseTarget))]
 public class BaseValidHitEffect : MonoBehaviour, IValidHit
 {
    [SerializeField]

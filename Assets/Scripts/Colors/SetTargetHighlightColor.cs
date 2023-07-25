@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SetTargetHighlightColor : MonoBehaviour, ITargetInitializer
+public class SetTargetHighlightColor : MonoBehaviour, IInitializer
 {
     [SerializeField]
     private Renderer _baseTarget;
@@ -19,11 +19,11 @@ public class SetTargetHighlightColor : MonoBehaviour, ITargetInitializer
     public void Initialize(BaseTarget target)
     {
         var color = _baseTarget.sharedMaterial.color;
-        var offset = _baseTarget.sharedMaterial.GetVector(_positionChange);
+        //var offset = _baseTarget.sharedMaterial.GetVector(_positionChange);
         foreach (var rend in _highlight)
         {
             rend.material.color = color;
-            rend.material.SetVector(_positionChange, offset);
+            //rend.material.SetVector(_positionChange, offset);
         }
 
         _initialized = true;
@@ -36,4 +36,6 @@ public class SetTargetHighlightColor : MonoBehaviour, ITargetInitializer
             Destroy(rend.material);
         }
     }
+
+    public void Initialize(BaseObstacle obstacle) { }
 }

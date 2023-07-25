@@ -31,7 +31,7 @@ public class BaseTarget : MonoBehaviour, IPoolable
 
     protected bool _wasHit = false;
 
-    protected List<ITargetInitializer> _targetInitializers = new List<ITargetInitializer>();
+    protected List<IInitializer> _targetInitializers = new List<IInitializer>();
     protected List<IValidHit> _validHitEffects = new List<IValidHit>();
     protected List<IMissedHit> _missedHitEffects = new List<IMissedHit>();
     protected List<IBadHit> _badHitEffects = new List<IBadHit>();

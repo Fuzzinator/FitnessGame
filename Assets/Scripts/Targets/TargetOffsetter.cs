@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TargetOffsetter : MonoBehaviour, ITargetInitializer
+public class TargetOffsetter : MonoBehaviour, IInitializer
 {
     [SerializeField]
     private float _positionChangeDistance;
@@ -22,6 +22,8 @@ public class TargetOffsetter : MonoBehaviour, ITargetInitializer
 
     private const float LeftRotation = -45;
     private const float RightRotation = 45;
+
+    public void Initialize(BaseObstacle obstacle) { }
 
     public void Initialize(BaseTarget target)
     {
