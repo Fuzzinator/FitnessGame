@@ -17,6 +17,7 @@ using UnityEngine.Android;
 public class AssetManager : MonoBehaviour
 {
     private static string _dataPath;
+    private static string _customSkyboxesPath;
 
     public static string DataPath
     {
@@ -31,17 +32,32 @@ public class AssetManager : MonoBehaviour
         }
     }
 
+    public static string CustomSkyboxesPath
+    {
+        get
+        {
+            if(string.IsNullOrWhiteSpace(_customSkyboxesPath))
+            {
+                _dataPath = GetCustomSkyboxesPath();
+            }
+            return _customSkyboxesPath;
+        }
+    }
+
     #region Const Strings
 
 #if UNITY_EDITOR
     private const string PAUSEINEDITOR = "Pause In Editor";
     private const string SONGSFOLDER = "/LocalCustomSongs/Songs/";
     private const string PLAYLISTSFOLDER = "/LocalCustomSongs/Playlists/";
+    private const string CustomSkyboxFolder = "/LocalCustomSkyboxes/";
+
 #else
     private const string SONGSFOLDER = "/Resources/Songs/";
     private const string PLAYLISTSFOLDER = "/Resources/Playlists/";
 #if UNITY_ANDROID
     private const string ANDROIDPATHSTART = "file://";
+    private const string CustomSkyboxFolder = "/sdcard/Download/";
 #endif
 
 #endif
@@ -77,6 +93,17 @@ public class AssetManager : MonoBehaviour
             Application.dataPath;
 #endif
     }
+
+    private static string GetCustomSkyboxesPath()
+    {
+        return
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN
+            $"{DataPath}{CustomSkyboxesPath}";
+#elif UNITY_ANDROID
+            CustomSkyboxesPath;
+#endif
+    }
+
 
     public static bool CheckPermissions()
     {

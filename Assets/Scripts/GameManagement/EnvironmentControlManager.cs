@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Net.NetworkInformation;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -14,6 +16,8 @@ public class EnvironmentControlManager : MonoBehaviour
 
     [SerializeField]
     private List<AddressableEnvAssetRef> _availableReferences = new List<AddressableEnvAssetRef>();
+    [SerializeField]
+    private List<string> _availableCustomSkyboxes = new List<string>();
 
     public UnityEvent availableReferencesUpdated = new UnityEvent();
 
@@ -55,6 +59,7 @@ public class EnvironmentControlManager : MonoBehaviour
 
     private async UniTaskVoid UpdateEnvironments()
     {
+        await GetCustomSkyboxes();
         await GetBuiltInEnvironments();
 
         _availableReferences.Sort((x, y) => x.EnvironmentName.CompareTo(y.EnvironmentName));
@@ -137,6 +142,22 @@ public class EnvironmentControlManager : MonoBehaviour
         });
         _assetHandles.Add(results);
         await results;
+    }
+
+    private async UniTask GetCustomSkyboxes()
+    {
+        _availableCustomSkyboxes.Clear();
+        var info = new DirectoryInfo(AssetManager.CustomSkyboxesPath);
+        var files = info.GetFiles();
+        foreach (var file in files)
+        {
+            if (file == null)
+            {
+                continue;
+            }
+
+            
+        }
     }
 
     private async UniTask LoadEnvironmentDataAsync(int index)
