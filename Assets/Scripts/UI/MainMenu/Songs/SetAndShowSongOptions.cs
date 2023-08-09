@@ -98,8 +98,8 @@ public class SetAndShowSongOptions : MonoBehaviour
         _difficultyToggleGroup.gameObject.SetActive(true);
         _playButton.gameObject.SetActive(true);
         _playButtonText.gameObject.SetActive(true);
-        _previewButton.gameObject.SetActive(true);
-        _previewButtonText.gameObject.SetActive(true);
+        _previewButton?.gameObject.SetActive(true);
+        _previewButtonText?.gameObject.SetActive(true);
         _gameTypeTexts[0].transform.parent.gameObject.SetActive(true);
         _typeDifficultyTexts[0].transform.parent.gameObject.SetActive(true);
         UpdateAvailableGameModes();
@@ -118,8 +118,8 @@ public class SetAndShowSongOptions : MonoBehaviour
         _difficultyToggleGroup.gameObject.SetActive(false);
         _playButton.gameObject.SetActive(false);
         _playButtonText.gameObject.SetActive(false);
-        _previewButton.gameObject.SetActive(false);
-        _previewButtonText.gameObject.SetActive(false);
+        _previewButton?.gameObject.SetActive(false);
+        _previewButtonText?.gameObject.SetActive(false);
         _gameTypeTexts[0].transform.parent.gameObject.SetActive(false);
         _typeDifficultyTexts[0].transform.parent.gameObject.SetActive(false);
 

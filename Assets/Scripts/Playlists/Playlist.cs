@@ -68,7 +68,7 @@ public class Playlist
 
     public ColorsManager.ColorSet TargetColors => _targetColors;
 
-    public HitSideType StartingSide => _setStartingSide ? _startingSide: HitSideType.Right;
+    public HitSideType StartingSide => _setStartingSide ? _startingSide: HitSideType.Left;
     public string ReadableLength
     {
         get

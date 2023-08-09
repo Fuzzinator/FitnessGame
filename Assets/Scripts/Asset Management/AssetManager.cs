@@ -12,6 +12,8 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 #if UNITY_ANDROID
 using UnityEngine.Android;
+#elif UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+using System.Runtime.InteropServices;
 #endif
 
 public class AssetManager : MonoBehaviour
@@ -32,38 +34,31 @@ public class AssetManager : MonoBehaviour
         }
     }
 
-    public static string CustomSkyboxesPath
-    {
-        get
-        {
-            if(string.IsNullOrWhiteSpace(_customSkyboxesPath))
-            {
-                _dataPath = GetCustomSkyboxesPath();
-            }
-            return _customSkyboxesPath;
-        }
-    }
-
     #region Const Strings
-
 #if UNITY_EDITOR
     private const string PAUSEINEDITOR = "Pause In Editor";
     private const string SONGSFOLDER = "/LocalCustomSongs/Songs/";
     private const string PLAYLISTSFOLDER = "/LocalCustomSongs/Playlists/";
     private const string CustomSkyboxFolder = "/LocalCustomSkyboxes/";
-
+    private const string CustomEnvironmentFolder = "/LocalCustomEnvironments/";
 #else
     private const string SONGSFOLDER = "/Resources/Songs/";
-    private const string PLAYLISTSFOLDER = "/Resources/Playlists/";
+    private const string PLAYLISTSFOLDER = "/Resources/Playlists/";    
+    private const string CustomSkyboxFolder = "/Resources/LocalCustomSkyboxes/";
+    private const string CustomEnvironmentFolder = "/Resources/LocalCustomEnvironments/";
+
 #if UNITY_ANDROID
     private const string ANDROIDPATHSTART = "file://";
-    private const string CustomSkyboxFolder = "/sdcard/Download/";
+    private const string DownloadsFolder = "/sdcard/Download/";
 #endif
+
 
 #endif
 
     public static readonly string SongsPath = $"{DataPath}{SONGSFOLDER}";
     public static readonly string PlaylistsPath = $"{DataPath}{PLAYLISTSFOLDER}";
+    public static readonly string SkyboxesPath = $"{DataPath}{CustomSkyboxFolder}";
+    public static readonly string EnvironmentsPath = $"{DataPath}{CustomEnvironmentFolder}";
 
     private const string PLAYLISTEXTENSION = ".txt";
     private const string JPGEXTENSION = ".jpg";
@@ -82,6 +77,35 @@ public class AssetManager : MonoBehaviour
 
     #endregion
 
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+    private static Guid DownloadsFolder = new Guid("374DE290-123F-4565-9164-39C4925E467B");
+
+    [DllImport("shell32.dll", CharSet = CharSet.Auto)]
+    private static extern int SHGetKnownFolderPath(ref Guid id, int flags, IntPtr token, out IntPtr path);
+
+#endif
+
+    public static string DownloadsPath()
+    {
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+        if (Environment.OSVersion.Version.Major < 6) throw new NotSupportedException();
+
+        IntPtr pathPtr = IntPtr.Zero;
+
+        try
+        {
+            SHGetKnownFolderPath(ref DownloadsFolder, 0, IntPtr.Zero, out pathPtr);
+            return Marshal.PtrToStringUni(pathPtr);
+        }
+        finally
+        {
+            Marshal.FreeCoTaskMem(pathPtr);
+        }
+#elif UNITY_ANDROID
+        return DownloadsFolder;
+#endif
+    }
+
     private static string GetDataPath()
     {
         return
@@ -93,17 +117,6 @@ public class AssetManager : MonoBehaviour
             Application.dataPath;
 #endif
     }
-
-    private static string GetCustomSkyboxesPath()
-    {
-        return
-#if UNITY_EDITOR || UNITY_STANDALONE_WIN
-            $"{DataPath}{CustomSkyboxesPath}";
-#elif UNITY_ANDROID
-            CustomSkyboxesPath;
-#endif
-    }
-
 
     public static bool CheckPermissions()
     {
@@ -652,7 +665,7 @@ public class AssetManager : MonoBehaviour
 
     private static async UniTask SavePlaylist(Playlist playlist, string fullPath)
     {
-        var streamWriter = File.CreateText(fullPath);
+        using var streamWriter = File.CreateText(fullPath);
         var json = JsonUtility.ToJson(playlist);
         var writingTask = streamWriter.WriteAsync(json);
 

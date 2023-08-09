@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -38,9 +39,16 @@ public class UIMenuController : MonoBehaviour
             _initialized = true;
             return;
         }
-        _activePage = _settingsPages[0];
-        _activePage.SetGroupState(1, true);
-        _activePage.gameObject.SetActive(true);
+
+        Activate();
+    }
+
+    protected virtual void OnDisable()
+    {
+        foreach( var page in _settingsPages )
+        {
+            page.SetGroupState(0, false);
+        }
     }
 
     public virtual void Activate()
@@ -81,6 +89,17 @@ public class UIMenuController : MonoBehaviour
         _activePage.gameObject.SetActive(true);
 
         _activePageIndex = pageNumber;
+        DelayAndUpdateToggle(pageNumber).Forget();
+    }
+
+    private async UniTaskVoid DelayAndUpdateToggle(int pageNumber)
+    {
+        await UniTask.DelayFrame(1);
+        if(_toggles.Count > 0 || pageNumber >= _toggles.Count) 
+        {
+            return;
+        }
+        _toggles[pageNumber].SetIsOnWithoutNotify(true);
     }
 
 

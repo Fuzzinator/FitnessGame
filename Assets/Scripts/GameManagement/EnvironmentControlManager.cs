@@ -17,7 +17,7 @@ public class EnvironmentControlManager : MonoBehaviour
     [SerializeField]
     private List<AddressableEnvAssetRef> _availableReferences = new List<AddressableEnvAssetRef>();
     [SerializeField]
-    private List<string> _availableCustomSkyboxes = new List<string>();
+    private List<CustomEnvironment> _availableCustomEnvironments = new List<CustomEnvironment>();
 
     public UnityEvent availableReferencesUpdated = new UnityEvent();
 
@@ -59,7 +59,7 @@ public class EnvironmentControlManager : MonoBehaviour
 
     private async UniTaskVoid UpdateEnvironments()
     {
-        await GetCustomSkyboxes();
+        await GetCustomEnvironments();
         await GetBuiltInEnvironments();
 
         _availableReferences.Sort((x, y) => x.EnvironmentName.CompareTo(y.EnvironmentName));
@@ -114,6 +114,13 @@ public class EnvironmentControlManager : MonoBehaviour
         LoadEnvironmentDataAsync(index).Forget();
     }
 
+    private async UniTask GetCustomEnvironments()
+    {
+        _availableCustomEnvironments.Clear();
+
+        var results = CustomEnvironmentsController.RefreshAvailableCustomEnvironments();
+    }
+
     private async UniTask GetBuiltInEnvironments()
     {
         _availableReferences.Clear();
@@ -144,21 +151,7 @@ public class EnvironmentControlManager : MonoBehaviour
         await results;
     }
 
-    private async UniTask GetCustomSkyboxes()
-    {
-        _availableCustomSkyboxes.Clear();
-        var info = new DirectoryInfo(AssetManager.CustomSkyboxesPath);
-        var files = info.GetFiles();
-        foreach (var file in files)
-        {
-            if (file == null)
-            {
-                continue;
-            }
-
-            
-        }
-    }
+    
 
     private async UniTask LoadEnvironmentDataAsync(int index)
     {

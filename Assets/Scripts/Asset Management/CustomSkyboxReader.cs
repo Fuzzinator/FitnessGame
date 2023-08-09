@@ -1,3 +1,5 @@
+using Superla.RadianceHDR;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -17,7 +19,7 @@ public class CustomSkyboxReader : MonoBehaviour
     /// <summary>
     /// These are the faces of a cube
     /// </summary>
-    private Vector3[][] faces =
+    private static Vector3[][] faces =
     {
         new Vector3[] {
             new Vector3(1.0f, 1.0f, -1.0f),
@@ -59,6 +61,10 @@ public class CustomSkyboxReader : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        var images = CustomEnvironmentsController.GetImagePathsInDownloads();
+
+
+        return;
         var path = $"{AssetManager.DataPath}{SkyboxesFolder}";
 
         var info = new DirectoryInfo(path);
@@ -70,20 +76,37 @@ public class CustomSkyboxReader : MonoBehaviour
                 continue;
             }
 
-            if (string.Equals(file.Extension, Png, System.StringComparison.InvariantCultureIgnoreCase))
+            Texture2D source;
+            if (string.Equals(file.Extension, Exr, StringComparison.InvariantCultureIgnoreCase))//string.Equals(file.Extension, Png, System.StringComparison.InvariantCultureIgnoreCase))
+            {
+                byte[] fileData = File.ReadAllBytes(file.FullName);
+                var radianceTexture = new RadianceHDRTexture(fileData);
+                source = radianceTexture.texture;
+            }
+            else
             {
                 // Step 1: Load the PNG texture from the file
-                var source = LoadPanoramicTexture(file.FullName);
-                
-                var cubemap = new Cubemap(CubemapResolution, TextureFormat.RGB24, false);
+                source = LoadPanoramicTexture(file.FullName);
+            }
+                var cubemap = new Cubemap(CubemapResolution, source.format, false);
                 SetCubeMapColors(cubemap, source);
 
                 _mat.SetTexture("_Albedo", cubemap);
-            }
+            //}
         }
     }
 
-    Texture2D LoadPanoramicTexture(string path)
+    public static Cubemap LoadCubemap(string path)
+    {
+        var source = LoadPanoramicTexture(path);
+
+        var cubemap = new Cubemap(CubemapResolution, TextureFormat.RGB24, false);
+
+        SetCubeMapColors(cubemap, source);
+
+        return cubemap;
+    }
+    private static Texture2D LoadPanoramicTexture(string path)
     {
         byte[] fileData = File.ReadAllBytes(path);
         Texture2D texture = new Texture2D(2, 2);
@@ -91,7 +114,7 @@ public class CustomSkyboxReader : MonoBehaviour
         return texture;
     }
 
-    private void SetCubeMapColors(Cubemap cubemap, Texture2D sourceTexture)
+    private static void SetCubeMapColors(Cubemap cubemap, Texture2D sourceTexture)
     {
         Color[] CubeMapColors;
 
@@ -110,7 +133,7 @@ public class CustomSkyboxReader : MonoBehaviour
     /// <param name="resolution">The targetresolution in pixels</param>
     /// <param name="face">The target face</param>
     /// <returns></returns>
-    private Color[] CreateCubemapTexture(int resolution, CubemapFace face, Texture2D sourceTexture)
+    private static Color[] CreateCubemapTexture(int resolution, CubemapFace face, Texture2D sourceTexture)
     {
         Texture2D texture = new Texture2D(resolution, resolution, TextureFormat.RGB24, false);
 
@@ -149,7 +172,7 @@ public class CustomSkyboxReader : MonoBehaviour
     /// </summary>
     /// <param name="direction">The direction in which you view</param>
     /// <returns></returns>
-    private Color Project(Vector3 direction, Texture2D sourceTexture)
+    private static Color Project(Vector3 direction, Texture2D sourceTexture)
     {
         float theta = Mathf.Atan2(direction.z, direction.x) + Mathf.PI / 180.0f;
         float phi = Mathf.Acos(direction.y);
