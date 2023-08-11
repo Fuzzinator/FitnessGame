@@ -65,7 +65,7 @@ public class CustomEnvironmentsController : MonoBehaviour
                 Directory.CreateDirectory(path);
             }
 
-            var info = new DirectoryInfo(path);
+            var info = new DirectoryInfo(AssetManager.EnvironmentsPath);
             var files = info.GetFiles();
             foreach (var file in files)
             {
