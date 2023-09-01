@@ -20,7 +20,7 @@ public class ProfileChoiceDisplay : MonoBehaviour, IPoolable
 
     public void SetData(Profile profile, ProfileSelectionController profileSelectionController)
     {
-        _profileName.SetText(profile.ProfileName);
+        _profileName.SetTextZeroAlloc(profile.ProfileName, true);
         _profile = profile;
         _profileSelectionController = profileSelectionController;
         SetProfileImage().Forget();
@@ -57,7 +57,7 @@ public class ProfileChoiceDisplay : MonoBehaviour, IPoolable
     public void Initialize()
     {
         _profileIcon.sprite = null;
-        _profileName.SetText(string.Empty);
+        _profileName.ClearText();
     }
 
     public void ReturnToPool()

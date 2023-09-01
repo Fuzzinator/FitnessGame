@@ -39,12 +39,14 @@ public class AssetManager : MonoBehaviour
     private const string PAUSEINEDITOR = "Pause In Editor";
     private const string SONGSFOLDER = "/LocalCustomSongs/Songs/";
     private const string PLAYLISTSFOLDER = "/LocalCustomSongs/Playlists/";
-    private const string CustomSkyboxFolder = "/LocalCustomSkyboxes/";
+    public const string CustomSkyboxFolder = "/LocalCustomSkyboxes/";
+    public const string CustomSkyboxThumbnailsFolder = "/LocalCustomSkyboxThumbnails/";
     private const string CustomEnvironmentFolder = "/LocalCustomEnvironments/";
 #else
     private const string SONGSFOLDER = "/Resources/Songs/";
     private const string PLAYLISTSFOLDER = "/Resources/Playlists/";    
-    private const string CustomSkyboxFolder = "/Resources/LocalCustomSkyboxes/";
+    public const string CustomSkyboxFolder = "/Resources/LocalCustomSkyboxes/";
+    public const string CustomSkyboxThumbnailsFolder = "Resources/LocalCustomSkyboxThumbnails/";
     private const string CustomEnvironmentFolder = "/Resources/LocalCustomEnvironments/";
 
 #if UNITY_ANDROID
@@ -58,6 +60,7 @@ public class AssetManager : MonoBehaviour
     public static readonly string SongsPath = $"{DataPath}{SONGSFOLDER}";
     public static readonly string PlaylistsPath = $"{DataPath}{PLAYLISTSFOLDER}";
     public static readonly string SkyboxesPath = $"{DataPath}{CustomSkyboxFolder}";
+    public static readonly string SkyboxThumbnailPath = $"{DataPath}{CustomSkyboxThumbnailsFolder}";
     public static readonly string EnvironmentsPath = $"{DataPath}{CustomEnvironmentFolder}";
 
     private const string PLAYLISTEXTENSION = ".txt";

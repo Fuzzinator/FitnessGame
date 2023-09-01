@@ -81,9 +81,9 @@ namespace UI.Scrollers.Playlists
 
             _playlistTitleCard.interactable = true;
             //_playlistTitleCard.interactable = currentPlaylist.isValid;
-            _playlistTitle.SetText(currentPlaylist.PlaylistName);
-            _playlistName.SetText(currentPlaylist.PlaylistName);
-            _playlistLength.SetText(currentPlaylist.ReadableLength);
+            _playlistTitle.SetTextZeroAlloc(currentPlaylist.PlaylistName, true);
+            _playlistName.SetTextZeroAlloc(currentPlaylist.PlaylistName, true);
+            _playlistLength.SetTextZeroAlloc(currentPlaylist.ReadableLength, true);
             _playButton.interactable = currentPlaylist.isValid;
             _editButton.gameObject.SetActive(currentPlaylist.IsCustomPlaylist);
             _deleteButton.gameObject.SetActive(currentPlaylist.IsCustomPlaylist);

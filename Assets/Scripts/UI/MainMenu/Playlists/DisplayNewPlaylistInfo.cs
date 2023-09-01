@@ -21,7 +21,7 @@ public class DisplayNewPlaylistInfo : InputFieldController
     
     public void ShowInfo()
     {
-        _playlistLength.SetText(PlaylistMaker.Instance.GetReadableLength());
+        _playlistLength.SetTextZeroAlloc(PlaylistMaker.Instance.GetReadableLength(), true);
         _inputField.SetTextWithoutNotify(PlaylistMaker.Instance.PlaylistName);
     }
 }

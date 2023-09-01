@@ -76,6 +76,6 @@ public class ErrorReporter : MonoBehaviour
     public static void Log(string text)
     {
         Instance._debugCanvas.gameObject.SetActive(true);
-        Instance._textField.SetText(text);
+        Instance._textField.SetTextZeroAlloc(text, true);
     }
 }

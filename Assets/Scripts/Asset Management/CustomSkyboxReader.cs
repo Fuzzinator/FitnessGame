@@ -61,7 +61,7 @@ public class CustomSkyboxReader : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        var images = CustomEnvironmentsController.GetImagePathsInDownloads();
+        var images = CustomEnvironmentsController.  GetImagePathsInDownloads();
 
 
         return;
@@ -79,9 +79,6 @@ public class CustomSkyboxReader : MonoBehaviour
             Texture2D source;
             if (string.Equals(file.Extension, Exr, StringComparison.InvariantCultureIgnoreCase))//string.Equals(file.Extension, Png, System.StringComparison.InvariantCultureIgnoreCase))
             {
-                byte[] fileData = File.ReadAllBytes(file.FullName);
-                var radianceTexture = new RadianceHDRTexture(fileData);
-                source = radianceTexture.texture;
             }
             else
             {

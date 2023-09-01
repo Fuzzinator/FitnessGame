@@ -32,7 +32,7 @@ public class HitQualityDisplay : MonoBehaviour, IPoolable
 
     public void ReturnToPool()
     {
-        _displayText.SetCharArray(null);
+        _displayText.ClearText();
         gameObject.SetActive(false);
         MyPoolManager.ReturnToPool(this);
     }

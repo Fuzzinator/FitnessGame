@@ -20,7 +20,7 @@ namespace UI.Scrollers.Playlists
         {
             _gameMode = gameMode;
             _info = info;
-            _difficultyName.SetText($"{gameMode.Readable()} - {info.Difficulty}");
+            _difficultyName.SetTextZeroAlloc($"{gameMode.Readable()} - {info.Difficulty}", true);
             _controller = scroller;
         }
 

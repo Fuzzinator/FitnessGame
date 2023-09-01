@@ -57,7 +57,7 @@ public class UpdateScoreDisplay : MonoBehaviour
         {
             SetScoreDisplay(ScoringAndHitStatsManager.Instance.CurrentScore);
 
-            _scoreIncrease.SetText(string.Empty);
+            _scoreIncrease.ClearText();
         }
 
         _delayingUpdate = false;
@@ -72,7 +72,7 @@ public class UpdateScoreDisplay : MonoBehaviour
             {
                 SetScoreDisplay(ScoringAndHitStatsManager.Instance.CurrentScore);
 
-                _scoreIncrease.SetText(string.Empty);
+                _scoreIncrease.ClearText();
             }
 
             _delayingUpdate = false;

@@ -1,27 +1,44 @@
 using Cysharp.Threading.Tasks;
+using Cysharp.Threading.Tasks.CompilerServices;
+using Cysharp.Threading.Tasks.Linq;
+using Superla.RadianceHDR;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.NetworkInformation;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using Unity.Mathematics;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Pool;
+using UnityEngine.WSA;
 
 public class CustomEnvironmentsController : MonoBehaviour
 {
     [SerializeField]
-    private static List<string> _availableCustomSkyboxes = null;
+    private static List<string> _availableCustomSkyboxPaths = new List<string>();
+    [SerializeField]
+    private static List<string> _availableCustomSkyboxNames = new List<string>();
+    [SerializeField]
+    private static List<string> _availableCustomSkyboxDepthPaths = new List<string>();
+    [SerializeField]
+    private static List<string> _availableCustomSkyboxDepthNames = new List<string>();
     [SerializeField]
     private static List<string> _checkedFiles = null;
     [SerializeField]
-    private static List<string> _filesToCheck = null;
+    private static List<string> _imagesInDownloads = null;
     [SerializeField]
     private static List<string> _selectedSkyboxFiles = null;
     [SerializeField]
     private static List<string> _customEnvironments = null;
+
+    private static List<CustomEnvironment> _availableCustomEnvironments = new List<CustomEnvironment>();
+
+    public static int CustomSkyboxesCount => _availableCustomSkyboxPaths?.Count ?? 0;
+    public static int CustomEnvironmentCount => _availableCustomEnvironments?.Count ?? 0;
+    public static int ImagesInDownloadsCount => _imagesInDownloads?.Count ?? 0;
 
 
     private const string Png = ".png";
@@ -32,6 +49,7 @@ public class CustomEnvironmentsController : MonoBehaviour
 
     private const string EnvironmentExtension = ".Env";
     private const string CheckFilesSetting = "CheckedFilesSetting";
+    private const string DepthSkyboxIdentifier = "depth";
 
     private const int ThumbnailSize = 256;
 
@@ -60,7 +78,7 @@ public class CustomEnvironmentsController : MonoBehaviour
             _customEnvironments = CollectionPool<List<string>, string>.Get();
 
             var path = AssetManager.EnvironmentsPath;
-            if(!Directory.Exists(path))
+            if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
             }
@@ -85,9 +103,19 @@ public class CustomEnvironmentsController : MonoBehaviour
         return _customEnvironments;
     }
 
-    public static List<string> GetAvailableSkyboxes()
+    public static List<string> GetAvailableSkyboxes(bool depth = false)
     {
-        _availableCustomSkyboxes.Clear();
+        if (depth)
+        {
+            _availableCustomSkyboxDepthPaths.Clear();
+            _availableCustomSkyboxDepthNames.Clear();
+        }
+        else
+        {
+            _availableCustomSkyboxPaths.Clear();
+            _availableCustomSkyboxNames.Clear();
+        }
+
         var info = new DirectoryInfo(AssetManager.SkyboxesPath);
         var files = info.GetFiles();
         foreach (var file in files)
@@ -100,37 +128,42 @@ public class CustomEnvironmentsController : MonoBehaviour
                 string.Equals(file.Extension, Jpg, StringComparison.InvariantCultureIgnoreCase) ||
                 string.Equals(file.Extension, Hdr, StringComparison.InvariantCultureIgnoreCase))
             {
-                if (!_checkedFiles.Contains(file.FullName))
+                if ((depth && !file.Name.Contains(DepthSkyboxIdentifier, StringComparison.InvariantCultureIgnoreCase)) ||
+                   (!depth && file.Name.Contains(DepthSkyboxIdentifier, StringComparison.InvariantCultureIgnoreCase)))
                 {
-                    _filesToCheck.Add(file.FullName);
-                    _checkedFiles.Add(file.FullName);
+                    continue;
                 }
-                else if (_selectedSkyboxFiles.Contains(file.FullName))
+                var fullName = file.FullName.Replace('\\', '/');
+                if (depth)
                 {
-                    if (!_availableCustomSkyboxes.Contains(file.FullName))
+                    if (!_availableCustomSkyboxDepthPaths.Contains(fullName))
                     {
-                        _availableCustomSkyboxes.Add(file.FullName);
+                        _availableCustomSkyboxDepthPaths.Add(fullName);
+                        _availableCustomSkyboxDepthNames.Add(file.Name);
+                    }
+                }
+                else
+                {
+                    if (!_availableCustomSkyboxPaths.Contains(fullName))
+                    {
+                        _availableCustomSkyboxPaths.Add(fullName);
+                        _availableCustomSkyboxNames.Add(file.Name);
                     }
                 }
             }
         }
-        return _availableCustomSkyboxes;
+        return depth ? _availableCustomSkyboxDepthPaths : _availableCustomSkyboxPaths;
     }
 
     public static List<string> GetImagePathsInDownloads()
     {
-        if (_filesToCheck == null)
+        if (_imagesInDownloads == null)
         {
-            _filesToCheck = CollectionPool<List<string>, string>.Get();
+            _imagesInDownloads = CollectionPool<List<string>, string>.Get();
         }
         else
         {
-            _filesToCheck.Clear();
-        }
-        _checkedFiles = SettingsManager.GetSetting<List<string>>(CheckFilesSetting, null, false);
-        if (_checkedFiles == null)
-        {
-            _checkedFiles = CollectionPool<List<string>, string>.Get();
+            _imagesInDownloads.Clear();
         }
 
         var info = new DirectoryInfo(AssetManager.DownloadsPath());
@@ -146,42 +179,98 @@ public class CustomEnvironmentsController : MonoBehaviour
                 string.Equals(file.Extension, Jpeg, StringComparison.InvariantCultureIgnoreCase) ||
                 string.Equals(file.Extension, Hdr, StringComparison.InvariantCultureIgnoreCase))
             {
-                if (!_checkedFiles.Contains(file.FullName))
+                if (!_imagesInDownloads.Contains(file.FullName))
                 {
-                    _filesToCheck.Add(file.FullName);
-                    _checkedFiles.Add(file.FullName);
-                }
-                else if (_selectedSkyboxFiles.Contains(file.FullName))
-                {
-                    if (!_availableCustomSkyboxes.Contains(file.FullName))
-                    {
-                        _availableCustomSkyboxes.Add(file.FullName);
-                    }
+                    _imagesInDownloads.Add(file.FullName);
                 }
             }
         }
-        return _checkedFiles;
+        return _imagesInDownloads;
     }
 
-    public async static UniTask<Sprite> GetEnvironmentThumbnailAsync(string path, CancellationToken token)
+    public static async UniTask<Texture2D> LoadEnvironmentTexture(string imagePath, CancellationToken token)
     {
-        var texture = await AssetManager.LoadImageFromPath(path, token);
+        var extension = Path.GetExtension(imagePath);
+        Texture2D texture;
+        if (string.Equals(extension, Hdr, StringComparison.InvariantCultureIgnoreCase))
+        {
+            var fileData = await File.ReadAllBytesAsync(imagePath, cancellationToken: token);
+            var radianceTexture = new RadianceHDRTexture(fileData);
+            texture = radianceTexture.texture;
+        }
+        else
+        {
+            texture = await AssetManager.LoadImageFromPath(imagePath, token);
+        }
+        return texture;
+    }
+
+    public static async UniTask SaveSkyboxThumbnail(string imageName, string imageLocation, CancellationToken token)
+    {
+        var texture = await LoadEnvironmentTexture(imageLocation, token);
+        var thumbnailPath = $"{AssetManager.DataPath}{AssetManager.CustomSkyboxThumbnailsFolder}{imageName}.png";
+
+        await SaveSkyboxThumbnail(texture, thumbnailPath, token);
+    }
+
+    public static async UniTask SaveSkyboxThumbnail(Texture2D texture, string imagePath, CancellationToken token)
+    {
+        if (texture == null)
+        {
+            Debug.LogWarning("Failed to load environment thumbnail");
+        }
+        if (texture.width > ThumbnailSize || texture.height > ThumbnailSize)
+        {
+            texture = texture.ScaleTexture(ThumbnailSize, ThumbnailSize, texture.format);
+        }
+
+        var bytes = texture.EncodeToPNG();
+        var thumbnailPath = AssetManager.SkyboxThumbnailPath;
+        if (!Directory.Exists(thumbnailPath))
+        {
+            Directory.CreateDirectory(thumbnailPath);
+        }
+
+        await File.WriteAllBytesAsync(imagePath, bytes);
+    }
+
+    public async static UniTask<Sprite> GetEnvironmentThumbnailAsync(string imagePath, CancellationToken token)
+    {
+        var texture = await LoadEnvironmentTexture(imagePath, token);
 
         if (texture.width > ThumbnailSize || texture.height > ThumbnailSize)
         {
-            texture.Reinitialize(ThumbnailSize, ThumbnailSize);
+            texture = texture.ScaleTexture(ThumbnailSize, ThumbnailSize, texture.format);
         }
+        var spriteRect = new Rect(Vector2.zero, new Vector2(texture.width, texture.height));
+        return Sprite.Create(texture, spriteRect, Vector2.zero);
+    }
+
+    public async static UniTask<Sprite> GetEnvironmentImageAsync(string imagePath, CancellationToken token)
+    {
+        var texture = await LoadEnvironmentTexture(imagePath, token);
 
         var spriteRect = new Rect(Vector2.zero, new Vector2(ThumbnailSize, ThumbnailSize));
         return Sprite.Create(texture, spriteRect, Vector2.zero);
     }
+    public async static UniTask<Sprite> GetDownloadsThumbnailAsync(string imagePath, CancellationToken token)
+    {
+        var texture = await LoadEnvironmentTexture(imagePath, token);
 
-    public static bool TrySetImageAsSkybox(string image, string newName, bool overwriteDuplicates)
+        if (texture.width > ThumbnailSize || texture.height > ThumbnailSize)
+        {
+            texture = texture.ScaleTexture(ThumbnailSize, ThumbnailSize, texture.format);
+        }
+        var spriteRect = new Rect(Vector2.zero, new Vector2(ThumbnailSize, ThumbnailSize));
+        return Sprite.Create(texture, spriteRect, Vector2.zero);
+    }
+
+    public static bool TrySetImageAsSkybox(string image, string newName, bool overwriteDuplicates, CancellationToken token)
     {
         string imageName;
         if (string.IsNullOrWhiteSpace(newName))
         {
-            imageName = image.Substring(image.LastIndexOf("/") + 1);
+            imageName = image.Substring(image.LastIndexOf("\\") + 1);
         }
         else
         {
@@ -193,11 +282,106 @@ public class CustomEnvironmentsController : MonoBehaviour
             return false;
         }
         File.Move(image, newFileLocation);
-        _availableCustomSkyboxes.Add(newFileLocation);
+        _availableCustomSkyboxPaths.Add(newFileLocation);
+        _availableCustomSkyboxNames.Add(imageName);
+        SaveSkyboxThumbnail(imageName, newFileLocation, token).Forget();
         return true;
     }
 
-    public static async UniTask<bool> TryCreateEnvironment(CustomEnvironment customEnvironment, bool overwriteDuplicates)
+    public static void DeleteSkybox(string skyboxName)
+    {
+        var thumbnail = $"{AssetManager.DataPath}{AssetManager.CustomSkyboxThumbnailsFolder}{skyboxName}.png";
+        var skyboxPath = $"{AssetManager.DataPath}{AssetManager.CustomSkyboxFolder}{skyboxName}";
+        if(_availableCustomSkyboxPaths.Contains(skyboxPath))
+        {
+            _availableCustomSkyboxPaths.Remove(skyboxPath);
+        }
+        if(_availableCustomSkyboxNames.Contains(skyboxName))
+        {
+            _availableCustomSkyboxNames.Remove(skyboxName);
+        }
+        if (_availableCustomSkyboxDepthPaths.Contains(skyboxPath))
+        {
+            _availableCustomSkyboxDepthPaths.Remove(skyboxPath);
+        }
+        if (_availableCustomSkyboxDepthNames.Contains(skyboxName))
+        {
+            _availableCustomSkyboxDepthNames.Remove(skyboxName);
+        }
+        if (File.Exists(thumbnail))
+        {
+            File.Delete(thumbnail);
+        }
+        if(File.Exists(skyboxPath))
+        {
+            File.Delete(skyboxPath);
+        }
+    }
+
+    public static bool RenameSkybox(string skyboxName, string newName)
+    {
+        var thumbnail = $"{AssetManager.DataPath}{AssetManager.CustomSkyboxThumbnailsFolder}{skyboxName}.png";
+        var skyboxPath = $"{AssetManager.DataPath}{AssetManager.CustomSkyboxFolder}{skyboxName}";
+        var newThumbnail = $"{AssetManager.DataPath}{AssetManager.CustomSkyboxThumbnailsFolder}{newName}.png";
+        var newSkyboxPath = $"{AssetManager.DataPath}{AssetManager.CustomSkyboxFolder}{newName}";
+
+        if (File.Exists(newThumbnail) || File.Exists(newSkyboxPath))
+        {
+            return false;
+        }
+
+        var index = _availableCustomSkyboxPaths.IndexOf(skyboxPath);
+        if (index >= 0)
+        {
+            _availableCustomSkyboxPaths[index] = newSkyboxPath;
+        }
+
+        index = _availableCustomSkyboxNames.IndexOf(skyboxName);
+        if (index >= 0)
+        {
+            _availableCustomSkyboxNames[index] = newName;
+        }
+
+        index = _availableCustomSkyboxDepthPaths.IndexOf(skyboxPath);
+        if (index >= 0)
+        {
+            _availableCustomSkyboxDepthPaths[index] = newSkyboxPath;
+        }
+
+        index = _availableCustomSkyboxDepthNames.IndexOf(skyboxName);
+        if (index >= 0)
+        {
+            _availableCustomSkyboxDepthNames[index] = newName;
+        }
+
+        if (File.Exists(thumbnail))
+        {
+            File.Move(thumbnail, newThumbnail);
+        }
+        if (File.Exists(skyboxPath))
+        {
+            File.Move(skyboxPath, newSkyboxPath);
+        }
+        return true;
+    }
+
+    public static CustomEnvironment CreateCustomEnvironment(string environmentName, int skyboxIndex, float brightness)
+    {
+        var skybox = _availableCustomSkyboxPaths[skyboxIndex];
+        var skyboxName = skybox.Substring(skybox.LastIndexOf("\\") + 1);
+        var customEnvironment = new CustomEnvironment(environmentName, skyboxName, skybox, skyboxBrightness: brightness);
+        ValidateEnvironment(customEnvironment);
+        return customEnvironment;
+    }
+    public static CustomEnvironment CreateCustomEnvironment(string environmentName, string skyboxPath, float brightness)
+    {
+        var skyboxName = skyboxPath.Substring(skyboxPath.LastIndexOf("\\") + 1);
+        var customEnvironment = new CustomEnvironment(environmentName, skyboxName, skyboxPath, skyboxBrightness: brightness);
+        ValidateEnvironment(customEnvironment);
+        return customEnvironment;
+    }
+
+    public static async UniTask<bool> TrySaveEnvironment(CustomEnvironment customEnvironment, bool overwriteDuplicates)
     {
         var path = $"{AssetManager.EnvironmentsPath}{customEnvironment.EnvironmentName}{EnvironmentExtension}";
 
@@ -214,5 +398,119 @@ public class CustomEnvironmentsController : MonoBehaviour
 
         streamWriter.Close();
         return true;
+    }
+
+    public static async UniTask LoadCustomEnvironments()
+    {
+        _availableCustomEnvironments.Clear();
+        foreach (var customEnvironment in _customEnvironments)
+        {
+            if (!File.Exists(customEnvironment))
+            {
+                Debug.LogWarning($"Failed to load environment at {customEnvironment} as it is missing.");
+                continue;
+            }
+            var json = await File.ReadAllTextAsync(customEnvironment);
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                Debug.LogWarning($"Failed to load environment at {customEnvironment} as it is empty.");
+                continue;
+            }
+            var environment = JsonUtility.FromJson<CustomEnvironment>(json);
+            if (environment == null)
+            {
+                Debug.LogWarning($"Failed to load environment at {customEnvironment} as it is failed to be read.");
+                continue;
+            }
+            ValidateEnvironment(environment);
+            _availableCustomEnvironments.Add(environment);
+        }
+    }
+
+    public static void AddNewEnvironment(CustomEnvironment customEnvironment)
+    {
+        if (_availableCustomEnvironments == null)
+        {
+            _availableCustomEnvironments = new List<CustomEnvironment>();
+        }
+        if (!_availableCustomEnvironments.Contains(customEnvironment))
+        {
+            _availableCustomEnvironments.Add(customEnvironment);
+        }
+
+    }
+
+    public static CustomEnvironment GetCustomEnvironment(int index)
+    {
+        if (index < 1 && index >= _customEnvironments.Count)
+        {
+            return null;
+        }
+        return _availableCustomEnvironments[index];
+    }
+
+    public static string GetSkyboxPath(int index)
+    {
+        if (index < 1 && index >= _availableCustomSkyboxPaths.Count)
+        {
+            return null;
+        }
+        return _availableCustomSkyboxPaths[index];
+    }
+    public static string GetSkyboxName(int index)
+    {
+        if (index < 1 && index >= _availableCustomSkyboxNames.Count)
+        {
+            return null;
+        }
+        return _availableCustomSkyboxNames[index];
+    }
+    public static string GetSkyboxDepthPath(int index)
+    {
+        if (index < 1 && index >= _availableCustomSkyboxDepthPaths.Count)
+        {
+            return null;
+        }
+        return _availableCustomSkyboxDepthPaths[index];
+    }
+    public static string GetSkyboxDepthName(int index)
+    {
+        if (index < 1 && index >= _availableCustomSkyboxDepthNames.Count)
+        {
+            return null;
+        }
+        return _availableCustomSkyboxDepthPaths[index];
+    }
+
+    public static string GetDownloadsImagePath(int index)
+    {
+        if (index < 1 && index >= _imagesInDownloads.Count)
+        {
+            return null;
+        }
+        return _imagesInDownloads[index];
+    }
+    public static string GetDownloadsImageName(int index)
+    {
+        if (index < 1 && index >= _imagesInDownloads.Count)
+        {
+            return null;
+        }
+        var name = _imagesInDownloads[index].Substring(_imagesInDownloads[index].LastIndexOf("\\") + 1);
+        return name;
+    }
+    public static void ClearCustomEnvironmentInfo()
+    {
+
+    }
+
+    public static void ValidateEnvironment(CustomEnvironment customEnvironment)
+    {
+        customEnvironment.isValid =
+            (string.IsNullOrWhiteSpace(customEnvironment.SkyboxPath) || File.Exists(customEnvironment.SkyboxPath)) &&
+            (string.IsNullOrWhiteSpace(customEnvironment.SkyboxDepthPath) || File.Exists(customEnvironment.SkyboxDepthPath)) &&
+            (string.IsNullOrWhiteSpace(customEnvironment.MeshPath) || File.Exists(customEnvironment.MeshPath)) &&
+            (string.IsNullOrWhiteSpace(customEnvironment.ObjectsPath) || File.Exists(customEnvironment.ObjectsPath)) &&
+            (string.IsNullOrWhiteSpace(customEnvironment.VFXPath) || File.Exists(customEnvironment.VFXPath));
     }
 }

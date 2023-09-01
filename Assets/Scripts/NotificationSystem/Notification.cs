@@ -109,25 +109,25 @@ public class Notification : MonoBehaviour, IPoolable
             fullMessage = visuals.message;
         }
 
-        _message.SetText(fullMessage);
+        _message.SetTextZeroAlloc(fullMessage, true);
         var hasBttn1 = !string.IsNullOrWhiteSpace(visuals.button1Txt);
         if (hasBttn1)
         {
-            _button1Txt.SetText(visuals.button1Txt);
+            _button1Txt.SetTextZeroAlloc(visuals.button1Txt, true);
             _button1.gameObject.SetActive(true);
         }
 
         var hasBttn2 = !string.IsNullOrWhiteSpace(visuals.button2Txt);
         if (hasBttn2)
         {
-            _button2Txt.SetText(visuals.button2Txt);
+            _button2Txt.SetTextZeroAlloc(visuals.button2Txt, true);
             _button2.gameObject.SetActive(true);
         }
 
         var hasBttn3 = !string.IsNullOrWhiteSpace(visuals.button3Txt);
         if (hasBttn3)
         {
-            _button3Txt.SetText(visuals.button3Txt);
+            _button3Txt.SetTextZeroAlloc(visuals.button3Txt, true);
             _button3.gameObject.SetActive(true);
         }
 
@@ -204,21 +204,21 @@ public class Notification : MonoBehaviour, IPoolable
         var hasBttn1 = !string.IsNullOrWhiteSpace(visuals.button1Txt);
         if (hasBttn1)
         {
-            _button1Txt.SetText(visuals.button1Txt);
+            _button1Txt.SetTextZeroAlloc(visuals.button1Txt, true);
             _button1.gameObject.SetActive(true);
         }
 
         var hasBttn2 = !string.IsNullOrWhiteSpace(visuals.button2Txt);
         if (hasBttn2)
         {
-            _button2Txt.SetText(visuals.button2Txt);
+            _button2Txt.SetTextZeroAlloc(visuals.button2Txt, true);
             _button2.gameObject.SetActive(true);
         }
 
         var hasBttn3 = !string.IsNullOrWhiteSpace(visuals.button3Txt);
         if (hasBttn3)
         {
-            _button3Txt.SetText(visuals.button3Txt);
+            _button3Txt.SetTextZeroAlloc(visuals.button3Txt, true);
             _button3.gameObject.SetActive(true);
         }
 
@@ -279,10 +279,10 @@ public class Notification : MonoBehaviour, IPoolable
 
         SceneManager.activeSceneChanged -= ReturnOnSceneChange;
 
-        _message.SetText(string.Empty);
-        _button1Txt.SetText(string.Empty);
-        _button2Txt.SetText(string.Empty);
-        _button3Txt.SetText(string.Empty);
+        _message.ClearText();
+        _button1Txt.ClearText();
+        _button2Txt.ClearText();
+        _button3Txt.ClearText();
 
         _button1.gameObject.SetActive(false);
         _button2.gameObject.SetActive(false);

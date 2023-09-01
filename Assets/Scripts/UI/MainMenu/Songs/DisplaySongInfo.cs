@@ -73,10 +73,10 @@ namespace UI.Scrollers.Playlists
         private void UpdateDisplayedInfo(SongInfo info)
         {
             _currentSongInfo = info;
-            _songName.SetText(info.SongName);
-            _songAuthor.SetText(info.SongAuthorName);
-            _levelAuthor.SetText(info.LevelAuthorName);
-            _songLength.SetText(info.ReadableLength);
+            _songName.SetTextZeroAlloc(info.SongName, true);
+            _songAuthor.SetTextZeroAlloc(info.SongAuthorName, true);
+            _levelAuthor.SetTextZeroAlloc(info.LevelAuthorName, true);
+            _songLength.SetTextZeroAlloc(info.ReadableLength, true);
             _songOptions.UpdateDifficultyOptions(info, info.DifficultySets);
             //_difficultyScroller.UpdateDifficultyOptions(info, info.DifficultySets, _selectedGameMode);
             _deleteButton.gameObject.SetActive(info.isCustomSong);
@@ -86,10 +86,10 @@ namespace UI.Scrollers.Playlists
         private void ClearDisplayedInfo()
         {
             _currentSongInfo = new SongInfo();
-            _songName.SetText(string.Empty);
-            _songAuthor.SetText(string.Empty);
-            _levelAuthor.SetText(string.Empty);
-            _songLength.SetText(string.Empty);
+            _songName.ClearText();
+            _songAuthor.ClearText();
+            _levelAuthor.ClearText();
+            _songLength.ClearText();
             _songOptions.HideOptions();
             //_difficultyScroller.UpdateDifficultyOptions(_currentSongInfo, Array.Empty<SongInfo.DifficultySet>(),GameMode.Normal);
             _deleteButton.gameObject.SetActive(false);

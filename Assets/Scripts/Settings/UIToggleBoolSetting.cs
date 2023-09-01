@@ -62,7 +62,7 @@ public class UIToggleBoolSetting : MonoBehaviour, ISaver
         if (!onlyIfDifferent || _currentValue != isOn)
         {
             _currentValue = isOn;
-            _text.SetText(isOn ? ON : OFF);
+            _text.SetTextZeroAlloc(isOn ? ON : OFF, true);
             _settingsDisplay?.ChangeWasMade(this);
 
             SaveRequested = true;
@@ -94,7 +94,7 @@ public class UIToggleBoolSetting : MonoBehaviour, ISaver
         }
         else
         {
-            _text.SetText(_currentValue ? ON : OFF);
+            _text.SetTextZeroAlloc(_currentValue ? ON : OFF, true);
             SaveRequested = false;
         }
     }

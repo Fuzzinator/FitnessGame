@@ -29,7 +29,7 @@ public class SearchScroller : MonoBehaviour
 
     public void ResetSearch()
     {
-        _searchField.text = string.Empty;
+        _searchField.ClearText();
     }
 
     public void FilterSearch(string searchKey)

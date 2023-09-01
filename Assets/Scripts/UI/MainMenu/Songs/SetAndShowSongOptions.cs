@@ -354,7 +354,7 @@ public class SetAndShowSongOptions : MonoBehaviour
     public async void StopSongPreview()
     {
         _audioSource.Stop();
-        _previewButtonText.SetText(Preview);
+        _previewButtonText.SetTextZeroAlloc(Preview, true);
         if (_currentSongRequestHandle.IsValid())
         {
             Addressables.Release(_currentSongRequestHandle);
@@ -388,7 +388,7 @@ public class SetAndShowSongOptions : MonoBehaviour
             _cancellationSource.Dispose();
             _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(_cancellationToken);
         }
-        _previewButtonText.SetText(Loading);
+        _previewButtonText.SetTextZeroAlloc(Loading, true);
         _loadingSongPreview = true;
 
         if (_songInfo.isCustomSong)
@@ -415,7 +415,7 @@ public class SetAndShowSongOptions : MonoBehaviour
         _audioSource.clip = audioClip;
         _audioSource.Play();
 
-        _previewButtonText.SetText(Stop);
+        _previewButtonText.SetTextZeroAlloc(Stop, true);
         _loadingSongPreview = false;
         await UniTask.WaitUntil(() => _audioSource.isPlaying, cancellationToken: _cancellationSource.Token);
 

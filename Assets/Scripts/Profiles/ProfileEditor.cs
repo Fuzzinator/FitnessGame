@@ -96,7 +96,7 @@ public class ProfileEditor : UIMenuController
 
     public void ResetCreateNewProfile()
     {
-        _inputField.text = string.Empty;
+        _inputField.ClearText();
         _iconAddress = ProfileManager.DEFAULTICONADDRESS;
         SetIsCustomIcon(false);
         SetImage();

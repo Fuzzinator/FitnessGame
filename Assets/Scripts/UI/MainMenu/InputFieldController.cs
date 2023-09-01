@@ -24,7 +24,7 @@ public class InputFieldController : MonoBehaviour
 
     public virtual void ClearTextField()
     {
-        _inputField.text = string.Empty;
+        _inputField.ClearText();
     }
     
     protected virtual async UniTask EditTextField()
