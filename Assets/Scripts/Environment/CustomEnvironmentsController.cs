@@ -12,8 +12,8 @@ using System.Threading;
 using Unity.Mathematics;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Pool;
-using UnityEngine.WSA;
 
 public class CustomEnvironmentsController : MonoBehaviour
 {
@@ -35,11 +35,28 @@ public class CustomEnvironmentsController : MonoBehaviour
     private static List<string> _customEnvironments = null;
 
     private static List<CustomEnvironment> _availableCustomEnvironments = new List<CustomEnvironment>();
-
+    public static UnityEvent CustomEnvironmentsUpdated { get; private set; } = new UnityEvent();
     public static int CustomSkyboxesCount => _availableCustomSkyboxPaths?.Count ?? 0;
     public static int CustomEnvironmentCount => _availableCustomEnvironments?.Count ?? 0;
     public static int ImagesInDownloadsCount => _imagesInDownloads?.Count ?? 0;
 
+    public static readonly Notification.NotificationVisualInfo ConfirmDeleteSkybox = new Notification.NotificationVisualInfo
+    {
+        button1Txt = "Delete",
+        button2Txt = "Cancel",
+        disableUI = true,
+        header = "Delete Skybox?",
+        message = "Are you sure you would like to delete this skybox? This cannot be undone."
+    };
+
+    public static readonly Notification.NotificationVisualInfo ConfirmDeleteEnvironment = new Notification.NotificationVisualInfo
+    {
+        button1Txt = "Delete",
+        button2Txt = "Cancel",
+        disableUI = true,
+        header = "Delete Environment?",
+        message = "Are you sure you would like to delete this environment? This cannot be undone."
+    };
 
     private const string Png = ".png";
     private const string Jpg = ".jpg";
@@ -76,27 +93,31 @@ public class CustomEnvironmentsController : MonoBehaviour
         if (_customEnvironments == null)
         {
             _customEnvironments = CollectionPool<List<string>, string>.Get();
+        }
+        else
+        {
+            _customEnvironments.Clear();
+        }
+        var path = AssetManager.EnvironmentsPath;
+        if (!Directory.Exists(path))
+        {
+            Directory.CreateDirectory(path);
+        }
 
-            var path = AssetManager.EnvironmentsPath;
-            if (!Directory.Exists(path))
+        var info = new DirectoryInfo(AssetManager.EnvironmentsPath);
+        var files = info.GetFiles();
+        foreach (var file in files)
+        {
+            if (file == null)
             {
-                Directory.CreateDirectory(path);
+                continue;
             }
-
-            var info = new DirectoryInfo(AssetManager.EnvironmentsPath);
-            var files = info.GetFiles();
-            foreach (var file in files)
+            if (string.Equals(file.Extension, EnvironmentExtension, StringComparison.InvariantCultureIgnoreCase))
             {
-                if (file == null)
+                var name = file.FullName;
+                if (!_customEnvironments.Contains(name))
                 {
-                    continue;
-                }
-                if (string.Equals(file.Extension, EnvironmentExtension, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    if (!_customEnvironments.Contains(file.FullName))
-                    {
-                        _customEnvironments.Add(file.FullName);
-                    }
+                    _customEnvironments.Add(name);
                 }
             }
         }
@@ -250,7 +271,7 @@ public class CustomEnvironmentsController : MonoBehaviour
     {
         var texture = await LoadEnvironmentTexture(imagePath, token);
 
-        var spriteRect = new Rect(Vector2.zero, new Vector2(ThumbnailSize, ThumbnailSize));
+        var spriteRect = new Rect(Vector2.zero, new Vector2(texture.width, texture.height));
         return Sprite.Create(texture, spriteRect, Vector2.zero);
     }
     public async static UniTask<Sprite> GetDownloadsThumbnailAsync(string imagePath, CancellationToken token)
@@ -292,11 +313,11 @@ public class CustomEnvironmentsController : MonoBehaviour
     {
         var thumbnail = $"{AssetManager.DataPath}{AssetManager.CustomSkyboxThumbnailsFolder}{skyboxName}.png";
         var skyboxPath = $"{AssetManager.DataPath}{AssetManager.CustomSkyboxFolder}{skyboxName}";
-        if(_availableCustomSkyboxPaths.Contains(skyboxPath))
+        if (_availableCustomSkyboxPaths.Contains(skyboxPath))
         {
             _availableCustomSkyboxPaths.Remove(skyboxPath);
         }
-        if(_availableCustomSkyboxNames.Contains(skyboxName))
+        if (_availableCustomSkyboxNames.Contains(skyboxName))
         {
             _availableCustomSkyboxNames.Remove(skyboxName);
         }
@@ -312,10 +333,11 @@ public class CustomEnvironmentsController : MonoBehaviour
         {
             File.Delete(thumbnail);
         }
-        if(File.Exists(skyboxPath))
+        if (File.Exists(skyboxPath))
         {
             File.Delete(skyboxPath);
         }
+        DeleteEnvironmentSkyboxes(skyboxName).Forget();
     }
 
     public static bool RenameSkybox(string skyboxName, string newName)
@@ -362,20 +384,64 @@ public class CustomEnvironmentsController : MonoBehaviour
         {
             File.Move(skyboxPath, newSkyboxPath);
         }
+        RenameEnvironmentSkyboxes(skyboxName, newName, newSkyboxPath).Forget();
         return true;
+    }
+
+    private static async UniTaskVoid RenameEnvironmentSkyboxes(string oldName, string newName, string newPath)
+    {
+        var updated = false;
+        foreach(var env in _availableCustomEnvironments)
+        {
+            if(!env.SkyboxName.Equals(oldName, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            env.SetSkyboxName(newName);
+            env.SetSkyboxPath(newPath);
+            updated = true;
+            await TrySaveEnvironment(env, true);
+        }
+        if(updated)
+        {
+            CustomEnvironmentsUpdated.Invoke();
+        }
+    }
+
+    private static async UniTaskVoid DeleteEnvironmentSkyboxes(string skyboxName)
+    {
+        var updated = false;
+        foreach (var env in _availableCustomEnvironments)
+        {
+            if (!env.SkyboxName.Equals(skyboxName, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            env.SetSkyboxName(string.Empty);
+            env.SetSkyboxPath(string.Empty);
+            env.SetSkyboxSprite(null);
+            updated = true;
+            await TrySaveEnvironment(env, true);
+        }
+        if (updated)
+        {
+            CustomEnvironmentsUpdated.Invoke();
+        }
     }
 
     public static CustomEnvironment CreateCustomEnvironment(string environmentName, int skyboxIndex, float brightness)
     {
         var skybox = _availableCustomSkyboxPaths[skyboxIndex];
-        var skyboxName = skybox.Substring(skybox.LastIndexOf("\\") + 1);
+        var skyboxName = skybox.Substring(skybox.LastIndexOf("/") + 1);
         var customEnvironment = new CustomEnvironment(environmentName, skyboxName, skybox, skyboxBrightness: brightness);
         ValidateEnvironment(customEnvironment);
         return customEnvironment;
     }
     public static CustomEnvironment CreateCustomEnvironment(string environmentName, string skyboxPath, float brightness)
     {
-        var skyboxName = skyboxPath.Substring(skyboxPath.LastIndexOf("\\") + 1);
+        var skyboxName = skyboxPath.Substring(skyboxPath.LastIndexOf("/") + 1);
         var customEnvironment = new CustomEnvironment(environmentName, skyboxName, skyboxPath, skyboxBrightness: brightness);
         ValidateEnvironment(customEnvironment);
         return customEnvironment;
@@ -399,32 +465,56 @@ public class CustomEnvironmentsController : MonoBehaviour
         streamWriter.Close();
         return true;
     }
+    public static bool TryDeleteEnvironment(CustomEnvironment customEnvironment)
+    {
+        var path = $"{AssetManager.EnvironmentsPath}{customEnvironment.EnvironmentName}{EnvironmentExtension}";
+
+        if (!File.Exists(path))
+        {
+            return false;
+        }
+
+        File.Delete(path);
+
+        return true;
+    }
 
     public static async UniTask LoadCustomEnvironments()
     {
         _availableCustomEnvironments.Clear();
         foreach (var customEnvironment in _customEnvironments)
         {
-            if (!File.Exists(customEnvironment))
+            var environment = await LoadCustomEnvironment(customEnvironment);
+            if(environment == null)
             {
-                Debug.LogWarning($"Failed to load environment at {customEnvironment} as it is missing.");
                 continue;
             }
-            var json = await File.ReadAllTextAsync(customEnvironment);
-            if (string.IsNullOrWhiteSpace(json))
-            {
-                Debug.LogWarning($"Failed to load environment at {customEnvironment} as it is empty.");
-                continue;
-            }
-            var environment = JsonUtility.FromJson<CustomEnvironment>(json);
-            if (environment == null)
-            {
-                Debug.LogWarning($"Failed to load environment at {customEnvironment} as it is failed to be read.");
-                continue;
-            }
-            ValidateEnvironment(environment);
             _availableCustomEnvironments.Add(environment);
         }
+        CustomEnvironmentsUpdated.Invoke();
+    }
+
+    public static async UniTask<CustomEnvironment> LoadCustomEnvironment(string customEnvironment)
+    {
+        if (!File.Exists(customEnvironment))
+        {
+            Debug.LogWarning($"Failed to load environment at {customEnvironment} as it is missing.");
+            return null;
+        }
+        var json = await File.ReadAllTextAsync(customEnvironment);
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            Debug.LogWarning($"Failed to load environment at {customEnvironment} as it is empty.");
+            return null;
+        }
+        var environment = JsonUtility.FromJson<CustomEnvironment>(json);
+        if (environment == null)
+        {
+            Debug.LogWarning($"Failed to load environment at {customEnvironment} as it is failed to be read.");
+            return null;
+        }
+        ValidateEnvironment(environment);
+        return environment;
     }
 
     public static void AddNewEnvironment(CustomEnvironment customEnvironment)
@@ -437,7 +527,7 @@ public class CustomEnvironmentsController : MonoBehaviour
         {
             _availableCustomEnvironments.Add(customEnvironment);
         }
-
+        CustomEnvironmentsUpdated.Invoke();
     }
 
     public static CustomEnvironment GetCustomEnvironment(int index)

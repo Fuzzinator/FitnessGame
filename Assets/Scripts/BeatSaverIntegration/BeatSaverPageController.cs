@@ -19,6 +19,8 @@ public class BeatSaverPageController : MonoBehaviour
 
     [SerializeField]
     private GameObject _showLoadingObject;
+    [SerializeField] 
+    private CanvasGroup _canvasController;
 
     [SerializeField]
     private TMP_InputField _inputField;
@@ -90,7 +92,7 @@ public class BeatSaverPageController : MonoBehaviour
 
     public void RequestFilterBy(int sortingOptions)
     {
-        _showLoadingObject.SetActive(true);
+        ShowLoading(true);
         var search = ((SortingOptions)sortingOptions) switch
         {
             SortingOptions.Latest => SearchTextFilterOption.Latest,
@@ -127,7 +129,7 @@ public class BeatSaverPageController : MonoBehaviour
 
     public void RequestCurated()
     {
-        _showLoadingObject.SetActive(true);
+        ShowLoading(true);
         var alphabetical = SearchTextFilterOption.Curated;
         alphabetical.Query = _inputField.text;
 
@@ -136,13 +138,13 @@ public class BeatSaverPageController : MonoBehaviour
 
     public void RequestLatest()
     {
-        _showLoadingObject.SetActive(true);
+        ShowLoading(true);
         RequestLatestAsync().Forget();
     }
 
     public void RequestHighestRated()
     {
-        _showLoadingObject.SetActive(true);
+        ShowLoading(true);
         var rating = SearchTextFilterOption.Rating;
         rating.Query = _inputField.text;
 
@@ -151,7 +153,7 @@ public class BeatSaverPageController : MonoBehaviour
 
     public void RequestMostRelevant()
     {
-        _showLoadingObject.SetActive(true);
+        ShowLoading(true);
         var relevance = SearchTextFilterOption.Relevance;
         relevance.Query = _inputField.text;
         SearchAsync(relevance).Forget();
@@ -164,7 +166,7 @@ public class BeatSaverPageController : MonoBehaviour
             return;
         }
 
-        _showLoadingObject.SetActive(true);
+        ShowLoading(true);
         RequestNextPageAsync().Forget();
     }
 
@@ -175,13 +177,13 @@ public class BeatSaverPageController : MonoBehaviour
             return;
         }
 
-        _showLoadingObject.SetActive(true);
+        ShowLoading(true);
         RequestPreviousPageAsync().Forget();
     }
 
     public void RequestSearch(TMP_InputField textField)
     {
-        _showLoadingObject.SetActive(true);
+        ShowLoading(true);
         Search(textField.text);
     }
 
@@ -192,7 +194,7 @@ public class BeatSaverPageController : MonoBehaviour
             return;
         }
 
-        _showLoadingObject.SetActive(true);
+        ShowLoading(true);
         var options = new SearchTextFilterOption(search);
         SearchAsync(options).Forget();
     }
@@ -263,7 +265,7 @@ public class BeatSaverPageController : MonoBehaviour
     {
         await RefreshToken();
 
-        _showLoadingObject.SetActive(true);
+        ShowLoading(true);
         _activePage = _nextPage;
         _nextPage = await _activePage.Next(_cancellationTokenSource.Token);
         if (_activePage == null || !setData)
@@ -277,7 +279,7 @@ public class BeatSaverPageController : MonoBehaviour
     private async UniTask RequestPreviousPageAsync(bool setData = true)
     {
         await RefreshToken();
-        _showLoadingObject.SetActive(true);
+        ShowLoading(true);
         _nextPage = _activePage;
         _activePage = await _activePage.Previous(_cancellationTokenSource.Token);
 
@@ -313,7 +315,7 @@ public class BeatSaverPageController : MonoBehaviour
             {
                 Debug.LogError(e);
             }
-            _showLoadingObject.SetActive(false);
+            ShowLoading(false);
             return;
         }
 
@@ -404,7 +406,7 @@ public class BeatSaverPageController : MonoBehaviour
 
         _cellView = null;
 
-        _showLoadingObject.SetActive(false);
+        ShowLoading(false);
         _scrollerController.SetBeatmaps(_activePage.Beatmaps);
     }
 
@@ -417,7 +419,7 @@ public class BeatSaverPageController : MonoBehaviour
         }
         _cellView = null;
 
-        _showLoadingObject.SetActive(false);
+        ShowLoading(false);
         _allBeatmaps.Clear();
         _allBeatmaps.AddRange(_activePage.Beatmaps);
         if (_nextPage != null)
@@ -434,7 +436,7 @@ public class BeatSaverPageController : MonoBehaviour
 
         _cellView = null;
 
-        _showLoadingObject.SetActive(false);
+        ShowLoading(false);
         _allBeatmaps.Clear();
         _allBeatmaps.AddRange(_activePage.Beatmaps);
         if (_nextPage != null)
@@ -472,7 +474,7 @@ public class BeatSaverPageController : MonoBehaviour
             _allBeatmaps.AddRange(_nextPage.Beatmaps);
         }
         await UniTask.SwitchToMainThread(_cancellationTokenSource.Token);
-        _showLoadingObject.SetActive(false);
+        ShowLoading(false);
         _scrollerController.Enable();
         _scrollerController.SetBeatmaps(_allBeatmaps, scrollValue);
     }
@@ -618,5 +620,11 @@ public class BeatSaverPageController : MonoBehaviour
         _loadingDisplays.CancelAll();
         _downloadingIds.Clear();
         _downloadButton.interactable = true;
+    }
+
+    private void ShowLoading(bool isLoading)
+    {
+        _showLoadingObject.SetActive(isLoading);
+        _canvasController.interactable = !isLoading;
     }
 }

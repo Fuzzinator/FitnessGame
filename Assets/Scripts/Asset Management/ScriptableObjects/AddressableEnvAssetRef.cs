@@ -26,13 +26,5 @@ public class AddressableEnvAssetRef : ScriptableObject
         if (string.IsNullOrWhiteSpace(_environmentName))
             _environmentName = ((EnvironmentAssetContainer) AssetReference.editorAsset).EnvironmentName;
     }
-#endif
-
-    
-}
-public enum TargetPlatform
-{
-    All = 0,
-    Android = 1,
-    PCVR = 2,
+#endif    
 }

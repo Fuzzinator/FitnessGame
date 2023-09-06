@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.NetworkInformation;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -18,6 +19,12 @@ public class EnvironmentControlManager : MonoBehaviour
     private List<AddressableEnvAssetRef> _availableReferences = new List<AddressableEnvAssetRef>();
     [SerializeField]
     private List<CustomEnvironment> _availableCustomEnvironments = new List<CustomEnvironment>();
+    [SerializeField]
+    private Material _customEnvironmentSkyboxMat;
+    private Texture2D _activeCustomSkybox;
+    private string _customSkyboxPath;
+
+    private List<Environment> _availableEnvironments = new List<Environment>();
 
     public UnityEvent availableReferencesUpdated = new UnityEvent();
 
@@ -29,7 +36,12 @@ public class EnvironmentControlManager : MonoBehaviour
 
     private List<AsyncOperationHandle> _assetHandles = new List<AsyncOperationHandle>();
 
+    private AddressableEnvAssetRef _customEnvironment;
+    private System.Threading.CancellationToken _cancellationToken;
+
     private const string ADDRESSABLELABEL = "Environment Asset";
+    private const string CustomSkyboxAlbedo = "_SkyboxColor";
+    private const string CustomSkyboxExposure = "_SkyboxExposure";
 
     private void Awake()
     {
@@ -45,6 +57,7 @@ public class EnvironmentControlManager : MonoBehaviour
 
     private void Start()
     {
+        _cancellationToken = this.GetCancellationTokenOnDestroy();
         UpdateEnvironments().Forget();
     }
 
@@ -59,10 +72,11 @@ public class EnvironmentControlManager : MonoBehaviour
 
     private async UniTaskVoid UpdateEnvironments()
     {
-        await GetCustomEnvironments();
+        GetCustomEnvironments();
         await GetBuiltInEnvironments();
 
         _availableReferences.Sort((x, y) => x.EnvironmentName.CompareTo(y.EnvironmentName));
+        _availableEnvironments.Sort((x, y) => x.Name.CompareTo(y.Name));
     }
 
     public void SetTargetEnvironmentIndex(int index)
@@ -91,7 +105,7 @@ public class EnvironmentControlManager : MonoBehaviour
         {
             return index;
         }
-        for (var i = 0; i < _availableReferences.Count; i++)
+        for (var i = 0; i < _availableEnvironments.Count; i++)
         {
             var option = _availableReferences[i];
             if (string.Equals(option.EnvironmentName, sceneName, StringComparison.InvariantCultureIgnoreCase))
@@ -106,19 +120,33 @@ public class EnvironmentControlManager : MonoBehaviour
 
     public string GetTargetEnvName()
     {
-        return _availableReferences[_targetEnvironmentIndex].EnvironmentName;
+        return _availableEnvironments[_targetEnvironmentIndex].Name;
     }
 
     private void LoadEnvironmentData(int index)
     {
-        LoadEnvironmentDataAsync(index).Forget();
+        var targetEnv = _availableEnvironments[index];
+        if (targetEnv.IsCustom)
+        {
+            LoadCustomEnvironmentDataAsync(targetEnv.CustomPath).Forget();
+        }
+        else
+        {
+            LoadBuiltInEnvironmentDataAsync(targetEnv.AssetRef.AssetReference).Forget();
+        }
     }
 
-    private async UniTask GetCustomEnvironments()
+    private List<string> GetCustomEnvironments()
     {
         _availableCustomEnvironments.Clear();
 
-        var results = CustomEnvironmentsController.RefreshAvailableCustomEnvironments();
+        var environments = CustomEnvironmentsController.RefreshAvailableCustomEnvironments();
+        foreach (var environment in environments)
+        {
+            var env = new Environment(environment);
+            _availableEnvironments.Add(env);
+        }
+        return environments;
     }
 
     private async UniTask GetBuiltInEnvironments()
@@ -141,6 +169,10 @@ public class EnvironmentControlManager : MonoBehaviour
                 case TargetPlatform.PCVR:
 #endif
                     _availableReferences.Add(asset);
+                    _availableEnvironments.Add(new Environment(asset));
+                    break;
+                case TargetPlatform.CustomEnvironment:
+                    _customEnvironment = asset;
                     break;
                 default:
                     break;
@@ -151,18 +183,38 @@ public class EnvironmentControlManager : MonoBehaviour
         await results;
     }
 
-    
-
-    private async UniTask LoadEnvironmentDataAsync(int index)
+    private async UniTaskVoid LoadCustomEnvironmentDataAsync(string environmentPath)
     {
         LoadingEnvironmentContainer = true;
-        var results = Addressables.LoadAssetsAsync<EnvironmentAssetContainer>(_availableReferences[index].AssetReference,
+        await LoadEnvironmentDataAsync(_customEnvironment.AssetReference);
+        var environment = await CustomEnvironmentsController.LoadCustomEnvironment(environmentPath);
+        if (!string.Equals(_customSkyboxPath, environment.SkyboxPath))
+        {
+            _customSkyboxPath = environment.SkyboxPath;
+            _activeCustomSkybox = await CustomEnvironmentsController.LoadEnvironmentTexture(environment.SkyboxPath, _cancellationToken);
+        }
+        _customEnvironmentSkyboxMat.SetTexture(CustomSkyboxAlbedo, _activeCustomSkybox);
+        _customEnvironmentSkyboxMat.SetFloat(CustomSkyboxExposure, environment.SkyboxBrightness);
+
+        LoadingEnvironmentContainer = false;
+    }
+
+    private async UniTaskVoid LoadBuiltInEnvironmentDataAsync(AssetReference reference)
+    {
+        LoadingEnvironmentContainer = true;
+        await LoadEnvironmentDataAsync(reference);
+        LoadingEnvironmentContainer = false;
+    }
+
+    private async UniTask LoadEnvironmentDataAsync(AssetReference reference)
+    {
+        var results = Addressables.LoadAssetsAsync<EnvironmentAssetContainer>(reference,
             asset =>
             {
                 if (asset == null)
                 {
                     Debug.LogError(
-                        $"Found null asset when loading environment {_availableReferences[index].EnvironmentName}");
+                        $"Found null asset when loading environment {reference}");
                     LoadingEnvironmentContainer = false;
                     return;
                 }
@@ -171,8 +223,6 @@ public class EnvironmentControlManager : MonoBehaviour
             });
         _assetHandles.Add(results);
         await results;
-        //ColorsManager.Instance.SetAndUpdateTextureSets(ActiveEnvironmentContainer.TargetTextures,
-        //    ActiveEnvironmentContainer.ObstacleTextures);
 
         if (ActiveEnvironmentContainer.GlobalTextureSets is { Length: > 0 }) //this is equal to is GlobalTextureSets != null && its length>0
         {
@@ -191,8 +241,6 @@ public class EnvironmentControlManager : MonoBehaviour
         }
 
         MaterialsManager.Instance.SetUpMaterials(ActiveEnvironmentContainer.TargetMaterial, ActiveEnvironmentContainer.ObstacleMaterial, ActiveEnvironmentContainer.SuperTargetMaterial);
-
-        LoadingEnvironmentContainer = false;
     }
 
     public void UpdateObstacleTargetTextures()
@@ -203,10 +251,10 @@ public class EnvironmentControlManager : MonoBehaviour
 
     public List<string> GetNewAvailableEnvironmentsList()
     {
-        var references = new List<string>(_availableReferences.Count);
-        foreach (var assetRef in _availableReferences)
+        var references = new List<string>(_availableEnvironments.Count);
+        foreach (var environment in _availableEnvironments)
         {
-            references.Add(assetRef.EnvironmentName);
+            references.Add(environment.Name);
         }
 
         return references;

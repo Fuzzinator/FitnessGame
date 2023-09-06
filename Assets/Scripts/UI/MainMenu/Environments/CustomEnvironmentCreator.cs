@@ -28,6 +28,8 @@ public class CustomEnvironmentCreator : MonoBehaviour
 
     [SerializeField]
     private SkyboxTextureController _skyboxTextureController;
+    [SerializeField]
+    private AvailableEnvironmentsUIController _availableEnvironmentsController;
 
     private CustomEnvironment _activeEnvironment;
     private CancellationToken _cancellationToken;
@@ -50,46 +52,63 @@ public class CustomEnvironmentCreator : MonoBehaviour
             _cancellationToken = this.GetCancellationTokenOnDestroy();
             _tokenCreated = true;
         }
+        CustomEnvironmentsController.CustomEnvironmentsUpdated.AddListener(RefreshDisplay);
     }
 
     private void OnDisable()
     {
         ClearFields();
+        CustomEnvironmentsController.CustomEnvironmentsUpdated.RemoveListener(RefreshDisplay);
     }
 
     public void StartCreateNewEnvironment()
     {
         _activeEnvironment = null;
+        _environmentNameField.ClearText();
+        _skyboxBrightnessSlider.value = 0;
+        _skyboxBrightnessSlider.value = 1;
     }
 
     public void StartEditEnvironment(CustomEnvironment environment)
     {
         _activeEnvironment = environment;
-        _environmentNameField.SetTextWithoutNotify(environment.EnvironmentName);
-        _skyboxBrightnessSlider.SetValueWithoutNotify(environment.SkyboxBrightness);
+        RefreshDisplay();
         SetEnvironmentName(environment.EnvironmentName);
-        if (environment.SkyboxSprite != null)
+        SetSkyboxBrightness(environment.SkyboxBrightness);
+    }
+
+    public void RefreshDisplay()
+    {
+        if(_activeEnvironment == null)
         {
-            SetSkyboxTexture(environment.SkyboxName, environment.SkyboxPath, false);
-            _skyboxColor = environment.SkyboxSprite;
-            SetSprite(_skyboxColorImage, _skyboxColor);
-        }
-        else
-        {
-            SetSkyboxTexture(environment.SkyboxName, environment.SkyboxPath, true);
-        }
-        if (environment.DepthSprite != null)
-        {
-            SetSkyboxDepthTexture(environment.SkyboxDepthName, environment.SkyboxDepthPath, false);
-            _skyboxDepth = environment.DepthSprite;
-            SetSprite(_skyboxDepthImage, _skyboxDepth);
-        }
-        else
-        {
-            SetSkyboxDepthTexture(environment.SkyboxDepthName, environment.SkyboxDepthPath, true);
+            return;
         }
 
-        SetSkyboxBrightness(environment.SkyboxBrightness);
+        _environmentNameField.SetTextWithoutNotify(_activeEnvironment.EnvironmentName);
+        _skyboxBrightnessSlider.SetValueWithoutNotify(_activeEnvironment.SkyboxBrightness);
+        if (_activeEnvironment.SkyboxSprite != null)
+        {
+            SetSprite(_skyboxColorImage, _activeEnvironment.SkyboxSprite);
+            SetSkyboxTexture(_activeEnvironment.SkyboxName, _activeEnvironment.SkyboxPath, false);
+            _skyboxColor = _activeEnvironment.SkyboxSprite;
+        }
+        else
+        {
+            SetSkyboxTexture(_activeEnvironment.SkyboxName, _activeEnvironment.SkyboxPath, true);
+            SetSprite(_skyboxColorImage, null);
+        }
+
+        if (_activeEnvironment.DepthSprite != null)
+        {
+            SetSprite(_skyboxDepthImage, _activeEnvironment.DepthSprite);
+            SetSkyboxDepthTexture(_activeEnvironment.SkyboxDepthName, _activeEnvironment.SkyboxDepthPath, false);
+            _skyboxDepth = _activeEnvironment.DepthSprite;
+        }
+        else
+        {
+            SetSkyboxDepthTexture(_activeEnvironment.SkyboxDepthName, _activeEnvironment.SkyboxDepthPath, true);
+            SetSprite(_skyboxDepthImage, null);
+        }
     }
 
     public void StartEditSkyboxColor()
@@ -111,7 +130,7 @@ public class CustomEnvironmentCreator : MonoBehaviour
 
     public void SetSkyboxTexture(string skyboxName, string texture, bool loadSprite)
     {
-        _skyboxName = texture.Substring(texture.LastIndexOf("\\") + 1);
+        _skyboxName = texture.Substring(texture.LastIndexOf("/") + 1);
         _skyboxColorNameField.SetTextZeroAlloc(_skyboxName, true);
         _skyboxPath = texture;
 
@@ -178,7 +197,13 @@ public class CustomEnvironmentCreator : MonoBehaviour
         _activeEnvironment.SetSkyboxSprite(_skyboxColor);
         _activeEnvironment.SetDepthSprite(_skyboxDepth);
 
+
         TrySaveEnvironment(_activeEnvironment, editing).Forget();
+
+        if(editing)
+        {
+            _availableEnvironmentsController.CompleteEditEnvironment(_activeEnvironment);
+        }
     }
 
     public async UniTaskVoid TrySaveEnvironment(CustomEnvironment customEnvironment, bool overwrite)
@@ -188,6 +213,7 @@ public class CustomEnvironmentCreator : MonoBehaviour
         {
             var display = new NotificationVisuals($"Environment with name of {customEnvironment.EnvironmentName} already exists.", "Failed to save", autoTimeOutTime: 2f);
             NotificationManager.RequestNotification(display);
+            return;
         }
     }
 
@@ -203,12 +229,22 @@ public class CustomEnvironmentCreator : MonoBehaviour
 
     private async UniTaskVoid SetColorSprite(string texture)
     {
+        if(string.IsNullOrEmpty(texture))
+        {
+            return;
+        }
+
         _skyboxColor = await SetSkyboxTextureAsync(texture, _skyboxColorImage);
         _skyboxColorImage.sprite = _skyboxColor;
     }
 
     private async UniTaskVoid SetDepthSprite(string texture)
     {
+        if (string.IsNullOrEmpty(texture))
+        {
+            return;
+        }
+
         _skyboxDepth = await SetSkyboxTextureAsync(texture, _skyboxColorImage);
         _skyboxDepthImage.sprite = _skyboxDepth;
     }
@@ -225,11 +261,12 @@ public class CustomEnvironmentCreator : MonoBehaviour
         if (sprite == null)
         {
             targetImage.enabled = false;
+            targetImage.sprite = null;
         }
         else
         {
-            targetImage.enabled = true;
             targetImage.sprite = sprite;
+            targetImage.enabled = true;
         }
     }
 

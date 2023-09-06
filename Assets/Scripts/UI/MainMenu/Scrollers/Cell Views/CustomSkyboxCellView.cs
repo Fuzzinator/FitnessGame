@@ -2,7 +2,6 @@ using Cysharp.Threading.Tasks;
 using EnhancedUI.EnhancedScroller;
 using System.Threading;
 using TMPro;
-using UnityEditor.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -121,11 +120,11 @@ namespace UI.Scrollers
             }
             else
             {
+                var extension = skyboxName.Substring(skyboxName.IndexOf('.'));
+                newName = $"{newName}{extension}";
                 var canRename = CustomEnvironmentsController.RenameSkybox(skyboxName, newName);
                 if (canRename)
                 {
-                    var extension = skyboxName.Substring(skyboxName.IndexOf('.'));
-                    newName = $"{newName}{extension}";
                     targetText.SetTextZeroAlloc(newName, true);
                 }
                 else
@@ -138,7 +137,7 @@ namespace UI.Scrollers
 
         public void DeleteSkybox()
         {
-            var visuals = _controller.ConfirmDeleteVisuals;
+            var visuals = CustomEnvironmentsController.ConfirmDeleteSkybox;
             NotificationManager.RequestNotification(visuals, () => ConfirmDeleteSkybox());
         }
 
@@ -147,7 +146,7 @@ namespace UI.Scrollers
             var skyboxName = GetSkyboxName();
             CustomEnvironmentsController.DeleteSkybox(skyboxName);
             _editSkyboxContainer.gameObject.SetActive(false);
-            _controller.DeleteSkybox(skyboxName);
+            //_controller.DeleteSkybox(skyboxName);
             _controller.Refresh();
         }
 

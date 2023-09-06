@@ -14,8 +14,6 @@ public class CustomEnvironment
 
     [field: SerializeField]
     public string SkyboxPath { get; private set; }
-    [field: SerializeField]
-    public string SkyboxThumbnailPath { get; private set; }
 
     [field: SerializeField]
     public string SkyboxDepthName { get; private set; }

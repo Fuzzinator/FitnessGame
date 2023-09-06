@@ -32,8 +32,14 @@ public class SkyboxTextureController : MonoBehaviour
     {
         gameObject.SetActive(true);
         _myCanvasController.SetGroupState(1, true);
-        CustomEnvironmentsController.GetAvailableSkyboxes(_depthTexture);
+        var skyboxes = CustomEnvironmentsController.GetAvailableSkyboxes(_depthTexture);
         _skyboxScrollerController.Refresh();
+
+        if (skyboxes.Count == 0)
+        {
+            var visuals = new Notification.NotificationVisuals("No Skyboxes found, please select the + button to look through your downloads folder for panoramic skyboxes.", "No Skyboxes", "Okay", disableUI : true);
+            NotificationManager.RequestNotification(visuals);
+        }
     }
 
     public void SetSelectedSkybox(int index, Sprite thumbnail)

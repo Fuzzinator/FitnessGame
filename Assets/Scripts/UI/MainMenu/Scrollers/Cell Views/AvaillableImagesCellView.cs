@@ -93,7 +93,7 @@ namespace UI.Scrollers
 
         public void SetSelected(int index)
         {
-            var targetImage = _index == index ? _thumbnail1Highlight1 : _thumbnail1Highlight2;
+            var targetImage = index == 0 ? _thumbnail1Highlight1 : _thumbnail1Highlight2;
             var selected = _controller.SelectImage(_index + index);
             targetImage.enabled = selected;
         }

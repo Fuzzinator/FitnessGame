@@ -17,7 +17,6 @@ public class AvailableEnvironmentsUIController : MonoBehaviour
     private void OnEnable()
     {
         DisplayAvailable().Forget();
-        _environmentDisplay.SetActiveCustomEnvironment(-1);
     }
 
     private void OnDisable()
@@ -37,8 +36,19 @@ public class AvailableEnvironmentsUIController : MonoBehaviour
         _environmentCreator.StartEditEnvironment(environment);
     }
 
+    public void CompleteEditEnvironment(CustomEnvironment environment)
+    {
+        _environmentDisplay.SetActiveCustomEnvironment(environment);
+        _environmentDisplay.UpdateDisplay();
+    }
+
+    public void RequestUpdateDisplay()
+    {
+        DisplayAvailable().Forget();
+    }
     private async UniTaskVoid DisplayAvailable()
     {
+        CustomEnvironmentsController.GetAvailableCustomEnvironments();
         await CustomEnvironmentsController.LoadCustomEnvironments();
         _scrollerController.Refresh();
     }

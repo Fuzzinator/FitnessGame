@@ -12,7 +12,8 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 #if UNITY_ANDROID
 using UnityEngine.Android;
-#elif UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+#endif
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
 using System.Runtime.InteropServices;
 #endif
 
@@ -91,7 +92,7 @@ public class AssetManager : MonoBehaviour
     public static string DownloadsPath()
     {
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
-        if (Environment.OSVersion.Version.Major < 6) throw new NotSupportedException();
+        if (System.Environment.OSVersion.Version.Major < 6) throw new NotSupportedException();
 
         IntPtr pathPtr = IntPtr.Zero;
 

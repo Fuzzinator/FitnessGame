@@ -19,6 +19,8 @@ public class DisplayActiveEnvironment : MonoBehaviour
     private TextMeshProUGUI _skyboxBrightness;
     [SerializeField]
     private Image _environmentImage;
+    [SerializeField]
+    private AvailableEnvironmentsUIController _availableEnvironmentsUIController;
 
     private CancellationToken _cancellationToken;
 
@@ -36,16 +38,13 @@ public class DisplayActiveEnvironment : MonoBehaviour
     private void Start()
     {
         _cancellationToken = this.GetCancellationTokenOnDestroy();
-    }
-
-    private void OnEnable()
-    {
         ActiveCustomEnvironment = null;
     }
 
     private void OnDisable()
     {
         CustomEnvironmentsController.ClearCustomEnvironmentInfo();
+        ActiveCustomEnvironment = null;
     }
 
     public void SetActiveCustomEnvironment(int index)
@@ -58,16 +57,33 @@ public class DisplayActiveEnvironment : MonoBehaviour
         {
             ActiveCustomEnvironment = null;
         }
-
     }
 
-    private void UpdateDisplay()
+    public void SetActiveCustomEnvironment(CustomEnvironment environment)
     {
-        if(ActiveCustomEnvironment != null)
+        ActiveCustomEnvironment = environment;
+    }
+
+    public void UpdateDisplay()
+    {
+        if (ActiveCustomEnvironment != null)
         {
+            var skyboxName = ActiveCustomEnvironment.SkyboxName;
+            if (skyboxName != null)
+            {
+                skyboxName = skyboxName.Substring(skyboxName.LastIndexOf("/") + 1);
+            }
+
+            var skyboxDepthName = ActiveCustomEnvironment.SkyboxDepthName;
+            if (skyboxDepthName != null)
+            {
+                skyboxDepthName = skyboxDepthName.Substring(skyboxDepthName.LastIndexOf("/") + 1);
+            }
+
             _environmentName.SetTextZeroAlloc(ActiveCustomEnvironment.EnvironmentName, true);
-            _skyboxName.SetTextZeroAlloc(ActiveCustomEnvironment.SkyboxName, true);
-            _skyboxDepthName.SetTextZeroAlloc(ActiveCustomEnvironment.SkyboxDepthName, true);
+            _skyboxName.SetTextZeroAlloc(skyboxName, true);
+            _skyboxDepthName.SetTextZeroAlloc(skyboxDepthName, true);
+            _skyboxBrightness.SetTextZeroAlloc(ActiveCustomEnvironment.SkyboxBrightness, true);
             SetImageAsync(ActiveCustomEnvironment.SkyboxPath).Forget();
         }
         else
@@ -80,10 +96,35 @@ public class DisplayActiveEnvironment : MonoBehaviour
 
     private async UniTaskVoid SetImageAsync(string imagePath)
     {
-        var sprite = await CustomEnvironmentsController.GetEnvironmentImageAsync(imagePath, _cancellationToken);
-
+        Sprite sprite = null;
+        if (!string.IsNullOrWhiteSpace(ActiveCustomEnvironment.SkyboxPath))
+        {
+            sprite = await CustomEnvironmentsController.GetEnvironmentImageAsync(imagePath, _cancellationToken);
+        }
+        if (ActiveCustomEnvironment == null)
+        {
+            return;
+        }
         ActiveCustomEnvironment.SetSkyboxSprite(sprite);
         _environmentImage.sprite = sprite;
         _environmentImage.enabled = sprite != null;
+    }
+
+    public void EditEnvironment()
+    {
+        _availableEnvironmentsUIController.EditEnvironment(_activeCustomEnvironment);
+    }
+
+    public void TryDeleteEnvironment()
+    {
+        var visuals = CustomEnvironmentsController.ConfirmDeleteEnvironment;
+        NotificationManager.RequestNotification(visuals, () => ConfirmDeleteEnvironment());
+    }
+
+    public void ConfirmDeleteEnvironment()
+    {
+        var deleted = CustomEnvironmentsController.TryDeleteEnvironment(_activeCustomEnvironment);
+        ActiveCustomEnvironment = null;
+        _availableEnvironmentsUIController.RequestUpdateDisplay();
     }
 }

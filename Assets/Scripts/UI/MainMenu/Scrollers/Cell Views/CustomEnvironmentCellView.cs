@@ -47,13 +47,15 @@ namespace UI.Scrollers.Playlists
                 
                 _environmentName.SetText(sb);
             }
-            SetSprite(_environmentThumbnail, _environment.SkyboxName, index).Forget();
+            SetSprite(_environmentThumbnail, _environment.SkyboxPath, index).Forget();
         }
 
         private async UniTaskVoid SetSprite(Image image, string skyboxName, int index)
         {
             if (string.IsNullOrWhiteSpace(skyboxName))
             {
+                image.sprite = null;
+                image.color = Color.gray;
                 return;
             }
             await UniTask.DelayFrame(1);
@@ -61,6 +63,7 @@ namespace UI.Scrollers.Playlists
             if (index == _index)
             {
                 image.sprite = sprite;
+                image.color = Color.white;
             }
         }
 

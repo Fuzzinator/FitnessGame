@@ -10,15 +10,7 @@ namespace UI.Scrollers
     {
         [SerializeField]
         private SkyboxTextureController _skyboxTextureController;
-
-        public readonly Notification.NotificationVisualInfo ConfirmDeleteVisuals = new Notification.NotificationVisualInfo
-        {
-            button1Txt = "Delete",
-            button2Txt = "Cancel",
-            disableUI = true,
-            header = "Delete Skybox?",
-            message = "Are you sure you would like to delete this skybox? This cannot be undone."
-        }; 
+                 
         
         public readonly Notification.NotificationVisualInfo RenameFailedVisuals = new Notification.NotificationVisualInfo
         {
