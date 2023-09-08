@@ -11,12 +11,15 @@ public struct Environment
     public string CustomPath { get; private set; }
     public AddressableEnvAssetRef AssetRef { get; private set; }
 
+    public bool IsValid { get; private set; }
+
     public Environment(string customLocation)
     {
         Name = Path.GetFileNameWithoutExtension(customLocation);
         IsCustom = true;
         CustomPath = customLocation;
         AssetRef = null;
+        IsValid = true;
     }
 
     public Environment(AddressableEnvAssetRef assetRef)
@@ -25,6 +28,7 @@ public struct Environment
         IsCustom = false;
         CustomPath = null;
         AssetRef = assetRef;
+        IsValid = true;
     }
 }
 

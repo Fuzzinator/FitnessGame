@@ -72,11 +72,12 @@ public class EnvironmentControlManager : MonoBehaviour
 
     private async UniTaskVoid UpdateEnvironments()
     {
-        GetCustomEnvironments();
+        await GetCustomEnvironments();
         await GetBuiltInEnvironments();
 
         _availableReferences.Sort((x, y) => x.EnvironmentName.CompareTo(y.EnvironmentName));
         _availableEnvironments.Sort((x, y) => x.Name.CompareTo(y.Name));
+        availableReferencesUpdated.Invoke();
     }
 
     public void SetTargetEnvironmentIndex(int index)
@@ -136,15 +137,19 @@ public class EnvironmentControlManager : MonoBehaviour
         }
     }
 
-    private List<string> GetCustomEnvironments()
+    private async UniTask<List<string>> GetCustomEnvironments()
     {
         _availableCustomEnvironments.Clear();
 
         var environments = CustomEnvironmentsController.RefreshAvailableCustomEnvironments();
         foreach (var environment in environments)
         {
-            var env = new Environment(environment);
-            _availableEnvironments.Add(env);
+            var customEnv = await CustomEnvironmentsController.LoadCustomEnvironment(environment);
+            if (customEnv != null && customEnv.isValid)
+            {
+                var env = new Environment(environment);
+                _availableEnvironments.Add(env);
+            }
         }
         return environments;
     }
@@ -258,6 +263,28 @@ public class EnvironmentControlManager : MonoBehaviour
         }
 
         return references;
+    }
+
+    public void AddCustomEnvironment(CustomEnvironment customEnvironment, string path)
+    {
+        _availableCustomEnvironments.Add(customEnvironment);
+
+        _availableEnvironments.Add(new Environment(path));
+        _availableEnvironments.Sort((x, y) => x.Name.CompareTo(y.Name));
+
+        availableReferencesUpdated.Invoke();
+    }
+
+    public void RemoveCustomEnvironment(CustomEnvironment customEnvironment, string path)
+    {
+        _availableCustomEnvironments.Remove(customEnvironment);
+        var index = _availableEnvironments.FindIndex((x) => string.Equals(x.Name, customEnvironment.EnvironmentName, StringComparison.InvariantCultureIgnoreCase));
+        if (index >= 0)
+        {
+            _availableEnvironments.RemoveAt(index);
+
+            availableReferencesUpdated.Invoke();
+        }
     }
 }
 

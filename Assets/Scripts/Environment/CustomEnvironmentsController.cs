@@ -14,6 +14,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Pool;
+using UnityEngine.WSA;
 
 public class CustomEnvironmentsController : MonoBehaviour
 {
@@ -102,6 +103,7 @@ public class CustomEnvironmentsController : MonoBehaviour
         if (!Directory.Exists(path))
         {
             Directory.CreateDirectory(path);
+            return _customEnvironments;
         }
 
         var info = new DirectoryInfo(AssetManager.EnvironmentsPath);
@@ -137,7 +139,15 @@ public class CustomEnvironmentsController : MonoBehaviour
             _availableCustomSkyboxNames.Clear();
         }
 
-        var info = new DirectoryInfo(AssetManager.SkyboxesPath);
+        var path = AssetManager.SkyboxesPath;
+        if (!Directory.Exists(path))
+        {
+            Directory.CreateDirectory(path);
+            return depth? _availableCustomSkyboxDepthPaths : _availableCustomSkyboxPaths;
+        }
+
+        var info = new DirectoryInfo(path);
+        
         var files = info.GetFiles();
         foreach (var file in files)
         {
@@ -147,6 +157,7 @@ public class CustomEnvironmentsController : MonoBehaviour
             }
             if (string.Equals(file.Extension, Png, StringComparison.InvariantCultureIgnoreCase) ||
                 string.Equals(file.Extension, Jpg, StringComparison.InvariantCultureIgnoreCase) ||
+                string.Equals(file.Extension, Jpeg, StringComparison.InvariantCultureIgnoreCase) ||
                 string.Equals(file.Extension, Hdr, StringComparison.InvariantCultureIgnoreCase))
             {
                 if ((depth && !file.Name.Contains(DepthSkyboxIdentifier, StringComparison.InvariantCultureIgnoreCase)) ||
@@ -257,8 +268,15 @@ public class CustomEnvironmentsController : MonoBehaviour
 
     public async static UniTask<Sprite> GetEnvironmentThumbnailAsync(string imagePath, CancellationToken token)
     {
+        if(string.IsNullOrWhiteSpace(imagePath))
+        {
+            return null;
+        }
         var texture = await LoadEnvironmentTexture(imagePath, token);
-
+        if(texture == null)
+        {
+            return null;
+        }
         if (texture.width > ThumbnailSize || texture.height > ThumbnailSize)
         {
             texture = texture.ScaleTexture(ThumbnailSize, ThumbnailSize, texture.format);
@@ -270,7 +288,10 @@ public class CustomEnvironmentsController : MonoBehaviour
     public async static UniTask<Sprite> GetEnvironmentImageAsync(string imagePath, CancellationToken token)
     {
         var texture = await LoadEnvironmentTexture(imagePath, token);
-
+        if(texture == null)
+        {
+            return null;
+        }
         var spriteRect = new Rect(Vector2.zero, new Vector2(texture.width, texture.height));
         return Sprite.Create(texture, spriteRect, Vector2.zero);
     }
@@ -301,6 +322,10 @@ public class CustomEnvironmentsController : MonoBehaviour
         if (!overwriteDuplicates && File.Exists(imageName))
         {
             return false;
+        }
+        if (!Directory.Exists(AssetManager.SkyboxesPath))
+        {
+            Directory.CreateDirectory(AssetManager.SkyboxesPath);
         }
         File.Move(image, newFileLocation);
         _availableCustomSkyboxPaths.Add(newFileLocation);
@@ -451,11 +476,17 @@ public class CustomEnvironmentsController : MonoBehaviour
     {
         var path = $"{AssetManager.EnvironmentsPath}{customEnvironment.EnvironmentName}{EnvironmentExtension}";
 
-        if (!overwriteDuplicates && File.Exists(path))
+        if (File.Exists(path))
         {
-            return false;
+            if (!overwriteDuplicates)
+            {
+                return false;
+            }
         }
-
+        else
+        {
+            EnvironmentControlManager.Instance.AddCustomEnvironment(customEnvironment, path);
+        }
         using var streamWriter = File.CreateText(path);
         var json = JsonUtility.ToJson(customEnvironment);
         var writingTask = streamWriter.WriteAsync(json);
@@ -473,7 +504,7 @@ public class CustomEnvironmentsController : MonoBehaviour
         {
             return false;
         }
-
+        EnvironmentControlManager.Instance.RemoveCustomEnvironment(customEnvironment, path);
         File.Delete(path);
 
         return true;
