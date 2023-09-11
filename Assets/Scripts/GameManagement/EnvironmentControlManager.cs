@@ -22,6 +22,7 @@ public class EnvironmentControlManager : MonoBehaviour
     [SerializeField]
     private Material _customEnvironmentSkyboxMat;
     private Texture2D _activeCustomSkybox;
+    public Texture2D Skybox => _activeCustomSkybox;
     private string _customSkyboxPath;
 
     private List<Environment> _availableEnvironments = new List<Environment>();
@@ -198,8 +199,8 @@ public class EnvironmentControlManager : MonoBehaviour
             _customSkyboxPath = environment.SkyboxPath;
             _activeCustomSkybox = await CustomEnvironmentsController.LoadEnvironmentTexture(environment.SkyboxPath, _cancellationToken);
         }
-        _customEnvironmentSkyboxMat.SetTexture(CustomSkyboxAlbedo, _activeCustomSkybox);
-        _customEnvironmentSkyboxMat.SetFloat(CustomSkyboxExposure, environment.SkyboxBrightness);
+        Shader.SetGlobalTexture(CustomSkyboxAlbedo, _activeCustomSkybox);
+        Shader.SetGlobalFloat(CustomSkyboxExposure, environment.SkyboxBrightness);
 
         LoadingEnvironmentContainer = false;
     }

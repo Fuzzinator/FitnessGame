@@ -14,9 +14,9 @@ public class EditUGUITextField : MonoBehaviour
     [SerializeField]
     protected UnityEvent<string> _editFieldCompleted = new UnityEvent<string>();
 
-    public virtual void StartEditTextField()
+    public virtual void StartEditTextField(string defaultText, string hiddensuffix)
     {
-        EditTextField().Forget();
+        EditTextField(defaultText, hiddensuffix).Forget();
     }
 
     public virtual void ClearTextField()
@@ -29,13 +29,16 @@ public class EditUGUITextField : MonoBehaviour
         _textField = textField;
     }
 
-    protected virtual async UniTask EditTextField()
+    protected virtual async UniTask EditTextField(string defaultText, string hiddenSuffix)
     {
 #if UNITY_STANDALONE_WIN
-        var keyboard = KeyboardManager.Instance.ActivateKeyboard(_textField, _textField.text);
+        var keyboard = KeyboardManager.Instance.ActivateKeyboard(_textField, defaultText);
         await UniTask.WaitWhile(() => keyboard.gameObject.activeInHierarchy);
+        _textField.text = $"{_textField.text}{hiddenSuffix}";
 #elif UNITY_ANDROID
+        var keyboard = TouchScreenKeyboard.Open(defaultText);
         await UniTask.WaitWhile(() => !FocusTracker.Instance.IsFocused);//keyboard.gameObject.activeInHierarchy);
+        _textField.text = $"{keyboard.text}{hiddenSuffix}";
 #endif
         _editFieldCompleted?.Invoke(_textField.text);
     }

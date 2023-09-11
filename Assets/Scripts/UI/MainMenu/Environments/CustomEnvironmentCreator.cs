@@ -168,7 +168,7 @@ public class CustomEnvironmentCreator : MonoBehaviour
     }
     public void SetSkyboxDepthTexture(string depthName, string texture, Sprite thumbnail)
     {
-        _skyboxDepthName = texture.Substring(texture.LastIndexOf("\\") + 1);
+        _skyboxDepthName = texture.Substring(texture.LastIndexOf("/") + 1);
         _skyboxDepthNameField.SetTextZeroAlloc(_skyboxDepthName, true);
         _skyboxDepthPath = texture;
         _skyboxDepth = thumbnail;

@@ -106,8 +106,13 @@ namespace UI.Scrollers
         public void RenameSkybox()
         {
             var skyboxName = GetSkyboxName();
-            _textEditor.SetTargetText(_editingIndex == 0 ? _skyboxNameField1 : _skyboxNameField2);
-            _textEditor.StartEditTextField();
+            var suffixIndex = skyboxName.LastIndexOf(".");
+            var suffix = skyboxName.Substring(suffixIndex);
+            skyboxName = skyboxName.Substring(0, suffixIndex);
+
+            var targetText = _editingIndex == 0 ? _skyboxNameField1 : _skyboxNameField2;
+            _textEditor.SetTargetText(targetText);
+            _textEditor.StartEditTextField(skyboxName, suffix);
             _editSkyboxContainer.gameObject.SetActive(false);
         }
         public void CompleteRenameSkybox(string newName)
@@ -120,8 +125,8 @@ namespace UI.Scrollers
             }
             else
             {
-                var extension = skyboxName.Substring(skyboxName.IndexOf('.'));
-                newName = $"{newName}{extension}";
+                //var extension = skyboxName.Substring(skyboxName.LastIndexOf('.'));
+                //newName = $"{newName}{extension}";
                 var canRename = CustomEnvironmentsController.RenameSkybox(skyboxName, newName);
                 if (canRename)
                 {
@@ -129,6 +134,7 @@ namespace UI.Scrollers
                 }
                 else
                 {
+                    targetText.SetTextZeroAlloc(skyboxName, true);
                     var visuals = _controller.RenameFailedVisuals;
                     NotificationManager.RequestNotification(visuals);
                 }

@@ -7,14 +7,17 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.NetworkInformation;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Unity.Mathematics;
 using UnityEditor;
 using UnityEngine;
+#if UNITY_ANDROID
+using UnityEngine.Android;
+#endif
 using UnityEngine.Events;
 using UnityEngine.Pool;
-using UnityEngine.WSA;
 
 public class CustomEnvironmentsController : MonoBehaviour
 {
@@ -60,6 +63,7 @@ public class CustomEnvironmentsController : MonoBehaviour
     };
 
     private const string Png = ".png";
+    private const string Bmp = ".bmp";
     private const string Jpg = ".jpg";
     private const string Jpeg = ".jpeg";
     //private const string Exr = ".exr"; //For now I wont support Exr but in the future if people request it, I will consider it
@@ -143,11 +147,11 @@ public class CustomEnvironmentsController : MonoBehaviour
         if (!Directory.Exists(path))
         {
             Directory.CreateDirectory(path);
-            return depth? _availableCustomSkyboxDepthPaths : _availableCustomSkyboxPaths;
+            return depth ? _availableCustomSkyboxDepthPaths : _availableCustomSkyboxPaths;
         }
 
         var info = new DirectoryInfo(path);
-        
+
         var files = info.GetFiles();
         foreach (var file in files)
         {
@@ -158,6 +162,7 @@ public class CustomEnvironmentsController : MonoBehaviour
             if (string.Equals(file.Extension, Png, StringComparison.InvariantCultureIgnoreCase) ||
                 string.Equals(file.Extension, Jpg, StringComparison.InvariantCultureIgnoreCase) ||
                 string.Equals(file.Extension, Jpeg, StringComparison.InvariantCultureIgnoreCase) ||
+                string.Equals(file.Extension, Bmp, StringComparison.InvariantCultureIgnoreCase) ||
                 string.Equals(file.Extension, Hdr, StringComparison.InvariantCultureIgnoreCase))
             {
                 if ((depth && !file.Name.Contains(DepthSkyboxIdentifier, StringComparison.InvariantCultureIgnoreCase)) ||
@@ -186,6 +191,14 @@ public class CustomEnvironmentsController : MonoBehaviour
         }
         return depth ? _availableCustomSkyboxDepthPaths : _availableCustomSkyboxPaths;
     }
+#if UNITY_ANDROID
+    private static AndroidJavaObject GetContentResolver()
+    {
+        AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+        AndroidJavaObject currentActivity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
+        return currentActivity.Call<AndroidJavaObject>("getContentResolver");
+    }
+#endif
 
     public static List<string> GetImagePathsInDownloads()
     {
@@ -198,8 +211,41 @@ public class CustomEnvironmentsController : MonoBehaviour
             _imagesInDownloads.Clear();
         }
 
+        //
+        // Android 11 is fucking stupid and breaks loading files from the downloads folder unless they are images.
+        // This is an attempt at fixing it by using the MediaStore.Downloads functionality but it returns with a cursor with a count of 0
+        //
+        //
+/*#if UNITY_ANDROID //&& !UNITY_EDITOR
+        AndroidJavaClass environment = new AndroidJavaClass("android.os.Environment");
+        AndroidJavaObject externalStorageDirectory = environment.CallStatic<AndroidJavaObject>("getExternalStorageDirectory");
+        string downloadsFolderPath = externalStorageDirectory.Call<string>("getAbsolutePath") + "/Download";
+
+        AndroidJavaClass downloadsMediaStore = new AndroidJavaClass("android.provider.MediaStore$Downloads");
+
+        AndroidJavaObject contentResolver = GetContentResolver();
+        AndroidJavaObject uri = downloadsMediaStore.GetStatic<AndroidJavaObject>("EXTERNAL_CONTENT_URI");
+        string[] projection = { "_id", "_display_name", "_data", "title" };
+
+        AndroidJavaObject cursor = contentResolver.Call<AndroidJavaObject>("query", uri, projection, null, null, null);
+
+        List<string> fileList = new List<string>();
+
+        if (cursor != null && cursor.Call<bool>("moveToFirst"))
+        {
+
+            while (cursor.Call<bool>("moveToNext"))
+            {
+                int dataIndex = cursor.Call<int>("getColumnIndexOrThrow", "_data");
+                string filePath = cursor.Call<string>("getString", dataIndex);
+                fileList.Add(filePath);
+            }
+        }
+
+        cursor.Call("close");
+#else*/
         var info = new DirectoryInfo(AssetManager.DownloadsPath());
-        var files = info.GetFiles();
+        var files = info.EnumerateFiles();
         foreach (var file in files)
         {
             if (file == null)
@@ -209,14 +255,17 @@ public class CustomEnvironmentsController : MonoBehaviour
             if (string.Equals(file.Extension, Png, StringComparison.InvariantCultureIgnoreCase) ||
                 string.Equals(file.Extension, Jpg, StringComparison.InvariantCultureIgnoreCase) ||
                 string.Equals(file.Extension, Jpeg, StringComparison.InvariantCultureIgnoreCase) ||
+                string.Equals(file.Extension, Bmp, StringComparison.InvariantCultureIgnoreCase) ||
                 string.Equals(file.Extension, Hdr, StringComparison.InvariantCultureIgnoreCase))
             {
-                if (!_imagesInDownloads.Contains(file.FullName))
+                var fullName = file.FullName.Replace('\\', '/');
+                if (!_imagesInDownloads.Contains(fullName))
                 {
-                    _imagesInDownloads.Add(file.FullName);
+                    _imagesInDownloads.Add(fullName);
                 }
             }
         }
+//#endif
         return _imagesInDownloads;
     }
 
@@ -268,12 +317,12 @@ public class CustomEnvironmentsController : MonoBehaviour
 
     public async static UniTask<Sprite> GetEnvironmentThumbnailAsync(string imagePath, CancellationToken token)
     {
-        if(string.IsNullOrWhiteSpace(imagePath))
+        if (string.IsNullOrWhiteSpace(imagePath))
         {
             return null;
         }
         var texture = await LoadEnvironmentTexture(imagePath, token);
-        if(texture == null)
+        if (texture == null)
         {
             return null;
         }
@@ -288,7 +337,7 @@ public class CustomEnvironmentsController : MonoBehaviour
     public async static UniTask<Sprite> GetEnvironmentImageAsync(string imagePath, CancellationToken token)
     {
         var texture = await LoadEnvironmentTexture(imagePath, token);
-        if(texture == null)
+        if (texture == null)
         {
             return null;
         }
@@ -312,7 +361,7 @@ public class CustomEnvironmentsController : MonoBehaviour
         string imageName;
         if (string.IsNullOrWhiteSpace(newName))
         {
-            imageName = image.Substring(image.LastIndexOf("\\") + 1);
+            imageName = image.Substring(image.LastIndexOf("/") + 1);
         }
         else
         {
@@ -416,9 +465,9 @@ public class CustomEnvironmentsController : MonoBehaviour
     private static async UniTaskVoid RenameEnvironmentSkyboxes(string oldName, string newName, string newPath)
     {
         var updated = false;
-        foreach(var env in _availableCustomEnvironments)
+        foreach (var env in _availableCustomEnvironments)
         {
-            if(!env.SkyboxName.Equals(oldName, StringComparison.OrdinalIgnoreCase))
+            if (!env.SkyboxName.Equals(oldName, StringComparison.OrdinalIgnoreCase))
             {
                 continue;
             }
@@ -428,7 +477,7 @@ public class CustomEnvironmentsController : MonoBehaviour
             updated = true;
             await TrySaveEnvironment(env, true);
         }
-        if(updated)
+        if (updated)
         {
             CustomEnvironmentsUpdated.Invoke();
         }
@@ -516,7 +565,7 @@ public class CustomEnvironmentsController : MonoBehaviour
         foreach (var customEnvironment in _customEnvironments)
         {
             var environment = await LoadCustomEnvironment(customEnvironment);
-            if(environment == null)
+            if (environment == null)
             {
                 continue;
             }
@@ -617,7 +666,7 @@ public class CustomEnvironmentsController : MonoBehaviour
         {
             return null;
         }
-        var name = _imagesInDownloads[index].Substring(_imagesInDownloads[index].LastIndexOf("\\") + 1);
+        var name = _imagesInDownloads[index].Substring(_imagesInDownloads[index].LastIndexOf("/") + 1);
         return name;
     }
     public static void ClearCustomEnvironmentInfo()
