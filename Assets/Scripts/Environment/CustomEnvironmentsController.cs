@@ -30,15 +30,12 @@ public class CustomEnvironmentsController : MonoBehaviour
     [SerializeField]
     private static List<string> _availableCustomSkyboxDepthNames = new List<string>();
     [SerializeField]
-    private static List<string> _checkedFiles = null;
-    [SerializeField]
     private static List<string> _imagesInDownloads = null;
-    [SerializeField]
-    private static List<string> _selectedSkyboxFiles = null;
     [SerializeField]
     private static List<string> _customEnvironments = null;
 
     private static List<CustomEnvironment> _availableCustomEnvironments = new List<CustomEnvironment>();
+    private static Dictionary<string, Sprite> _skyboxThumbnails = null;
     public static UnityEvent CustomEnvironmentsUpdated { get; private set; } = new UnityEvent();
     public static int CustomSkyboxesCount => _availableCustomSkyboxPaths?.Count ?? 0;
     public static int CustomEnvironmentCount => _availableCustomEnvironments?.Count ?? 0;
@@ -70,19 +67,9 @@ public class CustomEnvironmentsController : MonoBehaviour
     private const string Hdr = ".hdr";
 
     private const string EnvironmentExtension = ".Env";
-    private const string CheckFilesSetting = "CheckedFilesSetting";
     private const string DepthSkyboxIdentifier = "depth";
 
     private const int ThumbnailSize = 256;
-
-    public static void ResetCheckedFiles()
-    {
-        if (_checkedFiles != null)
-        {
-            CollectionPool<List<string>, string>.Release(_checkedFiles);
-        }
-        SettingsManager.SetSetting(CheckFilesSetting, _checkedFiles);
-    }
 
     public static List<string> RefreshAvailableCustomEnvironments()
     {
@@ -216,34 +203,34 @@ public class CustomEnvironmentsController : MonoBehaviour
         // This is an attempt at fixing it by using the MediaStore.Downloads functionality but it returns with a cursor with a count of 0
         //
         //
-/*#if UNITY_ANDROID //&& !UNITY_EDITOR
-        AndroidJavaClass environment = new AndroidJavaClass("android.os.Environment");
-        AndroidJavaObject externalStorageDirectory = environment.CallStatic<AndroidJavaObject>("getExternalStorageDirectory");
-        string downloadsFolderPath = externalStorageDirectory.Call<string>("getAbsolutePath") + "/Download";
+        /*#if UNITY_ANDROID //&& !UNITY_EDITOR
+                AndroidJavaClass environment = new AndroidJavaClass("android.os.Environment");
+                AndroidJavaObject externalStorageDirectory = environment.CallStatic<AndroidJavaObject>("getExternalStorageDirectory");
+                string downloadsFolderPath = externalStorageDirectory.Call<string>("getAbsolutePath") + "/Download";
 
-        AndroidJavaClass downloadsMediaStore = new AndroidJavaClass("android.provider.MediaStore$Downloads");
+                AndroidJavaClass downloadsMediaStore = new AndroidJavaClass("android.provider.MediaStore$Downloads");
 
-        AndroidJavaObject contentResolver = GetContentResolver();
-        AndroidJavaObject uri = downloadsMediaStore.GetStatic<AndroidJavaObject>("EXTERNAL_CONTENT_URI");
-        string[] projection = { "_id", "_display_name", "_data", "title" };
+                AndroidJavaObject contentResolver = GetContentResolver();
+                AndroidJavaObject uri = downloadsMediaStore.GetStatic<AndroidJavaObject>("EXTERNAL_CONTENT_URI");
+                string[] projection = { "_id", "_display_name", "_data", "title" };
 
-        AndroidJavaObject cursor = contentResolver.Call<AndroidJavaObject>("query", uri, projection, null, null, null);
+                AndroidJavaObject cursor = contentResolver.Call<AndroidJavaObject>("query", uri, projection, null, null, null);
 
-        List<string> fileList = new List<string>();
+                List<string> fileList = new List<string>();
 
-        if (cursor != null && cursor.Call<bool>("moveToFirst"))
-        {
+                if (cursor != null && cursor.Call<bool>("moveToFirst"))
+                {
 
-            while (cursor.Call<bool>("moveToNext"))
-            {
-                int dataIndex = cursor.Call<int>("getColumnIndexOrThrow", "_data");
-                string filePath = cursor.Call<string>("getString", dataIndex);
-                fileList.Add(filePath);
-            }
-        }
+                    while (cursor.Call<bool>("moveToNext"))
+                    {
+                        int dataIndex = cursor.Call<int>("getColumnIndexOrThrow", "_data");
+                        string filePath = cursor.Call<string>("getString", dataIndex);
+                        fileList.Add(filePath);
+                    }
+                }
 
-        cursor.Call("close");
-#else*/
+                cursor.Call("close");
+        #else*/
         var info = new DirectoryInfo(AssetManager.DownloadsPath());
         var files = info.EnumerateFiles();
         foreach (var file in files)
@@ -265,7 +252,7 @@ public class CustomEnvironmentsController : MonoBehaviour
                 }
             }
         }
-//#endif
+        //#endif
         return _imagesInDownloads;
     }
 
@@ -315,13 +302,43 @@ public class CustomEnvironmentsController : MonoBehaviour
         await File.WriteAllBytesAsync(imagePath, bytes);
     }
 
-    public async static UniTask<Sprite> GetEnvironmentThumbnailAsync(string imagePath, CancellationToken token)
+    public async static UniTask<Sprite> GetEnvironmentThumbnailAsync(string imageName, string imagePath, CancellationToken token, bool cacheSprite = true)
     {
         if (string.IsNullOrWhiteSpace(imagePath))
         {
             return null;
         }
-        var texture = await LoadEnvironmentTexture(imagePath, token);
+        var path = imagePath;
+        if (cacheSprite && _skyboxThumbnails != null && _skyboxThumbnails.TryGetValue(imagePath, out var skyboxThumbnail))
+        {
+            var thumbnails = _skyboxThumbnails;
+            await UniTask.WaitUntil(() => TryGetThumbnail(imageName, out skyboxThumbnail), cancellationToken: token);
+            return skyboxThumbnail;
+        }
+        else if (cacheSprite)
+        {
+            if (_skyboxThumbnails == null)
+            {
+                _skyboxThumbnails = new Dictionary<string, Sprite>();
+            }
+            if(_skyboxThumbnails.TryGetValue(imagePath, out var thumbnail) && thumbnail != null)
+            {
+                return thumbnail;
+            }
+            _skyboxThumbnails[imagePath] = null;
+        }
+
+        if (!string.IsNullOrWhiteSpace(imageName))
+        {
+            var tempPath = $"{AssetManager.SkyboxThumbnailPath}{imageName}";
+
+            if (File.Exists(tempPath))
+            {
+                path = tempPath;
+            }
+        }
+
+        var texture = await LoadEnvironmentTexture(path, token);
         if (texture == null)
         {
             return null;
@@ -331,29 +348,16 @@ public class CustomEnvironmentsController : MonoBehaviour
             texture = texture.ScaleTexture(ThumbnailSize, ThumbnailSize, texture.format);
         }
         var spriteRect = new Rect(Vector2.zero, new Vector2(texture.width, texture.height));
-        return Sprite.Create(texture, spriteRect, Vector2.zero);
-    }
-
-    public async static UniTask<Sprite> GetEnvironmentImageAsync(string imagePath, CancellationToken token)
-    {
-        var texture = await LoadEnvironmentTexture(imagePath, token);
-        if (texture == null)
+        var sprite = Sprite.Create(texture, spriteRect, Vector2.zero);
+        if (_skyboxThumbnails == null)
         {
-            return null;
+            _skyboxThumbnails = new Dictionary<string, Sprite>();
         }
-        var spriteRect = new Rect(Vector2.zero, new Vector2(texture.width, texture.height));
-        return Sprite.Create(texture, spriteRect, Vector2.zero);
-    }
-    public async static UniTask<Sprite> GetDownloadsThumbnailAsync(string imagePath, CancellationToken token)
-    {
-        var texture = await LoadEnvironmentTexture(imagePath, token);
-
-        if (texture.width > ThumbnailSize || texture.height > ThumbnailSize)
+        if (cacheSprite)
         {
-            texture = texture.ScaleTexture(ThumbnailSize, ThumbnailSize, texture.format);
+            _skyboxThumbnails[imageName] = sprite;
         }
-        var spriteRect = new Rect(Vector2.zero, new Vector2(ThumbnailSize, ThumbnailSize));
-        return Sprite.Create(texture, spriteRect, Vector2.zero);
+        return sprite;
     }
 
     public static bool TrySetImageAsSkybox(string image, string newName, bool overwriteDuplicates, CancellationToken token)
@@ -376,7 +380,11 @@ public class CustomEnvironmentsController : MonoBehaviour
         {
             Directory.CreateDirectory(AssetManager.SkyboxesPath);
         }
+#if UNITY_ANDROID
+        File.Copy(image, newFileLocation);
+#else
         File.Move(image, newFileLocation);
+#endif
         _availableCustomSkyboxPaths.Add(newFileLocation);
         _availableCustomSkyboxNames.Add(imageName);
         SaveSkyboxThumbnail(imageName, newFileLocation, token).Forget();
@@ -475,7 +483,7 @@ public class CustomEnvironmentsController : MonoBehaviour
             env.SetSkyboxName(newName);
             env.SetSkyboxPath(newPath);
             updated = true;
-            await TrySaveEnvironment(env, true);
+            await TrySaveEnvironment(env, true, true);
         }
         if (updated)
         {
@@ -497,7 +505,7 @@ public class CustomEnvironmentsController : MonoBehaviour
             env.SetSkyboxPath(string.Empty);
             env.SetSkyboxSprite(null);
             updated = true;
-            await TrySaveEnvironment(env, true);
+            await TrySaveEnvironment(env, true, true);
         }
         if (updated)
         {
@@ -521,7 +529,7 @@ public class CustomEnvironmentsController : MonoBehaviour
         return customEnvironment;
     }
 
-    public static async UniTask<bool> TrySaveEnvironment(CustomEnvironment customEnvironment, bool overwriteDuplicates)
+    public static async UniTask<bool> TrySaveEnvironment(CustomEnvironment customEnvironment, bool overwriteDuplicates, bool updating)
     {
         var path = $"{AssetManager.EnvironmentsPath}{customEnvironment.EnvironmentName}{EnvironmentExtension}";
 
@@ -532,7 +540,7 @@ public class CustomEnvironmentsController : MonoBehaviour
                 return false;
             }
         }
-        else
+        else if (!updating)
         {
             EnvironmentControlManager.Instance.AddCustomEnvironment(customEnvironment, path);
         }
@@ -554,6 +562,19 @@ public class CustomEnvironmentsController : MonoBehaviour
             return false;
         }
         EnvironmentControlManager.Instance.RemoveCustomEnvironment(customEnvironment, path);
+        File.Delete(path);
+
+        return true;
+    }
+    public static bool TryDeleteEnvironment(string environmentName)
+    {
+        var path = $"{AssetManager.EnvironmentsPath}{environmentName}{EnvironmentExtension}";
+
+        if (!File.Exists(path))
+        {
+            return false;
+        }
+        EnvironmentControlManager.Instance.RemoveCustomEnvironment(environmentName, path);
         File.Delete(path);
 
         return true;
@@ -671,7 +692,14 @@ public class CustomEnvironmentsController : MonoBehaviour
     }
     public static void ClearCustomEnvironmentInfo()
     {
-
+        _availableCustomSkyboxPaths?.Clear();
+        _availableCustomSkyboxNames?.Clear();
+        _availableCustomSkyboxDepthPaths?.Clear();
+        _availableCustomSkyboxDepthNames?.Clear();
+        _imagesInDownloads?.Clear();
+        _customEnvironments?.Clear();
+        _availableCustomEnvironments?.Clear();
+        _skyboxThumbnails?.Clear();
     }
 
     public static void ValidateEnvironment(CustomEnvironment customEnvironment)
@@ -682,5 +710,11 @@ public class CustomEnvironmentsController : MonoBehaviour
             (string.IsNullOrWhiteSpace(customEnvironment.MeshPath) || File.Exists(customEnvironment.MeshPath)) &&
             (string.IsNullOrWhiteSpace(customEnvironment.ObjectsPath) || File.Exists(customEnvironment.ObjectsPath)) &&
             (string.IsNullOrWhiteSpace(customEnvironment.VFXPath) || File.Exists(customEnvironment.VFXPath));
+    }
+
+    private static bool TryGetThumbnail(string thumbnailKey, out Sprite thumbnail)
+    {
+        var hasThumbnail = _skyboxThumbnails.TryGetValue(thumbnailKey, out thumbnail);
+        return hasThumbnail && thumbnail != null;
     }
 }

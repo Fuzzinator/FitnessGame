@@ -43,7 +43,6 @@ public class DisplayActiveEnvironment : MonoBehaviour
 
     private void OnDisable()
     {
-        CustomEnvironmentsController.ClearCustomEnvironmentInfo();
         ActiveCustomEnvironment = null;
     }
 
@@ -84,7 +83,7 @@ public class DisplayActiveEnvironment : MonoBehaviour
             _skyboxName.SetTextZeroAlloc(skyboxName, true);
             _skyboxDepthName.SetTextZeroAlloc(skyboxDepthName, true);
             _skyboxBrightness.SetTextZeroAlloc(ActiveCustomEnvironment.SkyboxBrightness, true);
-            SetImageAsync(ActiveCustomEnvironment.SkyboxPath).Forget();
+            SetImageAsync(ActiveCustomEnvironment.SkyboxName, ActiveCustomEnvironment.SkyboxPath).Forget();
         }
         else
         {
@@ -94,12 +93,12 @@ public class DisplayActiveEnvironment : MonoBehaviour
         }
     }
 
-    private async UniTaskVoid SetImageAsync(string imagePath)
+    private async UniTaskVoid SetImageAsync(string skyboxName, string skyboxPath)
     {
         Sprite sprite = null;
         if (!string.IsNullOrWhiteSpace(ActiveCustomEnvironment.SkyboxPath))
         {
-            sprite = await CustomEnvironmentsController.GetEnvironmentImageAsync(imagePath, _cancellationToken);
+            sprite = await CustomEnvironmentsController.GetEnvironmentThumbnailAsync(skyboxName, skyboxPath, _cancellationToken);
         }
         if (ActiveCustomEnvironment == null)
         {

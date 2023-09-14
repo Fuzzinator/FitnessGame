@@ -47,7 +47,7 @@ public class AssetManager : MonoBehaviour
     private const string SONGSFOLDER = "/Resources/Songs/";
     private const string PLAYLISTSFOLDER = "/Resources/Playlists/";    
     public const string CustomSkyboxFolder = "/Resources/LocalCustomSkyboxes/";
-    public const string CustomSkyboxThumbnailsFolder = "Resources/LocalCustomSkyboxThumbnails/";
+    public const string CustomSkyboxThumbnailsFolder = "/Resources/LocalCustomSkyboxThumbnails/";
     private const string CustomEnvironmentFolder = "/Resources/LocalCustomEnvironments/";
 
 #if UNITY_ANDROID

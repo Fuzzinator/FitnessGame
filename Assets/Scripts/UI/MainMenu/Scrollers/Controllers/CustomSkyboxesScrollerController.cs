@@ -42,6 +42,11 @@ namespace UI.Scrollers
             _skyboxTextureController.SetSelectedSkybox(index, thumbnail);
         }
 
+        public void RenameComplete(string newName) 
+        {
+            _skyboxTextureController.RenameSkybox(newName);
+        }
+
         public void DeleteSkybox(string skyboxName)
         {
             _skyboxTextureController.DeleteSkybox(skyboxName);

@@ -31,13 +31,21 @@ public class EditUGUITextField : MonoBehaviour
 
     protected virtual async UniTask EditTextField(string defaultText, string hiddenSuffix)
     {
-#if UNITY_STANDALONE_WIN
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN
         var keyboard = KeyboardManager.Instance.ActivateKeyboard(_textField, defaultText);
-        await UniTask.WaitWhile(() => keyboard.gameObject.activeInHierarchy);
+        await UniTask.WaitWhile(() => KeyboardManager.Instance.status == KeyboardManager.Status.Visible);
+        if(KeyboardManager.Instance.status == KeyboardManager.Status.Canceled)
+        {
+            return;
+        }
         _textField.text = $"{_textField.text}{hiddenSuffix}";
 #elif UNITY_ANDROID
         var keyboard = TouchScreenKeyboard.Open(defaultText);
-        await UniTask.WaitWhile(() => !FocusTracker.Instance.IsFocused);//keyboard.gameObject.activeInHierarchy);
+        await UniTask.WaitWhile(() => keyboard.status == TouchScreenKeyboard.Status.Visible);//keyboard.gameObject.activeInHierarchy);
+        if(keyboard.status == TouchScreenKeyboard.Status.Canceled)
+        {
+            return;
+        }
         _textField.text = $"{keyboard.text}{hiddenSuffix}";
 #endif
         _editFieldCompleted?.Invoke(_textField.text);

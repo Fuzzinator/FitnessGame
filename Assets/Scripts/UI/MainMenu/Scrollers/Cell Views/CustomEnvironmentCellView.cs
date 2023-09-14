@@ -47,19 +47,19 @@ namespace UI.Scrollers.Playlists
                 
                 _environmentName.SetText(sb);
             }
-            SetSprite(_environmentThumbnail, _environment.SkyboxPath, index).Forget();
+            SetSprite(_environmentThumbnail, _environment.SkyboxName, _environment.SkyboxPath, index).Forget();
         }
 
-        private async UniTaskVoid SetSprite(Image image, string skyboxName, int index)
+        private async UniTaskVoid SetSprite(Image image, string skyboxName, string skyboxPath, int index)
         {
+            image.sprite = null;
+            image.color = Color.gray;
             if (string.IsNullOrWhiteSpace(skyboxName))
             {
-                image.sprite = null;
-                image.color = Color.gray;
                 return;
             }
             await UniTask.DelayFrame(1);
-            var sprite = await CustomEnvironmentsController.GetEnvironmentThumbnailAsync(skyboxName, _cancellationToken);
+            var sprite = await CustomEnvironmentsController.GetEnvironmentThumbnailAsync(skyboxName, skyboxPath, _cancellationToken);
             if (index == _index)
             {
                 image.sprite = sprite;

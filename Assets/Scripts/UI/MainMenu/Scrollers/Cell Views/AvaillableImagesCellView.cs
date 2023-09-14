@@ -79,12 +79,14 @@ namespace UI.Scrollers
 
         private async UniTaskVoid SetSprite(Image image, string skyboxName, int index)
         {
+            image.sprite = null;
+            image.color = Color.gray;
             if (string.IsNullOrWhiteSpace(skyboxName))
             {
                 return;
             }
             await UniTask.DelayFrame(1);
-            var sprite = await CustomEnvironmentsController.GetEnvironmentThumbnailAsync(skyboxName, _cancellationToken);
+            var sprite = await CustomEnvironmentsController.GetEnvironmentThumbnailAsync(null, skyboxName, _cancellationToken, false);
             if (index == _index)
             {
                 image.sprite = sprite;
@@ -97,5 +99,6 @@ namespace UI.Scrollers
             var selected = _controller.SelectImage(_index + index);
             targetImage.enabled = selected;
         }
+
     }
 }

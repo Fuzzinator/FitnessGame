@@ -29,6 +29,8 @@ public class KeyboardManager : MonoBehaviour
 
     private TMP_InputField _targetInputText;
     private TextMeshProUGUI _targetText;
+    public Status status { get; private set; }
+
     private void Awake()
     {
         if (Instance == null)
@@ -40,12 +42,17 @@ public class KeyboardManager : MonoBehaviour
             Destroy(this);
         }
     }
+    private void Start()
+    {
+        status = Status.Disabled;
+    }
 
     public KeyboardBehaviour ActivateKeyboard(TMP_InputField ugui, string defaultText)
     {
         _targetInputText = ugui;
         _targetText = null;
         _keyboard.PlaceholderText = defaultText;
+        status = Status.Visible;
         SetObjectsActive(true);
         UIStateManager.Instance?.RequestEnableInteraction(_keyboard.MyCanvas);
         return _keyboard;
@@ -55,6 +62,7 @@ public class KeyboardManager : MonoBehaviour
         _targetInputText = null;
         _targetText = ugui;
         _keyboard.PlaceholderText = defaultText;
+        status = Status.Visible;
         SetObjectsActive(true);
         UIStateManager.Instance?.RequestEnableInteraction(_keyboard.MyCanvas);
         return _keyboard;
@@ -75,11 +83,13 @@ public class KeyboardManager : MonoBehaviour
         {
             _targetText.SetTextZeroAlloc(_keyboard.Text, true);
         }
+        status = Status.Done;
         DisableKeyboard();
     }
 
     public void CancelPressed()
     {
+        status = Status.Canceled;
         DisableKeyboard();
     }
 
@@ -117,5 +127,25 @@ public class KeyboardManager : MonoBehaviour
         {
             _uiController.RequestEnableUI(this);
         }
+    }
+
+    public enum Status
+    {
+        //
+        // Summary:
+        //     The on-screen keyboard is visible.
+        Visible,
+        //
+        // Summary:
+        //     The user has finished providing input.
+        Done,
+        //
+        // Summary:
+        //     The on-screen keyboard was canceled.
+        Canceled,
+        //
+        // Summary:
+        //     The on-screen keyboard is disabled.
+        Disabled
     }
 }

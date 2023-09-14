@@ -287,6 +287,22 @@ public class EnvironmentControlManager : MonoBehaviour
             availableReferencesUpdated.Invoke();
         }
     }
+    public void RemoveCustomEnvironment(string environmentName, string path)
+    {
+        var custonEnvironIndex = _availableCustomEnvironments.FindIndex((x) => x.EnvironmentName == environmentName);
+        if (custonEnvironIndex >= 0)
+        {
+            _availableCustomEnvironments.RemoveAt(custonEnvironIndex);
+        }
+
+        var index = _availableEnvironments.FindIndex((x) => string.Equals(x.Name, environmentName, StringComparison.InvariantCultureIgnoreCase));
+        if (index >= 0)
+        {
+            _availableEnvironments.RemoveAt(index);
+
+            availableReferencesUpdated.Invoke();
+        }
+    }
 }
 
 [Serializable]

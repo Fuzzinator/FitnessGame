@@ -51,7 +51,7 @@ namespace UI.Scrollers
                 var skyboxName = CustomEnvironmentsController.GetSkyboxName(index);
                 _skyboxNameField1.SetTextZeroAlloc(skyboxName, true);
                 var skyboxPath = CustomEnvironmentsController.GetSkyboxPath(index);
-                SetSprite(_skyboxThumbnail1, skyboxPath, index).Forget();
+                SetSprite(_skyboxThumbnail1, skyboxName, skyboxPath, index).Forget();
                 _skyboxButton1.gameObject.SetActive(true);
             }
             else
@@ -65,7 +65,7 @@ namespace UI.Scrollers
                 var skyboxName = CustomEnvironmentsController.GetSkyboxName(index + 1);
                 _skyboxNameField2.SetTextZeroAlloc(skyboxName, true);
                 var skyboxPath = CustomEnvironmentsController.GetSkyboxPath(index + 1);
-                SetSprite(_skyboxThumbnail2, skyboxPath, index).Forget();
+                SetSprite(_skyboxThumbnail2, skyboxName, skyboxPath, index).Forget();
                 _skyboxButton2.gameObject.SetActive(true);
             }
             else
@@ -76,14 +76,16 @@ namespace UI.Scrollers
             }
         }
 
-        private async UniTaskVoid SetSprite(Image image, string skyboxName, int index)
+        private async UniTaskVoid SetSprite(Image image, string skyboxName, string skyboxPath, int index)
         {
+            image.sprite = null;
+            image.color = Color.gray;
             if (string.IsNullOrWhiteSpace(skyboxName))
             {
                 return;
             }
             await UniTask.DelayFrame(1);
-            var sprite = await CustomEnvironmentsController.GetEnvironmentThumbnailAsync(skyboxName, _cancellationToken);
+            var sprite = await CustomEnvironmentsController.GetEnvironmentThumbnailAsync(skyboxName, skyboxPath, _cancellationToken);
             if (index == _index)
             {
                 image.sprite = sprite;
@@ -125,12 +127,11 @@ namespace UI.Scrollers
             }
             else
             {
-                //var extension = skyboxName.Substring(skyboxName.LastIndexOf('.'));
-                //newName = $"{newName}{extension}";
                 var canRename = CustomEnvironmentsController.RenameSkybox(skyboxName, newName);
                 if (canRename)
                 {
                     targetText.SetTextZeroAlloc(newName, true);
+                    _controller.RenameComplete(newName);
                 }
                 else
                 {

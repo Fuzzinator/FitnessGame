@@ -12,14 +12,6 @@ public static class TMProExtensions
         text.SetCharArray(Blank);
     }
 
-    public static void ClearText(this TMP_InputField text, bool notify = true)
-    {
-        text.textComponent.ClearText();
-        text.placeholder.enabled = true;
-        if (notify && text.onValueChanged != null)
-            text.onValueChanged.Invoke(string.Empty);
-    }
-
     public static void SetTextZeroAlloc(this TMP_Text textField, string text, bool notNested)
     {
         using (var sb = ZString.CreateStringBuilder(notNested))

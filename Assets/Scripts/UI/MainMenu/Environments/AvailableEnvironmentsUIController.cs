@@ -21,7 +21,12 @@ public class AvailableEnvironmentsUIController : MonoBehaviour
 
     private void OnDisable()
     {
+    }
+
+    public void ReturnHome()
+    {
         CustomEnvironmentsController.ClearCustomEnvironmentInfo();
+        MainMenuUIController.Instance.SetActivePage(0);
     }
 
     public void StartCreateNewEnvironment()

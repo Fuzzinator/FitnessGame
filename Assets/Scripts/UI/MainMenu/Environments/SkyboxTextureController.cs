@@ -79,6 +79,11 @@ public class SkyboxTextureController : MonoBehaviour
         _depthTexture = false;
     }
 
+    public void RenameSkybox(string newName)
+    {
+        _environmentController.RenameSkybox(newName);
+    }
+
     public void DeleteSkybox(string skyboxName)
     {
         _environmentController.CheckSkyboxDeleted(skyboxName, _depthTexture);
