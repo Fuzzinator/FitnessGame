@@ -17,19 +17,23 @@ namespace UI.Scrollers.Playlists
     {
         [SerializeField]
         private TextMeshProUGUI _songDetails;
-
-        private const string INVALIDINDICATOR = "<size=400%><sprite index= 0></size>";
-
-        private const string SONGINFOFORMAT =
-            "<style=\"Title\">{0}</style>\n<size=100%><align=center>{1}<line-indent=15%>{2}</align></size>";
-
         [SerializeField]
         private Image _highlight;
+        [SerializeField]
+        private Image _songPercentageDisplay;
+        [SerializeField]
+        private RectTransform _highlightTransform;
+
+        private bool _active;
 
         public Image HighlightImage => _highlight;
 
         public CancellationToken CancellationToken { get; set; }
 
+
+        private const string INVALIDINDICATOR = "<size=400%><sprite index= 0></size>";
+        private const string SONGINFOFORMAT =
+            "<style=\"Title\">{0}</style>\n<size=100%><align=center>{1}<line-indent=15%>{2}</align></size>";
         public void SetData(PlaylistItem playlistItem)
         {
             if (_songDetails == null)
@@ -51,12 +55,37 @@ namespace UI.Scrollers.Playlists
         public void SetHighlight(bool on)
         {
             _highlight.gameObject.SetActive(on);
+            _active = on;
+            if (on)
+            {
+                _songPercentageDisplay.fillAmount = 0;
+                DisplaySongPercentage().Forget();
+            }
+            else
+            {
+                _songPercentageDisplay.fillAmount = 0;
+            }
         }
 
-        /*private async UniTaskVoid SetDataAsync(PlaylistItem playlistItem)
+        private async UniTaskVoid DisplaySongPercentage()
         {
-            
-        }*/
+            while(!CancellationToken.IsCancellationRequested && _active)
+            {
+                await UniTask.Delay(System.TimeSpan.FromSeconds(.03f), cancellationToken: CancellationToken);
+                if(CancellationToken.IsCancellationRequested || !_active)
+                {
+                    return;
+                }
+                if(MusicManager.Instance.IsPaused || !MusicManager.Instance.IsPlaying)
+                {
+                    continue;
+                }
+                var percent = MusicManager.Instance.GetSongPercentage();
+                _songPercentageDisplay.fillAmount = percent;
+                _highlightTransform.anchorMin = new Vector2(percent, 0f);
+                _highlightTransform.anchorMax = new Vector2(percent, 1f);
+            }
+        }
 
         private DifficultyInfo.DifficultyEnum GetTargetDifficulty(PlaylistItem playlistItem)
         {

@@ -1,7 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using GameModeManagement;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -27,7 +24,7 @@ namespace UI.Scrollers.Playlists
         private TextMeshProUGUI _songLength;
 
         [SerializeField]
-        private SetAndShowSongOptions _songOptions;//private SongDifficultyScrollerController _difficultyScroller;
+        private SetAndShowSongOptions _songOptions;
 
         [SerializeField]
         private Button _deleteButton;
@@ -78,7 +75,6 @@ namespace UI.Scrollers.Playlists
             _levelAuthor.SetTextZeroAlloc(info.LevelAuthorName, true);
             _songLength.SetTextZeroAlloc(info.ReadableLength, true);
             _songOptions.UpdateDifficultyOptions(info, info.DifficultySets);
-            //_difficultyScroller.UpdateDifficultyOptions(info, info.DifficultySets, _selectedGameMode);
             _deleteButton.gameObject.SetActive(info.isCustomSong);
             _deleteButtonText.gameObject.SetActive(info.isCustomSong);
         }
@@ -91,7 +87,6 @@ namespace UI.Scrollers.Playlists
             _levelAuthor.ClearText();
             _songLength.ClearText();
             _songOptions.HideOptions();
-            //_difficultyScroller.UpdateDifficultyOptions(_currentSongInfo, Array.Empty<SongInfo.DifficultySet>(),GameMode.Normal);
             _deleteButton.gameObject.SetActive(false);
             _deleteButtonText.gameObject.SetActive(false);
         }

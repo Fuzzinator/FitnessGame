@@ -19,7 +19,7 @@ public class BeatSaverPageController : MonoBehaviour
 
     [SerializeField]
     private GameObject _showLoadingObject;
-    [SerializeField] 
+    [SerializeField]
     private CanvasGroup _canvasController;
 
     [SerializeField]
@@ -41,9 +41,18 @@ public class BeatSaverPageController : MonoBehaviour
 
     [SerializeField]
     private Button _downloadButton;
+    [SerializeField]
+    private Button _playButton;
+    [SerializeField]
+    private Button _deleteButton;
 
     [SerializeField]
     private LoadingDisplaysController _loadingDisplays;
+
+    [SerializeField]
+    private CanvasGroup _playSongsCanvas;
+    [SerializeField]
+    private SetAndShowSongOptions _showSongOptions;
 
     [SerializeField]
     private AudioSource _audioSource;
@@ -82,11 +91,21 @@ public class BeatSaverPageController : MonoBehaviour
         _levelFileManagement = new LevelFileManagement(AssetManager.SongsPath);
     }
 
+    private void OnEnable()
+    {
+        _activeBeatmap = null;
+        UpdateUI();
+    }
+
     private void OnDisable()
     {
         if (_audioSource != null && _audioSource.isPlaying)
         {
             _audioSource.Stop();
+        }
+        if(_playSongsCanvas != null)
+        {
+            _playSongsCanvas.gameObject.SetActive(false);
         }
     }
 
@@ -210,7 +229,7 @@ public class BeatSaverPageController : MonoBehaviour
 
     public void TryDownloadSong()
     {
-        if(GameManager.Instance.DemoMode && SongInfoFilesReader.Instance.CustomSongsCount >= GameManager.DemoModeMaxCustomSongs)
+        if (GameManager.Instance.DemoMode && SongInfoFilesReader.Instance.CustomSongsCount >= GameManager.DemoModeMaxCustomSongs)
         {
             var visuals = new Notification.NotificationVisuals(
                         $"Cannot download song. The maximum number of custom songs in this demo is {GameManager.DemoModeMaxCustomSongs}. To download more custom songs, please consider buying the full game.",
@@ -349,8 +368,7 @@ public class BeatSaverPageController : MonoBehaviour
     private async UniTaskVoid DownloadSongAsync()
     {
         var activeCell = _cellView;
-        var folderName =
-            $"{_activeBeatmap.ID} ({_activeBeatmap.Metadata.SongName} - {_activeBeatmap.Metadata.LevelAuthorName})";
+        var folderName = GetFolderName();
 
         _downloadButton.interactable = false;
         var shouldContinue = await VerifyShouldDownload(folderName);
@@ -396,6 +414,7 @@ public class BeatSaverPageController : MonoBehaviour
         await SongInfoFilesReader.Instance.LoadNewSong(folderName);
 
         PlaylistFilesReader.Instance.RefreshPlaylistsValidStates().Forget();
+        UpdateUI();
     }
 
     #endregion
@@ -503,6 +522,11 @@ public class BeatSaverPageController : MonoBehaviour
         }
 
         _infoCardHolder.SetActive(true);
+        var songDownloaded = _levelFileManagement.FolderExists(GetFolderName());
+        _playButton.interactable = songDownloaded;
+        _deleteButton.interactable = songDownloaded;
+        _playSongsCanvas.gameObject.SetActive(false);
+
 
         var minutes = _activeBeatmap.Metadata.Duration / MINUTE;
         var seconds = _activeBeatmap.Metadata.Duration % MINUTE;
@@ -550,6 +574,7 @@ public class BeatSaverPageController : MonoBehaviour
         }
 
         _downloadButton.interactable = !_downloadingIds.Contains(_activeBeatmap.ID);
+
         WaitAndPlayPreview().Forget();
     }
 
@@ -626,5 +651,38 @@ public class BeatSaverPageController : MonoBehaviour
     {
         _showLoadingObject.SetActive(isLoading);
         _canvasController.interactable = !isLoading;
+    }
+
+    public void DeleteSong()
+    {
+        var beatmap = _activeBeatmap;
+        _deleteButton.interactable = false;
+        _playButton.interactable = false;
+        AssetManager.DeleteCustomSong(GetFolderName());
+    }
+
+    public void StartPlaySong()
+    {
+        var songInfo = SongInfoFilesReader.Instance.TryGetSongInfo(GetFolderName());
+        if(songInfo == null) 
+        {
+            var visuals = new Notification.NotificationVisuals("Song could not be found in available songs.", "Cannot Load Song", "Okay");
+            NotificationManager.RequestNotification(visuals);
+            return;
+        }
+
+        _playSongsCanvas.gameObject.SetActive(true);
+
+        _showSongOptions.UpdateDifficultyOptions(songInfo, songInfo.DifficultySets);
+    }
+
+    public void CancelPlaySong()
+    {
+        _playSongsCanvas.gameObject.SetActive(false);
+    }
+
+    private string GetFolderName()
+    {
+        return $"{_activeBeatmap.ID} ({_activeBeatmap.Metadata.SongName} - {_activeBeatmap.Metadata.LevelAuthorName})";
     }
 }

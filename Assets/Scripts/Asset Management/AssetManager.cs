@@ -583,7 +583,7 @@ public class AssetManager : MonoBehaviour
                 }
 
                 var image = await item.LoadImage(token);
-                if (image.texture.width != TEXTURESIZE)
+                if (image != null && image.texture.width != TEXTURESIZE)
                 {
                     await UniTask.DelayFrame(1, cancellationToken: token);
                     var tex = image.texture.ScaleTexture(TEXTURESIZE, TEXTURESIZE, TextureFormat.RGB24);
@@ -630,16 +630,21 @@ public class AssetManager : MonoBehaviour
         return null;
     }
 
-    public static async UniTask DeleteCustomSong(SongInfo info)
+    public static void DeleteCustomSong(SongInfo info)
     {
         var path = $"{SongsPath}{info.fileLocation}";
+        DeleteCustomSong(path);
+    }
+
+    public static void DeleteCustomSong(string path)
+    {
         if (!Directory.Exists(path))
         {
-            Debug.LogWarning("Invalid path cannot delete");
+            Debug.LogWarning("Invalid path cannot delete.");
             return;
         }
 
-        await UniTask.RunOnThreadPool(() => Directory.Delete(path, true));
+        Directory.Delete(path, true);
     }
 
     public static void DeletePlaylist(string playlistName)

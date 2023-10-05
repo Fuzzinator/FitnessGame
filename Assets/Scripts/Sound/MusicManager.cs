@@ -26,7 +26,11 @@ public class MusicManager : BaseGameStateListener
     private bool _applicationPaused = false;
 
     private float _previousTime = 0;
-    
+
+    public bool IsPlaying => _musicAudioSource.isPlaying;
+
+    public bool IsPaused => _musicPaused || _applicationPaused;
+
     private bool IsPlayingOrPaused => _musicAudioSource.isPlaying || _musicPaused || _applicationPaused;
 
     private bool IsSongCompleted => _previousTime > 0 && _musicAudioSource.time == 0;
@@ -202,6 +206,13 @@ public class MusicManager : BaseGameStateListener
         {
             Addressables.Release(_currentSongRequestHandle);
         }
+    }
+
+    public float GetSongPercentage()
+    {
+        var totalLength = _musicAudioSource.clip.length;
+        var currentPosition = _musicAudioSource.time;
+        return currentPosition / totalLength;
     }
 
     protected override void GameStateListener(GameState oldState, GameState newState)

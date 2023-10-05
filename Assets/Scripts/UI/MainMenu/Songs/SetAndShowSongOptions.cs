@@ -325,7 +325,8 @@ public class SetAndShowSongOptions : MonoBehaviour
         if (PlaylistManager.Instance != null)
         {
             var playlistItem = new PlaylistItem(_songInfo, _selectedDifficulty, _difficultyEnum, _activeDifficultySet.MapGameMode);
-            PlaylistManager.Instance.SetTempSongPlaylist(playlistItem, _forwardFootSetter.TargetHitSideType);
+            var targetSideType = _forwardFootSetter?.TargetHitSideType ?? HitSideType.Right;
+            PlaylistManager.Instance.SetTempSongPlaylist(playlistItem, targetSideType);
             if (_autoPlayPreview)
             {
                 StopSongPreview();
@@ -354,7 +355,7 @@ public class SetAndShowSongOptions : MonoBehaviour
     public async void StopSongPreview()
     {
         _audioSource.Stop();
-        _previewButtonText.SetTextZeroAlloc(Preview, true);
+        _previewButtonText?.SetTextZeroAlloc(Preview, true);
         if (_currentSongRequestHandle.IsValid())
         {
             Addressables.Release(_currentSongRequestHandle);

@@ -117,6 +117,11 @@ public class SongInfoFilesReader : MonoBehaviour
         _songsUpdated?.Invoke();
     }
 
+    public SongInfo TryGetSongInfo(string folderName)
+    {
+        return availableSongs.Find((i) => string.Equals(i.fileLocation, folderName));
+    }
+
     public void TryDeleteSong()
     {
         var targetSongInfo = PlaylistMaker.Instance.DisplayedSongInfo;
@@ -129,10 +134,10 @@ public class SongInfoFilesReader : MonoBehaviour
             $"Are you sure you would like to permanently delete {targetSongInfo.SongName}?",
             "Delete Song?", "Confirm", "Cancel");
 
-        NotificationManager.RequestNotification(deleteVisuals, () => ConfirmDeleteSong(targetSongInfo).Forget());
+        NotificationManager.RequestNotification(deleteVisuals, () => ConfirmDeleteSong(targetSongInfo));
     }
 
-    private async UniTaskVoid ConfirmDeleteSong(SongInfo targetSongInfo)
+    private void ConfirmDeleteSong(SongInfo targetSongInfo)
     {
         MainMenuUIController.Instance.RequestDisableUI(this);
 
@@ -142,7 +147,7 @@ public class SongInfoFilesReader : MonoBehaviour
         _songRemoved?.Invoke(targetSongInfo);
         _songsUpdated?.Invoke();
 
-        await AssetManager.DeleteCustomSong(targetSongInfo);
+        AssetManager.DeleteCustomSong(targetSongInfo);
         //_displaySongInfo.ClearDisplayedInfo();
         PlaylistMaker.Instance.SetActiveItem(new SongInfo());
         MainMenuUIController.Instance.RequestEnableUI(this);

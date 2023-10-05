@@ -517,7 +517,7 @@ public class ChoreographySequencer : MonoBehaviour
 
     public void ResetChoreography()
     {
-        _tweenPool.CompleteAllActive();
+        _tweenPool?.CompleteAllActive();
 
         _formationStart.RotateAround(_playerCenter.position, _playerCenter.up, -_currentRotation);
         _currentRotation = 0;
