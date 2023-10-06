@@ -15,6 +15,7 @@ public class SetTargetForwardFoot : MonoBehaviour
     [SerializeField]
     private bool _newPlaylist;
 
+    [field: SerializeField]
     public HitSideType TargetHitSideType { get; private set; }
 
 
@@ -22,10 +23,19 @@ public class SetTargetForwardFoot : MonoBehaviour
 
     private void OnEnable()
     {
-        if(_referToPlaylist)
+        if (_referToPlaylist)
         {
             PlaylistManager.Instance.currentPlaylistUpdated.AddListener(UpdateFromPlaylist);
-            DelayAndUpdateFromPlaylist().Forget();
+
+            var playlist = PlaylistManager.Instance.CurrentPlaylist;
+            if (playlist != null)
+            {
+                DelayAndSetStartingType(playlist.StartingSide).Forget();
+            }
+        }
+        else if (_newPlaylist)
+        {
+            DelayAndGetFromMaker().Forget();
         }
         else
         {
@@ -42,22 +52,33 @@ public class SetTargetForwardFoot : MonoBehaviour
         }
     }
 
-    private async UniTaskVoid DelayAndUpdateFromPlaylist()
+    private async UniTaskVoid DelayAndSetStartingType(HitSideType startingSide)
     {
         await UniTask.DelayFrame(1);
-        var playlist = PlaylistManager.Instance.CurrentPlaylist;
-        if (this == null || playlist == null)
+        if (this == null)
         {
             return;
         }
 
-        UpdateFromPlaylist(playlist);
+        SetStartingSide(startingSide);
+    }
+
+    private async UniTaskVoid DelayAndGetFromMaker()
+    {
+
+        await UniTask.DelayFrame(1);
+        if (this == null)
+        {
+            return;
+        }
+        var startingSide = PlaylistMaker.Instance.StartingSide;
+        SetStartingSide(startingSide);
     }
 
     private async UniTaskVoid DelayUpdateDisplay()
     {
         await UniTask.DelayFrame(1);
-        if(this == null)
+        if (this == null)
         {
             return;
         }
@@ -65,14 +86,18 @@ public class SetTargetForwardFoot : MonoBehaviour
         var leftHanded = SettingsManager.GetSetting(LeftHanded, false);
         SetActiveToggle(leftHanded ? 0 : 1);
     }
-
     private void UpdateFromPlaylist(Playlist playlist)
     {
         if(playlist == null)
         {
             return;
         }
-        SetActiveToggle((int)playlist.StartingSide);
+        SetStartingSide(playlist.StartingSide);
+    }
+
+    private void SetStartingSide(HitSideType startingSide)
+    {
+        SetActiveToggle((int)startingSide);
     }
 
     private void SetActiveToggle(int activeToggle)
@@ -82,7 +107,10 @@ public class SetTargetForwardFoot : MonoBehaviour
 
     public void OnToggleSelected(Toggle toggle)
     {
-
+        if (!toggle.isOn)
+        {
+            return;
+        }
         var toggleID = _forwardFootToggles.GetToggleID(toggle);
         if (toggleID < 0)
         {
@@ -91,9 +119,13 @@ public class SetTargetForwardFoot : MonoBehaviour
         }
         TargetHitSideType = (HitSideType)toggleID;
 
-        if(_newPlaylist)
+        if (_newPlaylist)
         {
             PlaylistMaker.Instance.SetStartingType(TargetHitSideType);
+        }
+        else if (_referToPlaylist)
+        {
+            PlaylistManager.Instance.CurrentPlaylist.SetForwardFoot(TargetHitSideType);
         }
     }
 }

@@ -223,6 +223,12 @@ public class Playlist
         _targetColors = set;
     }
 
+    public void SetForwardFoot(HitSideType type)
+    {
+        _setStartingSide = true;
+        _startingSide = type;
+    }
+
     public enum SortingMethod
     {
         None = 0,

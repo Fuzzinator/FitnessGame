@@ -109,8 +109,8 @@ public class EnvironmentControlManager : MonoBehaviour
         }
         for (var i = 0; i < _availableEnvironments.Count; i++)
         {
-            var option = _availableReferences[i];
-            if (string.Equals(option.EnvironmentName, sceneName, StringComparison.InvariantCultureIgnoreCase))
+            var option = _availableEnvironments[i];
+            if (string.Equals(option.Name, sceneName, StringComparison.InvariantCultureIgnoreCase))
             {
                 index = i;
                 break;
