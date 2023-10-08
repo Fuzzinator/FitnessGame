@@ -94,7 +94,7 @@ public class BeatSaverPageController : MonoBehaviour
     private void OnEnable()
     {
         _activeBeatmap = null;
-        UpdateUI();
+        UpdateUI().Forget();
     }
 
     private void OnDisable()

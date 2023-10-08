@@ -34,6 +34,7 @@ Material:
     RenderType: Transparent
   disabledShaderPasses:
   - DepthOnly
+  - SHADOWCASTER
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -98,7 +99,7 @@ Material:
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
-    - _CastShadows: 1
+    - _CastShadows: 0
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
@@ -122,7 +123,7 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 5
     - _Surface: 1
-    - _TextureIndex: 0
+    - _TextureIndex: 1
     - _WorkflowMode: 1
     - _ZTest: 4
     - _ZWrite: 0
