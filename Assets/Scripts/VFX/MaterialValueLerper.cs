@@ -77,16 +77,27 @@ public class MaterialValueLerper : MonoBehaviour
         }
     }
 
+    public virtual void SetValue(string effectName)
+    {
+        foreach (var materialValue in _materialValues)
+        {
+            if (string.Equals(effectName, materialValue.EffectName))
+            {
+                materialValue.SetValue(_targetMaterial);
+            }
+        }
+    }
+
     #region Material Value Classes
 
     [Serializable]
     protected abstract class MaterialValue
     {
         [SerializeField]
-        protected string _materialPropertyName;
+        private string _effectName;
 
         [SerializeField]
-        private string _effectName;
+        protected string _materialPropertyName;
 
         [SerializeField]
         protected float _lerpSpeedModifier = 1f;
@@ -114,6 +125,15 @@ public class MaterialValueLerper : MonoBehaviour
         {
             GetMaterialSettings(material);
             LerpValue(material, speed, cancellationSource, action).Forget();
+        }
+
+        public virtual void SetValue(Material material, Action<Material, float> action = null)
+        {
+            GetMaterialSettings(material);
+
+            started?.Invoke(this);
+            action?.Invoke(material, 1);
+            completed?.Invoke(this);
         }
 
         private async UniTaskVoid LerpValue(Material material, float speed, CancellationTokenSource cancellationSource,
@@ -159,6 +179,15 @@ public class MaterialValueLerper : MonoBehaviour
             };
             base.StartLerpingValue(material, speed, cancellationSource, action);
         }
+
+        public override void SetValue(Material material, Action<Material, float> action = null)
+        {
+            action = (mat, lerpPoint) =>
+            {
+                mat.SetColor(_materialProperty, _endValue);
+            };
+            base.SetValue(material, action);
+        }
     }
 
     [Serializable]
@@ -182,6 +211,15 @@ public class MaterialValueLerper : MonoBehaviour
 
             base.StartLerpingValue(material, speed, cancellationSource, action);
         }
+
+        public override void SetValue(Material material, Action<Material, float> action = null)
+        {
+            action = (mat, lerpPoint) =>
+            {
+                mat.SetFloat(_materialProperty, _endValue);
+            };
+            base.SetValue(material, action);
+        }
     }
 
     [System.Serializable]
@@ -203,6 +241,15 @@ public class MaterialValueLerper : MonoBehaviour
                 mat.SetVector(_materialProperty, Vector4.Lerp(_startValue, _endValue, lerpPoint));
             };
             base.StartLerpingValue(material, speed, cancellationSource, action);
+        }
+
+        public override void SetValue(Material material, Action<Material, float> action = null)
+        {
+            action = (mat, lerpPoint) =>
+            {
+                mat.SetVector(_materialProperty, _endValue);
+            };
+            base.SetValue(material, action);
         }
     }
 

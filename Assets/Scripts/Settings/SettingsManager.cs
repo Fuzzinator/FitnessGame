@@ -403,7 +403,7 @@ public class SettingsManager : MonoBehaviour
                 return Quaternion.identity;
         }
 
-#elif UNITY_STANDALONE_WIN
+/*#elif UNITY_STANDALONE_WIN
         switch (true)
         {
             case var vive when controllerName.Contains(HTCViveWand):
@@ -412,7 +412,7 @@ public class SettingsManager : MonoBehaviour
                 return ViveWandRotation;
             default:
                 return Quaternion.identity;
-        }
+        }*/
 #endif
 
         return Quaternion.identity;
