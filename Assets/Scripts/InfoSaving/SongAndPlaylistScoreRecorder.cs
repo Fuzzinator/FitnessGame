@@ -65,13 +65,13 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
         var currentSongInfo = SongInfoReader.Instance?.songInfo;
         if (currentSongInfo != null && !string.IsNullOrWhiteSpace(currentSongInfo.SongID))
         {
-            _currentSongScoreName = $"{SCORE}{currentSongInfo.SongID}";
-            _currentSongStreakName = $"{STREAK}{currentSongInfo.SongID}";
+            _currentSongScoreName = PlaylistManager.Instance.GetFullSongName(prefix: SCORE, noID: false);
+            _currentSongStreakName = PlaylistManager.Instance.GetFullSongName(prefix: STREAK, noID: false);
         }
         else
         {
-            _currentSongScoreName = PlaylistManager.Instance.GetFullSongName(prefix: SCORE);
-            _currentSongStreakName = PlaylistManager.Instance.GetFullSongName(prefix: STREAK);
+            _currentSongScoreName = PlaylistManager.Instance.GetFullSongName(prefix: SCORE, noID: true);
+            _currentSongStreakName = PlaylistManager.Instance.GetFullSongName(prefix: STREAK, noID: true);
         }
 
     }

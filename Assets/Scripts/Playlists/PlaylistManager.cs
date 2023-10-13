@@ -192,7 +192,7 @@ public class PlaylistManager : MonoBehaviour
         _currentPlaylist = new Playlist(_currentPlaylist, gameMode);
     }
 
-    public string GetFullSongName(SongInfo info = null, string prefix = null, string suffix = null)
+    public string GetFullSongName(SongInfo info = null, string prefix = null, string suffix = null, bool noID = false)
     {
         if (info == null)
         {
@@ -203,8 +203,14 @@ public class PlaylistManager : MonoBehaviour
         {
             return string.Empty;
         }
-        
-        return SongInfoReader.GetFullSongName(info,TargetDifficulty, TargetGameMode, prefix, suffix);
+        if (noID)
+        {
+            return SongInfoReader.GetFullSongNameNoID(info, TargetDifficulty, TargetGameMode, prefix, suffix);
+        }
+        else
+        {
+            return SongInfoReader.GetFullSongName(info, TargetDifficulty, TargetGameMode, prefix, suffix);
+        }
     }
 
     public async UniTask<SongAndPlaylistRecords> TryGetRecords(CancellationToken token)

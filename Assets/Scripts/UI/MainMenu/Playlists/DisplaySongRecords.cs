@@ -31,8 +31,6 @@ namespace UI
         
         private CancellationToken _cancellationToken;
 
-        private const string STREAK = "Streak:";
-        private const string SCORE = "Score:";
         private const string NEWLINE = "\n";
         
         public void ShowRecords(SongInfo songInfo)

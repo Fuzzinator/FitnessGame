@@ -167,7 +167,7 @@ public class SongInfoReader : MonoBehaviour
     public string GetSongFullName()
     {
         var gameMode = PlaylistManager.Instance.TargetGameMode;
-        return GetFullSongName(songInfo, _difficultyInfo.DifficultyAsEnum, gameMode, null, null);
+        return GetFullSongNameNoID(songInfo, _difficultyInfo.DifficultyAsEnum, gameMode, null, null);
     }
 
     public AudioClip GetCurrentSong()
@@ -180,12 +180,33 @@ public class SongInfoReader : MonoBehaviour
         PlaylistManager.Instance.playlistItemUpdated.AddListener(LoadJson);
     }
 
-    public string GetFullSongName(DifficultyInfo.DifficultyEnum difficultyEnum, GameMode gameMode, string prefix = null, string suffix = null)
+    public static string GetFullSongName(SongInfo info, DifficultyInfo.DifficultyEnum difficultyEnum, GameMode gameMode, string prefix = null, string suffix = null)
     {
-        return GetFullSongName(songInfo, difficultyEnum, gameMode, prefix, suffix);
+        using (var sb = ZString.CreateStringBuilder(true))
+        {
+            if (!string.IsNullOrWhiteSpace(prefix))
+            {
+                sb.Append(prefix);
+            }
+
+            sb.Append(info.SongName);
+            sb.Append(DASH);
+            sb.Append(difficultyEnum.Readable());
+            sb.Append(DASH);
+            sb.Append(gameMode);
+            sb.Append(DASH);
+            sb.Append(info.SongID);
+
+            if (!string.IsNullOrWhiteSpace(suffix))
+            {
+                sb.Append(suffix);
+            }
+
+            return sb.ToString();
+        }
     }
 
-    public static string GetFullSongName(SongInfo info, DifficultyInfo.DifficultyEnum difficultyEnum, GameMode gameMode, string prefix = null, string suffix = null)
+    public static string GetFullSongNameNoID(SongInfo info, DifficultyInfo.DifficultyEnum difficultyEnum, GameMode gameMode, string prefix = null, string suffix = null)
     {
         using (var sb = ZString.CreateStringBuilder(true))
         {

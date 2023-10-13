@@ -210,10 +210,10 @@ namespace InfoSaving
         {
             if (!string.IsNullOrWhiteSpace(info.SongID))
             {
-                var currentSongScoreName = $"{SCORE}{info.SongID}";
+                var currentSongScoreName = SongInfoReader.GetFullSongName(info,difficultyEnum, gameMode, SCORE);
                 var hasScoreRecord = SongKeyExists(currentSongScoreName);
 
-                var currentSongStreakName = $"{STREAK}{info.SongID}";
+                var currentSongStreakName = SongInfoReader.GetFullSongName(info, difficultyEnum, gameMode, STREAK);
                 var hasStreakRecord = SongKeyExists(currentSongStreakName);
 
                 if (!hasStreakRecord || !hasScoreRecord)
@@ -336,16 +336,16 @@ namespace InfoSaving
         }
         private static async UniTask<SongAndPlaylistRecords> TryGetSongFromName(SongInfo info, DifficultyEnum difficultyEnum, GameMode gameMode, CancellationToken token, bool deleteNameKeys)
         {
-            var currentSongScoreName = SongInfoReader.GetFullSongName(info, difficultyEnum, gameMode, SCORE);
+            var currentSongScoreName = SongInfoReader.GetFullSongNameNoID(info, difficultyEnum, gameMode, SCORE);
             var hasScoreRecord = SongKeyExists(currentSongScoreName);
-            var currentSongStreakName = SongInfoReader.GetFullSongName(info, difficultyEnum, gameMode, STREAK);
+            var currentSongStreakName = SongInfoReader.GetFullSongNameNoID(info, difficultyEnum, gameMode, STREAK);
             var hasStreakRecord = SongKeyExists(currentSongStreakName);
 
             var exists = hasScoreRecord && hasStreakRecord;
 
             if (!exists)
             {
-                return await TryUpgradeToSongName(token);
+                return await TryUpgradeToSongName(info, token);
             }
             var recordScores =
                 (SongAndPlaylistScoreRecord[])await GetSongValue<SongAndPlaylistScoreRecord[]>(
@@ -361,9 +361,9 @@ namespace InfoSaving
             return new SongAndPlaylistRecords(true, recordScores, recordStreaks);
         }
 
-        private static async UniTask<SongAndPlaylistRecords> TryUpgradeToSongName(CancellationToken token)
+        private static async UniTask<SongAndPlaylistRecords> TryUpgradeToSongName(SongInfo info, CancellationToken token)
         {
-            var oldKey = PlaylistManager.Instance.GetFullSongName();
+            var oldKey = PlaylistManager.Instance.GetFullSongName(info, noID: true);
             var exists = SongKeyExists(oldKey);
             if (exists)
             {
