@@ -403,19 +403,20 @@ public class SettingsManager : MonoBehaviour
                 return Quaternion.identity;
         }
 
-/*#elif UNITY_STANDALONE_WIN
-        switch (true)
-        {
-            case var vive when controllerName.Contains(HTCViveWand):
-            case var oculus when controllerName.Contains(OculusTouchController):
-            case var index when controllerName.Contains(IndexController):
-                return ViveWandRotation;
-            default:
-                return Quaternion.identity;
-        }*/
-#endif
+        /*#elif UNITY_STANDALONE_WIN
+                switch (true)
+                {
+                    case var vive when controllerName.Contains(HTCViveWand):
+                    case var oculus when controllerName.Contains(OculusTouchController):
+                    case var index when controllerName.Contains(IndexController):
+                        return ViveWandRotation;
+                    default:
+                        return Quaternion.identity;
+                }*/
+#else
 
         return Quaternion.identity;
+#endif
     }
 
     public static FPSSetting GetFPSSetting()
@@ -425,8 +426,9 @@ public class SettingsManager : MonoBehaviour
 
         return (FPSSetting)GetSetting(FPSSETTING,
             ((int)(headset == OVRPlugin.SystemHeadset.Oculus_Quest ? FPSSetting._72 : FPSSetting._90)));
-#endif
+#else
         return FPSSetting._90;
+#endif
     }
 
     public static float GetMinHitSpeed(HitSideType hitSide)

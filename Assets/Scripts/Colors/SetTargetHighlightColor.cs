@@ -13,7 +13,9 @@ public class SetTargetHighlightColor : MonoBehaviour, IInitializer
 
     private bool _initialized;
 
-    private readonly int _positionChange = Shader.PropertyToID("_Position_Change");
+    public bool Initialized => _initialized;
+
+    //private readonly int _positionChange = Shader.PropertyToID("_Position_Change");
     
     // Start is called before the first frame update
     public void Initialize(BaseTarget target)

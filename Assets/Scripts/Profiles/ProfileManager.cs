@@ -9,6 +9,7 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceLocations;
+using static UnityEditor.Progress;
 
 public class ProfileManager : MonoBehaviour
 {
@@ -357,6 +358,20 @@ public class ProfileManager : MonoBehaviour
         public static bool operator !=(ProfileIconInfo item1, ProfileIconInfo item2)
         {
             return !(item1 == item2);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if(obj is not ProfileIconInfo iconInfo)
+            {
+                return false;
+            }
+            return this == iconInfo;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Address, IsCustom);
         }
     }
 }

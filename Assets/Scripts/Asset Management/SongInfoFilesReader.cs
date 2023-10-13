@@ -153,11 +153,17 @@ public class SongInfoFilesReader : MonoBehaviour
         MainMenuUIController.Instance.RequestEnableUI(this);
     }
 
-    public async UniTask LoadNewSong(string songFolderName)
+    public async UniTask LoadNewSong(string songFolderName, string songID)
     {
-        var songInfo = await AssetManager.TryGetSingleCustomSong(songFolderName, _cancellationSource.Token);
+        var songInfo = await AssetManager.TryGetSingleCustomSong(songFolderName, _cancellationSource.Token, songID);
         if (songInfo != null)
         {
+            var existingSong = availableSongs.Find((info) => string.Equals(info.SongID, songID, StringComparison.InvariantCultureIgnoreCase) ||
+                                                             string.Equals(info.fileLocation, songInfo.fileLocation, StringComparison.InvariantCultureIgnoreCase));
+            if(existingSong != null)
+            {
+                availableSongs.Remove(existingSong);
+            }
             availableSongs.Add(songInfo);
             CustomSongsCount++;
 

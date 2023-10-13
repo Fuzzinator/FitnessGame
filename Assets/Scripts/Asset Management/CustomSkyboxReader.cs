@@ -18,7 +18,7 @@ public static class CustomSkyboxReader
     private const string Hdr = ".hdr";
     private const int CubemapResolution = 1024;
 
-    private static bool _waitingForCubemap = false;
+    //private static bool _waitingForCubemap = false;
     private static Cubemap _customSkybox = null;
     private static string _loadedSkybox = null;
 
@@ -64,40 +64,6 @@ public static class CustomSkyboxReader
             new Vector3(-1.0f, -1.0f, 1.0f)
         }
     };
-    // Start is called before the first frame update
-    /*void Start()
-    {
-        var images = CustomEnvironmentsController.  GetImagePathsInDownloads();
-
-
-        return;
-        var path = $"{AssetManager.DataPath}{SkyboxesFolder}";
-
-        var info = new DirectoryInfo(path);
-        var files = info.GetFiles();
-        foreach (var file in files)
-        {
-            if (file == null)
-            {
-                continue;
-            }
-
-            Texture2D source;
-            if (string.Equals(file.Extension, Exr, StringComparison.InvariantCultureIgnoreCase))//string.Equals(file.Extension, Png, System.StringComparison.InvariantCultureIgnoreCase))
-            {
-            }
-            else
-            {
-                // Step 1: Load the PNG texture from the file
-                source = LoadPanoramicTexture(file.FullName);
-            }
-                var cubemap = new Cubemap(CubemapResolution, source.format, false);
-                SetCubeMapColors(cubemap, source);
-
-                _mat.SetTexture("_Albedo", cubemap);
-            //}
-        }
-    }*/
 
     public static async UniTask<Cubemap> GetCubeMap(string path)
     {

@@ -4,9 +4,6 @@ using UnityEngine;
 using Oculus.Platform;
 public class GamePurchasedValidator : MonoBehaviour
 {
-   private bool _initialized;
-   private bool _failedInitialize;
-
    private const string HEADER = "Failed to validate purchase";
 
    private const string MESSAGE =
@@ -29,7 +26,6 @@ public class GamePurchasedValidator : MonoBehaviour
             if (initializer.IsError)
             {
                Debug.LogError(initializer.Data.Result);
-               _failedInitialize = true;
                return;
             }
 
@@ -49,8 +45,6 @@ public class GamePurchasedValidator : MonoBehaviour
       catch (Exception e)
       {
          Debug.LogError(e);
-         _initialized = false;
-         _failedInitialize = true;
          RequestNotification();
       }
    }

@@ -60,6 +60,8 @@ public class PlaylistManager : MonoBehaviour
 
     private bool _activePlaylistIsTemp = false;
 
+    public bool ActivePlaylistIsTemp => _activePlaylistIsTemp;
+
     public int CurrentIndex => _currentIndex;
 
     public int SongCount => _currentPlaylist?.Items?.Length ?? 0;

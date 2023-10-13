@@ -32,6 +32,8 @@ public class TransitionController : MonoBehaviour
     private CancellationToken _cancellationToken;
     private Func<bool> _reset;
 
+    public float TransitionSpeed => _transitionSpeed;
+
     private void Start()
     {
         _cancellationToken = this.GetCancellationTokenOnDestroy();

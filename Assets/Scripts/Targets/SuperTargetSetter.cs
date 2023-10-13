@@ -13,11 +13,6 @@ public class SuperTargetSetter : MonoBehaviour, IInitializer
     [SerializeField]
     private Renderer _targetRenderer;
 
-    private const string PositionOffset = "_Position_Change";
-    private const string RotationOffset = "_DistanceRotation";
-    private int _positionOffsetID = int.MinValue;
-    private int _rotationOffsetID = int.MinValue;
-
     private void OnValidate()
     {
         if (_baseTarget == null)

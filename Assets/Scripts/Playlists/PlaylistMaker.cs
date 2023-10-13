@@ -101,8 +101,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     public static PlaylistItem GetPlaylistItem(SongInfo songInfo, string difficulty,
         DifficultyInfo.DifficultyEnum difficultyEnum, GameMode gameMode)
     {
-        return new PlaylistItem(songInfo.SongName, songInfo.fileLocation, difficulty, difficultyEnum,
-            songInfo.isCustomSong, gameMode, songInfo);
+        return new PlaylistItem(songInfo, difficulty, difficultyEnum, gameMode);
     }
 
     public void AddPlaylistItem(PlaylistItem item)

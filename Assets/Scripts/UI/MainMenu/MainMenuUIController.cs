@@ -12,19 +12,19 @@ public class MainMenuUIController : BaseGameStateListener
 
     [SerializeField]
     private MenuPage[] _menuPages;
-    
+
     private MenuPage _activeMenuPage;
-    
+
     private List<MonoBehaviour> _requestSources = new List<MonoBehaviour>();
 
     public int MenuPageCount => _menuPages.Length;
-    public int ActivePage { get;private set; }
+    public int ActivePage { get; private set; }
 
     private bool _activePageSet = false;
 
     public static UnityEvent<int> OnMenuPageChange = new UnityEvent<int>();
-    
-    
+
+
     private void Awake()
     {
         if (Instance == null || Instance.gameObject == null)
@@ -43,15 +43,15 @@ public class MainMenuUIController : BaseGameStateListener
         {
             return;
         }
-        
+
         SetActivePage(0);
     }
 
-    private void OnDisable()
+    protected new void OnDisable()
     {
         UIStateManager.Instance.RequestDisableInteraction(_activeMenuPage.TargetCanvas);
     }
-    
+
     private void OnDestroy()
     {
         if (Instance == this)
@@ -125,28 +125,28 @@ public class MainMenuUIController : BaseGameStateListener
             EnableUI();
         }
     }
-    
+
     private void EnableUI()
     {
         if (gameObject == null)
         {
             return;
         }
-        
+
         if (!_activeMenuPage.IsValid)
         {
             _activeMenuPage = _menuPages[0];
         }
         _activeMenuPage.SetActive(1, true);
     }
-    
+
     private void DisableUI()
     {
         if (gameObject == null)
         {
             return;
         }
-        
+
         if (!_activeMenuPage.IsValid)
         {
             _activeMenuPage = _menuPages[0];
@@ -156,7 +156,7 @@ public class MainMenuUIController : BaseGameStateListener
 
     public void ReturnToHomeIfActive(Canvas canvas)
     {
-        if(_activePageSet && _activeMenuPage.TargetCanvas == canvas)
+        if (_activePageSet && _activeMenuPage.TargetCanvas == canvas)
         {
             SetActivePage(0);
         }
@@ -165,9 +165,9 @@ public class MainMenuUIController : BaseGameStateListener
     [Serializable]
     private struct MenuPage
     {
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         public string name;
-        #endif
+#endif
         [SerializeField]
         private CanvasGroup _group;
 
@@ -176,7 +176,7 @@ public class MainMenuUIController : BaseGameStateListener
 
         [SerializeField]
         private GraphicRaycaster _graphicRaycaster;
-        
+
         [SerializeField]
         private TrackedDeviceGraphicRaycaster _trackedDeviceRaycaster;
 
@@ -184,23 +184,23 @@ public class MainMenuUIController : BaseGameStateListener
         public Canvas TargetCanvas => _canvas;
         public void SetActive(float alpha, bool enabled)
         {
-            _group.SetGroupState(alpha,enabled);
+            _group.SetGroupState(alpha, enabled);
             _graphicRaycaster.enabled = enabled;
             _trackedDeviceRaycaster.enabled = enabled;
             _canvas.enabled = enabled;
             _group.gameObject.SetActive(enabled);
         }
-        
-        public void SetActive(float alpha,bool enabled, bool canvasEnabled)
+
+        public void SetActive(float alpha, bool enabled, bool canvasEnabled)
         {
-            _group.SetGroupState(alpha,enabled);
+            _group.SetGroupState(alpha, enabled);
             _graphicRaycaster.enabled = enabled;
             _trackedDeviceRaycaster.enabled = enabled;
             _canvas.enabled = canvasEnabled;
             _group.gameObject.SetActive(canvasEnabled);
         }
 
-        
+
         public static bool operator ==(MenuPage page1, MenuPage page2)
         {
             return page1._canvas == page2._canvas &&
@@ -212,6 +212,20 @@ public class MainMenuUIController : BaseGameStateListener
         public static bool operator !=(MenuPage page1, MenuPage page2)
         {
             return !(page1 == page2);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is not MenuPage page)
+            {
+                return false;
+            }
+            return this == page;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(_canvas, _group, _graphicRaycaster, _trackedDeviceRaycaster);
         }
     }
 }

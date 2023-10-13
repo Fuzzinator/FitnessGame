@@ -10,6 +10,8 @@ using Unity.Burst;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using static UnityEditor.Progress;
+using static UnityEngine.XR.Hands.XRHandSubsystemDescriptor;
 
 [Serializable]
 public class SongInfo
@@ -76,6 +78,8 @@ public class SongInfo
 
     public string ImageFilename => _coverImageFilename;
 
+    public string SongID => _songID;
+
     public DifficultySet[] DifficultySets => _difficultyBeatmapSets;
 
     [SerializeField]
@@ -123,6 +127,9 @@ public class SongInfo
 
     [SerializeField]
     private string _attribution;
+
+    [SerializeField]
+    private string _songID;
 
     [SerializeField]
     private DifficultySet[] _difficultyBeatmapSets;
@@ -507,6 +514,11 @@ public class SongInfo
             Vector2.one * .5f, 100f);
     }
 
+    public void SetSongID(string id)
+    {
+        _songID = id;
+    }
+
     public void UnloadImage()
     {
         if (!_textureLoadHandle.IsValid())
@@ -765,6 +777,10 @@ public class SongInfo
 
     public static bool operator ==(SongInfo info, PlaylistItem item)
     {
+        if(!string.IsNullOrWhiteSpace(info.SongID) && !string.IsNullOrWhiteSpace(item.SongID))
+        {
+            return string.Equals(info.SongID, item.SongID);
+        }
         return info.SongName == item.SongName && info.fileLocation == item.FileLocation &&
                info.isCustomSong == item.IsCustomSong;
     }
@@ -790,12 +806,15 @@ public class SongInfo
         {
             return true;
         }
-
         if (beatmap is null || songInfo is null)
         {
             return false;
         }
 
+        if (!string.IsNullOrWhiteSpace(beatmap.ID) && !string.IsNullOrWhiteSpace(songInfo.SongID))
+        {
+            return string.Equals(beatmap.ID, songInfo.SongID);
+        }
         var metaData = beatmap.Metadata;
         var songNameMatches = string.Equals(metaData.SongName, songInfo.SongName);
         var songAuthorMatches = SongAuthorMatches(metaData, songInfo, out var badSongAuthorData);
@@ -809,6 +828,31 @@ public class SongInfo
     public static bool operator !=(Beatmap beatmap, SongInfo songInfo)
     {
         return !(beatmap == songInfo);
+    }
+
+    /// <summary>
+    /// I dont reccomend using this if comparing against a <see cref="PlaylistItem"/> because
+    /// that will result in boxing and creating needless garbage. Instead use ==.
+    /// </summary>
+    /// <param name="obj">Object to compare.</param>
+    /// <returns></returns>
+    public override bool Equals(object obj)
+    {
+        if(obj is PlaylistItem item)
+        {
+            return this == item;
+        }
+        else if(obj is Beatmap beatmap)
+        {
+            return this == beatmap;
+        }
+
+        return base.Equals(obj);
+    }
+
+    public override int GetHashCode()
+    {
+        return base.GetHashCode();
     }
 
     private static bool SongAuthorMatches(BeatmapMetadata metaData, SongInfo songInfo, out bool badMetaData)

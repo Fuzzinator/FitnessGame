@@ -278,6 +278,20 @@ public class ColorsManager : MonoBehaviour
                    a._centerEnvironment != b._centerEnvironment;
         }
 
+        public override bool Equals(object obj)
+        {
+            if(obj is not ColorSet colorSet)
+            {
+                return false;
+            }
+            return this == colorSet;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(_leftController, _rightController, _blockColor, _obstacleColor, _leftEnvironment, _rightEnvironment, _centerEnvironment);
+        }
+
         public static bool Equal(ColorSet a, ColorSet b)
         {
             return a == b;

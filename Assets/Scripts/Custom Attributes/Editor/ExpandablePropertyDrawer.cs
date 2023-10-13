@@ -9,7 +9,7 @@ namespace CustomAttributes.Editor
     [CustomPropertyDrawer(typeof(Expandable))]
     public class ExpandablePropertyDrawer : PropertyDrawer
     {
-        private Editor editor = null;
+        //private Editor editor = null;
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {

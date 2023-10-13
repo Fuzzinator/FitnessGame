@@ -12,7 +12,7 @@ public class ControllerOffsetTracker : MonoBehaviour, ISaver
     private const string RIGHTGRIPPRESSED = "RightGripPressed";
     private const string LEFTGRIPRELEASED = "LeftGripReleased";
     private const string RIGHTGRIPRELEASED = "RightGripReleased";
-    
+
     private bool _leftGripPressed;
     private bool _rightGripPressed;
 
@@ -32,9 +32,12 @@ public class ControllerOffsetTracker : MonoBehaviour, ISaver
     private Quaternion _rightRotationOffset;
 
     private CancellationToken _cancellationToken;
-    
+
+    public bool IsLeftGripPressed => _leftGripPressed;
+    public bool IsRightGripPressed => _rightGripPressed;
+
     public bool SaveRequested { get; set; }
-    
+
     private void Start()
     {
         _cancellationToken = this.GetCancellationTokenOnDestroy();
@@ -58,7 +61,6 @@ public class ControllerOffsetTracker : MonoBehaviour, ISaver
         
 #endif
     }
-
 
     private void OnDisable()
     {

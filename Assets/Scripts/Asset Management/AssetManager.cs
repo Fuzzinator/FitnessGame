@@ -140,9 +140,10 @@ public class AssetManager : MonoBehaviour
         }
 
         return readPermission && writePermission;
-#endif
+#else
 
         return true;
+#endif
     }
 
     public static async UniTask<AudioClip> LoadCustomSong(string parentDirectory, SongInfo info,
@@ -516,7 +517,7 @@ public class AssetManager : MonoBehaviour
         }
     }
 
-    public static async UniTask<SongInfo> TryGetSingleCustomSong(string fileLocation, CancellationToken token)
+    public static async UniTask<SongInfo> TryGetSingleCustomSong(string fileLocation, CancellationToken token, string songID = null)
     {
         if (!CheckPermissions())
         {
@@ -530,10 +531,10 @@ public class AssetManager : MonoBehaviour
             Directory.CreateDirectory(path);
         }
 
-        return await GetSingleCustomSong(path, token);
+        return await GetSingleCustomSong(path, token, songID);
     }
 
-    public static async UniTask<SongInfo> GetSingleCustomSong(string fileLocation, CancellationToken token)
+    public static async UniTask<SongInfo> GetSingleCustomSong(string fileLocation, CancellationToken token, string songID = null)
     {
         //try
         //{
@@ -605,6 +606,11 @@ public class AssetManager : MonoBehaviour
 
                 if (updated.MadeChange)
                 {
+                    updatedMaps = true;
+                }
+                if(!string.IsNullOrWhiteSpace(songID) && string.IsNullOrWhiteSpace(item.SongID))
+                {
+                    item.SetSongID(songID);
                     updatedMaps = true;
                 }
 

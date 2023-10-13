@@ -4,6 +4,9 @@ using Cysharp.Threading.Tasks;
 using GameModeManagement;
 using UnityEngine;
 using UnityEngine.Pool;
+using static Cinemachine.CinemachineTriggerAction.ActionSettings;
+using static DifficultyInfo;
+using static UnityEngine.XR.Hands.XRHandSubsystemDescriptor;
 
 namespace InfoSaving
 {
@@ -130,7 +133,7 @@ namespace InfoSaving
                 var settings = new ES3Settings(folder);
                 return await UniTask.RunOnThreadPool(() => ES3.Load<T>(key, settings), cancellationToken: token);
             }
-            catch (Exception e)when (e is OperationCanceledException)
+            catch (Exception e) when (e is OperationCanceledException)
             {
             }
 
@@ -143,7 +146,7 @@ namespace InfoSaving
             {
                 return await UniTask.RunOnThreadPool(() => ES3.Load<T>(key, settings), cancellationToken: token);
             }
-            catch (Exception e)when (e is OperationCanceledException)
+            catch (Exception e) when (e is OperationCanceledException)
             {
             }
             catch (Exception e)
@@ -154,37 +157,37 @@ namespace InfoSaving
             return null;
         }
 
-        public static async UniTask<bool> PlaylistKeyExists(string key)
+        public static bool PlaylistKeyExists(string key)
         {
-            return await KeyExists(key, PlaylistSettings);
+            return KeyExists(key, PlaylistSettings);
         }
 
-        public static async UniTask<bool> SongKeyExists(string key)
+        public static bool SongKeyExists(string key)
         {
-            return await KeyExists(key, SongSettings);
+            return KeyExists(key, SongSettings);
         }
 
-        private static async UniTask<bool> KeyExists(string key, string folder)
+        private static bool KeyExists(string key, string folder)
         {
             try
             {
                 var settings = new ES3Settings(folder);
                 return ES3.KeyExists(key, settings); //UniTask.RunOnThreadPool(() => ES3.KeyExists(key, settings));
             }
-            catch (Exception e)when (e is OperationCanceledException)
+            catch (Exception e) when (e is OperationCanceledException)
             {
             }
 
             return false;
         }
 
-        private static async UniTask<bool> KeyExists(string key, ES3Settings settings)
+        private static bool KeyExists(string key, ES3Settings settings)
         {
             try
             {
                 return ES3.KeyExists(key, settings); //UniTask.RunOnThreadPool(() => ES3.KeyExists(key, settings));
             }
-            catch (Exception e)when (e is OperationCanceledException)
+            catch (Exception e) when (e is OperationCanceledException)
             {
             }
 
@@ -205,49 +208,57 @@ namespace InfoSaving
         public static async UniTask<SongAndPlaylistRecords> TryGetRecords(SongInfo info, DifficultyInfo.DifficultyEnum difficultyEnum,
             GameMode gameMode, CancellationToken token)
         {
-            var currentSongScoreName = SongInfoReader.GetFullSongName(info, difficultyEnum, gameMode, SCORE);
-            var hasScoreRecord = await SongKeyExists(currentSongScoreName);
-
-            var currentSongStreakName = SongInfoReader.GetFullSongName(info, difficultyEnum, gameMode, STREAK);
-            var hasStreakRecord = await SongKeyExists(currentSongStreakName);
-
-            var exists = hasScoreRecord && hasStreakRecord;
-
-            if (!exists)
+            if (!string.IsNullOrWhiteSpace(info.SongID))
             {
-                var oldKey = PlaylistManager.Instance.GetFullSongName();
-                exists = await SongKeyExists(oldKey);
-                if (exists)
+                var currentSongScoreName = $"{SCORE}{info.SongID}";
+                var hasScoreRecord = SongKeyExists(currentSongScoreName);
+
+                var currentSongStreakName = $"{STREAK}{info.SongID}";
+                var hasStreakRecord = SongKeyExists(currentSongStreakName);
+
+                if (!hasStreakRecord || !hasScoreRecord)
                 {
-                    var upgraded = await UpgradeFromSingleStatsRecord(oldKey, token);
-                    DeleteSongKey(oldKey);
-                    return upgraded;
+                    var records = await TryGetSongFromName(info, difficultyEnum, gameMode, token, true);
+                    if (records.hasRecord)
+                    {
+                        return records;
+                    }
+                }
+
+                if (hasScoreRecord && hasStreakRecord)
+                {
+                    try
+                    {
+                        var recordScores =
+                            (SongAndPlaylistScoreRecord[])await GetSongValue<SongAndPlaylistScoreRecord[]>(
+                                currentSongScoreName, token) ?? _scores;
+
+
+                        var recordStreaks =
+                            (SongAndPlaylistStreakRecord[])await GetSongValue<SongAndPlaylistStreakRecord[]>(
+                                currentSongStreakName, token) ?? _streaks;
+
+                        return new SongAndPlaylistRecords(true, recordScores, recordStreaks);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogError(e);
+                        throw;
+                    }
                 }
             }
-            else
-            {
-                try
-                {
-                    var recordScores =
-                        (SongAndPlaylistScoreRecord[]) await GetSongValue<SongAndPlaylistScoreRecord[]>(
-                            currentSongScoreName, token) ?? _scores;
-                    
 
-                    var recordStreaks =
-                        (SongAndPlaylistStreakRecord[]) await GetSongValue<SongAndPlaylistStreakRecord[]>(
-                            currentSongStreakName, token) ?? _streaks;
-                    
-                    return new SongAndPlaylistRecords(exists, recordScores, recordStreaks);
-                }
-                catch (Exception e)
-                {
-                    Debug.LogError(e);
-                    throw;
-                }
+            var oldRecords = await TryGetSongFromName(info, difficultyEnum, gameMode, token, false);
+            if (oldRecords.hasRecord)
+            {
+                return oldRecords;
             }
+
+
             ClearRecords();
             return new SongAndPlaylistRecords(false, _scores, _streaks);
         }
+
 
         private static void ClearRecords()
         {
@@ -263,22 +274,22 @@ namespace InfoSaving
             var playlistFullScoreName = $"{SCORE}{playlist.GUID}-{playlist.DifficultyEnum}-{playlist.TargetGameMode}";
             var playlistFullStreakName = $"{STREAK}{playlist.GUID}-{playlist.DifficultyEnum}-{playlist.TargetGameMode}";
 
-            var scoreExists = await PlaylistKeyExists(playlistFullScoreName);
-            var streakExists = await PlaylistKeyExists(playlistFullStreakName);
+            var scoreExists = PlaylistKeyExists(playlistFullScoreName);
+            var streakExists = PlaylistKeyExists(playlistFullStreakName);
 
             var exists = scoreExists && streakExists;
 
             if (!exists)
             {
                 var oldKey = $"{playlist.PlaylistName}-{playlist.Length}-{playlist.Items.Length}";
-                var keyExists = await SongKeyExists(oldKey);
+                var keyExists = SongKeyExists(oldKey);
                 if (keyExists)
                 {
                     #region Upgrading
 
                     var upgraded = await UpgradeFromSingleStatsRecord(oldKey, token);
                     DeletePlaylistKey(oldKey);
-                    
+
                     return upgraded;
                     #endregion
                 }
@@ -288,14 +299,14 @@ namespace InfoSaving
                 try
                 {
                     var recordScores =
-                        (SongAndPlaylistScoreRecord[]) await GetPlaylistValue<SongAndPlaylistScoreRecord[]>(
+                        (SongAndPlaylistScoreRecord[])await GetPlaylistValue<SongAndPlaylistScoreRecord[]>(
                             playlistFullScoreName, token) ?? _scores;
 
 
                     var recordStreaks =
-                        (SongAndPlaylistStreakRecord[]) await GetPlaylistValue<SongAndPlaylistStreakRecord[]>(
+                        (SongAndPlaylistStreakRecord[])await GetPlaylistValue<SongAndPlaylistStreakRecord[]>(
                             playlistFullStreakName, token) ?? _streaks;
-                    
+
                     return new SongAndPlaylistRecords(true, recordScores, recordStreaks);
                 }
                 catch (Exception e)
@@ -314,7 +325,7 @@ namespace InfoSaving
         public static async UniTask<SongAndPlaylistRecords> UpgradeFromSingleStatsRecord(string key,
             CancellationToken token)
         {
-            var oldRecord = (SongAndPlaylistRecord) await GetSongValue<SongAndPlaylistRecord>(
+            var oldRecord = (SongAndPlaylistRecord)await GetSongValue<SongAndPlaylistRecord>(
                 key, token);
             oldRecord = new SongAndPlaylistRecord(oldRecord.Score, oldRecord.Streak);
             var scores = new SongAndPlaylistScoreRecord[5];
@@ -323,7 +334,47 @@ namespace InfoSaving
             streaks[0] = new SongAndPlaylistStreakRecord(oldRecord.Streak);
             return new SongAndPlaylistRecords(true, scores, streaks);
         }
+        private static async UniTask<SongAndPlaylistRecords> TryGetSongFromName(SongInfo info, DifficultyEnum difficultyEnum, GameMode gameMode, CancellationToken token, bool deleteNameKeys)
+        {
+            var currentSongScoreName = SongInfoReader.GetFullSongName(info, difficultyEnum, gameMode, SCORE);
+            var hasScoreRecord = SongKeyExists(currentSongScoreName);
+            var currentSongStreakName = SongInfoReader.GetFullSongName(info, difficultyEnum, gameMode, STREAK);
+            var hasStreakRecord = SongKeyExists(currentSongStreakName);
 
+            var exists = hasScoreRecord && hasStreakRecord;
+
+            if (!exists)
+            {
+                return await TryUpgradeToSongName(token);
+            }
+            var recordScores =
+                (SongAndPlaylistScoreRecord[])await GetSongValue<SongAndPlaylistScoreRecord[]>(
+                    currentSongScoreName, token) ?? _scores;
+            var recordStreaks =
+                (SongAndPlaylistStreakRecord[])await GetSongValue<SongAndPlaylistStreakRecord[]>(
+                    currentSongStreakName, token) ?? _streaks;
+            if (deleteNameKeys)
+            {
+                DeleteSongKey(currentSongScoreName);
+                DeleteSongKey(currentSongStreakName);
+            }
+            return new SongAndPlaylistRecords(true, recordScores, recordStreaks);
+        }
+
+        private static async UniTask<SongAndPlaylistRecords> TryUpgradeToSongName(CancellationToken token)
+        {
+            var oldKey = PlaylistManager.Instance.GetFullSongName();
+            var exists = SongKeyExists(oldKey);
+            if (exists)
+            {
+                var upgraded = await UpgradeFromSingleStatsRecord(oldKey, token);
+                DeleteSongKey(oldKey);
+                return upgraded;
+            }
+
+            ClearRecords();
+            return new SongAndPlaylistRecords(false, _scores, _streaks);
+        }
         #endregion
     }
 }

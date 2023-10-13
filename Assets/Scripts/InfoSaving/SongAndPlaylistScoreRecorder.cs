@@ -8,6 +8,7 @@ using Cysharp.Threading.Tasks;
 using InfoSaving;
 using UnityEngine;
 using UnityEngine.Pool;
+using static UnityEngine.XR.Hands.XRHandSubsystemDescriptor;
 
 public class SongAndPlaylistScoreRecorder : MonoBehaviour
 {
@@ -61,44 +62,18 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
         records.scores.CopyTo(_songScoreRecords, 0);
         records.streaks.CopyTo(_songStreakRecords, 0);
 
-        _currentSongScoreName = PlaylistManager.Instance.GetFullSongName(prefix: SCORE);
-        _currentSongStreakName = PlaylistManager.Instance.GetFullSongName(prefix: STREAK);
-        /*var hasScoreRecord = await PlayerStatsFileManager.SongKeyExists(_currentSongScoreName);
-
-        var hasStreakRecord = await PlayerStatsFileManager.SongKeyExists(_currentSongStreakName);
-
-        _previousRecordExists = hasScoreRecord && hasStreakRecord;
-
-        if (!_previousRecordExists)
+        var currentSongInfo = SongInfoReader.Instance?.songInfo;
+        if (currentSongInfo != null && !string.IsNullOrWhiteSpace(currentSongInfo.SongID))
         {
-            var oldKey = PlaylistManager.Instance.GetFullSongName();
-            _previousRecordExists = await PlayerStatsFileManager.SongKeyExists(oldKey);
-            if (_previousRecordExists)
-            {
-                await UpgradeFromSingleStatsRecord(_songScoreRecords, _songStreakRecords, oldKey);
-                PlayerStatsFileManager.DeleteSongKey(oldKey);
-            }
-
-            return;
+            _currentSongScoreName = $"{SCORE}{currentSongInfo.SongID}";
+            _currentSongStreakName = $"{STREAK}{currentSongInfo.SongID}";
+        }
+        else
+        {
+            _currentSongScoreName = PlaylistManager.Instance.GetFullSongName(prefix: SCORE);
+            _currentSongStreakName = PlaylistManager.Instance.GetFullSongName(prefix: STREAK);
         }
 
-        try
-        {
-            _songScoreRecords =
-                (SongAndPlaylistScoreRecord[]) await PlayerStatsFileManager.GetSongValue<SongAndPlaylistScoreRecord[]>(
-                    _currentSongScoreName,
-                    _cancellationToken);
-            _songStreakRecords =
-                (SongAndPlaylistStreakRecord[]) await
-                    PlayerStatsFileManager.GetSongValue<SongAndPlaylistStreakRecord[]>(
-                        _currentSongScoreName,
-                        _cancellationToken);
-        }
-        catch (Exception e)
-        {
-            Debug.LogError(e);
-            throw;
-        }*/
     }
 
     public async UniTaskVoid SaveSongStats()
@@ -188,15 +163,15 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
 
         ulong songScore = 0;
         var bestStreak = 0;
-        var scoreExists = await PlayerStatsFileManager.PlaylistKeyExists(playlistFullScoreName);
-        var streakExists = await PlayerStatsFileManager.PlaylistKeyExists(playlistFullStreakName);
+        var scoreExists = PlayerStatsFileManager.PlaylistKeyExists(playlistFullScoreName);
+        var streakExists = PlayerStatsFileManager.PlaylistKeyExists(playlistFullStreakName);
         var scoreIndex = -1;
         var streakIndex = -1;
 
         if (!scoreExists && !streakExists)
         {
             var oldKey = $"{playlist.PlaylistName}-{playlist.Length}-{playlist.Items.Length}";
-            var keyExists = await PlayerStatsFileManager.SongKeyExists(oldKey);
+            var keyExists = PlayerStatsFileManager.SongKeyExists(oldKey);
             if (keyExists)
             {
                 #region Upgrading

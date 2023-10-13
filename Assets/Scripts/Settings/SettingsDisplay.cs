@@ -52,12 +52,12 @@ public class SettingsDisplay : UIMenuController
         gameObject.SetActive(false);
     }
 
-    private void OnEnable()
+    protected new void OnEnable()
     {
         AddListener();
     }
 
-    private void OnDisable()
+    protected new void OnDisable()
     {
         RemoveListener();
     }

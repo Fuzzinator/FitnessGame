@@ -15,7 +15,7 @@ public static class ZipFileManagement
         _dataPath = dataPath;
     }
 
-    public static void ExtractAndSaveZippedSongAsync(string folderName, byte[] songBytes)
+    public static void ExtractAndSaveZippedSong(string folderName, byte[] songBytes)
     {
         folderName = folderName.RemoveIllegalIOCharacters();
 

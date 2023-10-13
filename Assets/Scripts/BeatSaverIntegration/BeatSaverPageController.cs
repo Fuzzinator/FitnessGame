@@ -402,7 +402,7 @@ public class BeatSaverPageController : MonoBehaviour
         }
 
         await UniTask.DelayFrame(1);
-        ZipFileManagement.ExtractAndSaveZippedSongAsync(folderName, songBytes);
+        ZipFileManagement.ExtractAndSaveZippedSong(folderName, songBytes);
         await UniTask.DelayFrame(1);
         await UniTask.SwitchToMainThread(_downloadsTokenSource.Token);
         _downloadingIds.Remove(beatmapID);
@@ -411,10 +411,11 @@ public class BeatSaverPageController : MonoBehaviour
             _downloadButton.interactable = true;
         }
         activeCell.SetDownloaded(true);
-        await SongInfoFilesReader.Instance.LoadNewSong(folderName);
+        //TODO: Need to remove the existing song if a duplicate exists in the SongInfoFilesReader
+        await SongInfoFilesReader.Instance.LoadNewSong(folderName, beatmapID);
 
         PlaylistFilesReader.Instance.RefreshPlaylistsValidStates().Forget();
-        UpdateUI();
+        UpdateUI().Forget();
     }
 
     #endregion

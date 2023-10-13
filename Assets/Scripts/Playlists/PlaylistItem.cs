@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cysharp.Text;
 using GameModeManagement;
+using Unity.Tutorials.Core.Editor;
 using UnityEngine;
 
 [Serializable]
@@ -26,6 +28,9 @@ public struct PlaylistItem
     [SerializeField]
     private bool _isCustomSong;
 
+    [field: SerializeField]
+    public string SongID { get; private set; }
+
     public bool IsCustomSong => _isCustomSong;
 
     [SerializeField]
@@ -45,18 +50,6 @@ public struct PlaylistItem
         set => _songInfo = value;
     }
 
-    public PlaylistItem(string songName, string fileLocation, string difficulty, DifficultyInfo.DifficultyEnum difficultyEnum, bool isCustomSong, GameMode gameMode,
-        SongInfo info)
-    {
-        _songName = songName;
-        _fileLocation = fileLocation;
-        _difficulty = difficulty;
-        _isCustomSong = isCustomSong;
-        _gameMode = gameMode;
-        _songInfo = info;
-        _difficultyEnum = difficultyEnum;
-    }
-
     public PlaylistItem(SongInfo songInfo, string difficulty,DifficultyInfo.DifficultyEnum difficultyEnum, GameMode gameMode)
     {
         _songName = songInfo.SongName;
@@ -66,6 +59,7 @@ public struct PlaylistItem
         _gameMode = gameMode;
         _songInfo = songInfo;
         _difficultyEnum = difficultyEnum;
+        SongID = songInfo.SongID;
     }
     
     public string Difficulty => _difficulty;
@@ -88,6 +82,11 @@ public struct PlaylistItem
 
     public static bool operator ==(PlaylistItem item1, PlaylistItem item2)
     {
+        if (!string.IsNullOrWhiteSpace(item1.SongID) && !string.IsNullOrWhiteSpace(item2.SongID))
+        {
+            return string.Equals(item1.SongID, item2.SongID);
+        }
+
         return StringMatches(item1.SongName, item2.SongName) &&
                StringMatches(item1.FileLocation, item2.FileLocation) &&
                StringMatches(item1.Difficulty, item2.Difficulty) &&
@@ -101,6 +100,10 @@ public struct PlaylistItem
 
     public bool Equals(PlaylistItem other)
     {
+        if(!string.IsNullOrWhiteSpace(SongID) && !string.IsNullOrWhiteSpace(other.SongID))
+        {
+            return string.Equals(SongID, other.SongID);
+        }
         return _songName == other._songName && _fileLocation == other._fileLocation && _difficulty == other._difficulty && TargetGameMode == other.TargetGameMode;
     }
 
@@ -111,12 +114,6 @@ public struct PlaylistItem
 
     public override int GetHashCode()
     {
-        unchecked
-        {
-            var hashCode = (_songName != null ? _songName.GetHashCode() : 0);
-            hashCode = (hashCode * 397) ^ (_fileLocation != null ? _fileLocation.GetHashCode() : 0);
-            hashCode = (hashCode * 397) ^ (_difficulty != null ? _difficulty.GetHashCode() : 0);
-            return hashCode;
-        }
+        return HashCode.Combine(_songName, _fileLocation, _difficulty);
     }
 }
