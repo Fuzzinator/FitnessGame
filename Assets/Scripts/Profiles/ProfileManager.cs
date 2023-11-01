@@ -7,6 +7,7 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
+using UnityEngine.Profiling;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceLocations;
 using static UnityEditor.Progress;
@@ -136,6 +137,12 @@ public class ProfileManager : MonoBehaviour
         SettingsManager.ClearCachedValues();
         _activeProfile = profile;
         ProfileSettings = GetProfileSettings(profile);
+
+        if (profile.UseOnlineLeaderboards)
+        {
+            PlayFabManager.Instance.SignInWithProfile(profile);
+        }
+
         activeProfileUpdated?.Invoke();
     }
 
@@ -148,8 +155,12 @@ public class ProfileManager : MonoBehaviour
     {
         if (!string.Equals(profile.ProfileName, profileName))
         {
-            UpdateSaveFile(profile, profileName, address, isCustomIcon);
+            RenameSaveFile(profile, profileName, address, isCustomIcon);
             profile.SetName(profileName);
+            if (profile.UseOnlineLeaderboards)
+            {
+                PlayFabManager.Instance.UpdateDisplayName(profileName);
+            }
         }
 
         profile.SetIconAddress(address, isCustomIcon);
@@ -315,23 +326,18 @@ public class ProfileManager : MonoBehaviour
         return sprite;
     }
 
-    private static void UpdateSaveFile(Profile profile, string profileName, string address, bool isCustomIcon)
+    private static void RenameSaveFile(Profile profile, string profileName, string address, bool isCustomIcon)
     {
-        var originalPath = $"{AssetManager.DataPath}{PROFILESETTINGS}{profile.ProfileName}.{profile.GUID}.dat";
-        if (File.Exists(originalPath))
-        {
-            var newPath = $"{AssetManager.DataPath}{PROFILESETTINGS}{profileName}.{profile.GUID}.dat";
-            File.Move(originalPath, newPath);
-        }
+        var originalPath = new ES3Settings($"{PROFILESETTINGS}{profile.ProfileName}.{profile.GUID}.dat");
+        var newPath = new ES3Settings($"{PROFILESETTINGS}{profileName}.{profile.GUID}.dat");
+        ES3.RenameFile(originalPath, newPath);
     }
 
     private static void DeleteSaveFile(Profile profile)
     {
-        var path = $"{AssetManager.DataPath}{PROFILESETTINGS}{profile.ProfileName}.{profile.GUID}.dat";
-        if (File.Exists(path))
-        {
-            File.Delete(path);
-        }
+        var settings = GetProfileSettings(profile);
+
+        ES3.DeleteFile(settings);
     }
 
     public static ES3Settings GetProfileSettings(Profile profile)
@@ -362,7 +368,7 @@ public class ProfileManager : MonoBehaviour
 
         public override bool Equals(object obj)
         {
-            if(obj is not ProfileIconInfo iconInfo)
+            if (obj is not ProfileIconInfo iconInfo)
             {
                 return false;
             }

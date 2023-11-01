@@ -11,7 +11,7 @@ public class InitializeBeatSaverAPI : MonoBehaviour
     void Start()
     {
         _controller.Initialize();
-        if (NetworkConnectionValidator.HasNetworkConnection())
+        if (NetworkConnectionManager.Instance.NetworkConnected)
         {
             _controller.RequestHighestRated();
         }

@@ -17,6 +17,9 @@ public class Profile
     [field: SerializeField]
     public string GUID { get; private set; }
 
+    [field: SerializeField]
+    public bool UseOnlineLeaderboards { get; private set; }
+
     private Sprite _sprite;
 
     public Profile(string profileName, string iconAddress, bool customIcon)

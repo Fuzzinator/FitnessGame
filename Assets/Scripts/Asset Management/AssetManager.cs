@@ -114,7 +114,7 @@ public class AssetManager : MonoBehaviour
     {
         return
 #if UNITY_EDITOR
-            Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/'));
+            Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/')+1);
 #elif UNITY_ANDROID
             Application.persistentDataPath;
 #elif UNITY_STANDALONE_WIN
