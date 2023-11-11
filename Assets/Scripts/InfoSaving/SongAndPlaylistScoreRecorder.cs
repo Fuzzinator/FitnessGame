@@ -16,11 +16,9 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
     private bool _updatingPlaylistRecord;
     private CancellationToken _cancellationToken;
 
-    private string _currentSongScoreName;
-    private string _currentSongStreakName;
+    private string _currentSongRecordName;
     private bool _previousRecordExists = false;
-    private readonly SongAndPlaylistScoreRecord[] _songScoreRecords = new SongAndPlaylistScoreRecord[5];
-    private readonly SongAndPlaylistStreakRecord[] _songStreakRecords = new SongAndPlaylistStreakRecord[5];
+    private readonly SongRecord[] _songRecords = new SongRecord[10];
     private readonly SongAndPlaylistScoreRecord[] _playlistScoreRecords = new SongAndPlaylistScoreRecord[5];
     private readonly SongAndPlaylistStreakRecord[] _playlistStreakRecords = new SongAndPlaylistStreakRecord[5];
 
@@ -56,22 +54,17 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
             await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
         }
 
-        var records =
-            await PlaylistManager.Instance.TryGetRecords(_cancellationToken);
-        _previousRecordExists = records.hasRecord;
-        records.scores.CopyTo(_songScoreRecords, 0);
-        records.streaks.CopyTo(_songStreakRecords, 0);
+        var records = await PlaylistManager.Instance.TryGetRecords(_cancellationToken);
+        records.CopyTo(_songRecords, 0);
 
         var currentSongInfo = SongInfoReader.Instance?.songInfo;
         if (currentSongInfo != null && !string.IsNullOrWhiteSpace(currentSongInfo.SongID))
         {
-            _currentSongScoreName = PlaylistManager.Instance.GetFullSongName(prefix: SCORE, noID: false);
-            _currentSongStreakName = PlaylistManager.Instance.GetFullSongName(prefix: STREAK, noID: false);
+            _currentSongRecordName = PlaylistManager.Instance.GetFullSongName(noID: false);
         }
         else
         {
-            _currentSongScoreName = PlaylistManager.Instance.GetFullSongName(prefix: SCORE, noID: true);
-            _currentSongStreakName = PlaylistManager.Instance.GetFullSongName(prefix: STREAK, noID: true);
+            _currentSongRecordName = PlaylistManager.Instance.GetFullSongName(noID: true);
         }
 
     }
@@ -83,28 +76,22 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
             await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
         }
 
-        ulong songScore = 0;
+        int songScore = 0;
         int bestStreak = 0;
         var scoreIndexToUpdate = -1;
-        var streakIndexToUpdate = -1;
 
         if (_previousRecordExists)
         {
-            for (var i = 0; i < _songScoreRecords.Length; i++)
+            for (var i = 0; i < _songRecords.Length; i++)
             {
-                var oldScoreRecord = _songScoreRecords[i];
-                var oldStreakRecord = _songStreakRecords[i];
-                if (scoreIndexToUpdate < 0 && ShouldUpdateScoreFile(oldScoreRecord, false, out songScore))
+                var oldRecord = _songRecords[i];
+                if (scoreIndexToUpdate < 0 && ShouldUpdateScoreFile(oldRecord, false, out var scoreAsLong))
                 {
+                    songScore = (int)scoreAsLong;
                     scoreIndexToUpdate = i;
                 }
 
-                if (streakIndexToUpdate < 0 && ShouldUpdateStreakFile(oldStreakRecord, false, out bestStreak))
-                {
-                    streakIndexToUpdate = i;
-                }
-
-                if (scoreIndexToUpdate >= 0 && streakIndexToUpdate >= 0)
+                if (scoreIndexToUpdate >= 0)
                 {
                     break;
                 }
@@ -116,7 +103,6 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
             bestStreak = StreakManager.Instance.RecordCurrentSongStreak;
 
             scoreIndexToUpdate = 0;
-            streakIndexToUpdate = 0;
         }
 
         var activeProfile = ProfileManager.Instance.ActiveProfile;
@@ -124,23 +110,10 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
 
         if (scoreIndexToUpdate >= 0)
         {
-            var newScoreRecord =
-                new SongAndPlaylistScoreRecord(songScore, activeProfile.ProfileName, activeProfile.GUID);
-            InsertInArray(_songScoreRecords, newScoreRecord, scoreIndexToUpdate);
+            var newScoreRecord = new SongRecord(activeProfile.ProfileName, activeProfile.GUID, (int)songScore, bestStreak);
+            InsertInArray(_songRecords, newScoreRecord, scoreIndexToUpdate);
             _updatingSongRecord = true;
-            await PlayerStatsFileManager.RecordSongValue(_currentSongScoreName, _songScoreRecords, _cancellationToken);
-            _updatingSongRecord = false;
-        }
-
-
-        if (streakIndexToUpdate >= 0)
-        {
-            var newStreakRecord =
-                new SongAndPlaylistStreakRecord(bestStreak, activeProfile.ProfileName, activeProfile.GUID);
-            InsertInArray(_songStreakRecords, newStreakRecord, streakIndexToUpdate);
-            _updatingSongRecord = true;
-            await PlayerStatsFileManager.RecordSongValue(_currentSongStreakName, _songStreakRecords,
-                _cancellationToken);
+            await PlayerStatsFileManager.RecordSongValue(_currentSongRecordName, _songRecords, _cancellationToken);
             _updatingSongRecord = false;
         }
     }
@@ -170,32 +143,10 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
 
         if (!scoreExists && !streakExists)
         {
-            var oldKey = $"{playlist.PlaylistName}-{playlist.Length}-{playlist.Items.Length}";
-            var keyExists = PlayerStatsFileManager.SongKeyExists(oldKey);
-            if (keyExists)
-            {
-                #region Upgrading
-                var upgraded = await PlayerStatsFileManager.UpgradeFromSingleStatsRecord(oldKey, _cancellationToken);
-                PlayerStatsFileManager.DeletePlaylistKey(oldKey);
-                if (ShouldUpdateScoreFile(upgraded.scores[0], true, out songScore))
-                {
-                    scoreIndex = 0;
-                }
-
-                if (ShouldUpdateStreakFile(upgraded.streaks[0], true, out bestStreak))
-                {
-                    streakIndex = 0;
-                }
-
-                #endregion
-            }
-            else
-            {
-                songScore = ScoringAndHitStatsManager.Instance.CurrentScore;
-                bestStreak = StreakManager.Instance.RecordStreak;
-                scoreIndex = 0;
-                streakIndex = 0;
-            }
+            songScore = ScoringAndHitStatsManager.Instance.CurrentScore;
+            bestStreak = StreakManager.Instance.RecordStreak;
+            scoreIndex = 0;
+            streakIndex = 0;
         }
         else
         {
@@ -266,11 +217,11 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
         }
     }
 
-    private static bool ShouldUpdateScoreFile(SongAndPlaylistScoreRecord oldRecord, bool playlist, out ulong songScore)
+    private static bool ShouldUpdateScoreFile(SongRecord oldRecord, bool playlist, out ulong songScore)
     {
-        songScore = playlist ? ScoringAndHitStatsManager.Instance.CurrentScore : ScoringAndHitStatsManager.Instance.SongScore;
+        songScore = playlist ? ScoringAndHitStatsManager.Instance.CurrentScore : (uint)ScoringAndHitStatsManager.Instance.SongScore;
 
-        var newScoreHigher = oldRecord.Score < songScore;
+        var newScoreHigher = (ulong)oldRecord.Score < songScore;
 
         return newScoreHigher;
     }

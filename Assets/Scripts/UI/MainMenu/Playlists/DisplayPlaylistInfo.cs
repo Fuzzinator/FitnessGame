@@ -122,7 +122,7 @@ namespace UI.Scrollers.Playlists
                 Debug.LogError("Trying to get record but playlist is null.");
                 return new SongAndPlaylistRecords();
             }
-            return await PlayerStatsFileManager.TryGetRecords(playlist, _cancellationToken);
+            return await PlayerStatsFileManager.TryGetPlaylistRecords(playlist, _cancellationToken);
         }
     }
 }

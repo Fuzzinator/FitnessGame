@@ -38,7 +38,7 @@ public class ScoringAndHitStatsManager : MonoBehaviour
     public uint WorkoutDodgedObstacles { get; private set; }
     public uint WorkoutHitObstacles { get; private set; }
 
-    public ulong SongScore { get; private set; }
+    public int SongScore { get; private set; }
     public uint SongHitTargets { get; private set; }
     public uint SongMissedTargets { get; private set; }
     public uint SongDodgedObstacles { get; private set; }
@@ -193,7 +193,7 @@ public class ScoringAndHitStatsManager : MonoBehaviour
     public void AddToScore(float valueToAdd)
     {
         CurrentScore += (uint)(valueToAdd * StreakManager.GetStreakScoreMod());
-        SongScore += (uint)(valueToAdd * StreakManager.GetCurrentSongScoreMod());
+        SongScore += (int)(valueToAdd * StreakManager.GetCurrentSongScoreMod());
     }
 
     public void RegisterHitTarget(HitInfo hit)

@@ -16,20 +16,33 @@ public struct SongAndPlaylistRecords
 }
 
 [Serializable]
-public struct SongAndPlaylistRecord
+public struct SongRecord
 {
     [SerializeField]
-    private ulong _score;
-    [SerializeField] 
+    private string _profileName;
+    [SerializeField]
+    private string _guid;
+    [SerializeField]
+    private int _score;
+    [SerializeField]
     private int _streak;
-    
-    public ulong Score => _score;
+    [SerializeField]
+    private bool _isValid;
+
+    public string ProfileName => _profileName;
+    public string GUID => _guid;
+    public int Score => _score;
     public int Streak => _streak;
 
-    public SongAndPlaylistRecord(ulong score, int streak)
+    public bool IsValid => _isValid;
+
+    public SongRecord(string profileName, string guid, int score, int streak)
     {
+        _profileName = profileName;
+        _guid = string.IsNullOrWhiteSpace(guid) ? Guid.NewGuid().ToString() : guid;
         _score = score;
         _streak = streak;
+        _isValid = true;
     }
 }
 
@@ -44,8 +57,8 @@ public struct SongAndPlaylistScoreRecord
 
     [SerializeField]
     private string _profileGUID;
-    
-    [SerializeField] 
+
+    [SerializeField]
     private bool _isValid;
     public ulong Score => _score;
     public string ProfileName => _profileName;
@@ -63,7 +76,7 @@ public struct SongAndPlaylistScoreRecord
 [Serializable]
 public struct SongAndPlaylistStreakRecord
 {
-    [SerializeField] 
+    [SerializeField]
     private int _streak;
 
     [SerializeField]
@@ -71,8 +84,8 @@ public struct SongAndPlaylistStreakRecord
 
     [SerializeField]
     private string _profileGUID;
-    
-    [SerializeField] 
+
+    [SerializeField]
     private bool _isValid;
     public int Streak => _streak;
     public string ProfileName => _profileName;

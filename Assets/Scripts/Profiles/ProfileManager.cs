@@ -138,11 +138,6 @@ public class ProfileManager : MonoBehaviour
         _activeProfile = profile;
         ProfileSettings = GetProfileSettings(profile);
 
-        if (profile.UseOnlineLeaderboards)
-        {
-            PlayFabManager.Instance.SignInWithProfile(profile);
-        }
-
         activeProfileUpdated?.Invoke();
     }
 
@@ -159,7 +154,7 @@ public class ProfileManager : MonoBehaviour
             profile.SetName(profileName);
             if (profile.UseOnlineLeaderboards)
             {
-                PlayFabManager.Instance.UpdateDisplayName(profileName);
+                AzureSqlManager.Instance.UpdateDisplayName(profileName);
             }
         }
 
