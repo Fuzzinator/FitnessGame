@@ -47,6 +47,37 @@ public struct SongRecord
 }
 
 [Serializable]
+public struct PlaylistRecord
+{
+    [SerializeField]
+    private string _profileName;
+    [SerializeField]
+    private string _guid;
+    [SerializeField]
+    private ulong _score;
+    [SerializeField]
+    private int _streak;
+    [SerializeField]
+    private bool _isValid;
+
+    public string ProfileName => _profileName;
+    public string GUID => _guid;
+    public ulong Score => _score;
+    public int Streak => _streak;
+
+    public bool IsValid => _isValid;
+
+    public PlaylistRecord(string profileName, string guid, ulong score, int streak)
+    {
+        _profileName = profileName;
+        _guid = string.IsNullOrWhiteSpace(guid) ? Guid.NewGuid().ToString() : guid;
+        _score = score;
+        _streak = streak;
+        _isValid = true;
+    }
+}
+
+[Serializable]
 public struct SongAndPlaylistScoreRecord
 {
     [SerializeField]
