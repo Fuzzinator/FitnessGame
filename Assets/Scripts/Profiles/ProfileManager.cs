@@ -9,8 +9,6 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
 using UnityEngine.Profiling;
 using UnityEngine.ResourceManagement.AsyncOperations;
-using UnityEngine.ResourceManagement.ResourceLocations;
-using static UnityEditor.Progress;
 
 public class ProfileManager : MonoBehaviour
 {

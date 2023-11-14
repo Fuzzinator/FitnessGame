@@ -94,6 +94,7 @@ public struct SongAndPlaylistScoreRecord
     public ulong Score => _score;
     public string ProfileName => _profileName;
     public bool IsValid => _isValid;
+    public string Guid => _profileGUID;
 
     public SongAndPlaylistScoreRecord(ulong score, string profileName = null, string profileGuid = null)
     {
@@ -121,6 +122,8 @@ public struct SongAndPlaylistStreakRecord
     public int Streak => _streak;
     public string ProfileName => _profileName;
     public bool IsValid => _isValid;
+
+    public string Guid => _profileGUID;
 
     public SongAndPlaylistStreakRecord(int streak, string profileName = null, string profileGuid = null)
     {

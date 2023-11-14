@@ -9,6 +9,8 @@ using System;
 using System.Text;
 using UnityEngine.Profiling;
 using UnityEngine.SocialPlatforms.Impl;
+using GameModeManagement;
+using System.Threading;
 
 public class AzureSqlManager : MonoBehaviour
 {
@@ -18,6 +20,10 @@ public class AzureSqlManager : MonoBehaviour
     private const string SetLeaderboardEnd = "?code=mwB8YMyIHWkFd0qnX7pTEz1vYa0mv989iYA4rkL5XDHoAzFuocSNyg==";
     private const string GetLeaderboardEnd = "?code=g5d2kGCy-SVPpBp0LlX0gNvvdQ17dFYU-nnaeB15hR4uAzFu2s9d6A==";
 
+    private bool _serverRunning = false;
+    private bool _warmingServer = false;
+
+    public bool ServerIsRunning => _serverRunning;
 
     private void Awake()
     {
@@ -33,25 +39,71 @@ public class AzureSqlManager : MonoBehaviour
 
     private void Start()
     {
-        //PostLeaderboardScore("TestLeaderboard3", 10, 5).Forget();
-        //GetWaiter().Forget();
+        WarmServer().Forget();
     }
 
-    private async UniTaskVoid GetWaiter()
+    private async UniTaskVoid WarmServer()
     {
-        var leaderboard = await GetTop10Leaderboard("TestLeaderboard3");
-        if (leaderboard == null)
+        while (!_serverRunning)
         {
-            return;
+            _warmingServer = true;
+            if (!NetworkConnectionManager.Instance.NetworkConnected)
+            {
+                await UniTask.Delay(TimeSpan.FromSeconds(1));
+                continue;
+            }
+
+            var leaderboard = await GetTop10Leaderboard("WarmUpTheDatabase");
+            if (leaderboard != null)
+            {
+                _serverRunning = true;
+            }
+            else
+            {
+                await UniTask.Delay(TimeSpan.FromSeconds(30));
+            }
         }
-        foreach (var leaderboardObject in leaderboard)
-        {
-            Debug.Log($"{leaderboardObject.ProfileName} scored: {leaderboardObject.Score} with a streak of {leaderboardObject.Streak}");
-        }
+        _warmingServer = false;
+        KeepServerWarm().Forget();
+    }
+
+    private async UniTaskVoid KeepServerWarm()
+    {
+        await UniTask.Delay(TimeSpan.FromMinutes(30));
+        WarmServer().Forget();
     }
 
     #region Posting Score
-    public async UniTaskVoid PostLeaderboardScore(string leaderboardName, int score, int streak)
+    public async UniTaskVoid PostLeaderboardScore(string leaderboardName, int score, int streak, CancellationToken token)
+    {
+        try
+        {
+            while (!_serverRunning && !token.IsCancellationRequested)
+            {
+                if (!_warmingServer)
+                {
+                    WarmServer().Forget();
+                }
+                await UniTask.Delay(TimeSpan.FromSeconds(1), cancellationToken: token);
+            }
+            if (token.IsCancellationRequested)
+            {
+                return;
+            }
+
+        }
+        catch (Exception e)
+        {
+            if (e is OperationCanceledException)
+            {
+                return;
+            }
+            Debug.LogError(e.Message);
+        }
+        PostLeaderboardScore(leaderboardName, score, streak).Forget();
+    }
+
+    private async UniTaskVoid PostLeaderboardScore(string leaderboardName, int score, int streak)
     {
         if (!NetworkConnectionManager.Instance.NetworkConnected)
         {
@@ -83,7 +135,7 @@ public class AzureSqlManager : MonoBehaviour
             await UniTask.WaitWhile(() => result.result == UnityWebRequest.Result.InProgress);
             if (result.result != UnityWebRequest.Result.Success)
             {
-                Debug.LogError(result.error);
+                Debug.LogWarning($"Failed to post score. Error returned was:{result.error}");
             }
             else
             {
@@ -91,7 +143,7 @@ public class AzureSqlManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            Debug.LogError($"{e.Message}");
+            Debug.LogWarning($"Failed to post score. Error returned was:{e.Message}");
         }
     }
     #endregion
@@ -105,6 +157,40 @@ public class AzureSqlManager : MonoBehaviour
         }
         var profileID = ProfileManager.Instance.ActiveProfile.GUID;
     }
+    public async UniTask<LeaderboardObject[]> GetTopLeaderboard(SongInfo song, DifficultyInfo.DifficultyEnum difficulty, GameMode mode, CancellationToken token)
+    {
+        try
+        {
+            while (!_serverRunning && !token.IsCancellationRequested)
+            {
+                if (!_warmingServer)
+                {
+                    WarmServer().Forget();
+                }
+                await UniTask.Delay(TimeSpan.FromSeconds(1), cancellationToken: token);
+            }
+            if (token.IsCancellationRequested)
+            {
+                return null;
+            }
+
+        }
+        catch (Exception e)
+        {
+            if (e is OperationCanceledException)
+            {
+                return null;
+            }
+            Debug.LogError(e.Message);
+        }
+        return await GetTopLeaderboard(song, difficulty, mode);
+    }
+
+    private async UniTask<LeaderboardObject[]> GetTopLeaderboard(SongInfo song, DifficultyInfo.DifficultyEnum difficulty, GameMode mode)
+    {
+        var songID = $"Song_{song.RecordableName}{difficulty}{mode}";
+        return await GetTop10Leaderboard(songID);
+    }
 
     private async UniTask<LeaderboardObject[]> GetTop10Leaderboard(string leaderboardName)
     {
@@ -114,7 +200,6 @@ public class AzureSqlManager : MonoBehaviour
         }
 
         var activeProfile = ProfileManager.Instance.ActiveProfile;
-        //var url = $"https://updateleaderboards.azurewebsites.net/api/GetLeaderboard/{leaderboardName}/{0}-{10}?code=g5d2kGCy-SVPpBp0LlX0gNvvdQ17dFYU-nnaeB15hR4uAzFu2s9d6A==\r\n";
         var url = $"{RootURL}GetLeaderboard/{leaderboardName}/{0}-{10}{GetLeaderboardEnd}";
         var request = UnityWebRequest.Get(url);
 
@@ -124,7 +209,7 @@ public class AzureSqlManager : MonoBehaviour
             await UniTask.WaitWhile(() => result.result == UnityWebRequest.Result.InProgress);
             if (result.result != UnityWebRequest.Result.Success)
             {
-                Debug.LogError(result.error);
+                Debug.LogWarning($"Failed to retrieve leaderboard. Server returned error: {result.error}");
             }
             else
             {
@@ -135,7 +220,7 @@ public class AzureSqlManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            Debug.LogError($"{e.Message}");
+            Debug.LogWarning($"Failed to retrieve leaderboard. Server returned error: {e.Message}");
         }
         return null;
     }
@@ -150,21 +235,26 @@ public class AzureSqlManager : MonoBehaviour
     {
         Debug.LogError(System.Environment.StackTrace);
     }
+}
 
-    [System.Serializable]
-    public struct LeaderboardObject
+[Serializable]
+public class LeaderboardObject
+{
+    public string GUID;
+    public string ProfileName;
+    public int Score;
+    public int Streak;
+
+    public LeaderboardObject()
     {
-        public string GUID;
-        public string ProfileName;
-        public int Score;
-        public int Streak;
 
-        public LeaderboardObject(SongRecord record)
-        {
-            ProfileName = record.ProfileName;
-            GUID = record.GUID;
-            Score = record.Score; 
-            Streak = record.Streak;
-        }
+    }
+
+    public LeaderboardObject(SongRecord record)
+    {
+        ProfileName = record.ProfileName;
+        GUID = record.GUID;
+        Score = record.Score;
+        Streak = record.Streak;
     }
 }

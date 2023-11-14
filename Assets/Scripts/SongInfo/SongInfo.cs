@@ -10,8 +10,6 @@ using Unity.Burst;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
-using static UnityEditor.Progress;
-using static UnityEngine.XR.Hands.XRHandSubsystemDescriptor;
 
 [Serializable]
 public class SongInfo
@@ -81,6 +79,18 @@ public class SongInfo
     public string SongID => _songID;
 
     public DifficultySet[] DifficultySets => _difficultyBeatmapSets;
+
+    public string RecordableName
+    {
+        get
+        {
+            if(!string.IsNullOrWhiteSpace(_songID))
+            {
+                return _songID.RemoveSpecialCharacters();
+            }
+            return ($"{_songName}{_songLength}").RemoveSpecialCharacters();
+        }
+    }
 
     [SerializeField]
     private string _songName;

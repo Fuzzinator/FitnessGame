@@ -47,7 +47,7 @@ public class ReturnToMenu : MonoBehaviour
         await UniTask.DelayFrame(1);
         var songInfo = currentPlaylist.Items[0].SongInfo;
         _availableSongInfoScrollerController.ScrollToData(songInfo);
-        _availableSongsRecordDisplay.ShowRecords(songInfo);
+        _availableSongsRecordDisplay.SetSongInfo(songInfo);
         _availableSongsInfoDisplay.RequestDisplay(songInfo);
         PlaylistMaker.Instance.SetActiveItem(songInfo);
     }

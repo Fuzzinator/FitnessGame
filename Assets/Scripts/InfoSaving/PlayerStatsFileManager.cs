@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using GameModeManagement;
 using UnityEngine;
 using UnityEngine.Pool;
+using UnityEngine.SocialPlatforms.Impl;
 using static Cinemachine.CinemachineTriggerAction.ActionSettings;
 using static DifficultyInfo;
 using static UnityEngine.XR.Hands.XRHandSubsystemDescriptor;
@@ -232,25 +233,48 @@ namespace InfoSaving
                     if (oldRecord.hasRecord)
                     {
                         ConvertOldRecordsToNew(oldRecord);
+                        RecordSongValue(currentSongName, _scoreAndStreakRecord, token).Forget();
                         return _scoreAndStreakRecord;
                     }
                 }
             }
-
-            var veryOldRecords = await TryGetSongFromName(info, difficultyEnum, gameMode, token, false);
-            if (veryOldRecords.hasRecord)
+            else
             {
-                ConvertOldRecordsToNew(veryOldRecords);
-                return _scoreAndStreakRecord;
-            }
+                var currentSongName = SongInfoReader.GetFullSongNameNoID(info, difficultyEnum, gameMode);
+                var hasRecord = SongKeyExists(currentSongName);
+                if (hasRecord)
+                {
+                    try
+                    {
+                        var recordScores =
+                            (SongRecord[])await GetSongValue<SongRecord[]>(
+                                currentSongName, token) ?? _scoreAndStreakRecord;
 
+                        return recordScores;
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogError(e);
+                        throw;
+                    }
+                }
+                else
+                {
+                    var noIDRecord = await GetOldRecordFromName(info, difficultyEnum, gameMode, token, false);
+                    if (noIDRecord.hasRecord)
+                    {
+                        ConvertOldRecordsToNew(noIDRecord);
+                        return _scoreAndStreakRecord;
+                    }
+                }
+            }
 
             ClearRecords();
             return _scoreAndStreakRecord;
         }
 
         public static async UniTask<SongAndPlaylistRecords> TryGetOldRecords(SongInfo info, DifficultyEnum difficultyEnum,
-           GameMode gameMode, CancellationToken token)
+           GameMode gameMode, CancellationToken token, bool deleteOldRecord = false)
         {
             if (!string.IsNullOrWhiteSpace(info.SongID))
             {
@@ -262,7 +286,7 @@ namespace InfoSaving
 
                 if (!hasStreakRecord || !hasScoreRecord)
                 {
-                    var records = await TryGetSongFromName(info, difficultyEnum, gameMode, token, true);
+                    var records = await GetOldRecordFromName(info, difficultyEnum, gameMode, token, false);//TODO update songs
                     if (records.hasRecord)
                     {
                         return records;
@@ -282,8 +306,11 @@ namespace InfoSaving
                             (SongAndPlaylistStreakRecord[])await GetSongValue<SongAndPlaylistStreakRecord[]>(
                                 currentSongStreakName, token) ?? new SongAndPlaylistStreakRecord[5];
                         await UniTask.DelayFrame(1);
-                        DeleteSongKey(currentSongScoreName);
-                        DeleteSongKey(currentSongStreakName);
+                        if (deleteOldRecord)
+                        {
+                            DeleteSongKey(currentSongScoreName);
+                            DeleteSongKey(currentSongStreakName);
+                        }
                         return new SongAndPlaylistRecords(true, recordScores, recordStreaks);
                     }
                     catch (Exception e)
@@ -295,7 +322,7 @@ namespace InfoSaving
 
             }
 
-            var oldRecords = await TryGetSongFromName(info, difficultyEnum, gameMode, token, true);
+            var oldRecords = await GetOldRecordFromName(info, difficultyEnum, gameMode, token, false);//TODO update songs
             if (oldRecords.hasRecord)
             {
                 return oldRecords;
@@ -308,49 +335,28 @@ namespace InfoSaving
 
         private static void ConvertOldRecordsToNew(SongAndPlaylistRecords oldRecord)
         {
-            for (int i = 0; i < oldRecord.scores.Length; i++)
+            var streaks = ListPool<SongAndPlaylistStreakRecord>.Get();
+            streaks.AddRange(oldRecord.streaks);
+            for (var i = 0; i < oldRecord.scores.Length; i++)
             {
                 var score = oldRecord.scores[i];
-                if (score.IsValid)
+                if (!score.IsValid)
                 {
                     continue;
                 }
-                string guid = null;
-                foreach (var record in _scoreAndStreakRecord)
+                var streak = 0;
+                for (var j = 0; j < streaks.Count; j++)
                 {
-                    if (!record.IsValid || !string.Equals(record.ProfileName, score.ProfileName))
+                    if (string.Equals(streaks[j].Guid, score.Guid))
                     {
-                        continue;
+                        streak = streaks[j].Streak;
+                        streaks.RemoveAt(j);
+                        break;
                     }
-                    guid = record.GUID;
-                    break;
                 }
-                int streak = 0;
-                foreach (var oldStreak in oldRecord.streaks)
-                {
-                    if (!oldStreak.IsValid || !string.Equals(oldStreak.ProfileName, score.ProfileName))
-                    {
-                        continue;
-                    }
-                    var shouldContinue = true;
-                    foreach (var record in _scoreAndStreakRecord)
-                    {
-                        if (string.Equals(oldStreak.ProfileName, record.ProfileName) && oldStreak.Streak != record.Streak)
-                        {
-                            shouldContinue = false;
-                            break;
-                        }
-                    }
-                    if (shouldContinue)
-                    {
-                        continue;
-                    }
-                    streak = oldStreak.Streak;
-                    break;
-                }
-                _scoreAndStreakRecord[i] = new SongRecord(score.ProfileName, guid, (int)score.Score, streak);
+                _scoreAndStreakRecord[i] = new SongRecord(score.ProfileName, score.Guid, (int)score.Score, streak);
             }
-
+            ListPool<SongAndPlaylistStreakRecord>.Release(streaks);
         }
 
         private static void ClearRecords()
@@ -399,7 +405,7 @@ namespace InfoSaving
 
         #region Upgrading
 
-        private static async UniTask<SongAndPlaylistRecords> TryGetSongFromName(SongInfo info, DifficultyEnum difficultyEnum, GameMode gameMode, CancellationToken token, bool deleteNameKeys)
+        private static async UniTask<SongAndPlaylistRecords> GetOldRecordFromName(SongInfo info, DifficultyEnum difficultyEnum, GameMode gameMode, CancellationToken token, bool deleteNameKeys)
         {
             var currentSongScoreName = SongInfoReader.GetFullSongNameNoID(info, difficultyEnum, gameMode, SCORE);
             var hasScoreRecord = SongKeyExists(currentSongScoreName);
@@ -425,6 +431,7 @@ namespace InfoSaving
                 DeleteSongKey(currentSongStreakName);
             }
             return new SongAndPlaylistRecords(true, recordScores, recordStreaks);
+
         }
         #endregion
     }

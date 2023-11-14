@@ -213,6 +213,17 @@ public class PlaylistManager : MonoBehaviour
         }
     }
 
+    public string GetOnlineRecordName(SongInfo info = null)
+    {
+        if (info == null)
+        {
+            info = SongInfoReader.Instance?.songInfo;
+        }
+
+        var songID = $"Song_{info.RecordableName}{TargetDifficulty}{TargetGameMode}";
+        return songID;
+    }
+
     public async UniTask<SongRecord[]> TryGetRecords(CancellationToken token)
     {
         return await PlayerStatsFileManager.TryGetRecords(SongInfoReader.Instance.songInfo, TargetDifficulty, TargetGameMode, token);

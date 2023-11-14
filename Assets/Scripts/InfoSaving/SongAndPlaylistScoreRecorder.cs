@@ -16,6 +16,7 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
     private bool _updatingPlaylistRecord;
     private CancellationToken _cancellationToken;
 
+    private string _onlineRecordName;
     private string _currentSongRecordName;
     private bool _previousRecordExists = false;
     private readonly SongRecord[] _songRecords = new SongRecord[10];
@@ -57,6 +58,7 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
         records.CopyTo(_songRecords, 0);
 
         var currentSongInfo = SongInfoReader.Instance?.songInfo;
+        _onlineRecordName = PlaylistManager.Instance.GetOnlineRecordName();
         if (currentSongInfo != null && !string.IsNullOrWhiteSpace(currentSongInfo.SongID))
         {
             _currentSongRecordName = PlaylistManager.Instance.GetFullSongName(noID: false);
@@ -70,6 +72,7 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
 
     public async UniTaskVoid SaveSongStats()
     {
+        TryPostToOnlineLeaderboard();
         while (_updatingSongRecord || _updatingPlaylistRecord)
         {
             await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
@@ -230,6 +233,13 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
         }
     }
 
+    private void TryPostToOnlineLeaderboard()
+    {
+        var songScore = ScoringAndHitStatsManager.Instance.SongScore;
+        var bestStreak = StreakManager.Instance.RecordCurrentSongStreak;
+        AzureSqlManager.Instance.PostLeaderboardScore(_onlineRecordName, songScore, bestStreak, new CancellationToken()).Forget();
+    }
+
     private void ConvertOldRecordsToNew(SongAndPlaylistRecords oldRecord)
     {
         for (int i = 0; i < oldRecord.scores.Length; i++)
@@ -289,7 +299,7 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
     {
         songScore = ScoringAndHitStatsManager.Instance.CurrentScore;
 
-        var newScoreHigher = (ulong)oldRecord.Score < songScore;
+        var newScoreHigher = oldRecord.Score < songScore;
 
         return newScoreHigher;
     }

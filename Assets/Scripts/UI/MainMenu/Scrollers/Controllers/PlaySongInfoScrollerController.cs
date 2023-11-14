@@ -12,7 +12,7 @@ namespace UI.Scrollers.Playlists
 
         public override void SetActiveInfo(SongInfo info)
         {
-            _songRecordsDisplay.ShowRecords(info);
+            _songRecordsDisplay.SetSongInfo(info);
             base.SetActiveInfo(info);
         }
     }
