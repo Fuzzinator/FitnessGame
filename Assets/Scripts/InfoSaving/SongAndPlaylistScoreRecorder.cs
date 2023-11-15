@@ -3,6 +3,7 @@ using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using InfoSaving;
@@ -55,6 +56,7 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
         }
 
         var records = await PlaylistManager.Instance.TryGetRecords(_cancellationToken);
+        _previousRecordExists = records != null && records.Any((i) => i.IsValid);
         records.CopyTo(_songRecords, 0);
 
         var currentSongInfo = SongInfoReader.Instance?.songInfo;
@@ -72,14 +74,14 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
 
     public async UniTaskVoid SaveSongStats()
     {
+        var songScore = ScoringAndHitStatsManager.Instance.SongScore;
+        var bestStreak = StreakManager.Instance.RecordCurrentSongStreak;
         TryPostToOnlineLeaderboard();
         while (_updatingSongRecord || _updatingPlaylistRecord)
         {
             await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
         }
 
-        int songScore = 0;
-        int bestStreak = 0;
         var scoreIndexToUpdate = -1;
 
         if (_previousRecordExists)
@@ -100,8 +102,6 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
         }
         else
         {
-            songScore = ScoringAndHitStatsManager.Instance.SongScore;
-            bestStreak = StreakManager.Instance.RecordCurrentSongStreak;
 
             scoreIndexToUpdate = 0;
         }
