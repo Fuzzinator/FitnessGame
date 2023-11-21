@@ -707,9 +707,7 @@ public class CustomEnvironmentsController : MonoBehaviour
         customEnvironment.isValid =
             (string.IsNullOrWhiteSpace(customEnvironment.SkyboxPath) || File.Exists(customEnvironment.SkyboxPath)) &&
             (string.IsNullOrWhiteSpace(customEnvironment.SkyboxDepthPath) || File.Exists(customEnvironment.SkyboxDepthPath)) &&
-            (string.IsNullOrWhiteSpace(customEnvironment.MeshPath) || File.Exists(customEnvironment.MeshPath)) &&
-            (string.IsNullOrWhiteSpace(customEnvironment.ObjectsPath) || File.Exists(customEnvironment.ObjectsPath)) &&
-            (string.IsNullOrWhiteSpace(customEnvironment.VFXPath) || File.Exists(customEnvironment.VFXPath));
+            (string.IsNullOrWhiteSpace(customEnvironment.MeshPath) || File.Exists(customEnvironment.MeshPath));
     }
 
     private static bool TryGetThumbnail(string thumbnailKey, out Sprite thumbnail)

@@ -32,6 +32,11 @@ namespace UI
         [SerializeField]
         private SetAndShowSongOptions _showSongOptions;
 
+        [SerializeField]
+        private Toggle _showLocalToggle;
+        [SerializeField]
+        private Toggle _showOnlineToggle;
+
         private SongInfo _songInfo;
 
         private bool _showOnline = false;
@@ -55,6 +60,7 @@ namespace UI
         public void SetSongInfo(SongInfo songInfo)
         {
             _songInfo = songInfo;
+            _showLocalToggle.isOn = true;
         }
 
         public void RefreshDisplay()
@@ -104,7 +110,7 @@ namespace UI
                     button1Txt = "Enable",
                     button2Txt = "Cancel",
                 };
-                NotificationManager.RequestNotification(notificationVisuals, EnableOnlineLeaderboards);
+                NotificationManager.RequestNotification(notificationVisuals, EnableOnlineLeaderboards, () => _showLocalToggle.SetIsOnWithoutNotify(true));
                 return;
             }
             _showOnline = true;

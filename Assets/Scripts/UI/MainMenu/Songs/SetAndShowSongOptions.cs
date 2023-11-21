@@ -176,7 +176,7 @@ public class SetAndShowSongOptions : MonoBehaviour
         SetSelectedType(_gameTypeToggles[lowest]);
     }
 
-    private void UpdateAvailableDifficulties()
+    private void UpdateAvailableDifficulties(bool setSelectedDifficulty)
     {
         _stopAutoPlay = false;
         gameObject.SetActive(false);
@@ -221,7 +221,10 @@ public class SetAndShowSongOptions : MonoBehaviour
         _typeDifficultyTexts[0].transform.parent.gameObject.SetActive(true);
 
         _stopAutoPlay = true;
-
+        if (!setSelectedDifficulty)
+        {
+            return;
+        }
         if (hasCurrentID > 0)
         {
             _typeDifficultyToggles[hasCurrentID].SetIsOnWithoutNotify(true);
@@ -235,6 +238,11 @@ public class SetAndShowSongOptions : MonoBehaviour
     }
 
     public void SetSelectedType(Toggle toggle)
+    {
+        SetSelectedType(toggle, true);
+    }
+
+    private void SetSelectedType(Toggle toggle, bool updateDisplay)
     {
         if (!toggle.isOn)
         {
@@ -272,7 +280,7 @@ public class SetAndShowSongOptions : MonoBehaviour
         }
 
         _activeDifficultySet = _difficultySets[gameModeID];
-        UpdateAvailableDifficulties();
+        UpdateAvailableDifficulties(updateDisplay);
     }
 
     public void SetSelectedDifficulty(Toggle toggle)
@@ -308,6 +316,60 @@ public class SetAndShowSongOptions : MonoBehaviour
 
         _selectedDifficulty = _activeDifficultySet.DifficultyInfos[dificultyID].Difficulty;
         _difficultyEnum = _activeDifficultySet.DifficultyInfos[dificultyID].DifficultyAsEnum;
+        _songRecordsDisplay?.RefreshDisplay();
+    }
+
+    private void SetSelectedDifficulty(Toggle toggle, bool updateDisplay)
+    {
+        if (!toggle.isOn)
+        {
+            return;
+        }
+
+        var toggleID = _typeDifficultyToggles.GetToggleID(toggle);
+
+        if (toggleID < 0)
+        {
+            Debug.LogError("Song does not have matching toggle");
+            return;
+        }
+        var dificultyID = -1;
+        for (var i = 0; i < _activeDifficultySet.DifficultyInfos.Length; i++)
+        {
+            var difficulty = (int)_activeDifficultySet.DifficultyInfos[i].DifficultyAsEnum - 1;
+            if (difficulty == toggleID)
+            {
+                dificultyID = i;
+                break;
+            }
+        }
+
+        if (dificultyID < -0)
+        {
+            Debug.LogError("Song does not have matching difficulty");
+            return;
+        }
+
+        _selectedDifficulty = _activeDifficultySet.DifficultyInfos[dificultyID].Difficulty;
+        _difficultyEnum = _activeDifficultySet.DifficultyInfos[dificultyID].DifficultyAsEnum;
+        if (!updateDisplay)
+        {
+            return;
+        }
+        _songRecordsDisplay?.RefreshDisplay();
+    }
+
+    public void SetSelectedDifAndMode(DifficultyInfo.DifficultyEnum difficulty, GameMode mode)
+    {
+        var difficultyToggle = _typeDifficultyToggles[(int)difficulty-1];
+        var modeToggle = _gameTypeToggles[(int)mode-1];
+
+        modeToggle.SetIsOnWithoutNotify(true);
+        SetSelectedType(modeToggle, false);
+
+        difficultyToggle.SetIsOnWithoutNotify(true);
+        SetSelectedDifficulty(difficultyToggle, false);
+
         _songRecordsDisplay?.RefreshDisplay();
     }
 

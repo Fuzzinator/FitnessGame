@@ -14,6 +14,8 @@ public class ReturnToMenu : MonoBehaviour
     private DisplaySongRecords _availableSongsRecordDisplay;
     [SerializeField]
     private DisplaySongInfo _availableSongsInfoDisplay;
+    [SerializeField]
+    private SetAndShowSongOptions _songOptions;
 
     void Start()
     {
@@ -45,10 +47,11 @@ public class ReturnToMenu : MonoBehaviour
     private async UniTaskVoid SetSingleSongPlaylist(Playlist currentPlaylist)
     {
         await UniTask.DelayFrame(1);
-        var songInfo = currentPlaylist.Items[0].SongInfo;
-        _availableSongInfoScrollerController.ScrollToData(songInfo);
-        _availableSongsRecordDisplay.SetSongInfo(songInfo);
-        _availableSongsInfoDisplay.RequestDisplay(songInfo);
-        PlaylistMaker.Instance.SetActiveItem(songInfo);
+        var playlistItem = currentPlaylist.Items[0];
+        _availableSongInfoScrollerController.ScrollToData(playlistItem.SongInfo);
+        _availableSongsRecordDisplay.SetSongInfo(playlistItem.SongInfo);
+        _availableSongsInfoDisplay.RequestDisplay(playlistItem.SongInfo);
+        PlaylistMaker.Instance.SetActiveItem(playlistItem.SongInfo);
+        _songOptions.SetSelectedDifAndMode(playlistItem.DifficultyEnum, playlistItem.TargetGameMode);
     }
 }

@@ -39,6 +39,22 @@ public class Playlist
     [SerializeField]
     private string _targetEnvName;
 
+
+    [field: SerializeField]
+    public EnvAssetRef Gloves { get; private set; }
+
+    [field: SerializeField]
+    public EnvAssetRef Targets { get; private set; }
+
+    [field: SerializeField]
+    public EnvAssetRef Obstacles { get; private set; }
+
+    public string GlovesName => Gloves?.AssetName;
+
+    public string TargetsName => Targets?.AssetName;
+
+    public string ObstaclesName => Obstacles?.AssetName;
+
     [SerializeField]
     private ColorsManager.ColorSet _targetColors;
 
@@ -62,13 +78,56 @@ public class Playlist
 
     public string TargetEnvName => _targetEnvName;
 
+    public string TargetEnvGlovesName
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(Gloves?.AssetName))
+            {
+                return _targetEnvName;
+            }
+            else
+            {
+                return Gloves.AssetName;
+            }
+        }
+    }
+    public string TargetEnvTargetsName
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(Targets?.AssetName))
+            {
+                return _targetEnvName;
+            }
+            else
+            {
+                return Targets.AssetName;
+            }
+        }
+    }
+    public string TargetEnvObstaclesName
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(Obstacles?.AssetName))
+            {
+                return _targetEnvName;
+            }
+            else
+            {
+                return Obstacles.AssetName;
+            }
+        }
+    }
+
     public GameMode TargetGameMode => _gameMode;
 
     public DifficultyInfo.DifficultyEnum DifficultyEnum => _difficulty;
 
     public ColorsManager.ColorSet TargetColors => _targetColors;
 
-    public HitSideType StartingSide => _setStartingSide ? _startingSide: HitSideType.Left;
+    public HitSideType StartingSide => _setStartingSide ? _startingSide : HitSideType.Left;
     public string ReadableLength
     {
         get
@@ -103,7 +162,7 @@ public class Playlist
 
     private const int MINUTE = 60;
     private const string DIVIDER = ":";
-    private const string PLAYLISTVERSION = "0.0.3";
+    private const string PLAYLISTVERSION = "0.0.4";
 
     public Playlist(List<PlaylistItem> items, GameMode gameMode, DifficultyInfo.DifficultyEnum difficulty, HitSideType startingSide,
         string playlistName = null, bool isCustomPlaylist = true, string targetEnvName = null, Texture2D image = null)

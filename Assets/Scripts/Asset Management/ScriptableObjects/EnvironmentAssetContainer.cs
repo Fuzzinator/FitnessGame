@@ -10,83 +10,38 @@ public class EnvironmentAssetContainer : ScriptableObject
     [SerializeField]
     private string _environmentName;
 
-    [SerializeField]
-    private AssetReference _sceneAsset;
-    
-    [SerializeField]
-    private Texture2DArray _targetTextures;
+    [field: SerializeField]
+    public EnvSceneRef Scene { get; private set; }
 
-    [SerializeField]
-    private Texture2DArray _obstacleTextures;
+    [field: SerializeField]
+    public EnvGlovesRef Gloves { get; private set; }
 
-    [SerializeField]
-    private TextureSet[] _globalTextureSets;
-    
-    [SerializeField]
-    private TextureArraySet[] _globalTextureArraySets;
+    [field: SerializeField]
+    public EnvTargetsRef Targets { get; private set; }
 
-    [SerializeField]
-    private GloveController _leftGlove;
-    
-    [SerializeField]
-    private GloveController _rightGlove;
-    
-    [SerializeField]
-    private BaseTarget _jabTarget;
-
-    [SerializeField]
-    private BaseTarget _hookLeftTarget;
-
-    [SerializeField]
-    private BaseTarget _hookRightTarget;
-
-    [SerializeField]
-    private BaseTarget _uppercutTarget;
-
-    [SerializeField]
-    private BlockTarget _blockTarget;
-
-    [SerializeField]
-    private BaseObstacle _duckObstacle;
-
-    [SerializeField]
-    private BaseObstacle _dodgeLeftObstacle;
-
-    [SerializeField]
-    private BaseObstacle _dodgeRightObstacle;
-
-    [SerializeField]
-    private BaseHitVFX _baseHitVFX;
-
-    [SerializeField]
-    private Material _targetMaterial;
-
-    [SerializeField]
-    private Material _obstacleMaterial;
-
-    [SerializeField]
-    private Material _superTargetMaterial;
+    [field: SerializeField]
+    public EnvObstaclesRef Obstacles { get; private set; }
 
     public string EnvironmentName => _environmentName;
 
-    public AssetReference SceneAsset => _sceneAsset;
-    public Texture2DArray TargetTextures => _targetTextures;
-    public Texture2DArray ObstacleTextures => _obstacleTextures;
-    public TextureSet[] GlobalTextureSets => _globalTextureSets;
-    public TextureArraySet[] GlobalTextureArraySets => _globalTextureArraySets;
+    public AssetReference SceneAsset => Scene.SceneAsset;
+    public Texture2DArray TargetTextures => Targets.TargetsTexture;
+    public Texture2DArray ObstacleTextures => Obstacles.ObstacleTexture;
+    public TextureSet[] GlobalTextureSets => Scene.GlobalTextureSets;
+    public TextureArraySet[] GlobalTextureArraySets => Scene.GlobalTextureArraySets;
 
-    public GloveController LeftGlove => _leftGlove;
-    public GloveController RightGlove => _rightGlove;
-    public BaseTarget JabTarget => _jabTarget;
-    public BaseTarget HookLeftTarget => _hookLeftTarget;
-    public BaseTarget HookRightTarget => _hookRightTarget;
-    public BaseTarget UppercutTarget => _uppercutTarget;
-    public BlockTarget BlockTarget => _blockTarget;
-    public BaseObstacle DuckObstacle => _duckObstacle;
-    public BaseObstacle DodgeLeftObstacle => _dodgeLeftObstacle;
-    public BaseObstacle DodgeRightObstacle => _dodgeRightObstacle;
-    public BaseHitVFX BaseHitVFX => _baseHitVFX;
-    public Material TargetMaterial => _targetMaterial;
-    public Material ObstacleMaterial => _obstacleMaterial;
-    public Material SuperTargetMaterial => _superTargetMaterial;
+    public GloveController LeftGlove => Gloves.LeftGlove;
+    public GloveController RightGlove => Gloves.RightGlove;
+    public BaseTarget JabTarget => Targets.JabTarget;
+    public BaseTarget HookLeftTarget => Targets.HookLeftTarget;
+    public BaseTarget HookRightTarget => Targets.HookRightTarget;
+    public BaseTarget UppercutTarget => Targets.UppercutTarget;
+    public BlockTarget BlockTarget => Targets.BlockTarget;
+    public BaseObstacle DuckObstacle => Obstacles.DuckObstacle;
+    public BaseObstacle DodgeLeftObstacle => Obstacles.DodgeLeftObstacle;
+    public BaseObstacle DodgeRightObstacle => Obstacles.DodgeRightObstacle;
+    public BaseHitVFX BaseHitVFX => Targets.HitVFX;
+    public Material TargetMaterial => Targets.TargetsMaterial;
+    public Material SuperTargetMaterial => Targets.SuperTargetMaterial;
+    public Material ObstacleMaterial => Obstacles.ObstacleMaterial;
 }

@@ -27,10 +27,19 @@ public class CustomEnvironment
     public string MeshPath { get; private set; }
 
     [field: SerializeField]
-    public string ObjectsPath { get; private set; }
+    public EnvAssetRef Gloves { get; private set; }
 
     [field: SerializeField]
-    public string VFXPath { get; private set; }
+    public EnvAssetRef Targets { get; private set; }
+
+    [field: SerializeField]
+    public EnvAssetRef Obstacles { get; private set; }
+
+    public string GlovesName => Gloves?.AssetName;
+
+    public string TargetsName => Targets?.AssetName;
+
+    public string ObstaclesName => Obstacles?.AssetName;
 
     public Sprite SkyboxSprite { get; private set; }
     public Sprite DepthSprite { get; private set; }
@@ -80,7 +89,7 @@ public class CustomEnvironment
 
     public CustomEnvironment(string environmentName, string skyboxName = null, string skyboxPath = null,
         string skyboxDepthName = null, string skyboxDepthPath = null, float skyboxBrightness = 1,
-        string meshPath = null, string objectsPath = null, string vFXPath = null)
+        string meshPath = null, EnvAssetRef gloves = null, EnvAssetRef targets = null, EnvAssetRef obstacles = null)
     {
         EnvironmentName = environmentName;
         SkyboxName = skyboxName;
@@ -89,7 +98,9 @@ public class CustomEnvironment
         SkyboxDepthPath = skyboxDepthPath;
         SkyboxBrightness = skyboxBrightness;
         MeshPath = meshPath;
-        ObjectsPath = objectsPath;
-        VFXPath = vFXPath;
+
+        Gloves = gloves;
+        Targets = targets;
+        Obstacles = obstacles;
     }
 }

@@ -19,6 +19,13 @@ public class EnvironmentControlManager : MonoBehaviour
     private List<AddressableEnvAssetRef> _availableReferences = new List<AddressableEnvAssetRef>();
     [SerializeField]
     private List<CustomEnvironment> _availableCustomEnvironments = new List<CustomEnvironment>();
+
+    [SerializeField]
+    private List<EnvGlovesRef> _availableGloveReferences = new List<EnvGlovesRef>();
+    [SerializeField]
+    private List<EnvTargetsRef> _availableTargetReferences = new List<EnvTargetsRef>();
+    [SerializeField]
+    private List<EnvObstaclesRef> _availableObstacleReferences = new List<EnvObstaclesRef>();
     [SerializeField]
     private Material _customEnvironmentSkyboxMat;
     private Texture2D _activeCustomSkybox;
@@ -28,6 +35,10 @@ public class EnvironmentControlManager : MonoBehaviour
     private List<Environment> _availableEnvironments = new List<Environment>();
 
     public UnityEvent availableReferencesUpdated = new UnityEvent();
+    public UnityEvent availableGloveRefsUpdated = new UnityEvent();
+    public UnityEvent availableTargetRefsUpdated = new UnityEvent();
+    public UnityEvent availableObstacleRefsUpdated = new UnityEvent();
+    public UnityEvent<int> targetEnvironmentIndexChanged = new UnityEvent<int>();
 
     private int _targetEnvironmentIndex = 0;
 
@@ -84,6 +95,7 @@ public class EnvironmentControlManager : MonoBehaviour
     public void SetTargetEnvironmentIndex(int index)
     {
         _targetEnvironmentIndex = index;
+        targetEnvironmentIndexChanged.Invoke(index);
     }
 
     public void LoadSelection()
@@ -148,7 +160,7 @@ public class EnvironmentControlManager : MonoBehaviour
             var customEnv = await CustomEnvironmentsController.LoadCustomEnvironment(environment);
             if (customEnv != null && customEnv.isValid)
             {
-                var env = new Environment(environment);
+                var env = new Environment(environment, customEnv);
                 _availableEnvironments.Add(env);
             }
         }
@@ -187,6 +199,22 @@ public class EnvironmentControlManager : MonoBehaviour
         });
         _assetHandles.Add(results);
         await results;
+    }
+
+    private async UniTask GetBuiltInEnvAssetRefs()
+    {
+
+    }
+
+    public bool TryGetEnvRefAtIndex(int index, out Environment environment)
+    {
+        if(_availableEnvironments.Count>index)
+        {
+            environment = _availableEnvironments[index];
+            return true;
+        }
+        environment = new Environment();
+        return false;
     }
 
     private async UniTaskVoid LoadCustomEnvironmentDataAsync(string environmentPath)
@@ -270,7 +298,7 @@ public class EnvironmentControlManager : MonoBehaviour
     {
         _availableCustomEnvironments.Add(customEnvironment);
 
-        _availableEnvironments.Add(new Environment(path));
+        _availableEnvironments.Add(new Environment(path, customEnvironment));
         _availableEnvironments.Sort((x, y) => x.Name.CompareTo(y.Name));
 
         availableReferencesUpdated.Invoke();

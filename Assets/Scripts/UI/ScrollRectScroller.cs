@@ -17,6 +17,8 @@ public class ScrollRectScroller : MonoBehaviour
 
     private bool _scroll = false;
 
+    private int _subscriberCount = 0;
+
     private const string LEFTJOYSTICKMOVING = "Left Joystick";
     private const string RIGHTJOYSTICKMOVING = "Right Joystick";
 
@@ -59,18 +61,36 @@ public class ScrollRectScroller : MonoBehaviour
     private void OnDestroy()
     {
         _scroll = false;
-        UnsubscribeFromJoystick();
+        TryUnsubscribeFromJoystick(true);
     }
 
     public void SubscribeToJoystick()
     {
-        InputManager.Instance.MainInput[LEFTJOYSTICKMOVING].performed += JoystickScroll;
-        InputManager.Instance.MainInput[RIGHTJOYSTICKMOVING].performed += JoystickScroll;
+        TrySubscribeToJoystick();
+    }
+
+    private void TrySubscribeToJoystick()
+    {
+        if (_subscriberCount == 0)
+        {
+            InputManager.Instance.MainInput[LEFTJOYSTICKMOVING].performed += JoystickScroll;
+            InputManager.Instance.MainInput[RIGHTJOYSTICKMOVING].performed += JoystickScroll;
+        }
+        _subscriberCount++;
     }
 
     public void UnsubscribeFromJoystick()
     {
-        if (InputManager.Instance == null)
+        TryUnsubscribeFromJoystick(false);
+    }
+
+    private void TryUnsubscribeFromJoystick(bool ignoreSubCount)
+    {
+        if (_subscriberCount > 0)
+        {
+            _subscriberCount--;
+        }
+        if (InputManager.Instance == null || (!ignoreSubCount && _subscriberCount > 0))
         {
             return;
         }

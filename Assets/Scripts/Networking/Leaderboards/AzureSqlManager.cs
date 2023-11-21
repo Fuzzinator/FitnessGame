@@ -52,8 +52,8 @@ public class AzureSqlManager : MonoBehaviour
                 await UniTask.Delay(TimeSpan.FromSeconds(1));
                 continue;
             }
-
-            var leaderboard = await GetTop10Leaderboard("WarmUpTheDatabase");
+            _serverRunning = true;
+            /*var leaderboard = await GetTop10Leaderboard("WarmUpTheDatabase");
             if (leaderboard != null)
             {
                 _serverRunning = true;
@@ -61,17 +61,17 @@ public class AzureSqlManager : MonoBehaviour
             else
             {
                 await UniTask.Delay(TimeSpan.FromSeconds(30));
-            }
+            }*/
         }
         _warmingServer = false;
-        KeepServerWarm().Forget();
+        //KeepServerWarm().Forget();
     }
 
-    private async UniTaskVoid KeepServerWarm()
+    /*private async UniTaskVoid KeepServerWarm()
     {
         await UniTask.Delay(TimeSpan.FromMinutes(30));
         WarmServer().Forget();
-    }
+    }*/
 
     #region Posting Score
     public async UniTaskVoid PostLeaderboardScore(string leaderboardName, int score, int streak, CancellationToken token)
