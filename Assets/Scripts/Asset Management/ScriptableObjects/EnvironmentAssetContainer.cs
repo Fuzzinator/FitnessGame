@@ -1,11 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.Serialization;
+using static BeatsaberV3Choreography;
 
-[CreateAssetMenu(fileName = "New Asset Container", menuName = "ScriptableObjects/Environment Asset Container", order = 1)]
-public class EnvironmentAssetContainer : ScriptableObject
+public struct EnvironmentAssetContainer
 {
     [SerializeField]
     private string _environmentName;
@@ -44,4 +41,13 @@ public class EnvironmentAssetContainer : ScriptableObject
     public Material TargetMaterial => Targets.TargetsMaterial;
     public Material SuperTargetMaterial => Targets.SuperTargetMaterial;
     public Material ObstacleMaterial => Obstacles.ObstacleMaterial;
+
+    public EnvironmentAssetContainer(string environmentName, EnvSceneRef scene, EnvGlovesRef gloves, EnvTargetsRef targets, EnvObstaclesRef obstacles)
+    {
+        _environmentName = environmentName;
+        Scene = scene;
+        Gloves = gloves;
+        Targets = targets;
+        Obstacles = obstacles;
+    }
 }

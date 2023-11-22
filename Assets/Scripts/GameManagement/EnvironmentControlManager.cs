@@ -9,6 +9,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using static BeatsaberV3Choreography;
 
 public class EnvironmentControlManager : MonoBehaviour
 {
@@ -21,11 +22,11 @@ public class EnvironmentControlManager : MonoBehaviour
     private List<CustomEnvironment> _availableCustomEnvironments = new List<CustomEnvironment>();
 
     [SerializeField]
-    private List<EnvGlovesRef> _availableGloveReferences = new List<EnvGlovesRef>();
+    private List<EnvAssetRef> _availableGloveReferences = new List<EnvAssetRef>();
     [SerializeField]
-    private List<EnvTargetsRef> _availableTargetReferences = new List<EnvTargetsRef>();
+    private List<EnvAssetRef> _availableTargetReferences = new List<EnvAssetRef>();
     [SerializeField]
-    private List<EnvObstaclesRef> _availableObstacleReferences = new List<EnvObstaclesRef>();
+    private List<EnvAssetRef> _availableObstacleReferences = new List<EnvAssetRef>();
     [SerializeField]
     private Material _customEnvironmentSkyboxMat;
     private Texture2D _activeCustomSkybox;
@@ -42,6 +43,11 @@ public class EnvironmentControlManager : MonoBehaviour
 
     private int _targetEnvironmentIndex = 0;
 
+
+    public EnvAssetRef GlovesOverride { get; private set; }
+    public EnvAssetRef TargetsOverride { get; private set; }
+    public EnvAssetRef ObstaclesOverride { get; private set; }
+
     public EnvironmentAssetContainer ActiveEnvironmentContainer { get; private set; }
 
     public bool LoadingEnvironmentContainer { get; private set; }
@@ -49,7 +55,7 @@ public class EnvironmentControlManager : MonoBehaviour
     private List<AsyncOperationHandle> _assetHandles = new List<AsyncOperationHandle>();
 
     private AddressableEnvAssetRef _customEnvironment;
-    private System.Threading.CancellationToken _cancellationToken;
+    private CancellationToken _cancellationToken;
 
     private const string ADDRESSABLELABEL = "Environment Asset";
     private const string CustomSkyboxAlbedo = "_SkyboxColor";
@@ -96,6 +102,42 @@ public class EnvironmentControlManager : MonoBehaviour
     {
         _targetEnvironmentIndex = index;
         targetEnvironmentIndexChanged.Invoke(index);
+    }
+
+    public void SetGloveOverride(int index)
+    {
+        if (index < 0 || index >= _availableGloveReferences.Count)
+        {
+            GlovesOverride = null;
+        }
+        else
+        {
+            GlovesOverride = _availableGloveReferences[index];
+        }
+    }
+
+    public void SetTargetOverride(int index)
+    {
+        if (index < 0 || index >= _availableTargetReferences.Count)
+        {
+            TargetsOverride = null;
+        }
+        else
+        {
+            TargetsOverride = _availableTargetReferences[index];
+        }
+    }
+
+    public void SetObstacleOverride(int index)
+    {
+        if(index < 0 || index >= _availableObstacleReferences.Count)
+        {
+            ObstaclesOverride = null;
+        }
+        else
+        {
+            ObstaclesOverride = _availableObstacleReferences[index];
+        }
     }
 
     public void LoadSelection()
@@ -146,7 +188,7 @@ public class EnvironmentControlManager : MonoBehaviour
         }
         else
         {
-            LoadBuiltInEnvironmentDataAsync(targetEnv.AssetRef.AssetReference).Forget();
+            LoadBuiltInEnvironmentDataAsync(targetEnv.AssetRef).Forget();
         }
     }
 
@@ -220,7 +262,7 @@ public class EnvironmentControlManager : MonoBehaviour
     private async UniTaskVoid LoadCustomEnvironmentDataAsync(string environmentPath)
     {
         LoadingEnvironmentContainer = true;
-        await LoadEnvironmentDataAsync(_customEnvironment.AssetReference);
+        await TryLoadEnvironmentData(_customEnvironment);
         var environment = await CustomEnvironmentsController.LoadCustomEnvironment(environmentPath);
         if (!string.Equals(_customSkyboxPath, environment.SkyboxPath))
         {
@@ -233,31 +275,57 @@ public class EnvironmentControlManager : MonoBehaviour
         LoadingEnvironmentContainer = false;
     }
 
-    private async UniTaskVoid LoadBuiltInEnvironmentDataAsync(AssetReference reference)
+    private async UniTaskVoid LoadBuiltInEnvironmentDataAsync(AddressableEnvAssetRef reference)
     {
         LoadingEnvironmentContainer = true;
-        await LoadEnvironmentDataAsync(reference);
+        var envDataLoaded = await TryLoadEnvironmentData(reference);
+        if(!envDataLoaded)
+        {
+            return;
+        }
+        SetTexturesAndMaterials();
         LoadingEnvironmentContainer = false;
     }
 
-    private async UniTask LoadEnvironmentDataAsync(AssetReference reference)
+    private async UniTask<bool> TryLoadEnvironmentData(AddressableEnvAssetRef reference)
     {
-        var results = Addressables.LoadAssetsAsync<EnvironmentAssetContainer>(reference,
-            asset =>
-            {
-                if (asset == null)
-                {
-                    Debug.LogError(
-                        $"Found null asset when loading environment {reference}");
-                    LoadingEnvironmentContainer = false;
-                    return;
-                }
+        var scene = await Addressables.LoadAssetAsync<EnvSceneRef>(reference.Scene.AssetPath);
+        if (scene == null)
+        {
+            Debug.LogError($"Found null asset when loading environment scene {reference.Scene.AssetName}.");
+            return false;
+        }
 
-                ActiveEnvironmentContainer = asset;
-            });
-        _assetHandles.Add(results);
-        await results;
+        var glovesRef = GlovesOverride ?? reference.Gloves;
+        var gloves = await Addressables.LoadAssetAsync<EnvGlovesRef>(glovesRef.AssetPath);
+        if (gloves == null)
+        {
+            Debug.LogError($"Found null asset when loading environment scene {glovesRef.AssetName}.");
+            return false;
+        }
 
+        var targetsRef = TargetsOverride ?? reference.Targets;
+        var targets = await Addressables.LoadAssetAsync<EnvTargetsRef>(targetsRef.AssetPath);
+        if (targets == null)
+        {
+            Debug.LogError($"Found null asset when loading environment scene {targetsRef.AssetName}.");
+            return false;
+        }
+
+        var obstaclesRef = ObstaclesOverride ?? reference.Obstacles;
+        var obstacles = await Addressables.LoadAssetAsync<EnvObstaclesRef>(obstaclesRef.AssetPath);
+        if (obstacles == null)
+        {
+            Debug.LogError($"Found null asset when loading environment scene {obstaclesRef.AssetName}.");
+            return false;
+        }
+
+        ActiveEnvironmentContainer = new EnvironmentAssetContainer(reference.EnvironmentName, scene, gloves, targets, obstacles);
+        return true;
+    }
+
+    private void SetTexturesAndMaterials()
+    {
         if (ActiveEnvironmentContainer.GlobalTextureSets is { Length: > 0 }) //this is equal to is GlobalTextureSets != null && its length>0
         {
             foreach (var set in ActiveEnvironmentContainer.GlobalTextureSets)
@@ -274,7 +342,8 @@ public class EnvironmentControlManager : MonoBehaviour
             }
         }
 
-        MaterialsManager.Instance.SetUpMaterials(ActiveEnvironmentContainer.TargetMaterial, ActiveEnvironmentContainer.ObstacleMaterial, ActiveEnvironmentContainer.SuperTargetMaterial);
+        MaterialsManager.Instance.SetUpMaterials(ActiveEnvironmentContainer.TargetMaterial,
+            ActiveEnvironmentContainer.ObstacleMaterial, ActiveEnvironmentContainer.SuperTargetMaterial);
     }
 
     public void UpdateObstacleTargetTextures()

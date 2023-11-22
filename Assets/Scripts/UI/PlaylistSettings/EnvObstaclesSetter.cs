@@ -20,11 +20,17 @@ public class EnvObstaclesSetter : EnvironmentAssetSetter
 
     public override void SetAssetIndex(int index)
     {
-
+        EnvironmentControlManager.Instance.SetObstacleOverride(index);
     }
 
     protected override int GetAssetIndex()
     {
         return 0;
+    }
+
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+        EnvironmentControlManager.Instance.SetObstacleOverride(-1);
     }
 }

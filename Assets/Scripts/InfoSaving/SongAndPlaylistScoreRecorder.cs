@@ -25,6 +25,7 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
 
     private const string STREAK = "Streak:";
     private const string SCORE = "Score:";
+    private const string AllowOnlineLeaderboards = "AllowOnlineLeaderboards";
 
     private void Start()
     {
@@ -235,6 +236,10 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
 
     private void TryPostToOnlineLeaderboard()
     {
+        if (!SettingsManager.GetCachedBool(AllowOnlineLeaderboards, false))
+        {
+            return;
+        }
         var songScore = ScoringAndHitStatsManager.Instance.SongScore;
         var bestStreak = StreakManager.Instance.RecordCurrentSongStreak;
         AzureSqlManager.Instance.PostLeaderboardScore(_onlineRecordName, songScore, bestStreak, new CancellationToken()).Forget();

@@ -1,9 +1,8 @@
-using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-[CreateAssetMenu(fileName = "New Asset Reference", menuName = "ScriptableObjects/Environment Asset Reference",
-    order = 2)]
+[CreateAssetMenu(fileName = "New Asset Reference", menuName = "ScriptableObjects/Environment Asset Reference", order = 1)]
 public class AddressableEnvAssetRef : ScriptableObject
 {
     [SerializeField]
@@ -12,8 +11,8 @@ public class AddressableEnvAssetRef : ScriptableObject
     [field: SerializeField]
     public Sprite Thumbnail { get; private set; }
 
-    [SerializeField]
-    private AssetReference _assetReference;
+    [field: SerializeField]
+    public EnvAssetRef Scene { get; private set; }
 
     [field: SerializeField]
     public EnvAssetRef Gloves { get; private set; }
@@ -27,22 +26,23 @@ public class AddressableEnvAssetRef : ScriptableObject
     [SerializeField]
     private TargetPlatform _targetPlatform;
 
+    private bool _dataLoaded = false;
+
     public string EnvironmentName => _environmentName;
-    public AssetReference AssetReference => _assetReference;
+
+    public EnvSceneRef SceneAssets => (EnvSceneRef)Scene.AssetPath.Asset;
 
     public string GlovesName => Gloves?.AssetName;
 
+    public EnvGlovesRef GloveAssets => (EnvGlovesRef)Gloves.AssetPath.Asset;
+
     public string TargetsName => Targets?.AssetName;
+
+    public EnvTargetsRef TargetsAssets => (EnvTargetsRef)Targets.AssetPath.Asset;
 
     public string ObstaclesName => Obstacles?.AssetName;
 
-    public TargetPlatform TargetPlatform => _targetPlatform;
+    public EnvObstaclesRef ObstaclesAssets => (EnvObstaclesRef)Obstacles.AssetPath.Asset;
 
-#if UNITY_EDITOR
-    private void OnValidate()
-    {
-        if (string.IsNullOrWhiteSpace(_environmentName))
-            _environmentName = ((EnvironmentAssetContainer) AssetReference.editorAsset).EnvironmentName;
-    }
-#endif    
+    public TargetPlatform TargetPlatform => _targetPlatform;
 }
