@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using Cysharp.Text;
 using GameModeManagement;
 using UnityEngine;
-using UnityEngine.Serialization;
-using Random = System.Random;
 
 [Serializable]
 public class Playlist
@@ -165,7 +163,7 @@ public class Playlist
     private const string PLAYLISTVERSION = "0.0.4";
 
     public Playlist(List<PlaylistItem> items, GameMode gameMode, DifficultyInfo.DifficultyEnum difficulty, HitSideType startingSide,
-        string playlistName = null, bool isCustomPlaylist = true, string targetEnvName = null, Texture2D image = null)
+        string playlistName = null, bool isCustomPlaylist = true, string targetEnvName = null, Texture2D image = null, EnvAssetRef gloves = null, EnvAssetRef targets = null, EnvAssetRef obstacles = null)
     {
         _playlistName = string.IsNullOrWhiteSpace(playlistName)
             ? $"{DateTime.Now:yyyy-MM-dd} - {DateTime.Now:hh-mm}"
@@ -187,6 +185,9 @@ public class Playlist
         _guid = Guid.NewGuid().ToString();
         _startingSide = startingSide;
         _setStartingSide = true;
+        Gloves = gloves?? EnvironmentControlManager.Instance.GetGloveAtIndex(0);
+        Targets = targets ?? EnvironmentControlManager.Instance.GetTargetAtIndex(0);
+        Obstacles = obstacles ?? EnvironmentControlManager.Instance.GetObstacleAtIndex(0);
         isValid = true;
     }
 
@@ -224,6 +225,9 @@ public class Playlist
         _startingSide = sourcePlaylist.StartingSide;
         _version = sourcePlaylist.Version;
         _guid = sourcePlaylist.GUID;
+        Gloves = sourcePlaylist.Gloves;
+        Targets = sourcePlaylist.Targets;
+        Obstacles = sourcePlaylist.Obstacles;
         isValid = true;
     }
 

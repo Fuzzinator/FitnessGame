@@ -21,7 +21,9 @@ public class EnvGlovesSetter : EnvironmentAssetSetter
 
     public override void SetAssetIndex(int index)
     {
-        EnvironmentControlManager.Instance.SetGloveOverride(index);
+        var gloveName = EnvironmentControlManager.Instance.SetGloveOverride(index);
+        SetText(gloveName?.AssetName);
+        DisableOptionsDisplay();
     }
 
     protected override int GetAssetIndex()
@@ -29,10 +31,38 @@ public class EnvGlovesSetter : EnvironmentAssetSetter
         return 0;
     }
 
-    protected override void OnDisable()
+    public override int GetAvailableAssetCount()
     {
-        base.OnDisable(); 
-        EnvironmentControlManager.Instance.SetObstacleOverride(-1);
+        return EnvironmentControlManager.Instance.AvailableGloveCount;
+    }
 
+    public override EnvAssetRef GetAssetRef(int index)
+    {
+        return EnvironmentControlManager.Instance.GetGloveAtIndex(index);
+    }
+    protected override string GetAssetName(Playlist sourcePlaylist)
+    {
+        var assetName = GetPlaylistAssetName(sourcePlaylist);
+        if (string.IsNullOrWhiteSpace(sourcePlaylist.Gloves?.AssetName) && EnvironmentControlManager.Instance != null)
+        {
+            var currentEnv = EnvironmentControlManager.Instance.ActiveEnvironmentContainer;
+            if (currentEnv.Gloves != null)
+            {
+                assetName = currentEnv.Gloves.GlovesName;
+            }
+            else
+            {
+                assetName = GetAssetFromEnvIndex(0).GlovesName;
+            }
+        }
+        return assetName;
+    }
+
+    protected override void TrySetAsset(Playlist playlist)
+    {
+        if (playlist.Gloves != null)
+        {
+            EnvironmentControlManager.Instance.SetGloveOverride(playlist.Gloves);
+        }
     }
 }

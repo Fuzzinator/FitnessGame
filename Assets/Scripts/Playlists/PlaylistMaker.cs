@@ -10,6 +10,7 @@ using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
 using UnityEngine.Events;
+using static BeatsaberV3Choreography;
 
 public class PlaylistMaker : MonoBehaviour, IProgress<float>
 {
@@ -54,9 +55,26 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     private string _originalName;
     private string _targetEnv;
 
+    [field: SerializeField]
+    public EnvAssetRef Gloves { get; private set; }
+
+    [field: SerializeField]
+    public EnvAssetRef Targets { get; private set; }
+
+    [field: SerializeField]
+    public EnvAssetRef Obstacles { get; private set; }
+
+    public string GlovesName => Gloves?.AssetName;
+
+    public string TargetsName => Targets?.AssetName;
+
+    public string ObstaclesName => Obstacles?.AssetName;
+
     private bool _changesMade = false;
 
     private CancellationToken _cancallationToken;
+
+    public UnityEvent<int> TargetEnvironmentIndexChanged { get; private set; } = new UnityEvent<int>();
 
     #region Const Strings
 
@@ -143,7 +161,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         {
             _playlistItems.Add(item);
         }
-        
+
         _changesMade = true;
         _playlistItemsUpdated?.Invoke();
     }
@@ -160,10 +178,15 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         _playlistName = newName;
     }
 
-    public void SetTargetEnvironment(string envName)
+    public void SetTargetEnvironment(int envIndex)
     {
-        _changesMade = true;
-        _targetEnv = envName;
+        var hasAsset = EnvironmentControlManager.Instance.TryGetEnvRefAtIndex(envIndex, out var envAsset);
+        if(hasAsset)
+        {
+            _changesMade = true;
+            _targetEnv = envAsset.Name;
+            TargetEnvironmentIndexChanged?.Invoke(envIndex);
+        }
     }
 
     public void SetStartingType(HitSideType startingSide)
@@ -181,7 +204,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     private async UniTaskVoid CreatePlaylistAsync()
     {
         var sprite = await GetSprite();
-        var newPlaylist = new Playlist(_playlistItems, _gameMode, _difficulty, _startingSide, _playlistName, true, _targetEnv, sprite);
+        var newPlaylist = new Playlist(_playlistItems, _gameMode, _difficulty, _startingSide, _playlistName, true, _targetEnv, sprite, Gloves, Targets, Obstacles);
         PlaylistManager.Instance.CurrentPlaylist = newPlaylist;
 
         if (_playlistItems == null || _playlistItems.Count == 0)
@@ -368,6 +391,39 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     {
         _changesMade = true;
         _gameMode = gameMode;
+    }
+
+    public void SetGloves(EnvAssetRef gloves)
+    {
+        if (Gloves == gloves)
+        {
+            return;
+        }
+
+        _changesMade = true;
+        Gloves = gloves;
+    }
+
+    public void SetTargets(EnvAssetRef targets)
+    {
+        if (Targets == targets)
+        {
+            return;
+        }
+
+        _changesMade = true;
+        Targets = targets;
+    }
+
+    public void SetObstacles(EnvAssetRef obstacles)
+    {
+        if (Obstacles == obstacles)
+        {
+            return;
+        }
+
+        _changesMade = true;
+        Obstacles = obstacles;
     }
 
     public void Report(float value)

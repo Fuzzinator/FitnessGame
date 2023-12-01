@@ -16,11 +16,9 @@ namespace UI
     public class DisplaySongRecords : MonoBehaviour
     {
         [SerializeField]
-        private TextMeshProUGUI _songScoreNames;
-        [FormerlySerializedAs("_songRecordScore")]
+        private TextMeshProUGUI[] _songScoreNames;
         [SerializeField]
         private TextMeshProUGUI _songRecordScores;
-        [FormerlySerializedAs("_songRecordStreak")]
         [SerializeField]
         TextMeshProUGUI _songRecordStreaks;
 
@@ -178,12 +176,12 @@ namespace UI
 
         private void SetFields(SongRecord[] songRecord)
         {
-            using var namesSb = ZString.CreateStringBuilder(false);
             using var scoresSb = ZString.CreateStringBuilder(false);
             using var streaksSb = ZString.CreateStringBuilder(false);
 
-            foreach (var score in songRecord)
+            for (var i = 0; i< songRecord.Length; i++)
             {
+                var score = songRecord[i];
                 if (!score.IsValid)
                 {
                     continue;
@@ -191,48 +189,47 @@ namespace UI
 
                 scoresSb.Append(score.Score);
                 streaksSb.Append(score.Streak);
-                namesSb.Append(score.ProfileName);
+                _songScoreNames[i].SetTextZeroAlloc(score.ProfileName, false);
 
                 scoresSb.Append(NEWLINE);
                 streaksSb.Append(NEWLINE);
-                namesSb.Append(NEWLINE);
             }
 
             _songRecordScores.SetText(scoresSb);
             _songRecordStreaks.SetText(streaksSb);
-            _songScoreNames.SetText(namesSb);
         }
         private void SetFields(LeaderboardObject[] songRecord)
         {
-            using var namesSb = ZString.CreateStringBuilder(false);
             using var scoresSb = ZString.CreateStringBuilder(false);
             using var streaksSb = ZString.CreateStringBuilder(false);
 
-            foreach (var score in songRecord)
+            for (var i = 0; i < songRecord.Length; i++)
             {
+                var score = songRecord[i];
                 if (string.IsNullOrWhiteSpace(score.ProfileName))
                 {
                     continue;
                 }
                 scoresSb.Append(score.Score);
                 streaksSb.Append(score.Streak);
-                namesSb.Append(score.ProfileName);
+                _songScoreNames[i].SetTextZeroAlloc(score.ProfileName, false);
 
                 scoresSb.Append(NEWLINE);
                 streaksSb.Append(NEWLINE);
-                namesSb.Append(NEWLINE);
             }
 
             _songRecordScores.SetText(scoresSb);
             _songRecordStreaks.SetText(streaksSb);
-            _songScoreNames.SetText(namesSb);
         }
 
         private void ClearFields()
         {
             _songRecordScores.ClearText();
             _songRecordStreaks.ClearText();
-            _songScoreNames.ClearText();
+            foreach (var nameField in _songScoreNames)
+            {
+                nameField.ClearText();
+            }
         }
 
         private async UniTask<SongRecord[]> GetSongRecord()

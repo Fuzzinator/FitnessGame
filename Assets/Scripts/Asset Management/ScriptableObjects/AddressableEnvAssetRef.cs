@@ -26,8 +26,6 @@ public class AddressableEnvAssetRef : ScriptableObject
     [SerializeField]
     private TargetPlatform _targetPlatform;
 
-    private bool _dataLoaded = false;
-
     public string EnvironmentName => _environmentName;
 
     public EnvSceneRef SceneAssets => (EnvSceneRef)Scene.AssetPath.Asset;

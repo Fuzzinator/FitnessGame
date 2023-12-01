@@ -9,7 +9,6 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
 using UnityEngine.ResourceManagement.AsyncOperations;
-using static BeatsaberV3Choreography;
 
 public class EnvironmentControlManager : MonoBehaviour
 {
@@ -27,6 +26,13 @@ public class EnvironmentControlManager : MonoBehaviour
     private List<EnvAssetRef> _availableTargetReferences = new List<EnvAssetRef>();
     [SerializeField]
     private List<EnvAssetRef> _availableObstacleReferences = new List<EnvAssetRef>();
+
+    public int AvailableGloveCount => _availableGloveReferences.Count;
+    public int AvailableTargetCount => _availableTargetReferences.Count;
+    public int AvailableObstacleCount => _availableObstacleReferences.Count;
+
+
+
     [SerializeField]
     private Material _customEnvironmentSkyboxMat;
     private Texture2D _activeCustomSkybox;
@@ -36,9 +42,6 @@ public class EnvironmentControlManager : MonoBehaviour
     private List<Environment> _availableEnvironments = new List<Environment>();
 
     public UnityEvent availableReferencesUpdated = new UnityEvent();
-    public UnityEvent availableGloveRefsUpdated = new UnityEvent();
-    public UnityEvent availableTargetRefsUpdated = new UnityEvent();
-    public UnityEvent availableObstacleRefsUpdated = new UnityEvent();
     public UnityEvent<int> targetEnvironmentIndexChanged = new UnityEvent<int>();
 
     private int _targetEnvironmentIndex = 0;
@@ -57,7 +60,10 @@ public class EnvironmentControlManager : MonoBehaviour
     private AddressableEnvAssetRef _customEnvironment;
     private CancellationToken _cancellationToken;
 
-    private const string ADDRESSABLELABEL = "Environment Asset";
+    private const string BuiltInEnvLabel = "Environment Asset";
+    private const string EnvGlovesLabel = "Environment Gloves";
+    private const string EnvTargetsLabel = "Environment Targets";
+    private const string EnvObstaclesLabel = "Environment Obstacles";
     private const string CustomSkyboxAlbedo = "_SkyboxColor";
     private const string CustomSkyboxExposure = "_SkyboxExposure";
 
@@ -92,9 +98,13 @@ public class EnvironmentControlManager : MonoBehaviour
     {
         await GetCustomEnvironments();
         await GetBuiltInEnvironments();
+        await GetBuiltInEnvAssetRefs();
 
         _availableReferences.Sort((x, y) => x.EnvironmentName.CompareTo(y.EnvironmentName));
         _availableEnvironments.Sort((x, y) => x.Name.CompareTo(y.Name));
+        _availableGloveReferences.Sort((x, y) => x.AssetName.CompareTo(y.AssetName));
+        _availableTargetReferences.Sort((x, y) => x.AssetName.CompareTo(y.AssetName));
+        _availableObstacleReferences.Sort((x, y) => x.AssetName.CompareTo(y.AssetName));
         availableReferencesUpdated.Invoke();
     }
 
@@ -104,7 +114,7 @@ public class EnvironmentControlManager : MonoBehaviour
         targetEnvironmentIndexChanged.Invoke(index);
     }
 
-    public void SetGloveOverride(int index)
+    public EnvAssetRef SetGloveOverride(int index)
     {
         if (index < 0 || index >= _availableGloveReferences.Count)
         {
@@ -114,9 +124,11 @@ public class EnvironmentControlManager : MonoBehaviour
         {
             GlovesOverride = _availableGloveReferences[index];
         }
+
+        return GlovesOverride;
     }
 
-    public void SetTargetOverride(int index)
+    public EnvAssetRef SetTargetOverride(int index)
     {
         if (index < 0 || index >= _availableTargetReferences.Count)
         {
@@ -126,11 +138,13 @@ public class EnvironmentControlManager : MonoBehaviour
         {
             TargetsOverride = _availableTargetReferences[index];
         }
+
+        return TargetsOverride;
     }
 
-    public void SetObstacleOverride(int index)
+    public EnvAssetRef SetObstacleOverride(int index)
     {
-        if(index < 0 || index >= _availableObstacleReferences.Count)
+        if (index < 0 || index >= _availableObstacleReferences.Count)
         {
             ObstaclesOverride = null;
         }
@@ -138,6 +152,23 @@ public class EnvironmentControlManager : MonoBehaviour
         {
             ObstaclesOverride = _availableObstacleReferences[index];
         }
+
+        return ObstaclesOverride;
+    }
+
+    public void SetGloveOverride(EnvAssetRef gloveOverride)
+    {
+        GlovesOverride = gloveOverride;
+    }
+
+    public void SetTargetOverride(EnvAssetRef targetOverride)
+    {
+        TargetsOverride = targetOverride;
+    }
+
+    public void SetObstaclesOverride(EnvAssetRef obstacleOverride)
+    {
+        ObstaclesOverride = obstacleOverride;
     }
 
     public void LoadSelection()
@@ -172,6 +203,33 @@ public class EnvironmentControlManager : MonoBehaviour
         }
 
         return index;
+    }
+
+    public EnvAssetRef GetGloveAtIndex(int index)
+    {
+        if (index >= _availableGloveReferences.Count)
+        {
+            return null;
+        }
+        return _availableGloveReferences[index];
+    }
+
+    public EnvAssetRef GetTargetAtIndex(int index)
+    {
+        if (index >= _availableTargetReferences.Count)
+        {
+            return null;
+        }
+        return _availableTargetReferences[index];
+    }
+
+    public EnvAssetRef GetObstacleAtIndex(int index)
+    {
+        if (index >= _availableObstacleReferences.Count)
+        {
+            return null;
+        }
+        return _availableObstacleReferences[index];
     }
 
     public string GetTargetEnvName()
@@ -213,7 +271,7 @@ public class EnvironmentControlManager : MonoBehaviour
     {
         _availableReferences.Clear();
 
-        var results = Addressables.LoadAssetsAsync<AddressableEnvAssetRef>(ADDRESSABLELABEL, asset =>
+        var results = Addressables.LoadAssetsAsync<AddressableEnvAssetRef>(BuiltInEnvLabel, asset =>
         {
             if (asset == null)
             {
@@ -245,18 +303,69 @@ public class EnvironmentControlManager : MonoBehaviour
 
     private async UniTask GetBuiltInEnvAssetRefs()
     {
+        _availableGloveReferences.Clear();
+        _availableTargetReferences.Clear();
+        _availableObstacleReferences.Clear();
 
+        var glovesHandle = Addressables.LoadAssetsAsync<EnvAssetRef>(EnvGlovesLabel, asset =>
+        {
+            if (asset == null)
+            {
+                return;
+            }
+            _availableGloveReferences.Add(asset);
+        });
+        _assetHandles.Add(glovesHandle);
+
+        var targetsHandle = Addressables.LoadAssetsAsync<EnvAssetRef>(EnvTargetsLabel, asset =>
+        {
+            if (asset == null)
+            {
+                return;
+            }
+            _availableTargetReferences.Add(asset);
+        });
+        _assetHandles.Add(targetsHandle);
+
+        var obstaclesHandle = Addressables.LoadAssetsAsync<EnvAssetRef>(EnvObstaclesLabel, asset =>
+        {
+            if (asset == null)
+            {
+                return;
+            }
+            _availableObstacleReferences.Add(asset);
+        });
+        _assetHandles.Add(obstaclesHandle);
+
+        await targetsHandle;
+        await glovesHandle;
+        await obstaclesHandle;
     }
 
     public bool TryGetEnvRefAtIndex(int index, out Environment environment)
     {
-        if(_availableEnvironments.Count>index)
+        if (_availableEnvironments.Count > index)
         {
             environment = _availableEnvironments[index];
             return true;
         }
         environment = new Environment();
         return false;
+    }
+
+    public bool TryGetEnvRefByName(string envName, out Environment environment)
+    {
+        var index = _availableEnvironments.FindIndex(e => e.Name == envName);
+        if (index == -1)
+        {
+            environment = new Environment();
+            return false;
+        }
+        else
+        {
+            environment = _availableEnvironments[index];
+            return true;
+        }
     }
 
     private async UniTaskVoid LoadCustomEnvironmentDataAsync(string environmentPath)
@@ -272,6 +381,7 @@ public class EnvironmentControlManager : MonoBehaviour
         Shader.SetGlobalTexture(CustomSkyboxAlbedo, _activeCustomSkybox);
         Shader.SetGlobalFloat(CustomSkyboxExposure, environment.SkyboxBrightness);
 
+        SetTexturesAndMaterials();
         LoadingEnvironmentContainer = false;
     }
 
@@ -279,7 +389,7 @@ public class EnvironmentControlManager : MonoBehaviour
     {
         LoadingEnvironmentContainer = true;
         var envDataLoaded = await TryLoadEnvironmentData(reference);
-        if(!envDataLoaded)
+        if (!envDataLoaded)
         {
             return;
         }
@@ -321,6 +431,7 @@ public class EnvironmentControlManager : MonoBehaviour
         }
 
         ActiveEnvironmentContainer = new EnvironmentAssetContainer(reference.EnvironmentName, scene, gloves, targets, obstacles);
+
         return true;
     }
 

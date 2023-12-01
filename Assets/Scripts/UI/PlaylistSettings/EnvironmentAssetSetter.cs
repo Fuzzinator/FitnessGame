@@ -5,12 +5,14 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public abstract class EnvironmentAssetSetter : MonoBehaviour
+public abstract class EnvironmentAssetSetter : MonoBehaviour, IEnvAssetScroller
 {
     [SerializeField]
     protected TextMeshProUGUI _assetNameDisplayText;
     [SerializeField]
     protected EnhancedScroller _scroller;
+    [SerializeField]
+    protected EnvAssetScrollerController _controller;
 
     protected virtual void OnEnable()
     {
@@ -37,7 +39,14 @@ public abstract class EnvironmentAssetSetter : MonoBehaviour
 
     public virtual void EnableOptionsDisplay()
     {
+        _controller.SetUp(this, _scroller);
         _scroller.gameObject.SetActive(true);
+        _controller.Refresh();
+    }
+
+    public virtual void DisableOptionsDisplay()
+    {
+        _scroller.gameObject.SetActive(false);
     }
 
     protected virtual string GetAssetName(Playlist sourcePlaylist)
@@ -60,6 +69,8 @@ public abstract class EnvironmentAssetSetter : MonoBehaviour
         return new Environment();
     }
 
+    public abstract int GetAvailableAssetCount();
+
     public abstract string GetPlaylistAssetName(Playlist playlist);
 
     public abstract string GetEnvAssetName(Environment environment);
@@ -68,13 +79,15 @@ public abstract class EnvironmentAssetSetter : MonoBehaviour
 
     public abstract void SetAssetIndex(int index);
 
+    public abstract EnvAssetRef GetAssetRef(int index);
+    protected abstract void TrySetAsset(Playlist playlist);
+
     protected abstract int GetAssetIndex();
+
 
     public virtual void SetText(string value)
     {
-        using var sb = ZString.CreateStringBuilder(true);
-        sb.AppendLine(value);
-        _assetNameDisplayText.SetText(sb);
+        _assetNameDisplayText.SetTextZeroAlloc(value, true);
     }
 
     protected virtual void GetAndSetText()
@@ -86,6 +99,16 @@ public abstract class EnvironmentAssetSetter : MonoBehaviour
     protected virtual void UpdateFromPlaylist(Playlist playlist)
     {
         var assetName = GetAssetName(playlist);
+        TrySetAsset(playlist);
+
+        if (string.IsNullOrWhiteSpace(assetName))
+        {
+            if(EnvironmentControlManager.Instance!= null)
+            {
+
+            }
+            assetName = "Sci-Fi Arena";
+        }
         SetText(assetName);
     }
 
@@ -97,6 +120,10 @@ public abstract class EnvironmentAssetSetter : MonoBehaviour
         }
         var environment = GetAssetFromEnvIndex(index);
         var assetName = GetEnvAssetName(environment);
+        if (environment.IsCustom && string.IsNullOrWhiteSpace(assetName))
+        {
+            assetName = "Sci-Fi Arena";
+        }
         SetText(assetName);
     }
 }

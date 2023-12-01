@@ -11,7 +11,7 @@ namespace UI
             if (PlaylistMaker.Instance != null)
             {
                 var targetEnv = _dropdownField.options[value].text;
-                PlaylistMaker.Instance.SetTargetEnvironment(targetEnv);
+                PlaylistMaker.Instance.SetTargetEnvironment(value);
             }
         }
 

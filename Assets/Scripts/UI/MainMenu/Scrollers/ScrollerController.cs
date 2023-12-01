@@ -24,6 +24,10 @@ namespace UI.Scrollers
 
         protected virtual void Start()
         {
+            if(_scroller == null)
+            {
+                return;
+            }
             _scroller.Delegate = this;
             //_scroller.ReloadData();
         }

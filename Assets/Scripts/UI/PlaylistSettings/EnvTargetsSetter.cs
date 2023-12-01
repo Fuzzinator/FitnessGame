@@ -22,7 +22,8 @@ public class EnvTargetsSetter : EnvironmentAssetSetter
 
     public override void SetAssetIndex(int index)
     {
-        EnvironmentControlManager.Instance.SetTargetOverride(index);
+        var targetsName = EnvironmentControlManager.Instance.SetTargetOverride(index);
+        SetText(targetsName?.AssetName);
     }
 
     protected override int GetAssetIndex()
@@ -30,9 +31,39 @@ public class EnvTargetsSetter : EnvironmentAssetSetter
         return 0;
     }
 
-    protected override void OnDisable()
+    public override int GetAvailableAssetCount()
     {
-        base.OnDisable(); 
-        EnvironmentControlManager.Instance.SetObstacleOverride(-1);
+        return EnvironmentControlManager.Instance.AvailableTargetCount;
+    }
+
+    public override EnvAssetRef GetAssetRef(int index)
+    {
+        return EnvironmentControlManager.Instance.GetTargetAtIndex(index);
+    }
+
+    protected override string GetAssetName(Playlist sourcePlaylist)
+    {
+        var assetName = GetPlaylistAssetName(sourcePlaylist);
+        if (string.IsNullOrWhiteSpace(sourcePlaylist.Targets?.AssetName) && EnvironmentControlManager.Instance != null)
+        {
+            var currentEnv = EnvironmentControlManager.Instance.ActiveEnvironmentContainer;
+            if (currentEnv.Targets != null)
+            {
+                assetName = currentEnv.Targets.TargetsName;
+            }
+            else
+            {
+                assetName = GetAssetFromEnvIndex(0).TargetsName;
+            }
+        }
+        return assetName;
+    }
+
+    protected override void TrySetAsset(Playlist playlist)
+    {
+        if (playlist.Targets != null)
+        {
+            EnvironmentControlManager.Instance.SetTargetOverride(playlist.Targets);
+        }
     }
 }
