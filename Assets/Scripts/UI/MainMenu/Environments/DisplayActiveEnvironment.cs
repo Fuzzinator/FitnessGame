@@ -18,6 +18,12 @@ public class DisplayActiveEnvironment : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI _skyboxBrightness;
     [SerializeField]
+    private TextMeshProUGUI _glovesName;
+    [SerializeField]
+    private TextMeshProUGUI _targetsName;
+    [SerializeField]
+    private TextMeshProUGUI _obstaclesName;
+    [SerializeField]
     private Image _environmentImage;
     [SerializeField]
     private AvailableEnvironmentsUIController _availableEnvironmentsUIController;
@@ -79,15 +85,23 @@ public class DisplayActiveEnvironment : MonoBehaviour
                 skyboxDepthName = skyboxDepthName.Substring(skyboxDepthName.LastIndexOf("/") + 1);
             }
 
-            _environmentName.SetTextZeroAlloc(ActiveCustomEnvironment.EnvironmentName, true);
-            _skyboxName.SetTextZeroAlloc(skyboxName, true);
-            _skyboxDepthName.SetTextZeroAlloc(skyboxDepthName, true);
+            _environmentName.text = ActiveCustomEnvironment.EnvironmentName;
+            _skyboxName.text = skyboxName;
+            _skyboxDepthName.text = skyboxDepthName;
+            _glovesName.text = ActiveCustomEnvironment.GlovesName;
+            _targetsName.text = ActiveCustomEnvironment.TargetsName;
+            _obstaclesName.text = ActiveCustomEnvironment.ObstaclesName;
             _skyboxBrightness.SetTextZeroAlloc(ActiveCustomEnvironment.SkyboxBrightness, true);
+
             SetImageAsync(ActiveCustomEnvironment.SkyboxName, ActiveCustomEnvironment.SkyboxPath).Forget();
         }
         else
         {
             _environmentName.ClearText();
+            _skyboxName.ClearText();
+            _glovesName.ClearText();
+            _targetsName.ClearText();
+            _obstaclesName.ClearText();
             _environmentImage.sprite = null;
             _environmentImage.enabled = false;
         }

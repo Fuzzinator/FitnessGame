@@ -30,7 +30,7 @@ public struct Environment
 
     public Environment(string customLocation, CustomEnvironment customEnv)
     {
-        Name = Path.GetFileNameWithoutExtension(customLocation);
+        Name = customEnv.EnvironmentName;//Path.GetFileNameWithoutExtension(customLocation);
         Gloves = customEnv.Gloves;
         Targets = customEnv.Targets;
         Obstacles = customEnv.Obstacles;

@@ -513,18 +513,18 @@ public class CustomEnvironmentsController : MonoBehaviour
         }
     }
 
-    public static CustomEnvironment CreateCustomEnvironment(string environmentName, int skyboxIndex, float brightness)
+    public static CustomEnvironment CreateCustomEnvironment(string environmentName, int skyboxIndex, float brightness, EnvAssetRef gloves, EnvAssetRef targets, EnvAssetRef obstacles)
     {
         var skybox = _availableCustomSkyboxPaths[skyboxIndex];
         var skyboxName = skybox.Substring(skybox.LastIndexOf("/") + 1);
-        var customEnvironment = new CustomEnvironment(environmentName, skyboxName, skybox, skyboxBrightness: brightness);
+        var customEnvironment = new CustomEnvironment(environmentName, skyboxName, skybox, skyboxBrightness: brightness, gloves: gloves, targets: targets, obstacles: obstacles);
         ValidateEnvironment(customEnvironment);
         return customEnvironment;
     }
-    public static CustomEnvironment CreateCustomEnvironment(string environmentName, string skyboxPath, float brightness)
+    public static CustomEnvironment CreateCustomEnvironment(string environmentName, string skyboxPath, float brightness, EnvAssetRef gloves, EnvAssetRef targets, EnvAssetRef obstacles)
     {
         var skyboxName = skyboxPath.Substring(skyboxPath.LastIndexOf("/") + 1);
-        var customEnvironment = new CustomEnvironment(environmentName, skyboxName, skyboxPath, skyboxBrightness: brightness);
+        var customEnvironment = new CustomEnvironment(environmentName, skyboxName, skyboxPath, skyboxBrightness: brightness, gloves: gloves, targets: targets, obstacles: obstacles);
         ValidateEnvironment(customEnvironment);
         return customEnvironment;
     }

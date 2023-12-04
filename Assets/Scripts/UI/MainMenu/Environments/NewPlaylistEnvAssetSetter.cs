@@ -78,6 +78,6 @@ public abstract class NewPlaylistEnvAssetSetter : MonoBehaviour, IEnvAssetScroll
 
     public virtual void SetText(string value)
     {
-        _assetNameDisplayText.SetTextZeroAlloc(value, true);
+        _assetNameDisplayText.text = value;
     }
 }

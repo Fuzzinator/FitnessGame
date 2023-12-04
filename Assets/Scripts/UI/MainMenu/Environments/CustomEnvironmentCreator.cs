@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using TMPro;
 using UnityEngine;
@@ -26,6 +27,12 @@ public class CustomEnvironmentCreator : MonoBehaviour
     private TextMeshProUGUI _brightnessLevelDisplay;
     [SerializeField]
     private CanvasGroup _myCanvasController;
+    [SerializeField]
+    private NewEnvGloveSetter _newEnvGloveSetter;
+    [SerializeField]
+    private NewEnvTargetSetter _newEnvTargetSetter;
+    [SerializeField]
+    private NewEnvObstacleSetter _newEnvObstacleSetter;
 
     [SerializeField]
     private SkyboxTextureController _skyboxTextureController;
@@ -42,6 +49,10 @@ public class CustomEnvironmentCreator : MonoBehaviour
     private string _skyboxDepthName;
     private string _skyboxDepthPath;
     private float _environmentBrightness;
+
+    public EnvAssetRef GlovesRef { get; private set; }
+    public EnvAssetRef TargetsRef { get; private set; }
+    public EnvAssetRef ObstaclesRef { get; private set; }
 
     private string _originalEnvironmentName;
 
@@ -80,6 +91,12 @@ public class CustomEnvironmentCreator : MonoBehaviour
         RefreshDisplay();
         SetEnvironmentName(environment.EnvironmentName);
         SetSkyboxBrightness(environment.SkyboxBrightness);
+        SetGloves(environment.Gloves);
+        SetTargets(environment.Targets);
+        SetObstacles(environment.Obstacles);
+        _newEnvGloveSetter.TrySetText(environment.Gloves?.AssetName);
+        _newEnvTargetSetter.TrySetText(environment.Targets?.AssetName);
+        _newEnvObstacleSetter.TrySetText(environment?.Obstacles?.AssetName);
     }
 
     public void RefreshDisplay()
@@ -194,26 +211,60 @@ public class CustomEnvironmentCreator : MonoBehaviour
         _brightnessLevelDisplay.SetTextZeroAlloc(brightness, true);
     }
 
+    public void SetGloves(EnvAssetRef gloves)
+    {
+        if (gloves == null)
+        {
+            return;
+        }
+        GlovesRef = gloves;
+    }
+
+    public void SetTargets(EnvAssetRef targets)
+    {
+        if (targets == null)
+        {
+            return;
+        }
+        TargetsRef = targets;
+    }
+
+    public void SetObstacles(EnvAssetRef obstacles)
+    {
+        if (obstacles == null)
+        {
+            return;
+        }
+        ObstaclesRef = obstacles;
+    }
+
     public void UpdateEnvironment()
     {
         var editing = _activeEnvironment != null;
+        var originalName = _environmentName;
         if (!editing)
         {
             if (string.IsNullOrWhiteSpace(_environmentName))
             {
                 _environmentName = $"{DateTime.Now:yyyy-MM-dd} - {DateTime.Now:hh-mm}";
             }
-            _activeEnvironment = CustomEnvironmentsController.CreateCustomEnvironment(_environmentName, _skyboxPath, _environmentBrightness);
+            _activeEnvironment = CustomEnvironmentsController.CreateCustomEnvironment(_environmentName, _skyboxPath, _environmentBrightness, GlovesRef, TargetsRef, ObstaclesRef);
 
             CustomEnvironmentsController.AddNewEnvironment(_activeEnvironment);
         }
         else
         {
+            originalName = _activeEnvironment.EnvironmentName;
             _activeEnvironment.SetName(_environmentName);
             _activeEnvironment.SetSkyboxName(_skyboxName);
             _activeEnvironment.SetSkyboxPath(_skyboxPath);
             _activeEnvironment.SetSkyboxBrightness(_environmentBrightness);
+            _activeEnvironment.SetGloves(GlovesRef);
+            _activeEnvironment.SetTargets(TargetsRef);
+            _activeEnvironment.SetObstacles(ObstaclesRef);
+
         }
+        EnvironmentControlManager.Instance.UpdateEnvironment(originalName, _activeEnvironment);
 
         _activeEnvironment.SetSkyboxSprite(_skyboxColor);
         _activeEnvironment.SetDepthSprite(_skyboxDepth);

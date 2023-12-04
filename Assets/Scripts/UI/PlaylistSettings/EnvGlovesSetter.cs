@@ -43,7 +43,7 @@ public class EnvGlovesSetter : EnvironmentAssetSetter
     protected override string GetAssetName(Playlist sourcePlaylist)
     {
         var assetName = GetPlaylistAssetName(sourcePlaylist);
-        if (string.IsNullOrWhiteSpace(sourcePlaylist.Gloves?.AssetName) && EnvironmentControlManager.Instance != null)
+        if (string.IsNullOrWhiteSpace(sourcePlaylist?.Gloves?.AssetName) && EnvironmentControlManager.Instance != null)
         {
             var currentEnv = EnvironmentControlManager.Instance.ActiveEnvironmentContainer;
             if (currentEnv.Gloves != null)

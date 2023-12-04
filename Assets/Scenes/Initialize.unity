@@ -296,6 +296,9 @@ MonoBehaviour:
     _gameMode: 0
     _difficulty: 0
     _targetEnvName: 
+    <Gloves>k__BackingField: {fileID: 0}
+    <Targets>k__BackingField: {fileID: 0}
+    <Obstacles>k__BackingField: {fileID: 0}
     _targetColors:
       _leftController: {r: 0, g: 0, b: 0, a: 0}
       _rightController: {r: 0, g: 0, b: 0, a: 0}
@@ -372,7 +375,7 @@ MonoBehaviour:
   focusChanged:
     m_PersistentCalls:
       m_Calls: []
-  _trackFocus: 0
+  _trackFocus: 1
 --- !u!4 &811981821
 Transform:
   m_ObjectHideFlags: 0
@@ -487,9 +490,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _availableReferences: []
   _availableCustomEnvironments: []
+  _availableGloveReferences: []
+  _availableTargetReferences: []
+  _availableObstacleReferences: []
   _customEnvironmentSkyboxMat: {fileID: 2100000, guid: 27c164cce97cbe94eb40871b38d44eb4,
     type: 2}
   availableReferencesUpdated:
+    m_PersistentCalls:
+      m_Calls: []
+  targetEnvironmentIndexChanged:
     m_PersistentCalls:
       m_Calls: []
 --- !u!114 &811981828

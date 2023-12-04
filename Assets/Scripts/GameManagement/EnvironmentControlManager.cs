@@ -511,6 +511,17 @@ public class EnvironmentControlManager : MonoBehaviour
             availableReferencesUpdated.Invoke();
         }
     }
+
+    public void UpdateEnvironment(string originalName, CustomEnvironment customEnv)
+    {
+        var envIndex = _availableEnvironments.FindIndex((i) => i.IsCustom && string.Equals(i.Name, originalName, StringComparison.InvariantCultureIgnoreCase));
+        if(envIndex<0)
+        {
+            return;
+        }
+        var env = _availableEnvironments[envIndex];
+        _availableEnvironments[envIndex] = new Environment(env.CustomPath, customEnv);
+    }
 }
 
 [Serializable]

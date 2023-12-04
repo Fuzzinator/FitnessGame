@@ -87,6 +87,21 @@ public class CustomEnvironment
         SkyboxBrightness = brightness;
     }
 
+    public void SetGloves(EnvAssetRef asset)
+    {
+        Gloves = asset;
+    }
+
+    public void SetTargets(EnvAssetRef targets)
+    {
+        Targets = targets;
+    }
+
+    public void SetObstacles(EnvAssetRef obstacles)
+    {
+        Obstacles = obstacles;
+    }
+
     public CustomEnvironment(string environmentName, string skyboxName = null, string skyboxPath = null,
         string skyboxDepthName = null, string skyboxDepthPath = null, float skyboxBrightness = 1,
         string meshPath = null, EnvAssetRef gloves = null, EnvAssetRef targets = null, EnvAssetRef obstacles = null)

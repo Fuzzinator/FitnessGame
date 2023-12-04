@@ -87,7 +87,7 @@ public abstract class EnvironmentAssetSetter : MonoBehaviour, IEnvAssetScroller
 
     public virtual void SetText(string value)
     {
-        _assetNameDisplayText.SetTextZeroAlloc(value, true);
+        _assetNameDisplayText.text = value;
     }
 
     protected virtual void GetAndSetText()
