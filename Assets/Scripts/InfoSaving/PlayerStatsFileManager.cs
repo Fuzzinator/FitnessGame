@@ -40,7 +40,8 @@ namespace InfoSaving
         private static readonly string SongFolder = $"{Path}{SONGRECORDS}";//"D:\\Projects\\Shadow BoXR Oculus Build\\Shadow BoXR_Data\\Resources\\PlayerStats\\SongRecords.txt";
         private static readonly string PlaylistFolder = $"{Path}{PLAYLISTRECORDS}";
 
-        private static readonly SongRecord[] _scoreAndStreakRecord = new SongRecord[10];
+        private static readonly PlaylistRecord[] _playlistScoreAndStreakRecord = new PlaylistRecord[5];
+        private static readonly SongRecord[] _songScoreAndStreakRecord = new SongRecord[10];
 
         private static ES3Settings SongSettings => _songSettings ??= new ES3Settings(SongFolder);
         private static ES3Settings PlaylistSettings => _playlistSettings ??= new ES3Settings(PlaylistFolder);
@@ -217,7 +218,7 @@ namespace InfoSaving
                     {
                         var recordScores =
                             (SongRecord[])await GetSongValue<SongRecord[]>(
-                                currentSongName, token) ?? _scoreAndStreakRecord;
+                                currentSongName, token) ?? _songScoreAndStreakRecord;
 
                         return recordScores;
                     }
@@ -229,12 +230,12 @@ namespace InfoSaving
                 }
                 else
                 {
-                    var oldRecord = await TryGetOldRecords(info, difficultyEnum, gameMode, token);
+                    var oldRecord = await TryGetOldSongRecords(info, difficultyEnum, gameMode, token);
                     if (oldRecord.hasRecord)
                     {
-                        ConvertOldRecordsToNew(oldRecord);
-                        RecordSongValue(currentSongName, _scoreAndStreakRecord, token).Forget();
-                        return _scoreAndStreakRecord;
+                        ConvertOldSongRecords(oldRecord, _songScoreAndStreakRecord);
+                        RecordSongValue(currentSongName, _songScoreAndStreakRecord, token).Forget();
+                        return _songScoreAndStreakRecord;
                     }
                 }
             }
@@ -248,7 +249,7 @@ namespace InfoSaving
                     {
                         var recordScores =
                             (SongRecord[])await GetSongValue<SongRecord[]>(
-                                currentSongName, token) ?? _scoreAndStreakRecord;
+                                currentSongName, token) ?? _songScoreAndStreakRecord;
 
                         return recordScores;
                     }
@@ -263,17 +264,17 @@ namespace InfoSaving
                     var noIDRecord = await GetOldRecordFromName(info, difficultyEnum, gameMode, token, false);
                     if (noIDRecord.hasRecord)
                     {
-                        ConvertOldRecordsToNew(noIDRecord);
-                        return _scoreAndStreakRecord;
+                        ConvertOldSongRecords(noIDRecord, _songScoreAndStreakRecord);
+                        return _songScoreAndStreakRecord;
                     }
                 }
             }
 
-            ClearRecords();
-            return _scoreAndStreakRecord;
+            ClearSongRecords();
+            return _songScoreAndStreakRecord;
         }
 
-        public static async UniTask<SongAndPlaylistRecords> TryGetOldRecords(SongInfo info, DifficultyEnum difficultyEnum,
+        public static async UniTask<SongAndPlaylistRecords> TryGetOldSongRecords(SongInfo info, DifficultyEnum difficultyEnum,
            GameMode gameMode, CancellationToken token, bool deleteOldRecord = false)
         {
             if (!string.IsNullOrWhiteSpace(info.SongID))
@@ -328,12 +329,10 @@ namespace InfoSaving
                 return oldRecords;
             }
 
-
-            ClearRecords();
             return new SongAndPlaylistRecords();
         }
 
-        private static void ConvertOldRecordsToNew(SongAndPlaylistRecords oldRecord)
+        private static void ConvertOldSongRecords(SongAndPlaylistRecords oldRecord, SongRecord[] newRecord)
         {
             var streaks = ListPool<SongAndPlaylistStreakRecord>.Get();
             streaks.AddRange(oldRecord.streaks);
@@ -354,20 +353,94 @@ namespace InfoSaving
                         break;
                     }
                 }
-                _scoreAndStreakRecord[i] = new SongRecord(score.ProfileName, score.Guid, (int)score.Score, streak);
+
+                newRecord[i] = new SongRecord(score.ProfileName, score.Guid, (int)score.Score, streak);
+            }
+            ListPool<SongAndPlaylistStreakRecord>.Release(streaks);
+        }
+        private static void ConvertOldPlaylistRecords(SongAndPlaylistRecords oldRecord, PlaylistRecord[] newRecord)
+        {
+            var streaks = ListPool<SongAndPlaylistStreakRecord>.Get();
+            streaks.AddRange(oldRecord.streaks);
+            for (var i = 0; i < oldRecord.scores.Length; i++)
+            {
+                var score = oldRecord.scores[i];
+                if (!score.IsValid)
+                {
+                    continue;
+                }
+                var streak = 0;
+                for (var j = 0; j < streaks.Count; j++)
+                {
+                    if (string.Equals(streaks[j].Guid, score.Guid))
+                    {
+                        streak = streaks[j].Streak;
+                        streaks.RemoveAt(j);
+                        break;
+                    }
+                }
+
+                newRecord[i] = new PlaylistRecord(score.ProfileName, score.Guid, score.Score, streak);
             }
             ListPool<SongAndPlaylistStreakRecord>.Release(streaks);
         }
 
-        private static void ClearRecords()
+        private static void ClearSongRecords()
         {
-            for (var i = 0; i < _scoreAndStreakRecord.Length; i++)
+            for (var i = 0; i < _songScoreAndStreakRecord.Length; i++)
             {
-                _scoreAndStreakRecord[i] = new SongRecord();
+                _songScoreAndStreakRecord[i] = new SongRecord();
+            }
+        }
+        private static void ClearPlaylistRecords()
+        {
+            for (var i = 0; i < _playlistScoreAndStreakRecord.Length; i++)
+            {
+                _playlistScoreAndStreakRecord[i] = new PlaylistRecord();
             }
         }
 
-        public static async UniTask<SongAndPlaylistRecords> TryGetPlaylistRecords(Playlist playlist, CancellationToken token)
+        public static async UniTask<PlaylistRecord[]> TryGetPlaylistRecords(Playlist playlist, CancellationToken token)
+        {
+            var playlistFullScoreName = $"{playlist.GUID}-{playlist.DifficultyEnum}-{playlist.TargetGameMode}";
+
+            var scoreExists = PlaylistKeyExists(playlistFullScoreName);
+
+
+            if (scoreExists)
+            {
+                try
+                {
+
+                    var recordScores =
+                        (PlaylistRecord[])await GetPlaylistValue<PlaylistRecord[]>(
+                            playlistFullScoreName, token) ?? new PlaylistRecord[5];
+                    return recordScores;
+
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError(e);
+                    throw;
+                }
+
+            }
+            else
+            {
+                var oldRecords = await TryGetOldPlaylistRecords(playlist, token);
+                if (oldRecords.hasRecord)
+                {
+                    ConvertOldPlaylistRecords(oldRecords, _playlistScoreAndStreakRecord);
+                    RecordPlaylistValue(playlistFullScoreName, _playlistScoreAndStreakRecord, token).Forget();
+                    return _playlistScoreAndStreakRecord;
+                }
+            }
+
+            ClearPlaylistRecords();
+            return _playlistScoreAndStreakRecord;
+        }
+
+        public static async UniTask<SongAndPlaylistRecords> TryGetOldPlaylistRecords(Playlist playlist, CancellationToken token)
         {
             var playlistFullScoreName = $"{SCORE}{playlist.GUID}-{playlist.DifficultyEnum}-{playlist.TargetGameMode}";
             var playlistFullStreakName = $"{STREAK}{playlist.GUID}-{playlist.DifficultyEnum}-{playlist.TargetGameMode}";

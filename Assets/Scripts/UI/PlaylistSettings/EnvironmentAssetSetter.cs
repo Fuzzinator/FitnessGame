@@ -13,16 +13,27 @@ public abstract class EnvironmentAssetSetter : MonoBehaviour, IEnvAssetScroller
     protected EnhancedScroller _scroller;
     [SerializeField]
     protected EnvAssetScrollerController _controller;
+    [SerializeField]
+    protected bool _ignorePlaylists = false;
+
 
     protected virtual void OnEnable()
     {
+        ResetOverrides();
         GetAndSetText();
         if (EnvironmentControlManager.Instance != null)
         {
             EnvironmentControlManager.Instance.availableReferencesUpdated.AddListener(GetAndSetText);
             EnvironmentControlManager.Instance.targetEnvironmentIndexChanged.AddListener(UpdateFromEnvIndexChange);
         }
-
+        if(_ignorePlaylists)
+        {
+            return;
+        }
+        if(PlaylistManager.Instance?.CurrentPlaylist != null)
+        {
+            UpdateFromPlaylist(PlaylistManager.Instance?.CurrentPlaylist);
+        }
         PlaylistManager.Instance.currentPlaylistUpdated.AddListener(UpdateFromPlaylist);
     }
 
@@ -34,6 +45,10 @@ public abstract class EnvironmentAssetSetter : MonoBehaviour, IEnvAssetScroller
             EnvironmentControlManager.Instance.targetEnvironmentIndexChanged.RemoveListener(UpdateFromEnvIndexChange);
         }
 
+        if (_ignorePlaylists)
+        {
+            return;
+        }
         PlaylistManager.Instance.currentPlaylistUpdated.RemoveListener(UpdateFromPlaylist);
     }
 
@@ -83,6 +98,8 @@ public abstract class EnvironmentAssetSetter : MonoBehaviour, IEnvAssetScroller
     protected abstract void TrySetAsset(Playlist playlist);
 
     protected abstract int GetAssetIndex();
+
+    protected abstract void ResetOverrides();
 
 
     public virtual void SetText(string value)

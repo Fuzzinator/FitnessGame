@@ -16,7 +16,13 @@ public class ProfileChecker : MonoBehaviour
             return;
         }
         ProfileManager.Instance.TryGetProfiles();
-        
+
+        //TODO: Animate welcoming message to show active profile has been selected.
+        if (ProfileManager.Instance.ActiveProfile != null)
+        {
+            return;
+        }
+
         _menuController.SetActivePage(_targetPage);
     }
 }

@@ -13,9 +13,10 @@ public class EnvObstaclesSetter : EnvironmentAssetSetter
     {
         return environment.ObstaclesName;
     }
+
     protected override bool ShouldUpdateFromEnv()
     {
-        return PlaylistManager.Instance?.CurrentPlaylist?.Obstacles == null;
+        return _ignorePlaylists || PlaylistManager.Instance?.CurrentPlaylist?.Obstacles == null;
     }
 
     public override void SetAssetIndex(int index)
@@ -45,6 +46,11 @@ public class EnvObstaclesSetter : EnvironmentAssetSetter
         var assetName = GetPlaylistAssetName(sourcePlaylist);
         if (string.IsNullOrWhiteSpace(sourcePlaylist.Obstacles?.AssetName) && EnvironmentControlManager.Instance != null)
         {
+            if(!string.IsNullOrWhiteSpace(sourcePlaylist.TargetEnvName) && EnvironmentControlManager.Instance.TryGetEnvRefByName(sourcePlaylist.TargetEnvName, out var environment))
+            {
+                assetName = environment.ObstaclesName;
+                return assetName;
+            }
             var currentEnv = EnvironmentControlManager.Instance.ActiveEnvironmentContainer;
             if (currentEnv.Obstacles != null)
             {
@@ -64,5 +70,10 @@ public class EnvObstaclesSetter : EnvironmentAssetSetter
         {
             EnvironmentControlManager.Instance.SetObstaclesOverride(playlist.Obstacles);
         }
+    }
+
+    protected override void ResetOverrides()
+    {
+        EnvironmentControlManager.Instance.SetObstaclesOverride(null);
     }
 }

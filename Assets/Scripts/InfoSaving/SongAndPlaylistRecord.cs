@@ -1,5 +1,7 @@
 using System;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 
 public struct SongAndPlaylistRecords
 {
@@ -42,6 +44,15 @@ public struct SongRecord
         _guid = string.IsNullOrWhiteSpace(guid) ? Guid.NewGuid().ToString() : guid;
         _score = score;
         _streak = streak;
+        _isValid = true;
+    }
+
+    public SongRecord(PlaylistRecord record)
+    {
+        _profileName = record.ProfileName;
+        _guid = record.GUID;
+        _score = (int)record.Score;
+        _streak = record.Streak;
         _isValid = true;
     }
 }

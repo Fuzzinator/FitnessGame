@@ -178,10 +178,14 @@ public class EnvironmentControlManager : MonoBehaviour
         availableReferencesUpdated?.Invoke();
     }
 
-    public void LoadFromString(string sceneName)
+    public void LoadFromPlaylist(Playlist playlist)
     {
-        var index = GetSceneIndexFromString(sceneName);
+        var index = GetSceneIndexFromString(playlist.TargetEnvName);
         SetTargetEnvironmentIndex(index);
+        GlovesOverride = playlist.Gloves;
+        TargetsOverride = playlist.Targets;
+        ObstaclesOverride = playlist.Obstacles;
+
         LoadSelection();
     }
 
@@ -242,7 +246,7 @@ public class EnvironmentControlManager : MonoBehaviour
         var targetEnv = _availableEnvironments[index];
         if (targetEnv.IsCustom)
         {
-            LoadCustomEnvironmentDataAsync(targetEnv.CustomPath).Forget();
+            LoadCustomEnvironmentDataAsync(targetEnv).Forget();
         }
         else
         {
@@ -368,18 +372,23 @@ public class EnvironmentControlManager : MonoBehaviour
         }
     }
 
-    private async UniTaskVoid LoadCustomEnvironmentDataAsync(string environmentPath)
+    private async UniTaskVoid LoadCustomEnvironmentDataAsync(Environment environment)
     {
         LoadingEnvironmentContainer = true;
-        await TryLoadEnvironmentData(_customEnvironment);
-        var environment = await CustomEnvironmentsController.LoadCustomEnvironment(environmentPath);
-        if (!string.Equals(_customSkyboxPath, environment.SkyboxPath))
+        var assets = new EnvAssets(environment.Name, _customEnvironment.Scene,
+                                   environment.Gloves != null ? environment.Gloves : _customEnvironment.Gloves,
+                                   environment.Targets != null ? environment.Targets : _customEnvironment.Targets,
+                                   environment.Obstacles != null ? environment.Obstacles : _customEnvironment.Obstacles);
+
+        await TryLoadEnvironmentData(assets);
+        var env = await CustomEnvironmentsController.LoadCustomEnvironment(environment.CustomPath);
+        if (!string.Equals(_customSkyboxPath, env.SkyboxPath))
         {
-            _customSkyboxPath = environment.SkyboxPath;
-            _activeCustomSkybox = await CustomEnvironmentsController.LoadEnvironmentTexture(environment.SkyboxPath, _cancellationToken);
+            _customSkyboxPath = env.SkyboxPath;
+            _activeCustomSkybox = await CustomEnvironmentsController.LoadEnvironmentTexture(env.SkyboxPath, _cancellationToken);
         }
         Shader.SetGlobalTexture(CustomSkyboxAlbedo, _activeCustomSkybox);
-        Shader.SetGlobalFloat(CustomSkyboxExposure, environment.SkyboxBrightness);
+        Shader.SetGlobalFloat(CustomSkyboxExposure, env.SkyboxBrightness);
 
         SetTexturesAndMaterials();
         LoadingEnvironmentContainer = false;
@@ -388,7 +397,7 @@ public class EnvironmentControlManager : MonoBehaviour
     private async UniTaskVoid LoadBuiltInEnvironmentDataAsync(AddressableEnvAssetRef reference)
     {
         LoadingEnvironmentContainer = true;
-        var envDataLoaded = await TryLoadEnvironmentData(reference);
+        var envDataLoaded = await TryLoadEnvironmentData(new EnvAssets(reference));
         if (!envDataLoaded)
         {
             return;
@@ -397,16 +406,16 @@ public class EnvironmentControlManager : MonoBehaviour
         LoadingEnvironmentContainer = false;
     }
 
-    private async UniTask<bool> TryLoadEnvironmentData(AddressableEnvAssetRef reference)
+    private async UniTask<bool> TryLoadEnvironmentData(EnvAssets assets)
     {
-        var scene = await Addressables.LoadAssetAsync<EnvSceneRef>(reference.Scene.AssetPath);
+        var scene = await Addressables.LoadAssetAsync<EnvSceneRef>(assets.Scene.AssetPath);
         if (scene == null)
         {
-            Debug.LogError($"Found null asset when loading environment scene {reference.Scene.AssetName}.");
+            Debug.LogError($"Found null asset when loading environment scene {assets.Scene.AssetName}.");
             return false;
         }
 
-        var glovesRef = GlovesOverride ?? reference.Gloves;
+        var glovesRef = (GlovesOverride != null ? GlovesOverride : assets.Gloves);
         var gloves = await Addressables.LoadAssetAsync<EnvGlovesRef>(glovesRef.AssetPath);
         if (gloves == null)
         {
@@ -414,7 +423,7 @@ public class EnvironmentControlManager : MonoBehaviour
             return false;
         }
 
-        var targetsRef = TargetsOverride ?? reference.Targets;
+        var targetsRef = TargetsOverride != null ? TargetsOverride : assets.Targets;
         var targets = await Addressables.LoadAssetAsync<EnvTargetsRef>(targetsRef.AssetPath);
         if (targets == null)
         {
@@ -422,7 +431,7 @@ public class EnvironmentControlManager : MonoBehaviour
             return false;
         }
 
-        var obstaclesRef = ObstaclesOverride ?? reference.Obstacles;
+        var obstaclesRef = ObstaclesOverride != null ? ObstaclesOverride : assets.Obstacles;
         var obstacles = await Addressables.LoadAssetAsync<EnvObstaclesRef>(obstaclesRef.AssetPath);
         if (obstacles == null)
         {
@@ -430,7 +439,8 @@ public class EnvironmentControlManager : MonoBehaviour
             return false;
         }
 
-        ActiveEnvironmentContainer = new EnvironmentAssetContainer(reference.EnvironmentName, scene, gloves, targets, obstacles);
+
+        ActiveEnvironmentContainer = new EnvironmentAssetContainer(assets.EnvironmentName, scene, gloves, targets, obstacles);
 
         return true;
     }
@@ -515,7 +525,7 @@ public class EnvironmentControlManager : MonoBehaviour
     public void UpdateEnvironment(string originalName, CustomEnvironment customEnv)
     {
         var envIndex = _availableEnvironments.FindIndex((i) => i.IsCustom && string.Equals(i.Name, originalName, StringComparison.InvariantCultureIgnoreCase));
-        if(envIndex<0)
+        if (envIndex < 0)
         {
             return;
         }

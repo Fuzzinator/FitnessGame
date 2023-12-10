@@ -16,7 +16,7 @@ public class EnvGlovesSetter : EnvironmentAssetSetter
     }
     protected override bool ShouldUpdateFromEnv()
     {
-        return PlaylistManager.Instance?.CurrentPlaylist?.Gloves == null;
+        return _ignorePlaylists || PlaylistManager.Instance?.CurrentPlaylist?.Gloves == null;
     }
 
     public override void SetAssetIndex(int index)
@@ -45,6 +45,11 @@ public class EnvGlovesSetter : EnvironmentAssetSetter
         var assetName = GetPlaylistAssetName(sourcePlaylist);
         if (string.IsNullOrWhiteSpace(sourcePlaylist?.Gloves?.AssetName) && EnvironmentControlManager.Instance != null)
         {
+            if (!string.IsNullOrWhiteSpace(sourcePlaylist.TargetEnvName) && EnvironmentControlManager.Instance.TryGetEnvRefByName(sourcePlaylist.TargetEnvName, out var environment))
+            {
+                assetName = environment.GlovesName;
+                return assetName;
+            }
             var currentEnv = EnvironmentControlManager.Instance.ActiveEnvironmentContainer;
             if (currentEnv.Gloves != null)
             {
@@ -64,5 +69,10 @@ public class EnvGlovesSetter : EnvironmentAssetSetter
         {
             EnvironmentControlManager.Instance.SetGloveOverride(playlist.Gloves);
         }
+    }
+
+    protected override void ResetOverrides()
+    {
+        EnvironmentControlManager.Instance.SetGloveOverride(null);
     }
 }

@@ -34,6 +34,9 @@ public class TransitionController : MonoBehaviour
 
     public float TransitionSpeed => _transitionSpeed;
 
+    private const string AnimatorChange = "Change";
+    private const string AnimatorPassthrough = "Passthrough";
+
     private void Start()
     {
         _cancellationToken = this.GetCancellationTokenOnDestroy();
@@ -59,19 +62,23 @@ public class TransitionController : MonoBehaviour
     private async UniTaskVoid RunTransition()
     {
         await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
-        
+
+        foreach (var data in _transitionDatas)
+        {
+            data.AnimController.SetBool(AnimatorPassthrough, false);
+        }
+
         //var startingValue = _sourceMaterial.GetFloat(_propertyID);
         _transitionStarted?.Invoke();
         if (EnvironmentController.Instance != null)
         {
             await EnvironmentController.Instance.LoadEnvironmentAsync();
         }
-
         if (!SettingsManager.GetSetting(SettingsManager.REDUCEMOTION, false))
         {
             foreach (var data in _transitionDatas)
             {
-                data.AnimController.SetTrigger("Change");
+                data.AnimController.SetTrigger(AnimatorChange);
             }
 
             await UniTask.Delay(TimeSpan.FromSeconds(_longestClipTime));

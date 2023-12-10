@@ -117,7 +117,13 @@ public class ProfileManager : MonoBehaviour
         }
 
         _profiles = profiles;
+        _profiles.Sort((x, y) => string.Compare(x.ProfileName, y.ProfileName));
         profilesUpdated?.Invoke();
+
+        if (_profiles.Count == 1)
+        {
+            SetActiveProfile(_profiles[0]);
+        }
     }
 
     public void AddProfile(Profile profile)
@@ -125,6 +131,7 @@ public class ProfileManager : MonoBehaviour
         _profiles ??= new List<Profile>();
 
         _profiles.Add(profile);
+        _profiles.Sort((x, y) => string.Compare(x.ProfileName, y.ProfileName));
         profilesUpdated?.Invoke();
 
         SaveProfiles();

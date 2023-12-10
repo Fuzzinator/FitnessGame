@@ -58,6 +58,8 @@ public class SettingsManager : MonoBehaviour
     public const string UseAdaptiveStrikeMode = "AdaptiveStrikeMode";
     public const string MinHitSpeed = "MinHitSpeed";
 
+    public const string PassthroughInMenu = "PassthroughInMainMenu";
+
     private static readonly string[] _volumeNames = new[] { MASTERVOLUME, MUSICVOLUME, SFXVOLUME, MENUMUSICVOLUME, MENUSFXVOLUME };
 
     #endregion

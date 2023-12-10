@@ -17,7 +17,7 @@ public class EnvTargetsSetter : EnvironmentAssetSetter
 
     protected override bool ShouldUpdateFromEnv()
     {
-        return PlaylistManager.Instance?.CurrentPlaylist?.Targets == null;
+        return _ignorePlaylists || PlaylistManager.Instance?.CurrentPlaylist?.Targets == null;
     }
 
     public override void SetAssetIndex(int index)
@@ -46,6 +46,11 @@ public class EnvTargetsSetter : EnvironmentAssetSetter
         var assetName = GetPlaylistAssetName(sourcePlaylist);
         if (string.IsNullOrWhiteSpace(sourcePlaylist.Targets?.AssetName) && EnvironmentControlManager.Instance != null)
         {
+            if (!string.IsNullOrWhiteSpace(sourcePlaylist.TargetEnvName) && EnvironmentControlManager.Instance.TryGetEnvRefByName(sourcePlaylist.TargetEnvName, out var environment))
+            {
+                assetName = environment.TargetsName;
+                return assetName;
+            }
             var currentEnv = EnvironmentControlManager.Instance.ActiveEnvironmentContainer;
             if (currentEnv.Targets != null)
             {
@@ -65,5 +70,10 @@ public class EnvTargetsSetter : EnvironmentAssetSetter
         {
             EnvironmentControlManager.Instance.SetTargetOverride(playlist.Targets);
         }
+    }
+
+    protected override void ResetOverrides()
+    {
+        EnvironmentControlManager.Instance.SetTargetOverride(null);
     }
 }

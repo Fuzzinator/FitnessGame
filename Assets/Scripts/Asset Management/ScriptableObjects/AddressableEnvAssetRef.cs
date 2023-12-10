@@ -44,3 +44,39 @@ public class AddressableEnvAssetRef : ScriptableObject
 
     public TargetPlatform TargetPlatform => _targetPlatform;
 }
+
+public struct EnvAssets
+{
+    [field: SerializeField]
+    public string EnvironmentName { get; private set; }
+    
+    [field: SerializeField]
+    public EnvAssetRef Scene { get; private set; }
+
+    [field: SerializeField]
+    public EnvAssetRef Gloves { get; private set; }
+
+    [field: SerializeField]
+    public EnvAssetRef Targets { get; private set; }
+
+    [field: SerializeField]
+    public EnvAssetRef Obstacles { get; private set; }
+
+    public EnvAssets(AddressableEnvAssetRef asset)
+    {
+        EnvironmentName = asset.EnvironmentName;
+        Scene = asset.Scene;
+        Gloves = asset.Gloves;
+        Targets = asset.Targets;
+        Obstacles = asset.Obstacles;
+    }
+
+    public EnvAssets(string envName, EnvAssetRef scene, EnvAssetRef gloves, EnvAssetRef targets, EnvAssetRef obstacles)
+    {
+        EnvironmentName = envName;
+        Scene = scene;
+        Gloves = gloves;
+        Targets = targets;
+        Obstacles = obstacles;
+    }
+}

@@ -8,6 +8,7 @@ using InfoSaving;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace UI.Scrollers.Playlists
 {
@@ -81,22 +82,21 @@ namespace UI.Scrollers.Playlists
 
             _playlistTitleCard.interactable = true;
             //_playlistTitleCard.interactable = currentPlaylist.isValid;
-            _playlistTitle.SetTextZeroAlloc(currentPlaylist.PlaylistName, true);
-            _playlistName.SetTextZeroAlloc(currentPlaylist.PlaylistName, true);
-            _playlistLength.SetTextZeroAlloc(currentPlaylist.ReadableLength, true);
+            _playlistTitle.text = currentPlaylist.PlaylistName;
+            _playlistName.text = currentPlaylist.PlaylistName;
+            _playlistLength.text = currentPlaylist.ReadableLength;
             _playButton.interactable = currentPlaylist.isValid;
             _editButton.gameObject.SetActive(currentPlaylist.IsCustomPlaylist);
             _deleteButton.gameObject.SetActive(currentPlaylist.IsCustomPlaylist);
             _scrollerController.ReloadScroller();
 
             var playlistRecords = await GetPlaylistRecords();
-
             ulong score = 0;
             var streak = 0;
-            if (playlistRecords.scores != null && playlistRecords.scores.Length > 0)
+            if (playlistRecords != null && playlistRecords.Length > 0)
             {
-                score = playlistRecords.scores[0].Score;
-                streak = playlistRecords.streaks[0].Streak;
+                score = playlistRecords[0].Score;
+                streak = playlistRecords[0].Streak;
             }
             using (var sb = ZString.CreateStringBuilder(true))
             {
@@ -114,13 +114,13 @@ namespace UI.Scrollers.Playlists
             }
         }
 
-        private async UniTask<SongAndPlaylistRecords> GetPlaylistRecords()
+        private async UniTask<PlaylistRecord[]> GetPlaylistRecords()
         {
             var playlist = PlaylistManager.Instance.CurrentPlaylist;
             if (playlist == null)
             {
                 Debug.LogError("Trying to get record but playlist is null.");
-                return new SongAndPlaylistRecords();
+                return null;
             }
             return await PlayerStatsFileManager.TryGetPlaylistRecords(playlist, _cancellationToken);
         }

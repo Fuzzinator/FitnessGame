@@ -18,13 +18,7 @@ public class ProfileSelectionController : MonoBehaviour
     private ProfileEditor _profileEditor;
 
     [SerializeField]
-    private string _enableEffectName;
-
-    [SerializeField]
-    private string _disableEffectName;
-
-    [SerializeField]
-    private MaterialValueLerper _valueLerper;
+    private Animator _fogAnimator;
 
     [SerializeField]
     private GameObject _noProfileDisplay;
@@ -34,22 +28,30 @@ public class ProfileSelectionController : MonoBehaviour
 
     public ProfileEditor ProfileEditor => _profileEditor;
 
+    private bool _initialized = false;
+
+    private const string FogOn = "FogOn";
+    private const string Transition = "Transition";
+
     private void OnEnable()
     {
         if (ProfileManager.Instance.ActiveProfile == null)
         {
             _fogActive = true;
-            _valueLerper.TriggerValueChangeAsync(_enableEffectName).Forget();
+            _fogAnimator.SetBool(Transition, _initialized);
+            _fogAnimator.SetBool(FogOn, true);
         }
         else
         {
             _fogActive = false;
-            _valueLerper.SetValue(_disableEffectName);
+            _fogAnimator.SetBool(Transition, false);
+            _fogAnimator.SetBool(FogOn, false);
         }
 
         ProfileManager.Instance.GetAllProfileSprites();
         ShowAvailableProfiles();
         ProfileManager.Instance.profilesUpdated.AddListener(ShowAvailableProfiles);
+        _initialized = true;
     }
 
     private void OnDisable()
@@ -57,7 +59,8 @@ public class ProfileSelectionController : MonoBehaviour
         if (_fogActive)
         {
             _fogActive = false;
-            _valueLerper.TriggerValueChangeAsync(_disableEffectName).Forget();
+            _fogAnimator.SetBool(Transition, true);
+            _fogAnimator.SetBool(FogOn, false);
         }
 
         ProfileManager.Instance.UnloadProfileSprites();

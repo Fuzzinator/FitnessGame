@@ -26,6 +26,21 @@ public class CustomPlaylistsManager : MonoBehaviour
         }
     }
 
+    public void TryDeleteActivePlaylist()
+    {
+        if(PlaylistManager.Instance.CurrentPlaylist == null)
+        {
+            return;
+        }
+
+        var playlist = PlaylistManager.Instance.CurrentPlaylist.PlaylistName;
+        var deleteVisuals = new Notification.NotificationVisuals(
+            $"Are you sure you would like to permanently delete {playlist}?",
+            "Delete Song?", "Confirm", "Cancel");
+
+        NotificationManager.RequestNotification(deleteVisuals, () => DeleteActivePlaylist());
+    }
+
     public void DeleteActivePlaylist()
     {
         var playlist = PlaylistManager.Instance.CurrentPlaylist?.PlaylistName;
