@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class NewEnvTargetSetter : NewEnvAssetSetter
 {
-    public override EnvAssetRef GetAssetRef(int index)
+    public override EnvAssetReference GetAssetRef(int index)
     {
         return EnvironmentControlManager.Instance.GetTargetAtIndex(index);
     }

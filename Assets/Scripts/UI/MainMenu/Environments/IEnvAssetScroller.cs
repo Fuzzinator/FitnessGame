@@ -7,6 +7,6 @@ public interface IEnvAssetScroller
     void EnableOptionsDisplay();
     void DisableOptionsDisplay();
     int GetAvailableAssetCount();
-    EnvAssetRef GetAssetRef(int assetIndex);
+    EnvAssetReference GetAssetRef(int assetIndex);
     void SetAssetIndex(int index);
 }

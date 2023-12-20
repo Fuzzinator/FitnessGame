@@ -42,7 +42,7 @@ namespace UI.Scrollers.Playlists
 
         public void QuickAddToPlaylist(SongInfo info)
         {
-            var playlistItem = PlaylistMaker.GetPlaylistItem(info, DifficultyInfo.DifficultyEnum.Unset.Readable(), DifficultyInfo.DifficultyEnum.Unset, GameMode.Unset);
+            var playlistItem = PlaylistMaker.GetPlaylistItem(info, DifficultyInfo.DifficultyEnum.Unset.Readable(), DifficultyInfo.DifficultyEnum.Unset, GameMode.Unset, false, false, false);
             PlaylistMaker.Instance.AddPlaylistItem(playlistItem);
         }
 

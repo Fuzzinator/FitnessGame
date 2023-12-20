@@ -50,9 +50,9 @@ public class CustomEnvironmentCreator : MonoBehaviour
     private string _skyboxDepthPath;
     private float _environmentBrightness;
 
-    public EnvAssetRef GlovesRef { get; private set; }
-    public EnvAssetRef TargetsRef { get; private set; }
-    public EnvAssetRef ObstaclesRef { get; private set; }
+    public EnvAssetReference GlovesRef { get; private set; }
+    public EnvAssetReference TargetsRef { get; private set; }
+    public EnvAssetReference ObstaclesRef { get; private set; }
 
     private string _originalEnvironmentName;
 
@@ -211,7 +211,7 @@ public class CustomEnvironmentCreator : MonoBehaviour
         _brightnessLevelDisplay.SetTextZeroAlloc(brightness, true);
     }
 
-    public void SetGloves(EnvAssetRef gloves)
+    public void SetGloves(EnvAssetReference gloves)
     {
         if (gloves == null)
         {
@@ -220,7 +220,7 @@ public class CustomEnvironmentCreator : MonoBehaviour
         GlovesRef = gloves;
     }
 
-    public void SetTargets(EnvAssetRef targets)
+    public void SetTargets(EnvAssetReference targets)
     {
         if (targets == null)
         {
@@ -229,7 +229,7 @@ public class CustomEnvironmentCreator : MonoBehaviour
         TargetsRef = targets;
     }
 
-    public void SetObstacles(EnvAssetRef obstacles)
+    public void SetObstacles(EnvAssetReference obstacles)
     {
         if (obstacles == null)
         {

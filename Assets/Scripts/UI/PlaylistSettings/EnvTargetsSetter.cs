@@ -7,6 +7,18 @@ public class EnvTargetsSetter : EnvironmentAssetSetter
 {
     public override string GetPlaylistAssetName(Playlist playlist)
     {
+        SaveLog("Targets: Getting Playlist Gloves Name");
+        SaveLog($"Targets: Playlist: {playlist}");
+        if (playlist != null)
+        {
+            SaveLog($"Targets: Playlist Name: {playlist.PlaylistName}");
+            SaveLog($"Targets: Playlist Targets: {playlist.Targets}");
+            if (playlist.Targets != null)
+            {
+                SaveLog($"Trying to get targets name");
+                SaveLog($"Targets: Playlist Targets Name: {playlist.Targets.AssetName}");
+            }
+        }
         return playlist?.TargetEnvTargetsName;
     }
 
@@ -17,7 +29,15 @@ public class EnvTargetsSetter : EnvironmentAssetSetter
 
     protected override bool ShouldUpdateFromEnv()
     {
-        return _ignorePlaylists || PlaylistManager.Instance?.CurrentPlaylist?.Targets == null;
+        if (_ignorePlaylists)
+        {
+            return true;
+        }
+        var managerNull = PlaylistManager.Instance == null;
+        var playlistNull = managerNull || PlaylistManager.Instance.CurrentPlaylist == null;
+        var targetsNull = managerNull || playlistNull || PlaylistManager.Instance.CurrentPlaylist.Targets == null;
+
+        return _ignorePlaylists || targetsNull;
     }
 
     public override void SetAssetIndex(int index)
@@ -36,7 +56,7 @@ public class EnvTargetsSetter : EnvironmentAssetSetter
         return EnvironmentControlManager.Instance.AvailableTargetCount;
     }
 
-    public override EnvAssetRef GetAssetRef(int index)
+    public override EnvAssetReference GetAssetRef(int index)
     {
         return EnvironmentControlManager.Instance.GetTargetAtIndex(index);
     }
@@ -44,9 +64,14 @@ public class EnvTargetsSetter : EnvironmentAssetSetter
     protected override string GetAssetName(Playlist sourcePlaylist)
     {
         var assetName = GetPlaylistAssetName(sourcePlaylist);
-        if (string.IsNullOrWhiteSpace(sourcePlaylist.Targets?.AssetName) && EnvironmentControlManager.Instance != null)
+        if (sourcePlaylist == null)
         {
-            if (!string.IsNullOrWhiteSpace(sourcePlaylist.TargetEnvName) && EnvironmentControlManager.Instance.TryGetEnvRefByName(sourcePlaylist.TargetEnvName, out var environment))
+            return assetName;
+        }
+
+        if (EnvironmentControlManager.Instance != null && (sourcePlaylist.Targets == null || string.IsNullOrWhiteSpace(sourcePlaylist.Targets.AssetName)))
+        {
+            if (!string.IsNullOrWhiteSpace(sourcePlaylist.TargetEnvName) && EnvironmentControlManager.Instance.TryGetEnvRefByName(sourcePlaylist.TargetEnvName, out var environment) && environment.Targets != null)
             {
                 assetName = environment.TargetsName;
                 return assetName;

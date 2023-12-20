@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class NewEnvGloveSetter : NewEnvAssetSetter
 {
-    public override EnvAssetRef GetAssetRef(int index)
+    public override EnvAssetReference GetAssetRef(int index)
     {
         return EnvironmentControlManager.Instance.GetGloveAtIndex(index);
     }

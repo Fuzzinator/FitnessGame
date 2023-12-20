@@ -27,13 +27,13 @@ public class CustomEnvironment
     public string MeshPath { get; private set; }
 
     [field: SerializeField]
-    public EnvAssetRef Gloves { get; private set; }
+    public EnvAssetReference Gloves { get; private set; }
 
     [field: SerializeField]
-    public EnvAssetRef Targets { get; private set; }
+    public EnvAssetReference Targets { get; private set; }
 
     [field: SerializeField]
-    public EnvAssetRef Obstacles { get; private set; }
+    public EnvAssetReference Obstacles { get; private set; }
 
     public string GlovesName => Gloves?.AssetName;
 
@@ -87,24 +87,24 @@ public class CustomEnvironment
         SkyboxBrightness = brightness;
     }
 
-    public void SetGloves(EnvAssetRef asset)
+    public void SetGloves(EnvAssetReference asset)
     {
         Gloves = asset;
     }
 
-    public void SetTargets(EnvAssetRef targets)
+    public void SetTargets(EnvAssetReference targets)
     {
         Targets = targets;
     }
 
-    public void SetObstacles(EnvAssetRef obstacles)
+    public void SetObstacles(EnvAssetReference obstacles)
     {
         Obstacles = obstacles;
     }
 
     public CustomEnvironment(string environmentName, string skyboxName = null, string skyboxPath = null,
         string skyboxDepthName = null, string skyboxDepthPath = null, float skyboxBrightness = 1,
-        string meshPath = null, EnvAssetRef gloves = null, EnvAssetRef targets = null, EnvAssetRef obstacles = null)
+        string meshPath = null, EnvAssetReference gloves = null, EnvAssetReference targets = null, EnvAssetReference obstacles = null)
     {
         EnvironmentName = environmentName;
         SkyboxName = skyboxName;

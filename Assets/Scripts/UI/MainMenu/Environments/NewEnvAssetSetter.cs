@@ -46,7 +46,7 @@ public abstract class NewEnvAssetSetter : MonoBehaviour, IEnvAssetScroller
         _controller.Refresh();
     }
 
-    public abstract EnvAssetRef GetAssetRef(int index);
+    public abstract EnvAssetReference GetAssetRef(int index);
 
     public abstract int GetAvailableAssetCount();
 

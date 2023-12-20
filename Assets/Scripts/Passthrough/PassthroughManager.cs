@@ -4,7 +4,7 @@ using static UnityEngine.Rendering.DebugUI;
 
 public class PassthroughManager : MonoBehaviour
 {
-    public static PassthroughManager Instance { get; private set; }
+    public static PassthroughManager DynamicInstance { get; private set; }
 
     [Tooltip("Specify if Insight Passthrough should be enabled. Passthrough layers can only be used if passthrough is enabled.")]
     public bool isInsightPassthroughEnabled = false;
@@ -17,13 +17,14 @@ public class PassthroughManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null)
+        if (DynamicInstance == null)
         {
-            Instance = this;
+            DynamicInstance = this;
         }
         else
         {
-            Destroy(this);
+            Destroy(DynamicInstance);
+            DynamicInstance = this; 
         }
     }
 
@@ -36,9 +37,17 @@ public class PassthroughManager : MonoBehaviour
         ProfileManager.Instance.activeProfileUpdated.AddListener(CheckOnProfileChange);
         SettingsManager.CachedBoolSettingChanged.AddListener(UpdateFromSettingChange);
 
-        if(ProfileManager.Instance.ActiveProfile != null)
+        if (ProfileManager.Instance.ActiveProfile != null)
         {
             CheckOnProfileChange();
+        }
+    }
+
+    private void Start()
+    {
+        if (!_mainMenu && XRPassthroughController.Instance != null)
+        {
+            XRPassthroughController.Instance.PassthroughEnabled = isInsightPassthroughEnabled;
         }
     }
 
@@ -52,14 +61,6 @@ public class PassthroughManager : MonoBehaviour
         SettingsManager.CachedBoolSettingChanged.RemoveListener(UpdateFromSettingChange);
     }
 
-    private void Start()
-    {
-        if (XRPassthroughController.Instance != null)
-        {
-            XRPassthroughController.Instance.PassthroughEnabled = isInsightPassthroughEnabled;
-        }
-    }
-
     private void UpdateFromSettingChange(string settingName, bool value)
     {
         if (!_mainMenu)
@@ -70,6 +71,11 @@ public class PassthroughManager : MonoBehaviour
         {
             isInsightPassthroughEnabled = value;
             _animator.SetBool(AnimatorPassthrough, value);
+
+            if (XRPassthroughController.Instance != null)
+            {
+                XRPassthroughController.Instance.PassthroughEnabled = isInsightPassthroughEnabled;
+            }
         }
     }
 
@@ -81,5 +87,10 @@ public class PassthroughManager : MonoBehaviour
         }
         isInsightPassthroughEnabled = SettingsManager.GetCachedBool(SettingsManager.PassthroughInMenu, false);
         _animator.SetBool(AnimatorPassthrough, isInsightPassthroughEnabled);
+
+        if (XRPassthroughController.Instance != null)
+        {
+            XRPassthroughController.Instance.PassthroughEnabled = isInsightPassthroughEnabled;
+        }
     }
 }

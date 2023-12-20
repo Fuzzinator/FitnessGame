@@ -6,6 +6,19 @@ public class EnvObstaclesSetter : EnvironmentAssetSetter
 {
     public override string GetPlaylistAssetName(Playlist playlist)
     {
+        SaveLog("Obstacles: Getting Playlist Gloves Name");
+        SaveLog($"Obstacles: Playlist: {playlist}");
+        if (playlist != null)
+        {
+            SaveLog($"Obstacles: Playlist Name: {playlist.PlaylistName}");
+            SaveLog($"Obstacles: Playlist Obstacles: {playlist.Obstacles}");
+
+            if (playlist.Obstacles != null)
+            {
+                SaveLog($"Trying to get obstacles name");
+                SaveLog($"Obstacles: Playlist Obstacles Name: {playlist.Obstacles.AssetName}");
+            }
+        }
         return playlist?.TargetEnvObstaclesName;
     }
 
@@ -16,7 +29,15 @@ public class EnvObstaclesSetter : EnvironmentAssetSetter
 
     protected override bool ShouldUpdateFromEnv()
     {
-        return _ignorePlaylists || PlaylistManager.Instance?.CurrentPlaylist?.Obstacles == null;
+        if (_ignorePlaylists)
+        {
+            return true;
+        }
+        var managerNull = PlaylistManager.Instance == null;
+        var playlistNull = managerNull || PlaylistManager.Instance.CurrentPlaylist == null;
+        var obstaclesNull = managerNull || playlistNull || PlaylistManager.Instance.CurrentPlaylist.Obstacles == null;
+
+        return _ignorePlaylists || obstaclesNull;
     }
 
     public override void SetAssetIndex(int index)
@@ -36,7 +57,7 @@ public class EnvObstaclesSetter : EnvironmentAssetSetter
         return EnvironmentControlManager.Instance.AvailableObstacleCount;
     }
 
-    public override EnvAssetRef GetAssetRef(int index)
+    public override EnvAssetReference GetAssetRef(int index)
     {
         return EnvironmentControlManager.Instance.GetObstacleAtIndex(index);
     }
@@ -44,9 +65,14 @@ public class EnvObstaclesSetter : EnvironmentAssetSetter
     protected override string GetAssetName(Playlist sourcePlaylist)
     {
         var assetName = GetPlaylistAssetName(sourcePlaylist);
-        if (string.IsNullOrWhiteSpace(sourcePlaylist.Obstacles?.AssetName) && EnvironmentControlManager.Instance != null)
+        if(sourcePlaylist == null)
         {
-            if(!string.IsNullOrWhiteSpace(sourcePlaylist.TargetEnvName) && EnvironmentControlManager.Instance.TryGetEnvRefByName(sourcePlaylist.TargetEnvName, out var environment))
+            return assetName;
+        }
+
+        if (EnvironmentControlManager.Instance != null && (sourcePlaylist.Obstacles == null || string.IsNullOrWhiteSpace(sourcePlaylist.Obstacles.AssetName)))
+        {
+            if(!string.IsNullOrWhiteSpace(sourcePlaylist.TargetEnvName) && EnvironmentControlManager.Instance.TryGetEnvRefByName(sourcePlaylist.TargetEnvName, out var environment) && environment.Obstacles != null)
             {
                 assetName = environment.ObstaclesName;
                 return assetName;

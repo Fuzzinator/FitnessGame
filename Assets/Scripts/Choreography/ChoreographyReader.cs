@@ -30,8 +30,10 @@ public class ChoreographyReader : MonoBehaviour
     public ChoreographyObstacle[] Obstacles => _choreography.Obstacles;
 
     public bool CanHaveBlock =>
-        PlaylistManager.Instance.TargetGameMode is not GameMode.JabsOnly or GameMode.OneHanded or GameMode.LightShow;
-    public bool CanSwitchHands => PlaylistManager.Instance.TargetGameMode is not GameMode.OneHanded;
+        PlaylistManager.Instance.TargetGameMode is not GameMode.JabsOnly or GameMode.OneHanded or GameMode.LightShow
+        && !PlaylistManager.Instance.ForceOneHanded && !PlaylistManager.Instance.ForceJabsOnly;
+    public bool CanSwitchHands => PlaylistManager.Instance.TargetGameMode is not GameMode.OneHanded
+        && !PlaylistManager.Instance.ForceOneHanded;
 
 
     [Header("Settings")]
@@ -150,7 +152,7 @@ public class ChoreographyReader : MonoBehaviour
             case GameMode.Normal:
                 break;
             case GameMode.JabsOnly:
-                notes = Choreography.SetNotesToType(notes, ChoreographyNote.CutDirection.Jab);
+                notes = Choreography.SetNotesToType(notes, CutDirection.Jab);
                 break;
             case GameMode.OneHanded:
                 notes = Choreography.SetNotesToSide(notes, HitSideType.Right);
@@ -173,7 +175,18 @@ public class ChoreographyReader : MonoBehaviour
             default:
                 throw new ArgumentOutOfRangeException();
         }
-
+        if (PlaylistManager.Instance.ForceOneHanded)
+        {
+            notes = Choreography.SetNotesToSide(notes, HitSideType.Right);
+        }
+        if(PlaylistManager.Instance.ForceJabsOnly)
+        {
+            notes = Choreography.SetNotesToType(notes, CutDirection.Jab);
+        }
+        if (PlaylistManager.Instance.ForceNoObstacles)
+        {
+            obstacles = null;
+        }
         for (var i = 0; i < (notes?.Length ?? 0); i++)
         {
             _sequenceables.Add(new ChoreographyFormation(notes[i]));
@@ -422,7 +435,14 @@ public class ChoreographyReader : MonoBehaviour
                             else if (note.CutDir == ChoreographyNote.CutDirection.UppercutLeft ||
                                      note.CutDir == ChoreographyNote.CutDirection.UppercutRight)
                             {
-                                note = note.SetToBlock();
+                                if (CanHaveBlock)
+                                {
+                                    note = note.SetToBlock();
+                                }
+                                else
+                                {
+                                    note = note.SetToBasicJab();
+                                }
                             }
                         }
                         else if (note.LineLayer == ChoreographyNote.LineLayerType.High)
@@ -431,7 +451,14 @@ public class ChoreographyReader : MonoBehaviour
                                 note.CutDir == ChoreographyNote.CutDirection.HookLeftDown ||
                                 note.CutDir == ChoreographyNote.CutDirection.HookRightDown)
                             {
-                                note = note.SetToBlock();
+                                if (CanHaveBlock)
+                                {
+                                    note = note.SetToBlock();
+                                }
+                                else
+                                {
+                                    note = note.SetToBasicJab();
+                                }
                             }
                         }
 
@@ -440,13 +467,20 @@ public class ChoreographyReader : MonoBehaviour
                             if (note.LineLayer == ChoreographyNote.LineLayerType.High)
                             {
                                 if (_difficultyInfo.DifficultyRank == 1 &&
-                                    note.CutDir == ChoreographyNote.CutDirection.Jab)
+                                    note.CutDir == ChoreographyNote.CutDirection.Jab && CanHaveBlock)
                                 {
-                                    note = note.SetToBlock();
+                                    if (CanHaveBlock)
+                                    {
+                                        note = note.SetToBlock();
+                                    }
+                                    else
+                                    {
+                                        note = note.SetToBasicJab();
+                                    }
                                 }
                                 else if (note.CutDir == ChoreographyNote.CutDirection.JabDown ||
                                          note.CutDir == ChoreographyNote.CutDirection.HookLeftDown ||
-                                         note.CutDir == ChoreographyNote.CutDirection.HookRightDown)
+                                         note.CutDir == ChoreographyNote.CutDirection.HookRightDown || !CanHaveBlock)
                                 {
                                     note = note.SetToBasicJab();
                                 }

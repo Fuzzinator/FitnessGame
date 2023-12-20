@@ -14,7 +14,7 @@ public abstract class NewPlaylistEnvAssetSetter : MonoBehaviour, IEnvAssetScroll
     protected EnvAssetScrollerController _controller;
 
     [SerializeField]
-    protected EnvAssetRef _assetOverride;
+    protected EnvAssetReference _assetOverride;
 
     protected virtual void OnEnable()
     {
@@ -54,7 +54,7 @@ public abstract class NewPlaylistEnvAssetSetter : MonoBehaviour, IEnvAssetScroll
         _scroller.gameObject.SetActive(false);
     }
 
-    public abstract EnvAssetRef GetAssetRef(int assetIndex);
+    public abstract EnvAssetReference GetAssetRef(int assetIndex);
 
     public abstract int GetAvailableAssetCount();
 

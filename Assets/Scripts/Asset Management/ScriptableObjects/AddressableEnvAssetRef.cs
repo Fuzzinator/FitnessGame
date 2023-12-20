@@ -30,17 +30,17 @@ public class AddressableEnvAssetRef : ScriptableObject
 
     public EnvSceneRef SceneAssets => (EnvSceneRef)Scene.AssetPath.Asset;
 
-    public string GlovesName => Gloves?.AssetName;
+    public string GlovesName => Gloves != null ? Gloves.AssetName : null;
 
-    public EnvGlovesRef GloveAssets => (EnvGlovesRef)Gloves.AssetPath.Asset;
+    public EnvGlovesRef GloveAssets => Gloves.AssetPath.Asset as EnvGlovesRef;
 
-    public string TargetsName => Targets?.AssetName;
+    public string TargetsName => Targets != null ? Targets.AssetName : null;
 
-    public EnvTargetsRef TargetsAssets => (EnvTargetsRef)Targets.AssetPath.Asset;
+    public EnvTargetsRef TargetsAssets => Targets.AssetPath.Asset as EnvTargetsRef;
 
-    public string ObstaclesName => Obstacles?.AssetName;
+    public string ObstaclesName => Obstacles != null ? Obstacles.AssetName : null;
 
-    public EnvObstaclesRef ObstaclesAssets => (EnvObstaclesRef)Obstacles.AssetPath.Asset;
+    public EnvObstaclesRef ObstaclesAssets => Obstacles.AssetPath.Asset as EnvObstaclesRef;
 
     public TargetPlatform TargetPlatform => _targetPlatform;
 }
@@ -54,24 +54,24 @@ public struct EnvAssets
     public EnvAssetRef Scene { get; private set; }
 
     [field: SerializeField]
-    public EnvAssetRef Gloves { get; private set; }
+    public EnvAssetReference Gloves { get; private set; }
 
     [field: SerializeField]
-    public EnvAssetRef Targets { get; private set; }
+    public EnvAssetReference Targets { get; private set; }
 
     [field: SerializeField]
-    public EnvAssetRef Obstacles { get; private set; }
+    public EnvAssetReference Obstacles { get; private set; }
 
     public EnvAssets(AddressableEnvAssetRef asset)
     {
         EnvironmentName = asset.EnvironmentName;
         Scene = asset.Scene;
-        Gloves = asset.Gloves;
-        Targets = asset.Targets;
-        Obstacles = asset.Obstacles;
+        Gloves = new EnvAssetReference(asset.Gloves);
+        Targets = new EnvAssetReference(asset.Targets);
+        Obstacles = new EnvAssetReference(asset.Obstacles);
     }
 
-    public EnvAssets(string envName, EnvAssetRef scene, EnvAssetRef gloves, EnvAssetRef targets, EnvAssetRef obstacles)
+    public EnvAssets(string envName, EnvAssetRef scene, EnvAssetReference gloves, EnvAssetReference targets, EnvAssetReference obstacles)
     {
         EnvironmentName = envName;
         Scene = scene;

@@ -39,19 +39,14 @@ public class Playlist
 
 
     [field: SerializeField]
-    public EnvAssetRef Gloves { get; private set; }
+    public EnvAssetReference Gloves { get; private set; }
 
     [field: SerializeField]
-    public EnvAssetRef Targets { get; private set; }
+    public EnvAssetReference Targets { get; private set; }
 
     [field: SerializeField]
-    public EnvAssetRef Obstacles { get; private set; }
+    public EnvAssetReference Obstacles { get; private set; }
 
-    public string GlovesName => Gloves?.AssetName;
-
-    public string TargetsName => Targets?.AssetName;
-
-    public string ObstaclesName => Obstacles?.AssetName;
 
     [SerializeField]
     private ColorsManager.ColorSet _targetColors;
@@ -80,13 +75,13 @@ public class Playlist
     {
         get
         {
-            if (string.IsNullOrWhiteSpace(Gloves?.AssetName))
+            if (Gloves != null && !string.IsNullOrWhiteSpace(Gloves.AssetName))
             {
-                return _targetEnvName;
+                return Gloves.AssetName;
             }
             else
             {
-                return Gloves.AssetName;
+                return null;
             }
         }
     }
@@ -94,13 +89,13 @@ public class Playlist
     {
         get
         {
-            if (string.IsNullOrWhiteSpace(Targets?.AssetName))
+            if (Targets != null && !string.IsNullOrWhiteSpace(Targets.AssetName))
             {
-                return _targetEnvName;
+                return Targets.AssetName;
             }
             else
             {
-                return Targets.AssetName;
+                return null;
             }
         }
     }
@@ -108,13 +103,13 @@ public class Playlist
     {
         get
         {
-            if (string.IsNullOrWhiteSpace(Obstacles?.AssetName))
+            if (Obstacles != null && !string.IsNullOrWhiteSpace(Obstacles.AssetName))
             {
-                return _targetEnvName;
+                return Obstacles.AssetName;
             }
             else
             {
-                return Obstacles.AssetName;
+                return null;
             }
         }
     }
@@ -154,6 +149,13 @@ public class Playlist
         }
     }
 
+    [field: SerializeField]
+    public bool ForceNoObstacles { get; private set; }
+    [field: SerializeField]
+    public bool ForceOneHanded { get; private set; }
+    [field: SerializeField]
+    public bool ForceJabsOnly { get; private set; }
+
     public string Version => _version;
 
     public string GUID => _guid;
@@ -163,7 +165,9 @@ public class Playlist
     private const string PLAYLISTVERSION = "0.0.4";
 
     public Playlist(List<PlaylistItem> items, GameMode gameMode, DifficultyInfo.DifficultyEnum difficulty, HitSideType startingSide,
-        string playlistName = null, bool isCustomPlaylist = true, string targetEnvName = null, Texture2D image = null, EnvAssetRef gloves = null, EnvAssetRef targets = null, EnvAssetRef obstacles = null)
+        string playlistName = null, bool isCustomPlaylist = true, string targetEnvName = null, Texture2D image = null, 
+        EnvAssetReference gloves = null, EnvAssetReference targets = null, EnvAssetReference obstacles = null, 
+        bool forceNoObstacles = false, bool forceOneHanded = false, bool forceJabsOnly = false)
     {
         _playlistName = string.IsNullOrWhiteSpace(playlistName)
             ? $"{DateTime.Now:yyyy-MM-dd} - {DateTime.Now:hh-mm}"
@@ -185,10 +189,37 @@ public class Playlist
         _guid = Guid.NewGuid().ToString();
         _startingSide = startingSide;
         _setStartingSide = true;
-        Gloves = gloves?? EnvironmentControlManager.Instance.GetGloveAtIndex(0);
-        Targets = targets ?? EnvironmentControlManager.Instance.GetTargetAtIndex(0);
-        Obstacles = obstacles ?? EnvironmentControlManager.Instance.GetObstacleAtIndex(0);
+        if(gloves != null)
+        {
+            Gloves = gloves;
+        }
+        else
+        {
+            Gloves = EnvironmentControlManager.Instance.GetGloveAtIndex(0);
+        }
+
+        if(targets != null)
+        {
+            Targets = targets;
+        }
+        else
+        {
+            Targets = EnvironmentControlManager.Instance.GetTargetAtIndex(0);
+        }
+
+        if(obstacles != null)
+        {
+            Obstacles = obstacles;
+        }
+        else
+        {
+            Obstacles = EnvironmentControlManager.Instance.GetObstacleAtIndex(0);
+        }
+
         isValid = true;
+        ForceNoObstacles = forceNoObstacles;
+        ForceOneHanded = forceOneHanded;
+        ForceJabsOnly = forceJabsOnly;
     }
 
     public Playlist(Playlist sourcePlaylist, string targetEnvName)
@@ -228,10 +259,13 @@ public class Playlist
         Gloves = sourcePlaylist.Gloves;
         Targets = sourcePlaylist.Targets;
         Obstacles = sourcePlaylist.Obstacles;
+        ForceNoObstacles = sourcePlaylist.ForceNoObstacles;
+        ForceOneHanded = sourcePlaylist.ForceOneHanded;
+        ForceJabsOnly = sourcePlaylist.ForceJabsOnly;
         isValid = true;
     }
 
-    public Playlist(PlaylistItem singleSong, HitSideType startingSide, string targetEnvName = null, Sprite image = null)
+    public Playlist(PlaylistItem singleSong, HitSideType startingSide, bool forceNoObstacles, bool forceOneHanded, bool forceJabsOnly, string targetEnvName = null, Sprite image = null)
     {
         _playlistName = singleSong.SongName;
         _items = new[] { singleSong };
@@ -245,6 +279,9 @@ public class Playlist
         _setStartingSide = true;
         _image = image;
         _version = PLAYLISTVERSION;
+        ForceNoObstacles |= forceNoObstacles;
+        ForceOneHanded = forceOneHanded;
+        ForceJabsOnly = forceJabsOnly;
         _guid = null;
         isValid = true;
     }
@@ -292,6 +329,21 @@ public class Playlist
         _startingSide = type;
     }
 
+    public void SetForceNoObstacles(bool on)
+    {
+        ForceNoObstacles = on;
+    }
+
+    public void SetForceOneHanded(bool on)
+    {
+        ForceOneHanded = on;
+    }
+
+    public void SetForceJabsOnly(bool on)
+    {
+        ForceJabsOnly = on;
+    }
+
     public enum SortingMethod
     {
         None = 0,
@@ -331,7 +383,7 @@ public class Playlist
             targetMode = GameMode.Unset;
         }
 
-        return new PlaylistItem(item.SongInfo, targetDifficulty.Readable(), targetDifficulty, targetMode);
+        return new PlaylistItem(item.SongInfo, targetDifficulty.Readable(), targetDifficulty, targetMode, item.ForceNoObstacles, item.ForceOneHanded, item.ForceJabsOnly);
     }
 
     #endregion

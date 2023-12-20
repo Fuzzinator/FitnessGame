@@ -60,9 +60,9 @@ public class XRPassthroughController : MonoBehaviour
     {
         _cameraData = _camera.GetUniversalAdditionalCameraData();
         _cameraAllowedPP = _cameraData.renderPostProcessing;
-        if (PassthroughManager.Instance != null)
+        if (PassthroughManager.DynamicInstance != null)
         {
-            PassthroughEnabled = PassthroughManager.Instance.isInsightPassthroughEnabled;
+            PassthroughEnabled = PassthroughManager.DynamicInstance.isInsightPassthroughEnabled;
         }
         else
         {

@@ -12,13 +12,13 @@ public struct Environment
     public AddressableEnvAssetRef AssetRef { get; private set; }
 
     [field: SerializeField]
-    public EnvAssetRef Gloves { get; private set; }
+    public EnvAssetReference Gloves { get; private set; }
 
     [field: SerializeField]
-    public EnvAssetRef Targets { get; private set; }
+    public EnvAssetReference Targets { get; private set; }
 
     [field: SerializeField]
-    public EnvAssetRef Obstacles { get; private set; }
+    public EnvAssetReference Obstacles { get; private set; }
 
     public string GlovesName => Gloves?.AssetName;
 
@@ -43,9 +43,9 @@ public struct Environment
     public Environment(AddressableEnvAssetRef assetRef)
     {
         Name = assetRef.EnvironmentName;
-        Gloves = assetRef.Gloves;
-        Targets = assetRef.Targets;
-        Obstacles = assetRef.Obstacles;
+        Gloves = new(assetRef.Gloves);
+        Targets = new(assetRef.Targets);
+        Obstacles = new(assetRef.Obstacles);
         IsCustom = false;
         CustomPath = null;
         AssetRef = assetRef;

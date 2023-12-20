@@ -47,9 +47,9 @@ public class EnvironmentControlManager : MonoBehaviour
     private int _targetEnvironmentIndex = 0;
 
 
-    public EnvAssetRef GlovesOverride { get; private set; }
-    public EnvAssetRef TargetsOverride { get; private set; }
-    public EnvAssetRef ObstaclesOverride { get; private set; }
+    public EnvAssetReference GlovesOverride { get; private set; }
+    public EnvAssetReference TargetsOverride { get; private set; }
+    public EnvAssetReference ObstaclesOverride { get; private set; }
 
     public EnvironmentAssetContainer ActiveEnvironmentContainer { get; private set; }
 
@@ -114,7 +114,7 @@ public class EnvironmentControlManager : MonoBehaviour
         targetEnvironmentIndexChanged.Invoke(index);
     }
 
-    public EnvAssetRef SetGloveOverride(int index)
+    public EnvAssetReference SetGloveOverride(int index)
     {
         if (index < 0 || index >= _availableGloveReferences.Count)
         {
@@ -122,13 +122,13 @@ public class EnvironmentControlManager : MonoBehaviour
         }
         else
         {
-            GlovesOverride = _availableGloveReferences[index];
+            GlovesOverride = new EnvAssetReference(_availableGloveReferences[index]);
         }
 
         return GlovesOverride;
     }
 
-    public EnvAssetRef SetTargetOverride(int index)
+    public EnvAssetReference SetTargetOverride(int index)
     {
         if (index < 0 || index >= _availableTargetReferences.Count)
         {
@@ -136,13 +136,13 @@ public class EnvironmentControlManager : MonoBehaviour
         }
         else
         {
-            TargetsOverride = _availableTargetReferences[index];
+            TargetsOverride = new EnvAssetReference(_availableTargetReferences[index]);
         }
 
         return TargetsOverride;
     }
 
-    public EnvAssetRef SetObstacleOverride(int index)
+    public EnvAssetReference SetObstacleOverride(int index)
     {
         if (index < 0 || index >= _availableObstacleReferences.Count)
         {
@@ -150,23 +150,23 @@ public class EnvironmentControlManager : MonoBehaviour
         }
         else
         {
-            ObstaclesOverride = _availableObstacleReferences[index];
+            ObstaclesOverride = new EnvAssetReference(_availableObstacleReferences[index]);
         }
 
         return ObstaclesOverride;
     }
 
-    public void SetGloveOverride(EnvAssetRef gloveOverride)
+    public void SetGloveOverride(EnvAssetReference gloveOverride)
     {
         GlovesOverride = gloveOverride;
     }
 
-    public void SetTargetOverride(EnvAssetRef targetOverride)
+    public void SetTargetOverride(EnvAssetReference targetOverride)
     {
         TargetsOverride = targetOverride;
     }
 
-    public void SetObstaclesOverride(EnvAssetRef obstacleOverride)
+    public void SetObstaclesOverride(EnvAssetReference obstacleOverride)
     {
         ObstaclesOverride = obstacleOverride;
     }
@@ -209,31 +209,31 @@ public class EnvironmentControlManager : MonoBehaviour
         return index;
     }
 
-    public EnvAssetRef GetGloveAtIndex(int index)
+    public EnvAssetReference GetGloveAtIndex(int index)
     {
         if (index >= _availableGloveReferences.Count)
         {
             return null;
         }
-        return _availableGloveReferences[index];
+        return new EnvAssetReference(_availableGloveReferences[index]);
     }
 
-    public EnvAssetRef GetTargetAtIndex(int index)
+    public EnvAssetReference GetTargetAtIndex(int index)
     {
         if (index >= _availableTargetReferences.Count)
         {
             return null;
         }
-        return _availableTargetReferences[index];
+        return new EnvAssetReference(_availableTargetReferences[index]);
     }
 
-    public EnvAssetRef GetObstacleAtIndex(int index)
+    public EnvAssetReference GetObstacleAtIndex(int index)
     {
         if (index >= _availableObstacleReferences.Count)
         {
             return null;
         }
-        return _availableObstacleReferences[index];
+        return new EnvAssetReference(_availableObstacleReferences[index]);
     }
 
     public string GetTargetEnvName()
@@ -375,10 +375,15 @@ public class EnvironmentControlManager : MonoBehaviour
     private async UniTaskVoid LoadCustomEnvironmentDataAsync(Environment environment)
     {
         LoadingEnvironmentContainer = true;
+
+        var useEnvGloves = environment.Gloves.IsNotNull();
+        var useEnvTargets = environment.Targets.IsNotNull();
+        var useEnvObstacles = environment.Obstacles.IsNotNull();
+
         var assets = new EnvAssets(environment.Name, _customEnvironment.Scene,
-                                   environment.Gloves != null ? environment.Gloves : _customEnvironment.Gloves,
-                                   environment.Targets != null ? environment.Targets : _customEnvironment.Targets,
-                                   environment.Obstacles != null ? environment.Obstacles : _customEnvironment.Obstacles);
+                                   useEnvGloves ? environment.Gloves : new(_customEnvironment.Gloves),
+                                   useEnvTargets ? environment.Targets : new(_customEnvironment.Targets),
+                                   useEnvObstacles ? environment.Obstacles : new(_customEnvironment.Obstacles));
 
         await TryLoadEnvironmentData(assets);
         var env = await CustomEnvironmentsController.LoadCustomEnvironment(environment.CustomPath);
@@ -415,7 +420,7 @@ public class EnvironmentControlManager : MonoBehaviour
             return false;
         }
 
-        var glovesRef = (GlovesOverride != null ? GlovesOverride : assets.Gloves);
+        var glovesRef = (GlovesOverride.IsNotNull() ? GlovesOverride : assets.Gloves);
         var gloves = await Addressables.LoadAssetAsync<EnvGlovesRef>(glovesRef.AssetPath);
         if (gloves == null)
         {
@@ -423,7 +428,7 @@ public class EnvironmentControlManager : MonoBehaviour
             return false;
         }
 
-        var targetsRef = TargetsOverride != null ? TargetsOverride : assets.Targets;
+        var targetsRef = TargetsOverride.IsNotNull() ? TargetsOverride : assets.Targets;
         var targets = await Addressables.LoadAssetAsync<EnvTargetsRef>(targetsRef.AssetPath);
         if (targets == null)
         {
@@ -431,7 +436,7 @@ public class EnvironmentControlManager : MonoBehaviour
             return false;
         }
 
-        var obstaclesRef = ObstaclesOverride != null ? ObstaclesOverride : assets.Obstacles;
+        var obstaclesRef = ObstaclesOverride.IsNotNull() ? ObstaclesOverride : assets.Obstacles;
         var obstacles = await Addressables.LoadAssetAsync<EnvObstaclesRef>(obstaclesRef.AssetPath);
         if (obstacles == null)
         {

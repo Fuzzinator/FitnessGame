@@ -3,7 +3,7 @@ using System;
 
 public class NewPlaylistGloveSetter : NewPlaylistEnvAssetSetter
 {
-    public override EnvAssetRef GetAssetRef(int assetIndex)
+    public override EnvAssetReference GetAssetRef(int assetIndex)
     {
         if (assetIndex < 0 || assetIndex >= GetAvailableAssetCount())
         {

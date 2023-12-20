@@ -1,4 +1,5 @@
 using Cysharp.Text;
+using Cysharp.Threading.Tasks;
 using EnhancedUI.EnhancedScroller;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,8 +20,7 @@ public abstract class EnvironmentAssetSetter : MonoBehaviour, IEnvAssetScroller
 
     protected virtual void OnEnable()
     {
-        ResetOverrides();
-        GetAndSetText();
+        WaitAndUpdateDisplay().Forget();
         if (EnvironmentControlManager.Instance != null)
         {
             EnvironmentControlManager.Instance.availableReferencesUpdated.AddListener(GetAndSetText);
@@ -29,10 +29,6 @@ public abstract class EnvironmentAssetSetter : MonoBehaviour, IEnvAssetScroller
         if(_ignorePlaylists)
         {
             return;
-        }
-        if(PlaylistManager.Instance?.CurrentPlaylist != null)
-        {
-            UpdateFromPlaylist(PlaylistManager.Instance?.CurrentPlaylist);
         }
         PlaylistManager.Instance.currentPlaylistUpdated.AddListener(UpdateFromPlaylist);
     }
@@ -50,6 +46,30 @@ public abstract class EnvironmentAssetSetter : MonoBehaviour, IEnvAssetScroller
             return;
         }
         PlaylistManager.Instance.currentPlaylistUpdated.RemoveListener(UpdateFromPlaylist);
+    }
+
+    private async UniTaskVoid WaitAndUpdateDisplay()
+    {
+        if(this == null)
+        {
+            return;
+        }
+        ResetOverrides();
+        SaveLog($"{this.GetType()}: Trying to Get And Set Text");
+        GetAndSetText();
+        SaveLog($"{this.GetType()}: Successfully Got And Set Text");
+
+        if (_ignorePlaylists)
+        {
+            return;
+        }
+
+        if (PlaylistManager.Instance?.CurrentPlaylist != null)
+        {
+            UpdateFromPlaylist(PlaylistManager.Instance.CurrentPlaylist);
+        }
+
+        await UniTask.Delay(System.TimeSpan.FromSeconds(1));
     }
 
     public virtual void EnableOptionsDisplay()
@@ -94,7 +114,7 @@ public abstract class EnvironmentAssetSetter : MonoBehaviour, IEnvAssetScroller
 
     public abstract void SetAssetIndex(int index);
 
-    public abstract EnvAssetRef GetAssetRef(int index);
+    public abstract EnvAssetReference GetAssetRef(int index);
     protected abstract void TrySetAsset(Playlist playlist);
 
     protected abstract int GetAssetIndex();
@@ -115,15 +135,16 @@ public abstract class EnvironmentAssetSetter : MonoBehaviour, IEnvAssetScroller
 
     protected virtual void UpdateFromPlaylist(Playlist playlist)
     {
+        SaveLog($"{this.GetType()}: Trying to get asset name");
+
         var assetName = GetAssetName(playlist);
+
+        SaveLog($"{this.GetType()}: Got asset name");
         TrySetAsset(playlist);
 
+        SaveLog($"{this.GetType()}: Set Asset");
         if (string.IsNullOrWhiteSpace(assetName))
         {
-            if(EnvironmentControlManager.Instance!= null)
-            {
-
-            }
             assetName = "Sci-Fi Arena";
         }
         SetText(assetName);
@@ -142,5 +163,11 @@ public abstract class EnvironmentAssetSetter : MonoBehaviour, IEnvAssetScroller
             assetName = "Sci-Fi Arena";
         }
         SetText(assetName);
+    }
+
+
+    protected void SaveLog(string message)
+    {
+        //ErrorReporter.Instance.LogMessage(message, string.Empty, LogType.Log);
     }
 }

@@ -23,6 +23,9 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
     private readonly SongRecord[] _songRecords = new SongRecord[10];
     private readonly PlaylistRecord[] _playlistRecords = new PlaylistRecord[10];
 
+    private string _profileBestScoreName;
+    private SongRecord _profileBestScore;
+
     private const string STREAK = "Streak:";
     private const string SCORE = "Score:";
     private const string AllowOnlineLeaderboards = "AllowOnlineLeaderboards";
@@ -70,7 +73,15 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
         {
             _currentSongRecordName = PlaylistManager.Instance.GetFullSongName(noID: true);
         }
-
+        _profileBestScoreName = $"{ProfileManager.Instance.ActiveProfile.GUID}-HighScore:{_currentSongRecordName}";
+        if (PlayerStatsFileManager.SongKeyExists(_profileBestScoreName))
+        {
+            _profileBestScore = (SongRecord)await PlayerStatsFileManager.GetSongValue<SongRecord>(_profileBestScoreName, _cancellationToken);
+        }
+        else
+        {
+            _profileBestScore = new ();
+        }
     }
 
     public async UniTaskVoid SaveSongStats()
@@ -241,8 +252,20 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
             return;
         }
         var songScore = ScoringAndHitStatsManager.Instance.SongScore;
-        var bestStreak = StreakManager.Instance.RecordCurrentSongStreak;
-        AzureSqlManager.Instance.PostLeaderboardScore(_onlineRecordName, songScore, bestStreak, new CancellationToken()).Forget();
+        var songStreak = StreakManager.Instance.RecordCurrentSongStreak;
+
+        if (_profileBestScore.Score >= songScore && _profileBestScore.Streak >= songStreak)
+        {
+            return;
+        }
+        var betterScore = _profileBestScore.Score <= songScore ? songScore : _profileBestScore.Score;
+        var betterStreak = _profileBestScore.Streak <= songStreak ? songStreak : _profileBestScore.Streak;
+        var activeProfile = ProfileManager.Instance.ActiveProfile;
+        var recordToRecord = new SongRecord(activeProfile.ProfileName, activeProfile.GUID, betterScore, betterStreak);
+
+        PlayerStatsFileManager.RecordSongValue(_profileBestScoreName, recordToRecord, _cancellationToken).Forget();
+
+        AzureSqlManager.Instance.PostLeaderboardScore(_onlineRecordName, songScore, songStreak, new CancellationToken()).Forget();
     }
 
     private void ConvertOldRecordsToNew(SongAndPlaylistRecords oldRecord)
@@ -291,6 +314,7 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
         }
 
     }
+
 
     private static bool ShouldUpdateScoreFile(SongRecord oldRecord, out int songScore)
     {

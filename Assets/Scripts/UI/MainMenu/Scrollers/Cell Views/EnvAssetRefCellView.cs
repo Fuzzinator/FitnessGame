@@ -14,10 +14,10 @@ public class EnvAssetRefCellView : EnhancedScrollerCellView
 
     private EnvAssetScrollerController _scroller;
 
-    private EnvAssetRef _activeAssetRef;
+    private EnvAssetReference _activeAssetRef;
     private int _activeAssetRefIndex;
 
-    public void SetData(EnvAssetRef assetRef, int index, EnvAssetScrollerController scroller)
+    public void SetData(EnvAssetReference assetRef, int index, EnvAssetScrollerController scroller)
     {
         _activeAssetRef = assetRef;
         _activeAssetRefIndex = index;

@@ -296,9 +296,42 @@ MonoBehaviour:
     _gameMode: 0
     _difficulty: 0
     _targetEnvName: 
-    <Gloves>k__BackingField: {fileID: 0}
-    <Targets>k__BackingField: {fileID: 0}
-    <Obstacles>k__BackingField: {fileID: 0}
+    <Gloves>k__BackingField:
+      <AssetName>k__BackingField: 
+      <SpriteThumbnail>k__BackingField:
+        m_AssetGUID: 
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_EditorAssetChanged: 0
+      <AssetPath>k__BackingField:
+        m_AssetGUID: 
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_EditorAssetChanged: 0
+    <Targets>k__BackingField:
+      <AssetName>k__BackingField: 
+      <SpriteThumbnail>k__BackingField:
+        m_AssetGUID: 
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_EditorAssetChanged: 0
+      <AssetPath>k__BackingField:
+        m_AssetGUID: 
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_EditorAssetChanged: 0
+    <Obstacles>k__BackingField:
+      <AssetName>k__BackingField: 
+      <SpriteThumbnail>k__BackingField:
+        m_AssetGUID: 
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_EditorAssetChanged: 0
+      <AssetPath>k__BackingField:
+        m_AssetGUID: 
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_EditorAssetChanged: 0
     _targetColors:
       _leftController: {r: 0, g: 0, b: 0, a: 0}
       _rightController: {r: 0, g: 0, b: 0, a: 0}
@@ -313,6 +346,9 @@ MonoBehaviour:
     isValid: 0
     _version: 
     _guid: 
+    <ForceNoObstacles>k__BackingField: 0
+    <ForceOneHanded>k__BackingField: 0
+    <ForceJabsOnly>k__BackingField: 0
   _overrideDifficulties: 0
   _overrideGameModes: 0
   playlistItemUpdated:
@@ -375,7 +411,7 @@ MonoBehaviour:
   focusChanged:
     m_PersistentCalls:
       m_Calls: []
-  _trackFocus: 1
+  _trackFocus: 0
 --- !u!4 &811981821
 Transform:
   m_ObjectHideFlags: 0
@@ -462,7 +498,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a460d5654b9ee6240ba0c6799a851ddb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enable: 0
+  enable: 1
 --- !u!114 &811981826
 MonoBehaviour:
   m_ObjectHideFlags: 0

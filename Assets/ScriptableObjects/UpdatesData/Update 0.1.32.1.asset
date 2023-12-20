@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfa4570e2bc62fc4987f761b13c5dfcc, type: 3}
+  m_Name: Update 0.1.32.1
+  m_EditorClassIdentifier: 
+  <TargetPlatform>k__BackingField: 0
+  <VersionNumber>k__BackingField: <style=Title>Version 0.1.32.1</style>
+  <ShortDescription>k__BackingField: 1)  Hotfix to prevent game from entering a locked
+    state when selecting an older playlist and environment.
+  <Description>k__BackingField: 1)  Fixed bug causing the game to get into a locked
+    state requiring players to restart the game when selecting a playlist created
+    prior to version 0.1.32 using a custom environment created prior to 0.1.32. This
+    was caused by an oversight in attempting to load the previous data resulting
+    in unexpected results.

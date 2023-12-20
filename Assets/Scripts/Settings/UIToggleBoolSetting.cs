@@ -38,13 +38,13 @@ public class UIToggleBoolSetting : MonoBehaviour, ISaver
     private const string ON = "On";
     private const string OFF = "Off";
 
-    private void OnEnable()
+    protected virtual void OnEnable()
     {
         Revert();
         SaveRequested = _setSettingOnEnable;
     }
 
-    private void OnDisable()
+    protected virtual void OnDisable()
     {
         if (!SaveRequested)
         {

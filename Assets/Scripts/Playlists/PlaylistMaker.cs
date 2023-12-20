@@ -56,13 +56,13 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     private string _targetEnv;
 
     [field: SerializeField]
-    public EnvAssetRef Gloves { get; private set; }
+    public EnvAssetReference Gloves { get; private set; }
 
     [field: SerializeField]
-    public EnvAssetRef Targets { get; private set; }
+    public EnvAssetReference Targets { get; private set; }
 
     [field: SerializeField]
-    public EnvAssetRef Obstacles { get; private set; }
+    public EnvAssetReference Obstacles { get; private set; }
 
     public string GlovesName => Gloves?.AssetName;
 
@@ -70,11 +70,21 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
 
     public string ObstaclesName => Obstacles?.AssetName;
 
+    public bool ForceNoObstacles => _forceNoObstacles;
+
+    public bool ForceOneHanded => _forceOneHanded;
+
+    public bool ForceJabsOnly => _forceJabsOnly;
+
     private bool _changesMade = false;
 
     private CancellationToken _cancallationToken;
 
     public UnityEvent<int> TargetEnvironmentIndexChanged { get; private set; } = new UnityEvent<int>();
+
+    private bool _forceNoObstacles;
+    private bool _forceOneHanded;
+    private bool _forceJabsOnly;
 
     #region Const Strings
 
@@ -119,7 +129,13 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     public static PlaylistItem GetPlaylistItem(SongInfo songInfo, string difficulty,
         DifficultyInfo.DifficultyEnum difficultyEnum, GameMode gameMode)
     {
-        return new PlaylistItem(songInfo, difficulty, difficultyEnum, gameMode);
+        return new PlaylistItem(songInfo, difficulty, difficultyEnum, gameMode, Instance.ForceNoObstacles, Instance.ForceOneHanded, Instance.ForceJabsOnly);
+    }
+    public static PlaylistItem GetPlaylistItem(SongInfo songInfo, string difficulty,
+        DifficultyInfo.DifficultyEnum difficultyEnum, GameMode gameMode,
+        bool forceNoObstacles, bool forceOneHanded, bool forceJabsOnly)
+    {
+        return new PlaylistItem(songInfo, difficulty, difficultyEnum, gameMode, forceNoObstacles, forceOneHanded, forceJabsOnly);
     }
 
     public void AddPlaylistItem(PlaylistItem item)
@@ -393,7 +409,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         _gameMode = gameMode;
     }
 
-    public void SetGloves(EnvAssetRef gloves)
+    public void SetGloves(EnvAssetReference gloves)
     {
         if (Gloves == gloves)
         {
@@ -404,7 +420,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         Gloves = gloves;
     }
 
-    public void SetTargets(EnvAssetRef targets)
+    public void SetTargets(EnvAssetReference targets)
     {
         if (Targets == targets)
         {
@@ -415,7 +431,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         Targets = targets;
     }
 
-    public void SetObstacles(EnvAssetRef obstacles)
+    public void SetObstacles(EnvAssetReference obstacles)
     {
         if (Obstacles == obstacles)
         {
@@ -424,6 +440,21 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
 
         _changesMade = true;
         Obstacles = obstacles;
+    }
+
+    public void SetForceNoObstacles(bool on)
+    {
+        _forceNoObstacles = on;
+    }
+
+    public void SetForceOneHanded(bool on)
+    {
+        _forceOneHanded = on;
+    }
+
+    public void SetForceJabsOnly(bool on)
+    {
+        _forceJabsOnly = on;
     }
 
     public void Report(float value)

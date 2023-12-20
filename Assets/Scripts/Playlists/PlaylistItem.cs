@@ -43,13 +43,20 @@ public struct PlaylistItem
     [SerializeField]
     private SongInfo _songInfo;
 
+    [field: SerializeField]
+    public bool ForceNoObstacles { get; private set; }
+    [field: SerializeField]
+    public bool ForceOneHanded { get; private set; }
+    [field: SerializeField]
+    public bool ForceJabsOnly { get; private set; }
+
     public SongInfo SongInfo
     {
         get => _songInfo;
         set => _songInfo = value;
     }
 
-    public PlaylistItem(SongInfo songInfo, string difficulty,DifficultyInfo.DifficultyEnum difficultyEnum, GameMode gameMode)
+    public PlaylistItem(SongInfo songInfo, string difficulty,DifficultyInfo.DifficultyEnum difficultyEnum, GameMode gameMode, bool forceNoObstacles, bool forceOnHanded, bool forceJabsOnly)
     {
         _songName = songInfo.SongName;
         _fileLocation = songInfo.fileLocation;
@@ -59,6 +66,9 @@ public struct PlaylistItem
         _songInfo = songInfo;
         _difficultyEnum = difficultyEnum;
         SongID = songInfo.SongID;
+        ForceNoObstacles = forceNoObstacles;
+        ForceOneHanded = forceOnHanded;
+        ForceJabsOnly = forceJabsOnly;
     }
     
     public string Difficulty => _difficulty;

@@ -108,7 +108,7 @@ public class EnvironmentController : MonoBehaviour
 
     public void FinishSceneLoad()
     {
-        if (!_sceneInstanceHandle.IsValid())//_sceneLoadOperation == null)
+        if (!_sceneInstanceHandle.IsValid())
         {
             return;
         }

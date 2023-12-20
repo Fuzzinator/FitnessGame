@@ -124,7 +124,6 @@ public class PlaylistDisplayObject : MonoBehaviour
             if (EnvironmentControlManager.Instance != null)
             {
                 EnvironmentControlManager.Instance.LoadFromPlaylist(_playlist);
-                EnvironmentControlManager.Instance.LoadSelection();
             }
             
             _cellView.PlayPlaylist();

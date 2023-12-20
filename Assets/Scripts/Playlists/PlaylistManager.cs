@@ -106,6 +106,30 @@ public class PlaylistManager : MonoBehaviour
         }
     }
 
+    public bool ForceOneHanded
+    {
+        get
+        {
+            return _currentPlaylist.ForceOneHanded || _currentItem.ForceOneHanded;
+        }
+    }
+
+    public bool ForceNoObstacles
+    {
+        get
+        {
+            return _currentPlaylist.ForceNoObstacles || _currentItem.ForceNoObstacles;
+        }
+    }
+
+    public bool ForceJabsOnly
+    {
+        get
+        {
+            return _currentPlaylist.ForceJabsOnly || _currentItem.ForceJabsOnly;
+        }
+    }
+
     private void Awake()
     {
         if (Instance == null)
@@ -158,10 +182,10 @@ public class PlaylistManager : MonoBehaviour
         SetOverrideGameMode(false);
     }
 
-    public void SetTempSongPlaylist(PlaylistItem playlistItem, HitSideType forwardFootSide)
+    public void SetTempSongPlaylist(PlaylistItem playlistItem, HitSideType forwardFootSide, bool noObstacles, bool oneHanded, bool jabsOnly)
     {
         var targetEnvName = EnvironmentControlManager.Instance.GetTargetEnvName();
-        var tempPlaylist = new Playlist(playlistItem, forwardFootSide, targetEnvName);
+        var tempPlaylist = new Playlist(playlistItem, forwardFootSide, noObstacles, oneHanded, jabsOnly, targetEnvName);
         CurrentPlaylist = tempPlaylist;
         _activePlaylistIsTemp = true;
     }

@@ -61,7 +61,7 @@ public class ErrorReporter : MonoBehaviour
         Application.logMessageReceived -= _callback;
     }
 
-    private void LogMessage(string text, string stacktrace, LogType logType)
+    public void LogMessage(string text, string stacktrace, LogType logType)
     {
         ES3.Save(DateTime.Now.ToString("yyyyMMddHHmmss"), $"{logType}: {text}\n{stacktrace}", _settings);
     }
