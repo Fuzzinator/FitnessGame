@@ -79,7 +79,7 @@ public class BeatSaverPageController : MonoBehaviour
     private const int MINUTE = 60;
 
     private const string SONGINFOFORMAT =
-        "<voffset=10>Song Name:           {0}\nSong Author:<line-indent=1>         {1}<line-indent=0>\nLevel Author:<line-indent=1>         {2}<line-indent=0>\nSong Length:         <line-indent=1>{3}:{4}<line-indent=0>\nSong Score:          <line-indent=1> {5}<line-indent=0>\nUpload Date:         <line-indent=2>{6}<line-indent=0>";
+        "<voffset=10>Song Name:           {0}\nSong Author:<line-indent=1>         {1}<line-indent=0>\nLevel Author:<line-indent=1>         {2}<line-indent=0>\nSong Length:         <line-indent=1>{3}:{4}<line-indent=0>\nSong Score:          <line-indent=1> {5}<line-indent=0>\nSong BPM:             <line-indent=0>{6}<line-indent=0>\nUpload Date:         <line-indent=2>{7}<line-indent=0>";
 
     public void Initialize()
     {
@@ -541,6 +541,7 @@ public class BeatSaverPageController : MonoBehaviour
                 minutes,
                 seconds,
                 _activeBeatmap.Stats.Score * 100,
+                _activeBeatmap.Metadata.BPM,
                 _activeBeatmap.Uploaded.ToShortDateString());
 
             _songDetails.SetText(sb);
