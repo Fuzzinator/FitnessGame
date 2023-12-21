@@ -21,15 +21,6 @@ public class GameManager : MonoBehaviour
     public const int DemoModeMaxCustomSongs = 3;
     public const int DemoModeMaxPlaylistLength = 3;
 
-    #region Const Strings
-
-    private const string MENUBUTTON = "Menu Button";
-#if UNITY_EDITOR
-    private const string PAUSEINEDITOR = "Pause In Editor";
-#endif
-
-    #endregion
-
     private void Awake()
     {
         if (Instance == null)

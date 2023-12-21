@@ -18,9 +18,10 @@ public class GameStateManager : MonoBehaviour
     private GameState _previousGameState = GameState.Entry;
     
     #region Const Strings
-    private const string MENUBUTTON = "Menu Button";
+    private const string MenuButtonAll = "Menu Button All";
+    private const string MenuButtonMeta = "Menu Button Quest";
     #endregion
-    
+
     public GameState CurrentGameState
     {
         get { return _gameState; }
@@ -52,8 +53,9 @@ public class GameStateManager : MonoBehaviour
         if (InputManager.Instance != null && InputManager.Instance.MainInput != null)
         {
             if (InputManager.Instance != null && InputManager.Instance.MainInput != null)
-            {   
-                InputManager.Instance.MainInput[MENUBUTTON].performed += TryTogglePlayPauseState;
+            {
+                var menuInput = GetMenuInputName();
+                InputManager.Instance.MainInput[menuInput].performed += TryTogglePlayPauseState;
                 FocusTracker.Instance.focusChanged.AddListener(ManageFocusState);
             }
         }
@@ -63,8 +65,9 @@ public class GameStateManager : MonoBehaviour
         if (InputManager.Instance != null && InputManager.Instance.MainInput != null)
         {
             if (InputManager.Instance != null && InputManager.Instance.MainInput != null)
-            {   
-                InputManager.Instance.MainInput[MENUBUTTON].performed -= TryTogglePlayPauseState;
+            {
+                var menuInput = GetMenuInputName();
+                InputManager.Instance.MainInput[menuInput].performed -= TryTogglePlayPauseState;
                 FocusTracker.Instance.focusChanged.RemoveListener(ManageFocusState);
             }
         }
@@ -101,6 +104,17 @@ public class GameStateManager : MonoBehaviour
     {
         
         CurrentGameState = state;
+    }
+
+    private string GetMenuInputName()
+    {
+        var headset = OVRPlugin.GetSystemHeadsetType();
+        switch(headset)
+        {
+            case OVRPlugin.SystemHeadset.None:
+                return MenuButtonAll;
+            default: return MenuButtonMeta;
+        }
     }
 }
 [Serializable]
