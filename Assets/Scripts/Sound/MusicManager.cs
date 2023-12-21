@@ -37,8 +37,6 @@ public class MusicManager : BaseGameStateListener
 
     #region Const Strings
 
-    private const string SELECT = "Select";
-    private const string MENUBUTTON = "Menu Button";
 #if UNITY_EDITOR
     private const string PAUSEINEDITOR = "Pause In Editor";
 #endif
