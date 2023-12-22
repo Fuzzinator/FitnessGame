@@ -31,6 +31,9 @@ public class UIToggleBoolSetting : MonoBehaviour, ISaver
     [SerializeField]
     protected bool _setSettingOnEnable = false;
 
+    [SerializeField]
+    private bool _androidOnly;
+
     protected bool _currentValue;
 
     public bool SaveRequested { get; set; }
@@ -40,6 +43,13 @@ public class UIToggleBoolSetting : MonoBehaviour, ISaver
 
     protected virtual void OnEnable()
     {
+#if UNITY_STANDALONE_WIN
+        if (_androidOnly)
+        {
+            Destroy(gameObject);
+            return;
+        }
+#endif
         Revert();
         SaveRequested = _setSettingOnEnable;
     }

@@ -17,6 +17,10 @@ public class PassthroughManager : MonoBehaviour
 
     private void Awake()
     {
+#if UNITY_STANDALONE_WIN
+        Destroy(gameObject);
+        return;
+#endif
         if (DynamicInstance == null)
         {
             DynamicInstance = this;
@@ -30,6 +34,9 @@ public class PassthroughManager : MonoBehaviour
 
     private void OnEnable()
     {
+#if UNITY_STANDALONE_WIN
+        Destroy(gameObject);
+#endif
         if (!_mainMenu)
         {
             return;
