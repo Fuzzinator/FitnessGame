@@ -91,6 +91,10 @@ public class EnvTargetsSetter : EnvironmentAssetSetter
 
     protected override void TrySetAsset(Playlist playlist)
     {
+        if (playlist == null)
+        {
+            return;
+        }
         if (playlist.Targets != null)
         {
             EnvironmentControlManager.Instance.SetTargetOverride(playlist.Targets);

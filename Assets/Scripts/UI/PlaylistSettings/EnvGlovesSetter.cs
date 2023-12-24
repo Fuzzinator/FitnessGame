@@ -100,6 +100,10 @@ public class EnvGlovesSetter : EnvironmentAssetSetter
 
     protected override void TrySetAsset(Playlist playlist)
     {
+        if(playlist == null)
+        {
+            return;
+        }
         if (playlist.Gloves != null)
         {
             EnvironmentControlManager.Instance.SetGloveOverride(playlist.Gloves);

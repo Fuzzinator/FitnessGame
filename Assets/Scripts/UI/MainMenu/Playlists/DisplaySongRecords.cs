@@ -21,6 +21,8 @@ namespace UI
         private TextMeshProUGUI _songRecordScores;
         [SerializeField]
         TextMeshProUGUI _songRecordStreaks;
+        [SerializeField]
+        private TextMeshProUGUI[] _streakPercentages;
 
         [SerializeField]
         private Image _statusDisplayBackground;

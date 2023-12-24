@@ -92,6 +92,10 @@ public class EnvObstaclesSetter : EnvironmentAssetSetter
 
     protected override void TrySetAsset(Playlist playlist)
     {
+        if (playlist == null)
+        {
+            return;
+        }
         if (playlist.Obstacles != null)
         {
             EnvironmentControlManager.Instance.SetObstaclesOverride(playlist.Obstacles);
