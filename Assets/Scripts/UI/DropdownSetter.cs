@@ -9,7 +9,7 @@ namespace UI
     public abstract class DropdownSetter : MonoBehaviour
     {
         [SerializeField]
-        protected TMP_Dropdown _dropdownField;
+        protected TMP_Dropdown_XRSupport _dropdownField;
 
         private void Awake()
         {

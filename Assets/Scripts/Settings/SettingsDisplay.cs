@@ -20,6 +20,9 @@ public class SettingsDisplay : UIMenuController
     [SerializeField]
     private Button _saveButton;
 
+    [SerializeField]
+    private GameState _resumedState;
+
     private readonly List<ISaver> _activeSavers = new List<ISaver>();
 
     private static bool _changeMade;
@@ -164,5 +167,10 @@ public class SettingsDisplay : UIMenuController
 
                 break;
         }
+    }
+
+    public void ResumeGame()
+    {
+        GameStateManager.Instance.SetState(_resumedState);
     }
 }

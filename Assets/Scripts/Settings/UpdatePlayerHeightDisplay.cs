@@ -20,23 +20,42 @@ public class UpdatePlayerHeightDisplay : MonoBehaviour, ISaver
     [SerializeField]
     private TextMeshProUGUI _currentText;
     [SerializeField]
+    private TextMeshProUGUI _buttonText;
+    [SerializeField]
+    private GameObject _calibratedTextDisplay;
+    [SerializeField]
     protected bool _setSettingOnEnable = false;
+    [SerializeField]
+    private string _defaultCalibrationText = "Calibrate Height";
     private float _setHeight;
+    private float _heightOffset;
     private bool _pressed;
 
     private CancellationToken _cancellationToken;
+    private CancellationTokenSource _recalibratingTokenSource;
 
     public bool SaveRequested { get; set; }
 
+    private const string CalibratingText = "Calibrating";
+    private const string RecalibrateText = "Recalibrate Height";
     private const string Meters = "<size=50%> Meters</size>";
     private const string Feet = "<size=50%> Feet</size>";
     private const float MeterToFeet = 3.28084f;
-    private const float DisplayOffset = .075f;
+    //private const float DisplayOffset = .075f;
 
     private void OnEnable()
     {
         Revert();
         SaveRequested = _setSettingOnEnable;
+        if (_recalibratingTokenSource != null && _recalibratingTokenSource.IsCancellationRequested)
+        {
+            _recalibratingTokenSource.Dispose();
+            _recalibratingTokenSource = new CancellationTokenSource();
+        }
+        if(_recalibratingTokenSource == null)
+        {
+            _recalibratingTokenSource = new CancellationTokenSource();
+        }
     }
 
     private void OnDisable()
@@ -44,6 +63,10 @@ public class UpdatePlayerHeightDisplay : MonoBehaviour, ISaver
         if (!SaveRequested)
         {
             Revert();
+        }
+        if(_recalibratingTokenSource != null)
+        {
+            _recalibratingTokenSource.Cancel();
         }
     }
 
@@ -55,10 +78,35 @@ public class UpdatePlayerHeightDisplay : MonoBehaviour, ISaver
     public void ResetHeadHeight()
     {
         _setHeight = Head.Instance.transform.position.y;
+        _heightOffset = 0f;
         _settingsDisplay?.ChangeWasMade(this);
-        UpdateDisplay();
-
+        DelayAndShowCalibration().Forget();
         SaveRequested = true;
+    }
+
+    private async UniTask DelayAndShowCalibration()
+    {
+        _buttonText.SetText(CalibratingText);
+        _calibratedTextDisplay.SetActive(false);
+        try
+        {
+            await UniTask.Delay(TimeSpan.FromSeconds(1.5f), cancellationToken: _recalibratingTokenSource.Token);
+            if (_recalibratingTokenSource.IsCancellationRequested)
+            {
+                return;
+            }
+        }
+        catch when(_recalibratingTokenSource != null)
+        {
+            return;
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError(ex);
+        }
+        _buttonText.SetText(RecalibrateText);
+        _calibratedTextDisplay.SetActive(true);
+        UpdateDisplay();
     }
 
     public void StartUpdating(float increment)
@@ -86,7 +134,7 @@ public class UpdatePlayerHeightDisplay : MonoBehaviour, ISaver
 
     public void UpdateHeadHeight(float increment)
     {
-        _setHeight += increment;
+        _heightOffset += increment;
         SaveRequested = true;
         _settingsDisplay?.ChangeWasMade(this);
         UpdateDisplay();
@@ -111,11 +159,11 @@ public class UpdatePlayerHeightDisplay : MonoBehaviour, ISaver
         {
             //var heightAsDouble = Math.Round((double)height, 2);
 
-            var height = _setHeight + DisplayOffset;
+            var height = _heightOffset;
             if (useMeters)
             {
                 height = Mathf.Round(height * 1000f) / 1000f;
-                sb.Append(height+ DisplayOffset);
+                sb.Append(height);
                 sb.Append(Meters);
             }
             else
@@ -131,6 +179,7 @@ public class UpdatePlayerHeightDisplay : MonoBehaviour, ISaver
     public void Save(Profile overrideProfile = null)
     {
         GlobalSettings.SetUserHeight(_setHeight, overrideProfile);
+        GlobalSettings.SetUserHeightOffset(_heightOffset, overrideProfile);
         SaveRequested = false;
     }
 
@@ -139,21 +188,27 @@ public class UpdatePlayerHeightDisplay : MonoBehaviour, ISaver
         if (_profileEditor != null)
         {
             _setHeight = -1f;
-            
+            _heightOffset = 0f;
+
             if (_profileEditor.ActiveProfile != null)
             {
                 _setHeight = GlobalSettings.GetUserHeight(_profileEditor.ActiveProfile);
+                _heightOffset = GlobalSettings.GetUserHeightOffset(_profileEditor.ActiveProfile);
             }
 
             if(_setHeight == -1)
             {
                 _setHeight = Head.Instance.transform.position.y;
+                _heightOffset = 0f;
             }
         }
         else
         {
             _setHeight = GlobalSettings.UserHeight;
+            _heightOffset = GlobalSettings.UserHeightOffset;
         }
+        _buttonText.SetText(_defaultCalibrationText);
+        _calibratedTextDisplay.SetActive(false);
         UpdateDisplay();
         SaveRequested = false;
     }

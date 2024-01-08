@@ -179,7 +179,7 @@ public class ChoreographyReader : MonoBehaviour
         {
             notes = Choreography.SetNotesToSide(notes, HitSideType.Right);
         }
-        if(PlaylistManager.Instance.ForceJabsOnly)
+        if (PlaylistManager.Instance.ForceJabsOnly)
         {
             notes = Choreography.SetNotesToType(notes, CutDirection.Jab);
         }
@@ -243,6 +243,8 @@ public class ChoreographyReader : MonoBehaviour
         ChoreographyFormation thisSequence = new ChoreographyFormation();
 
         float lastRotation = -1f;
+        float lastObstacle = -1f;
+        int lastDodgeObstacleSide = 0;
         var leftSidePriority = 0;
         var leftSideAdd = 0;
         var rightSidePriority = 0;
@@ -252,6 +254,7 @@ public class ChoreographyReader : MonoBehaviour
         var superNotePriority = 0;
 
         var minTargetDistance = _difficultyInfo.MinTargetSpace;
+        var minGapToSwapObstacle = minTargetDistance;
         for (var i = 0; i < _sequenceables.Count; i++)
         {
             var sequenceable = _sequenceables[i];
@@ -314,6 +317,7 @@ public class ChoreographyReader : MonoBehaviour
                             continue;
                         }
                     }
+                    minGapToSwapObstacle = minGap * 3;
                 }
             }
 
@@ -561,7 +565,18 @@ public class ChoreographyReader : MonoBehaviour
                         thisSequence = thisSequence.SetNote(note);
                     }
 
+                    if (sequenceable.Time > lastObstacle - minGapToSwapObstacle && lastDodgeObstacleSide == obstacle.LineIndex)
+                    {
+                        var newIndex = obstacle.LineIndex <= 1 ? 2 : 0;
+                        obstacle = new(obstacle.Time, obstacle.Duration, obstacle.Type, newIndex, obstacle.Width);
+                    }
+
                     thisSequence = thisSequence.SetObstacle(obstacle);
+                    lastObstacle = sequenceable.Time;
+                    if (obstacle.Type == ChoreographyObstacle.ObstacleType.Dodge)
+                    {
+                        lastDodgeObstacleSide = obstacle.LineIndex;
+                    }
                 }
                 else if (sequenceable.HasEvent && !thisSequence.HasEvent)
                 {

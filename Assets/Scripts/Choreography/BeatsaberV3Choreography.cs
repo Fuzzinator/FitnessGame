@@ -127,7 +127,7 @@ public struct BeatsaberV3Choreography
         public float b;
         
         /// <summary>
-        /// Unused. In new Beatsaber beatmap its column 0-3 index left to right
+        /// Used for Horsefoot Stance. In new Beatsaber beatmap its column 0-3 index left to right
         /// </summary>
         public int x;
 

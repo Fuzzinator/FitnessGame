@@ -182,7 +182,7 @@ public class Choreography
         }
         catch (Exception e) when (e is OperationCanceledException)
         {
-            if(requestHandle.IsValid())
+            if (requestHandle.IsValid())
             {
                 Addressables.Release(requestHandle);
             }
@@ -600,6 +600,8 @@ public struct AddObstaclesJob : IJobParallelFor
 
     [DeallocateOnJobCompletion]
     private readonly NativeArray<int> _obstacleOptions;
+    [DeallocateOnJobCompletion]
+    private readonly NativeArray<int> _obstacleSideOptions;
 
     public AddObstaclesJob(ref NativeArray<ChoreographyObstacle> obstacles, NativeArray<ChoreographyNote>.ReadOnly sourceNotes,
         float bps)
@@ -611,7 +613,12 @@ public struct AddObstaclesJob : IJobParallelFor
         _obstacleOptions = new NativeArray<int>(15, Allocator.TempJob);
         for (var i = 0; i < _obstacleOptions.Length; i++)
         {
-            _obstacleOptions[i] = 2 > i ? 0 : 1;
+            _obstacleOptions[i] = 5 > i ? 0 : 1;
+        }
+        _obstacleSideOptions = new NativeArray<int>(15, Allocator.TempJob);
+        for (var i = 0; i < _obstacleSideOptions.Length; i++)
+        {
+            _obstacleSideOptions[i] = i % 2 == 0 ? 0 : 2;
         }
     }
 
@@ -621,19 +628,20 @@ public struct AddObstaclesJob : IJobParallelFor
         ChoreographyObstacle newObstacle;
         if (noteIndex < _notes.Length)
         {
-            newObstacle = new ChoreographyObstacle(_notes[noteIndex].Time, 1, GetObstacleType(index),
+            newObstacle = new ChoreographyObstacle(_notes[noteIndex].Time, 1, GetObstacleType(index, out var lineIndex),
                 _notes[noteIndex].LineIndex, 1);
         }
         else
         {
             var newIndex = index - (_notes.Length / INTERVAL);
-            newObstacle = new ChoreographyObstacle(_bps * newIndex, 1, GetObstacleType(index), 1, 1);
+            var type = GetObstacleType(index, out var lineIndex);
+            newObstacle = new ChoreographyObstacle(_bps * newIndex, 1, type, lineIndex, 1);
         }
 
         _obstacles[index] = newObstacle;
     }
 
-    private ChoreographyObstacle.ObstacleType GetObstacleType(int index)
+    private ChoreographyObstacle.ObstacleType GetObstacleType(int index, out int lineIndex)
     {
         if (index + _seed > uint.MaxValue)
         {
@@ -649,6 +657,7 @@ public struct AddObstaclesJob : IJobParallelFor
         }
 
         var value = (ChoreographyObstacle.ObstacleType)_obstacleOptions.AsReadOnly()[randValue];
+        lineIndex = _obstacleSideOptions.AsReadOnly()[randValue] - 1;
         return value;
     }
 }

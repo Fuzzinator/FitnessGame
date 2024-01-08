@@ -23,6 +23,10 @@ public class InputManager : MonoBehaviour
 
     public InputActionAsset InGameInput => _inGameInput;
 
+
+    public const string SelectedLeft = "Activate Left";
+    public const string SelectedRight = "Activate Right";
+
     private void Awake()
     {
         if (Instance == null)

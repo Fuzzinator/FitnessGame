@@ -10,9 +10,6 @@ public class ScrollRectScroller : MonoBehaviour
     private ScrollRect _scrollRect;
 
     [SerializeField]
-    private EnhancedScroller _scroller;
-
-    [SerializeField]
     private float _scrollSpeed = 2f;
 
     private bool _scroll = false;
@@ -21,14 +18,6 @@ public class ScrollRectScroller : MonoBehaviour
 
     private const string LEFTJOYSTICKMOVING = "Left Joystick";
     private const string RIGHTJOYSTICKMOVING = "Right Joystick";
-
-    private void OnValidate()
-    {
-        if (_scrollRect != null && _scroller == null)
-        {
-            _scrollRect.TryGetComponent(out _scrollRect);
-        }
-    }
 
     public void ScrollY(float value)
     {

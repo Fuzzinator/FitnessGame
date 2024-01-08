@@ -34,7 +34,7 @@ public class NotificationManager : MonoBehaviour
     private void Start()
     {
         _notificationPoolManager = new PoolManager(_notificationPrefab, transform);
-        var headHeight = GlobalSettings.UserHeight;
+        var headHeight = GlobalSettings.TotalHeight;
         if (headHeight > 0)
         {
             UpdateNotificationHeight(headHeight);
@@ -121,6 +121,11 @@ public class NotificationManager : MonoBehaviour
             () => { LevelManager.Instance.LoadNextSong(); },
             () => { ActiveSceneManager.Instance.LoadMainMenu(); }
         );
+    }
+
+    private void UpdateNotificationHeight()
+    {
+        UpdateNotificationHeight(GlobalSettings.TotalHeight);
     }
 
     private void UpdateNotificationHeight(float newHeight)

@@ -11,7 +11,7 @@ public class MatchPlayerHeight : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        UpdatePosition(GlobalSettings.UserHeight);
+        UpdatePosition();
     }
 
     private void OnEnable()
@@ -24,8 +24,9 @@ public class MatchPlayerHeight : MonoBehaviour
         GlobalSettings.UserHeightChanged.RemoveListener(UpdatePosition);
     }
 
-    private void UpdatePosition(float height)
+    private void UpdatePosition()
     {
+        var height = GlobalSettings.TotalHeight;
         var t = transform;
         var currentPos = t.position;
         t.position = new Vector3(currentPos.x, height + _offset, currentPos.z);

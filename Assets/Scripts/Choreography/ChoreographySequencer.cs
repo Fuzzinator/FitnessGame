@@ -106,9 +106,9 @@ public class ChoreographySequencer : MonoBehaviour
         set
         {
             _currentStance = value;
-            var temp = value;
+            var temp = (int)value;
             temp++;
-            _stanceUpdated?.Invoke((int)temp);
+            _stanceUpdated?.Invoke(temp);
         }
     }
 
@@ -342,7 +342,8 @@ public class ChoreographySequencer : MonoBehaviour
             var note = formation.Note;
             if (hasDodgeObstacle && note.HitSideType != HitSideType.Block)
             {
-                targetSideType = _currentStance == HitSideType.Left ? HitSideType.Left : HitSideType.Right;
+                var taregtSide = formation.Obstacle.HitSideType;
+                targetSideType = taregtSide == HitSideType.Left ? HitSideType.Right : HitSideType.Left;//_currentStance == HitSideType.Left ? HitSideType.Left : HitSideType.Right;
                 note = formation.Note.SetType(targetSideType);
             }
 
@@ -352,7 +353,7 @@ public class ChoreographySequencer : MonoBehaviour
             var targetTransform = target.transform;
             targetTransform.SetParent(formationHolder.transform);
             targetTransform.localRotation = quaternion.identity;
-            
+
 
             targetTransform.localPosition = (GetTargetPosition(note, hasDodgeObstacle));
             var strikeSpeed = note.IsSuperNote ? SettingsManager.GetSuperStrikeHitSpeed(note.HitSideType) : -1;
@@ -401,14 +402,32 @@ public class ChoreographySequencer : MonoBehaviour
 
     protected BaseObstacle GetObstacle(ChoreographyObstacle obstacle)
     {
-        return obstacle.Type switch
+        if (obstacle.Type == ChoreographyObstacle.ObstacleType.Crouch)
         {
-            ChoreographyObstacle.ObstacleType.Crouch => _baseObstaclePool.GetNewPoolable(),
-            ChoreographyObstacle.ObstacleType.Dodge => /*obstacle.HitSideType*/_currentStance == HitSideType.Left
-                ? _leftObstaclePool.GetNewPoolable()
-                : _rightObstaclePool.GetNewPoolable(),
-            _ => _baseObstaclePool.GetNewPoolable()
-        } as BaseObstacle;
+            return _baseObstaclePool.GetNewPoolable() as BaseObstacle;
+        }
+        else if (obstacle.Type == ChoreographyObstacle.ObstacleType.Dodge)
+        {
+            if (_currentStance == HitSideType.Block)
+            {
+                return obstacle.HitSideType switch
+                {
+                    HitSideType.Left => _leftObstaclePool.GetNewPoolable(),
+                    HitSideType.Right => _rightObstaclePool.GetNewPoolable(),
+                    _ => _baseObstaclePool.GetNewPoolable()
+                } as BaseObstacle;
+            }
+            else
+            {
+                return (_currentStance == HitSideType.Left ?
+                    _leftObstaclePool.GetNewPoolable() :
+                    _rightObstaclePool.GetNewPoolable()) as BaseObstacle;
+            }
+        }
+        else
+        {
+            return _baseObstaclePool.GetNewPoolable() as BaseObstacle;
+        }
     }
 
     protected BaseTarget GetTarget(ChoreographyNote note)
@@ -488,12 +507,12 @@ public class ChoreographySequencer : MonoBehaviour
 
         var (leftSide, rightSide) = targetSides switch// wrapping (leftSide, rightSide) together like that causes the switch statement to allow us to assign both variables
         {
-            TargetSide.Crossed => (2,3),
+            TargetSide.Crossed => (2, 3),
             TargetSide.Uncrossed => !hasDodgeObstacle ? (3, 2) : (2, 3),
             TargetSide.Mixed => (note.CutDir is ChoreographyNote.CutDirection.Jab or ChoreographyNote.CutDirection.JabDown or
                             ChoreographyNote.CutDirection.HookLeftDown or ChoreographyNote.CutDirection.HookRightDown)
                             ? (!hasDodgeObstacle ? (3, 2) : (2, 3)) : (2, 3),
-            _ => (2,3)//!hasDodgeObstacle ? (2, 3) : (3, 2),
+            _ => (2, 3)//!hasDodgeObstacle ? (2, 3) : (3, 2),
         };
 
         var lineLayer = (int)note.LineLayer * 4;
@@ -548,6 +567,11 @@ public class ChoreographySequencer : MonoBehaviour
 
     public void SwitchFootPlacement()
     {
+        if (_currentStance == HitSideType.Block)
+        {
+            CurrentStance = HitSideType.Block;
+            return;
+        }
         var stance = _currentStance;
         if (_resetting)
         {

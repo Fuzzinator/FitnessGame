@@ -93,6 +93,12 @@ public class SetGraphicsInteractable : Graphic
         UpdateState();
     }
 
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+        UpdateState();
+    }
+
     private void UpdateState()
     {
 #if UNITY_EDITOR

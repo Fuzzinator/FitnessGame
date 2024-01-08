@@ -3529,7 +3529,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f58087e81b11d104ca1826640896c29b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3acfe44eafc9a6f4698ab3e64842a32b, type: 3}
   m_Type: 1
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -4020,7 +4020,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f58087e81b11d104ca1826640896c29b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3acfe44eafc9a6f4698ab3e64842a32b, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -4832,7 +4832,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f58087e81b11d104ca1826640896c29b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3acfe44eafc9a6f4698ab3e64842a32b, type: 3}
   m_Type: 1
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -7554,6 +7554,11 @@ MonoBehaviour:
   m_LineWidth: 0.02
   m_OverrideInteractorLineLength: 1
   m_LineLength: 10
+  m_AutoAdjustLineLength: 0
+  m_MinLineLength: 0.5
+  m_UseDistanceToHitAsMaxLineLength: 1
+  m_LineRetractionDelay: 0.5
+  m_LineLengthChangeSpeed: 12
   m_WidthCurve:
     serializedVersion: 2
     m_Curve:
@@ -7578,6 +7583,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  m_SetLineColorGradient: 1
   m_ValidColorGradient:
     serializedVersion: 2
     key0: {r: 1, g: 1, b: 1, a: 1}
@@ -7674,6 +7680,10 @@ MonoBehaviour:
   m_StopLineAtFirstRaycastHit: 1
   m_StopLineAtSelection: 0
   m_SnapEndpointIfAvailable: 1
+  m_LineBendRatio: 0.5
+  m_OverrideInteractorLineOrigin: 1
+  m_LineOriginTransform: {fileID: 0}
+  m_LineOriginOffset: 0
 --- !u!120 &934832249
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -7881,6 +7891,7 @@ MonoBehaviour:
   m_SampleFrequency: 20
   m_HitDetectionType: 0
   m_SphereCastRadius: 0.1
+  m_ConeCastAngle: 6
   m_RaycastMask:
     serializedVersion: 2
     m_Bits: 32
@@ -7898,6 +7909,16 @@ MonoBehaviour:
   m_TranslateSpeed: 1
   m_AnchorRotateReferenceFrame: {fileID: 0}
   m_AnchorRotationMode: 0
+  m_UIHoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_UIHoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_EnableARRaycasting: 0
+  m_OccludeARHitsWith3DObjects: 0
+  m_OccludeARHitsWith2DObjects: 0
+  m_ScaleMode: 0
 --- !u!114 &934832251
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8792,8 +8813,8 @@ MonoBehaviour:
     - rid: 5116675628597772288
       type: {class: MaterialValueLerper/FloatValue, ns: , asm: Assembly-CSharp}
       data:
-        _materialPropertyName: _Spawn_In
         _effectName: Enable
+        _materialPropertyName: _Spawn_In
         _lerpSpeedModifier: 1
         _animationCurve:
           serializedVersion: 2
@@ -8829,8 +8850,8 @@ MonoBehaviour:
     - rid: 5116675628597772290
       type: {class: MaterialValueLerper/FloatValue, ns: , asm: Assembly-CSharp}
       data:
-        _materialPropertyName: _Spawn_In
         _effectName: Disable
+        _materialPropertyName: _Spawn_In
         _lerpSpeedModifier: 0.5
         _animationCurve:
           serializedVersion: 2
@@ -11946,6 +11967,7 @@ MonoBehaviour:
   m_RepeatDelay: 0.5
   m_RepeatRate: 0.1
   m_TrackedDeviceDragThresholdMultiplier: 2
+  m_TrackedScrollDeltaMultiplier: 5
   m_ActiveInputMode: 0
   m_MaxTrackedDeviceRaycastDistance: 1000
   m_EnableXRInput: 1
@@ -13653,7 +13675,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f58087e81b11d104ca1826640896c29b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3acfe44eafc9a6f4698ab3e64842a32b, type: 3}
   m_Type: 1
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -14756,8 +14778,8 @@ MonoBehaviour:
     - rid: 370772409500565504
       type: {class: MaterialValueLerper/FloatValue, ns: , asm: Assembly-CSharp}
       data:
-        _materialPropertyName: _Alpha
         _effectName: ShowHit
+        _materialPropertyName: _Alpha
         _lerpSpeedModifier: 1
         _animationCurve:
           serializedVersion: 2
@@ -15442,6 +15464,11 @@ MonoBehaviour:
   m_LineWidth: 0.02
   m_OverrideInteractorLineLength: 1
   m_LineLength: 10
+  m_AutoAdjustLineLength: 0
+  m_MinLineLength: 0.5
+  m_UseDistanceToHitAsMaxLineLength: 1
+  m_LineRetractionDelay: 0.5
+  m_LineLengthChangeSpeed: 12
   m_WidthCurve:
     serializedVersion: 2
     m_Curve:
@@ -15466,6 +15493,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  m_SetLineColorGradient: 1
   m_ValidColorGradient:
     serializedVersion: 2
     key0: {r: 1, g: 1, b: 1, a: 1}
@@ -15562,6 +15590,10 @@ MonoBehaviour:
   m_StopLineAtFirstRaycastHit: 1
   m_StopLineAtSelection: 0
   m_SnapEndpointIfAvailable: 1
+  m_LineBendRatio: 0.5
+  m_OverrideInteractorLineOrigin: 1
+  m_LineOriginTransform: {fileID: 0}
+  m_LineOriginOffset: 0
 --- !u!120 &1729619550
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -15769,6 +15801,7 @@ MonoBehaviour:
   m_SampleFrequency: 20
   m_HitDetectionType: 0
   m_SphereCastRadius: 0.1
+  m_ConeCastAngle: 6
   m_RaycastMask:
     serializedVersion: 2
     m_Bits: 32
@@ -15786,6 +15819,16 @@ MonoBehaviour:
   m_TranslateSpeed: 1
   m_AnchorRotateReferenceFrame: {fileID: 0}
   m_AnchorRotationMode: 0
+  m_UIHoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_UIHoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_EnableARRaycasting: 0
+  m_OccludeARHitsWith3DObjects: 0
+  m_OccludeARHitsWith2DObjects: 0
+  m_ScaleMode: 0
 --- !u!114 &1729619552
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16908,8 +16951,8 @@ MonoBehaviour:
     - rid: 5116675628597772288
       type: {class: MaterialValueLerper/FloatValue, ns: , asm: Assembly-CSharp}
       data:
-        _materialPropertyName: _Spawn_In
         _effectName: Enable
+        _materialPropertyName: _Spawn_In
         _lerpSpeedModifier: 1
         _animationCurve:
           serializedVersion: 2
@@ -16945,8 +16988,8 @@ MonoBehaviour:
     - rid: 5116675628597772290
       type: {class: MaterialValueLerper/FloatValue, ns: , asm: Assembly-CSharp}
       data:
-        _materialPropertyName: _Spawn_In
         _effectName: Disable
+        _materialPropertyName: _Spawn_In
         _lerpSpeedModifier: 0.5
         _animationCurve:
           serializedVersion: 2
@@ -17475,6 +17518,7 @@ MonoBehaviour:
     _songLength: 0
     _genre: 
     _attribution: 
+    _songID: 
     _difficultyBeatmapSets: []
   _difficultyInfo:
     _difficulty: 
@@ -17594,7 +17638,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f58087e81b11d104ca1826640896c29b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3acfe44eafc9a6f4698ab3e64842a32b, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -18251,7 +18295,7 @@ PrefabInstance:
     - target: {fileID: 3425952266427029260, guid: 36cd4176249ef924cb4492fc602059d5,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3612419950874350215, guid: 36cd4176249ef924cb4492fc602059d5,
         type: 3}

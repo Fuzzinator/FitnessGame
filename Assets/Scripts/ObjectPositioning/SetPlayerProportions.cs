@@ -19,7 +19,7 @@ public class SetPlayerProportions : MonoBehaviour
             return;
         }
         
-        var height = GlobalSettings.UserHeight;
+        var height = GlobalSettings.TotalHeight;
         if (height < 0)
         {
             ResetHeadsetWithDelay().Forget();
@@ -29,6 +29,7 @@ public class SetPlayerProportions : MonoBehaviour
     public void SetHeight()
     {
         GlobalSettings.UserHeight = Head.Instance.transform.position.y;
+        GlobalSettings.UserHeightOffset = 0f;
     }
 
     private async UniTaskVoid ResetHeadsetWithDelay()
