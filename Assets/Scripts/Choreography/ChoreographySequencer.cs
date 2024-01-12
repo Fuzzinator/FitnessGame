@@ -343,7 +343,14 @@ public class ChoreographySequencer : MonoBehaviour
             if (hasDodgeObstacle && note.HitSideType != HitSideType.Block)
             {
                 var taregtSide = formation.Obstacle.HitSideType;
-                targetSideType = taregtSide == HitSideType.Left ? HitSideType.Right : HitSideType.Left;//_currentStance == HitSideType.Left ? HitSideType.Left : HitSideType.Right;
+                if (_currentStance == HitSideType.Block)
+                {
+                    targetSideType = taregtSide == HitSideType.Left ? HitSideType.Left : HitSideType.Right;
+                }
+                else
+                {
+                    targetSideType = _currentStance;// == HitSideType.Left ? HitSideType.Left : HitSideType.Right;
+                }
                 note = formation.Note.SetType(targetSideType);
             }
 

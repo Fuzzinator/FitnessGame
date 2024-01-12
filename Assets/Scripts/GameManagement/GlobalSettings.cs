@@ -31,7 +31,7 @@ public static class GlobalSettings
     }
     public static float UserHeightOffset
     {
-        get => SettingsManager.GetSetting(USERHEIGHTOFFSET, -1f);
+        get => SettingsManager.GetSetting(USERHEIGHTOFFSET, 0f);
         set
         {
             SettingsManager.SetSetting(USERHEIGHTOFFSET, value);

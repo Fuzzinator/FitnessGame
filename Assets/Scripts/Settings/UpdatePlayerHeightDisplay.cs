@@ -50,11 +50,12 @@ public class UpdatePlayerHeightDisplay : MonoBehaviour, ISaver
         if (_recalibratingTokenSource != null && _recalibratingTokenSource.IsCancellationRequested)
         {
             _recalibratingTokenSource.Dispose();
-            _recalibratingTokenSource = new CancellationTokenSource();
+            _recalibratingTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_cancellationToken);
         }
-        if(_recalibratingTokenSource == null)
+        if (_recalibratingTokenSource == null)
         {
-            _recalibratingTokenSource = new CancellationTokenSource();
+            _cancellationToken = this.GetCancellationTokenOnDestroy();
+            _recalibratingTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_cancellationToken);
         }
     }
 
@@ -64,17 +65,11 @@ public class UpdatePlayerHeightDisplay : MonoBehaviour, ISaver
         {
             Revert();
         }
-        if(_recalibratingTokenSource != null)
+        if (_recalibratingTokenSource != null)
         {
             _recalibratingTokenSource.Cancel();
         }
     }
-
-    private void Start()
-    {
-        _cancellationToken = this.GetCancellationTokenOnDestroy();
-    }
-
     public void ResetHeadHeight()
     {
         _setHeight = Head.Instance.transform.position.y;
@@ -88,22 +83,13 @@ public class UpdatePlayerHeightDisplay : MonoBehaviour, ISaver
     {
         _buttonText.SetText(CalibratingText);
         _calibratedTextDisplay.SetActive(false);
-        try
-        {
-            await UniTask.Delay(TimeSpan.FromSeconds(1.5f), cancellationToken: _recalibratingTokenSource.Token);
-            if (_recalibratingTokenSource.IsCancellationRequested)
-            {
-                return;
-            }
-        }
-        catch when(_recalibratingTokenSource != null)
+        await UniTask.Delay(TimeSpan.FromSeconds(1.5f), ignoreTimeScale: true, cancellationToken: _recalibratingTokenSource.Token).SuppressCancellationThrow();
+
+        if (_recalibratingTokenSource.IsCancellationRequested)
         {
             return;
         }
-        catch (Exception ex)
-        {
-            Debug.LogError(ex);
-        }
+
         _buttonText.SetText(RecalibrateText);
         _calibratedTextDisplay.SetActive(true);
         UpdateDisplay();
@@ -196,7 +182,7 @@ public class UpdatePlayerHeightDisplay : MonoBehaviour, ISaver
                 _heightOffset = GlobalSettings.GetUserHeightOffset(_profileEditor.ActiveProfile);
             }
 
-            if(_setHeight == -1)
+            if (_setHeight == -1)
             {
                 _setHeight = Head.Instance.transform.position.y;
                 _heightOffset = 0f;
