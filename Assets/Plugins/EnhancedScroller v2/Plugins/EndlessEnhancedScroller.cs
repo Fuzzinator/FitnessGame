@@ -15,11 +15,16 @@ namespace EnhancedUI.EnhancedScroller
         private UnityEvent<float> _loopingForward = new UnityEvent<float>();
         
         private int _currentPageNumber = 0;
+        private bool _canScroll;
 
         private const float TopOffset = .8f;
         private const float BottomOffset = .2f;
         private const float PlacementOffset = .02f;
 
+        public void SetCanScroll(bool canScroll)
+        {
+            _canScroll = canScroll;
+        }
 
         public void ResetPage()
         {
@@ -28,7 +33,7 @@ namespace EnhancedUI.EnhancedScroller
 
         public void MonitorScroll(Vector2 scrollValue)
         {
-            if (!_initialized || scrollValue.y == 1f)
+            if (!_canScroll || !_initialized || (scrollValue.y == 1f && _currentPageNumber == 0))
             {
                 return;
             }

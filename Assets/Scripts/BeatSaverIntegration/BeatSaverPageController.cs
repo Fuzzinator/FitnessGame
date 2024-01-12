@@ -11,6 +11,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UI.Scrollers.BeatsaverIntegraton;
 using UnityEngine.Serialization;
+using EnhancedUI.EnhancedScroller;
 
 public class BeatSaverPageController : MonoBehaviour
 {
@@ -56,6 +57,9 @@ public class BeatSaverPageController : MonoBehaviour
 
     [SerializeField]
     private AudioSource _audioSource;
+
+    [SerializeField]
+    private EndlessEnhancedScroller _scroller;
 
     private Page _activePage;
     private Page _nextPage;
@@ -157,7 +161,6 @@ public class BeatSaverPageController : MonoBehaviour
 
     public void RequestLatest()
     {
-        ShowLoading(true);
         RequestLatestAsync().Forget();
     }
 
@@ -266,6 +269,8 @@ public class BeatSaverPageController : MonoBehaviour
     {
         await RefreshToken();
 
+        ShowLoading(true);
+        _scroller.SetCanScroll(false);
         if (_beatSaver == null)
         {
             await UniTask.DelayFrame(1, cancellationToken: _cancellationTokenSource.Token);
@@ -285,6 +290,7 @@ public class BeatSaverPageController : MonoBehaviour
         await RefreshToken();
 
         ShowLoading(true);
+        _scroller.SetCanScroll(false);
         _activePage = _nextPage;
         _nextPage = await _activePage.Next(_cancellationTokenSource.Token);
         if (_activePage == null || !setData)
@@ -299,6 +305,7 @@ public class BeatSaverPageController : MonoBehaviour
     {
         await RefreshToken();
         ShowLoading(true);
+        _scroller.SetCanScroll(false);
         _nextPage = _activePage;
         _activePage = await _activePage.Previous(_cancellationTokenSource.Token);
 
@@ -318,6 +325,7 @@ public class BeatSaverPageController : MonoBehaviour
             {
                 await UniTask.DelayFrame(1, cancellationToken: _cancellationTokenSource.Token);
             }
+            _scroller.SetCanScroll(false);
             var request = await _beatSaver.SearchBeatmaps(option, token: _cancellationTokenSource.Token);
             if (request == null)
             {
@@ -335,6 +343,7 @@ public class BeatSaverPageController : MonoBehaviour
                 Debug.LogError(e);
             }
             ShowLoading(false);
+            _scroller.SetCanScroll(true);
             return;
         }
 
@@ -380,6 +389,7 @@ public class BeatSaverPageController : MonoBehaviour
         }
 
         var beatmapID = _activeBeatmap.ID;
+        var songScore = _activeBeatmap.Stats.Score;
         _downloadingIds.Add(beatmapID);
         var progress = new Progress<double>();
         var loadingDisplay = _loadingDisplays.DisplayNewLoading(_activeBeatmap.Metadata.SongName);
@@ -411,8 +421,9 @@ public class BeatSaverPageController : MonoBehaviour
             _downloadButton.interactable = true;
         }
         activeCell.SetDownloaded(true);
+
         //TODO: Need to remove the existing song if a duplicate exists in the SongInfoFilesReader
-        await SongInfoFilesReader.Instance.LoadNewSong(folderName, beatmapID);
+        await SongInfoFilesReader.Instance.LoadNewSong(folderName, beatmapID, songScore);
 
         PlaylistFilesReader.Instance.RefreshPlaylistsValidStates().Forget();
         UpdateUI().Forget();
@@ -427,7 +438,7 @@ public class BeatSaverPageController : MonoBehaviour
         _cellView = null;
 
         ShowLoading(false);
-        _scrollerController.SetBeatmaps(_activePage.Beatmaps);
+        _scrollerController.SetBeatmaps(_activePage.Beatmaps).Forget();
     }
 
     private async UniTask UpdateDataForward()
@@ -447,7 +458,8 @@ public class BeatSaverPageController : MonoBehaviour
             _allBeatmaps.AddRange(_nextPage.Beatmaps);
         }
 
-        _scrollerController.SetBeatmaps(_allBeatmaps, resetPageIndex: true);
+        _scrollerController.SetBeatmaps(_allBeatmaps, resetPageIndex: true).Forget();
+        _scroller.SetCanScroll(true);
     }
 
     private async UniTask UpdateDataBackwards()
@@ -464,13 +476,15 @@ public class BeatSaverPageController : MonoBehaviour
             _allBeatmaps.AddRange(_nextPage.Beatmaps);
         }
 
-        _scrollerController.SetBeatmaps(_allBeatmaps);
+        _scrollerController.SetBeatmaps(_allBeatmaps).Forget();
+        _scroller.SetCanScroll(true);
     }
 
     private async UniTaskVoid MoveForwardAsync(float scrollValue)
     {
         _allBeatmaps.Clear();
         _scrollerController.Disable();
+        _scroller.SetCanScroll(false);
         await RequestNextPageAsync(false);
         await FinishMovePage(scrollValue);
     }
@@ -479,6 +493,7 @@ public class BeatSaverPageController : MonoBehaviour
     {
         _allBeatmaps.Clear();
         _scrollerController.Disable();
+        _scroller.SetCanScroll(false);
         await RequestPreviousPageAsync(false);
         await FinishMovePage(scrollValue);
     }
@@ -496,7 +511,8 @@ public class BeatSaverPageController : MonoBehaviour
         await UniTask.SwitchToMainThread(_cancellationTokenSource.Token);
         ShowLoading(false);
         _scrollerController.Enable();
-        _scrollerController.SetBeatmaps(_allBeatmaps, scrollValue);
+        _scrollerController.SetBeatmaps(_allBeatmaps, scrollValue).Forget();
+        _scroller.SetCanScroll(true);
     }
 
     public void SetActiveBeatmap(Beatmap beatmap)

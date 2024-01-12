@@ -517,7 +517,7 @@ public class AssetManager : MonoBehaviour
         }
     }
 
-    public static async UniTask<SongInfo> TryGetSingleCustomSong(string fileLocation, CancellationToken token, string songID = null)
+    public static async UniTask<SongInfo> TryGetSingleCustomSong(string fileLocation, CancellationToken token, string songID = null, float songScore = -1f)
     {
         if (!CheckPermissions())
         {
@@ -531,14 +531,13 @@ public class AssetManager : MonoBehaviour
             Directory.CreateDirectory(path);
         }
 
-        return await GetSingleCustomSong(path, token, songID);
+        return await GetSingleCustomSong(path, token, songID, songScore);
     }
 
-    public static async UniTask<SongInfo> GetSingleCustomSong(string fileLocation, CancellationToken token, string songID = null)
+    public static async UniTask<SongInfo> GetSingleCustomSong(string fileLocation, CancellationToken token, string songID = null, float songScore = -1f)
     {
-        //try
-        //{
         var info = new DirectoryInfo(fileLocation);
+        var creationDate = info.CreationTime;
         var files = info.GetFiles();
         foreach (var file in files)
         {
@@ -613,6 +612,11 @@ public class AssetManager : MonoBehaviour
                     item.SetSongID(songID);
                     updatedMaps = true;
                 }
+                if(songScore >= 0 && item.SongScore >= 0)
+                {
+                    item.SetSongScore(songScore);
+                    updatedMaps = true;
+                }
 
                 if (updatedMaps)
                 {
@@ -623,15 +627,10 @@ public class AssetManager : MonoBehaviour
                         streamWriter.Close();
                     }
                 }
-
+                item.DownloadedDate = creationDate;
                 return item;
             }
         }
-        /*}
-        catch (Exception e)
-        {
-            Debug.LogError($"{e.Message}\n{e.StackTrace}");
-        }*/
 
         return null;
     }

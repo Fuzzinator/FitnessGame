@@ -27,8 +27,10 @@ namespace UI.Scrollers.BeatsaverIntegraton
         {
             _pageController = controller;
         }
-        public void SetBeatmaps(IReadOnlyList<Beatmap> beatmaps, float scrollPosition = 0, bool resetPageIndex = false)
+        public async UniTaskVoid SetBeatmaps(IReadOnlyList<Beatmap> beatmaps, float scrollPosition = 0, bool resetPageIndex = false)
         {
+            await UniTask.DelayFrame(1, cancellationToken: CancellationToken);
+
             _beatmaps = beatmaps;
             if (_scroller.Initialized)
             {

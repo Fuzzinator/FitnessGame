@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading;
 using BeatSaverSharp.Models;
 using Cysharp.Text;
@@ -78,13 +79,33 @@ public class SongInfo
 
     public string SongID => _songID;
 
+    public float SongScore => _songScore;
+
+    public DateTime DownloadedDate
+    {
+        get
+        {
+            if (_downloadedDate == null)
+            {
+                _downloadedDate = DateTime.MinValue;
+            }
+            return _downloadedDate;
+        }
+        set
+        {
+            _downloadedDate = value;
+        }
+    }
+
+    //public float Score;
+
     public DifficultySet[] DifficultySets => _difficultyBeatmapSets;
 
     public string RecordableName
     {
         get
         {
-            if(!string.IsNullOrWhiteSpace(_songID))
+            if (!string.IsNullOrWhiteSpace(_songID))
             {
                 return _songID.RemoveSpecialCharacters();
             }
@@ -142,11 +163,18 @@ public class SongInfo
     private string _songID;
 
     [SerializeField]
+    private float _songScore = -1;
+
+    [SerializeField]
     private DifficultySet[] _difficultyBeatmapSets;
 
     private Sprite _songArt;
 
+    private DateTime _downloadedDate;
+
     private AsyncOperationHandle _textureLoadHandle;
+
+    private const string FMT = "O";
 
     public DifficultyInfo TryGetActiveDifficultyInfo(string difficulty, GameMode gameMode)
     {
@@ -281,7 +309,7 @@ public class SongInfo
                         break;
                     case GameMode.NoObstacles:
                         break;
-                    default:break;
+                    default: break;
                 }
             }
         }
@@ -529,6 +557,11 @@ public class SongInfo
         _songID = id;
     }
 
+    public void SetSongScore(float songScore)
+    {
+        _songScore = songScore;
+    }
+
     public void UnloadImage()
     {
         if (!_textureLoadHandle.IsValid())
@@ -576,12 +609,12 @@ public class SongInfo
         var choreography = await Choreography.AsyncLoadFromSongInfo(songInfo, difficultyInfo, token);
 
         var seed = UnityEngine.Random.state;
-        UnityEngine.Random.InitState(choreography.Notes.Length + choreography.Obstacles.Length + (int)(songInfo.SongLength*100));
-        for (var i = 0; i<choreography.Notes.Length; i++)
+        UnityEngine.Random.InitState(choreography.Notes.Length + choreography.Obstacles.Length + (int)(songInfo.SongLength * 100));
+        for (var i = 0; i < choreography.Notes.Length; i++)
         {
             var note = choreography.Notes[i];
             var random = UnityEngine.Random.Range(0, 4);
-            if(random == 2)
+            if (random == 2)
             {
                 random = UnityEngine.Random.Range(0, 2);
             }
@@ -782,12 +815,16 @@ public class SongInfo
         SongLength = 5,
         InverseSongLength = 6,
         LevelAuthorName = 7,
-        InverseLevelAuthorName = 8
+        InverseLevelAuthorName = 8,
+        RecentlyDownloaded = 9,
+        InverseRecentlyDownloaded = 10,
+        SongScore = 11,
+        InverseSongScore = 12,
     }
 
     public static bool operator ==(SongInfo info, PlaylistItem item)
     {
-        if(!string.IsNullOrWhiteSpace(info.SongID) && !string.IsNullOrWhiteSpace(item.SongID))
+        if (!string.IsNullOrWhiteSpace(info.SongID) && !string.IsNullOrWhiteSpace(item.SongID))
         {
             return string.Equals(info.SongID, item.SongID);
         }
@@ -848,11 +885,11 @@ public class SongInfo
     /// <returns></returns>
     public override bool Equals(object obj)
     {
-        if(obj is PlaylistItem item)
+        if (obj is PlaylistItem item)
         {
             return this == item;
         }
-        else if(obj is Beatmap beatmap)
+        else if (obj is Beatmap beatmap)
         {
             return this == beatmap;
         }

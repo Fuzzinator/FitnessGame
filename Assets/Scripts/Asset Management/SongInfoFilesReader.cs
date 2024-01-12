@@ -143,7 +143,7 @@ public class SongInfoFilesReader : MonoBehaviour
 
         availableSongs.Remove(targetSongInfo);
         CustomSongsCount--;
-        
+
         _songRemoved?.Invoke(targetSongInfo);
         _songsUpdated?.Invoke();
 
@@ -153,14 +153,14 @@ public class SongInfoFilesReader : MonoBehaviour
         MainMenuUIController.Instance.RequestEnableUI(this);
     }
 
-    public async UniTask LoadNewSong(string songFolderName, string songID)
+    public async UniTask LoadNewSong(string songFolderName, string songID, float songScore)
     {
-        var songInfo = await AssetManager.TryGetSingleCustomSong(songFolderName, _cancellationSource.Token, songID);
+        var songInfo = await AssetManager.TryGetSingleCustomSong(songFolderName, _cancellationSource.Token, songID, songScore);
         if (songInfo != null)
         {
             var existingSong = availableSongs.Find((info) => string.Equals(info.SongID, songID, StringComparison.InvariantCultureIgnoreCase) ||
                                                              string.Equals(info.fileLocation, songInfo.fileLocation, StringComparison.InvariantCultureIgnoreCase));
-            if(existingSong != null)
+            if (existingSong != null)
             {
                 availableSongs.Remove(existingSong);
             }
@@ -218,6 +218,24 @@ public class SongInfoFilesReader : MonoBehaviour
             case SongInfo.SortingMethod.InverseLevelAuthorName:
                 availableSongs.Sort((x, y) =>
                     string.Compare(y.LevelAuthorName, x.LevelAuthorName, StringComparison.InvariantCulture));
+                break;
+            case SongInfo.SortingMethod.BPM:
+                availableSongs.Sort((x, y) => x.BeatsPerMinute.CompareTo(y.BeatsPerMinute));
+                break;
+            case SongInfo.SortingMethod.InverseBPM:
+                availableSongs.Sort((x, y) => y.BeatsPerMinute.CompareTo(x.BeatsPerMinute));
+                break;
+            case SongInfo.SortingMethod.RecentlyDownloaded:
+                availableSongs.Sort((x, y) => x.DownloadedDate.CompareTo(y.DownloadedDate));
+                break;
+            case SongInfo.SortingMethod.InverseRecentlyDownloaded:
+                availableSongs.Sort((x, y) => y.DownloadedDate.CompareTo(x.DownloadedDate));
+                break;
+            case SongInfo.SortingMethod.SongScore:
+                availableSongs.Sort((x, y) => x.SongScore.CompareTo(y.SongScore));
+                break;
+            case SongInfo.SortingMethod.InverseSongScore:
+                availableSongs.Sort((x, y) => y.SongScore.CompareTo(x.SongScore));
                 break;
         }
     }
