@@ -816,10 +816,12 @@ public class SongInfo
         InverseSongLength = 6,
         LevelAuthorName = 7,
         InverseLevelAuthorName = 8,
-        RecentlyDownloaded = 9,
-        InverseRecentlyDownloaded = 10,
-        SongScore = 11,
-        InverseSongScore = 12,
+        BPM = 9,
+        InverseBPM = 10,
+        RecentlyDownloaded = 11,
+        InverseRecentlyDownloaded = 12,
+        SongScore = 13,
+        InverseSongScore = 14,
     }
 
     public static bool operator ==(SongInfo info, PlaylistItem item)
