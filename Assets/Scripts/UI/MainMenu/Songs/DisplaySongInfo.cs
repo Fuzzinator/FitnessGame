@@ -27,6 +27,9 @@ namespace UI.Scrollers.Playlists
         private TextMeshProUGUI _beatsPerMinute;
 
         [SerializeField]
+        private TextMeshProUGUI _songRating;
+
+        [SerializeField]
         private SetAndShowSongOptions _songOptions;
 
         [SerializeField]
@@ -78,6 +81,16 @@ namespace UI.Scrollers.Playlists
             _levelAuthor.SetTextZeroAlloc(info.LevelAuthorName, true);
             _songLength.SetTextZeroAlloc(info.ReadableLength, true);
             _beatsPerMinute.SetTextZeroAlloc(info.BeatsPerMinute, true);
+
+            if(info.SongScore < 0)
+            {
+                _songRating.SetTextZeroAlloc(string.Empty, true);
+            }
+            else
+            {
+                _songRating.SetTextZeroAlloc(info.SongScore, true);
+            }
+
             _songOptions.UpdateDifficultyOptions(info, info.DifficultySets);
             _deleteButton.gameObject.SetActive(info.isCustomSong);
             _deleteButtonText.gameObject.SetActive(info.isCustomSong);
@@ -90,6 +103,7 @@ namespace UI.Scrollers.Playlists
             _songAuthor.ClearText();
             _levelAuthor.ClearText();
             _songLength.ClearText();
+            _songRating.ClearText();
             _beatsPerMinute.ClearText();
             _songOptions.HideOptions();
             _deleteButton.gameObject.SetActive(false);

@@ -210,7 +210,7 @@ namespace UI
                 var score = songRecord[i];
                 if (string.IsNullOrWhiteSpace(score.ProfileName))
                 {
-                    continue;
+                    score.ProfileName = $"User: {score.GUID.Substring(0, 5)}";
                 }
                 scoresSb.Append(score.Score);
                 streaksSb.Append(score.Streak);

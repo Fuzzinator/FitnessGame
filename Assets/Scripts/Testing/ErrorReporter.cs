@@ -20,8 +20,14 @@ public class ErrorReporter : MonoBehaviour
 
     private const string ERRORTITLE = "An error has occurred.";
 
+    private const string ErrorBodyRequestSendData =
+        "An error has occured that may affect gameplay. Would you like to help improve Shadow BoXR by sending error logs?";
+
     private const string ERRORBODY =
         "An error has occured that may affect gameplay. If you run into issues, restarting the game may be required.";
+
+    private const string HasRequestedHelp = "PlayerHasBeenAskedToSendErrorLogs";
+    private const string PlayerAgreedToHelp = "PlayerHasAgreedToSendErrorLogs";
 
     private void Awake()
     {
@@ -42,7 +48,7 @@ public class ErrorReporter : MonoBehaviour
         {
             ES3.DeleteFile(_settings);
         }
-        
+
         _callback = (text, stacktrace, logType) =>
         {
             LogMessage(text, stacktrace, logType);
@@ -52,6 +58,10 @@ public class ErrorReporter : MonoBehaviour
             }
 
             DisplayNotification(text, stacktrace);
+            if (SettingsManager.GetSetting(PlayerAgreedToHelp, false))
+            {
+
+            }
         };
         Application.logMessageReceived += _callback;
     }
@@ -68,9 +78,31 @@ public class ErrorReporter : MonoBehaviour
 
     private void DisplayNotification(string text, string stacktrace)
     {
-        var visuals =
-            new Notification.NotificationVisuals(ERRORBODY, ERRORTITLE, autoTimeOutTime: 5f, popUp: true);
-        NotificationManager.RequestNotification(visuals, () => Log($"{text}\n{stacktrace}"));
+        var hasBeenPromptedToHelp = SettingsManager.GetSetting(HasRequestedHelp, false);
+        if (hasBeenPromptedToHelp)
+        {
+
+            var visuals =
+                new Notification.NotificationVisuals(ERRORBODY, ERRORTITLE, autoTimeOutTime: 5f, popUp: true);
+            NotificationManager.RequestNotification(visuals, () => Log($"{text}\n{stacktrace}"));
+        }
+        else
+        {
+            var visuals = 
+                new Notification.NotificationVisuals(ErrorBodyRequestSendData, ERRORTITLE, "Send Logs", "Opt Out", disableUI: true);
+            NotificationManager.RequestNotification(visuals, () =>
+            {
+                var log = $"{text}\n{stacktrace}";
+                Log(log);
+                SendErrorLog(log);
+            });
+        }
+    }
+
+
+    private void SendErrorLog(string log)
+    {
+        AzureSqlManager.Instance.TrySendErrorReport(log);
     }
 
     public static void Log(string text)

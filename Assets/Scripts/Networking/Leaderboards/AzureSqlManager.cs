@@ -19,6 +19,7 @@ public class AzureSqlManager : MonoBehaviour
     private const string RootURL = "https://updateleaderboards.azurewebsites.net/api/";
     private const string SetLeaderboardEnd = "?code=mwB8YMyIHWkFd0qnX7pTEz1vYa0mv989iYA4rkL5XDHoAzFuocSNyg==";
     private const string GetLeaderboardEnd = "?code=g5d2kGCy-SVPpBp0LlX0gNvvdQ17dFYU-nnaeB15hR4uAzFu2s9d6A==";
+    private const string SendErrorLogEnd = "?code=PNCCmOAjTFZ-T7yWMWElEDNyOtw2EQsLLSrzTmRHtqaSAzFu3UjBLA==";
 
     private bool _serverRunning = false;
     private bool _warmingServer = false;
@@ -226,6 +227,49 @@ public class AzureSqlManager : MonoBehaviour
     }
     #endregion
 
+    #region Error Logging
+    public void TrySendErrorReport(string errorLog)
+    {
+        if (!NetworkConnectionManager.Instance.NetworkConnected)
+        {
+            return;
+        }
+        SendErrorReport(errorLog).Forget();
+    }
+
+    private async UniTaskVoid SendErrorReport(string errorMessage)
+    {
+        var errorTimeAsString = DateTime.Now.ToString("yyyyMMddHHmmss");
+        var url = $"{RootURL}ReportError/{errorTimeAsString}{SendErrorLogEnd}";
+        var errorLog = new ErrorLog(errorTimeAsString, errorMessage);
+        var json = JsonConvert.SerializeObject(errorLog);
+
+        var bytes = Encoding.UTF8.GetBytes(json);
+        var request = new UnityWebRequest(url, "POST")
+        {
+            uploadHandler = new UploadHandlerRaw(bytes),
+            downloadHandler = new DownloadHandlerBuffer()
+        };
+        request.SetRequestHeader("Content-Type", "application/json");
+        try
+        {
+            var result = await request.SendWebRequest();
+            await UniTask.WaitWhile(() => result.result == UnityWebRequest.Result.InProgress);
+            if (result.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogWarning($"Failed to post score. Error returned was:{result.error}");
+            }
+            else
+            {
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"Failed to post score. Error returned was:{e.Message}");
+        }
+    }
+    #endregion
+
     public void UpdateDisplayName(string displayName)
     {
 
@@ -256,5 +300,21 @@ public class LeaderboardObject
         GUID = record.GUID;
         Score = record.Score;
         Streak = record.Streak;
+    }
+}
+
+[Serializable]
+public class ErrorLog
+{
+    public string ErrorDate { get; set; }
+
+    public string ErrorMessage { get; set; }
+
+    public ErrorLog() { }
+
+    public ErrorLog(string errorDate, string errorMessage)
+    {
+        ErrorDate = errorDate;
+        ErrorMessage = errorMessage;
     }
 }
