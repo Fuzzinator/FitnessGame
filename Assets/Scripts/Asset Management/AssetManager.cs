@@ -575,6 +575,10 @@ public class AssetManager : MonoBehaviour
         var info = new DirectoryInfo(fileLocation);
         var creationDate = info.CreationTime;
         var files = info.GetFiles();
+        if(files.Length == 0)
+        {
+            info.Delete();
+        }
         foreach (var file in files)
         {
             if (file == null)
