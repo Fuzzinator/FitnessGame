@@ -108,6 +108,7 @@ public class GameStateManager : MonoBehaviour
 
     private string GetMenuInputName()
     {
+#if UNITY_ANDROID
         var headset = OVRPlugin.GetSystemHeadsetType();
         switch(headset)
         {
@@ -115,6 +116,9 @@ public class GameStateManager : MonoBehaviour
                 return MenuButtonAll;
             default: return MenuButtonMeta;
         }
+#else
+        return MenuButtonAll;
+#endif
     }
 }
 [Serializable]

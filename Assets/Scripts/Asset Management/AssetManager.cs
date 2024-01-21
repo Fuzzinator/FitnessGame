@@ -9,6 +9,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using static UnityEngine.XR.Hands.XRHandSubsystemDescriptor;
 
 #if UNITY_ANDROID
 using UnityEngine.Android;
@@ -114,7 +115,7 @@ public class AssetManager : MonoBehaviour
     {
         return
 #if UNITY_EDITOR
-            Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/')+1);
+            Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/') + 1);
 #elif UNITY_ANDROID
             Application.persistentDataPath;
 #elif UNITY_STANDALONE_WIN
@@ -176,7 +177,14 @@ public class AssetManager : MonoBehaviour
 
             if (uwr.isDone && uwr.result == UnityWebRequest.Result.Success)
             {
+                ErrorReporter.SetSuppressed(true, true);
                 var clip = DownloadHandlerAudioClip.GetContent(uwr);
+                ErrorReporter.SetSuppressed(false);
+                if (clip.length == 0)
+                {
+                    uwr.Dispose();
+                    Directory.Delete($"{SongsPath}{parentDirectory}", true);
+                }
                 clip.name = info.SongName;
                 return clip;
             }
@@ -185,6 +193,7 @@ public class AssetManager : MonoBehaviour
                 Debug.LogError("failed to get audio clip");
                 return null;
             }
+
         }
         catch (Exception e) when (e is OperationCanceledException)
         {
@@ -507,6 +516,7 @@ public class AssetManager : MonoBehaviour
 
         var directories = Directory.GetDirectories(SongsPath);
 
+        var songFailed = false;
         foreach (var dir in directories)
         {
             var item = await GetSingleCustomSong(dir, cancellationSource.Token);
@@ -514,6 +524,16 @@ public class AssetManager : MonoBehaviour
             {
                 songLoaded?.Invoke(item);
             }
+            else
+            {
+                songFailed = true;
+            }
+        }
+
+        if (songFailed)
+        {
+            var visuals = new Notification.NotificationVisuals("Some songs failed to load and may have been corrupted. Corrupted songs have been automatically removed.", "Issue Reading Songs", "Okay");
+            NotificationManager.RequestNotification(visuals);
         }
     }
 
@@ -528,14 +548,30 @@ public class AssetManager : MonoBehaviour
         var path = $"{SongsPath}{fileLocation}";
         if (!Directory.Exists(path))
         {
-            Directory.CreateDirectory(path);
+            return null;
+            //Directory.CreateDirectory(path);
         }
 
-        return await GetSingleCustomSong(path, token, songID, songScore);
+        var song = await GetSingleCustomSong(path, token, songID, songScore);
+
+        if (song == null)
+        {
+            var hasBeenPromptedToHelp = SettingsManager.GetSetting("PlayerHasBeenAskedToSendErrorLogs", false);
+
+            if (hasBeenPromptedToHelp)
+            {
+                var visuals = new Notification.NotificationVisuals("The song has failed to load and may be corrupted. Corrupted songs are automatically removed and have to be redownloaded.", "Failed Reading Song", "Okay");
+                NotificationManager.RequestNotification(visuals);
+            }
+        }
+
+        return song;
     }
 
     public static async UniTask<SongInfo> GetSingleCustomSong(string fileLocation, CancellationToken token, string songID = null, float songScore = -1f)
     {
+        var fileCorrupted = false;
+
         var info = new DirectoryInfo(fileLocation);
         var creationDate = info.CreationTime;
         var files = info.GetFiles();
@@ -553,7 +589,20 @@ public class AssetManager : MonoBehaviour
                 var result = await streamReader.ReadToEndAsync().AsUniTask()
                     .AttachExternalCancellation(token);
 
-                var item = JsonUtility.FromJson<SongInfo>(result);
+                SongInfo item = null;
+                try
+                {
+                    item = JsonUtility.FromJson<SongInfo>(result);
+                }
+                catch (Exception ex)
+                {
+                    ErrorReporter.SetSuppressed(true);
+                    Debug.LogError($"Failed to load song at {fileLocation}___{ex}");
+                    ErrorReporter.SetSuppressed(false);
+                    fileCorrupted = true;
+                    streamReader.Close();
+                    break;
+                }
 
                 streamReader.Close();
                 if (item == null)
@@ -580,6 +629,10 @@ public class AssetManager : MonoBehaviour
                     var songLength = await CustomSongsManager.TryGetSongLength(item, token);
                     item.SongLength = songLength;
                     updatedMaps = true;
+                    if (songLength == 0)
+                    {
+                        return null;
+                    }
                 }
 
                 var image = await item.LoadImage(token);
@@ -607,12 +660,12 @@ public class AssetManager : MonoBehaviour
                 {
                     updatedMaps = true;
                 }
-                if(!string.IsNullOrWhiteSpace(songID) && string.IsNullOrWhiteSpace(item.SongID))
+                if (!string.IsNullOrWhiteSpace(songID) && string.IsNullOrWhiteSpace(item.SongID))
                 {
                     item.SetSongID(songID);
                     updatedMaps = true;
                 }
-                if(songScore >= 0 && item.SongScore >= 0)
+                if (songScore >= 0 && item.SongScore >= 0)
                 {
                     item.SetSongScore(songScore);
                     updatedMaps = true;
@@ -632,7 +685,18 @@ public class AssetManager : MonoBehaviour
             }
         }
 
+        if (fileCorrupted)
+        {
+            DeleteCorruptedFile(info).Forget();
+        }
+
         return null;
+    }
+
+    private static async UniTaskVoid DeleteCorruptedFile(DirectoryInfo dirInfo)
+    {
+        await UniTask.DelayFrame(1);
+        dirInfo.Delete(true);
     }
 
     public static void DeleteCustomSong(SongInfo info)

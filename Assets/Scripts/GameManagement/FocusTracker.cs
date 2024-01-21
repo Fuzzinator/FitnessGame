@@ -40,7 +40,7 @@ public class FocusTracker : MonoBehaviour
             Instance = null;
         }
     }
-
+#if UNITY_ANDROID
     private void OnApplicationFocus(bool hasFocus)
     {
 #if UNITY_EDITOR
@@ -49,4 +49,15 @@ public class FocusTracker : MonoBehaviour
             focusChanged?.Invoke(hasFocus);
         IsFocused = hasFocus;
     }
+
+#else
+    private void OnApplicationPause(bool pause)
+    {
+#if UNITY_EDITOR
+        if (_trackFocus)
+#endif
+            focusChanged?.Invoke(pause);
+        IsFocused = pause;
+    }
+#endif
 }

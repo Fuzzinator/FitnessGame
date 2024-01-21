@@ -5,10 +5,22 @@ using UnityEngine;
 
 public static class StringExtensions
 {
-    private static string[] _illegalCharacters = new[] {":", "*", "?", "\"", "<", ">", "|"};
+    private static string[] _escapeCharacters = new[] { "\'", "\n", "\r", "\t", "\b", "\f", "\\uxxxx", "\u0041" };
+    private static string[] _illegalCharacters = new[] {":", "*", "?", "\"", "<", ">", "|", "/", ".", "”", "\\"};
     
     public static string RemoveIllegalIOCharacters(this string folderName)
     {
+        var sb = new StringBuilder(folderName);
+        foreach (var character in _escapeCharacters)
+        {
+            if (!folderName.Contains(character))
+            {
+                continue;
+            }
+
+            sb.Replace(character, string.Empty);
+        }
+        folderName = sb.ToString();
         foreach (var character in _illegalCharacters)
         {
             if (!folderName.Contains(character))
@@ -16,8 +28,9 @@ public static class StringExtensions
                 continue;
             }
 
-            folderName = folderName.Replace(character, string.Empty);
+            sb.Replace(character, string.Empty);
         }
+        folderName = sb.ToString();
         return folderName;
     }
     public static string RemoveSpecialCharacters(this string str)

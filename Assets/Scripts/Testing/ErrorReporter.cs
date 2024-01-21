@@ -16,6 +16,9 @@ public class ErrorReporter : MonoBehaviour
 
     private ES3Settings _settings;
 
+    public bool Suppressed { get; private set; }
+    public bool PreventAsking { get; private set; }
+
     private const string ERRORLOG = "Log.dat";
 
     private const string ERRORTITLE = "An error has occurred.";
@@ -52,7 +55,7 @@ public class ErrorReporter : MonoBehaviour
         _callback = (text, stacktrace, logType) =>
         {
             LogMessage(text, stacktrace, logType);
-            if (logType != LogType.Error)
+            if (logType is LogType.Log or LogType.Warning)
             {
                 return;
             }
@@ -60,7 +63,7 @@ public class ErrorReporter : MonoBehaviour
             DisplayNotification(text, stacktrace);
             if (SettingsManager.GetSetting(PlayerAgreedToHelp, false))
             {
-
+                SendErrorLog(text);
             }
         };
         Application.logMessageReceived += _callback;
@@ -82,21 +85,39 @@ public class ErrorReporter : MonoBehaviour
         if (hasBeenPromptedToHelp)
         {
 
-            var visuals =
-                new Notification.NotificationVisuals(ERRORBODY, ERRORTITLE, autoTimeOutTime: 5f, popUp: true);
-            NotificationManager.RequestNotification(visuals, () => Log($"{text}\n{stacktrace}"));
+            if (!Suppressed)
+            {
+                var visuals =
+                    new Notification.NotificationVisuals(ERRORBODY, ERRORTITLE, autoTimeOutTime: 5f, popUp: true);
+                NotificationManager.RequestNotification(visuals, () => Log($"{text}\n{stacktrace}"));
+            }
         }
         else
         {
-            var visuals = 
-                new Notification.NotificationVisuals(ErrorBodyRequestSendData, ERRORTITLE, "Send Logs", "Opt Out", disableUI: true);
-            NotificationManager.RequestNotification(visuals, () =>
+            if (!PreventAsking)
             {
-                var log = $"{text}\n{stacktrace}";
-                Log(log);
-                SendErrorLog(log);
-            });
+                var visuals =
+                    new Notification.NotificationVisuals(ErrorBodyRequestSendData, ERRORTITLE, "Send Logs", "Opt Out", disableUI: true);
+                NotificationManager.RequestNotification(visuals, () =>
+                {
+                    var log = $"{text}\n{stacktrace}";
+                    Log(log);
+                    SendErrorLog(log);
+                });
+                SettingsManager.SetSetting(HasRequestedHelp, true);
+            }
         }
+    }
+
+    /// <summary>
+    /// Suppress Error Reporter from notifying player of an error?
+    /// </summary>
+    /// <param name="suppressed">Suppress a normal error report</param>
+    /// <param name="preventAsking">Suppress asking player to report</param>
+    public static void SetSuppressed(bool suppressed, bool preventAsking = false)
+    {
+        Instance.Suppressed = suppressed;
+        Instance.PreventAsking = preventAsking;
     }
 
 

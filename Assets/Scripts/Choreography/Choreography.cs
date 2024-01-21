@@ -114,7 +114,8 @@ public class Choreography
 
         if (!string.IsNullOrWhiteSpace(json))
         {
-            var first150 = json[..150].Replace(" ", "");
+            var max = json.Length < 150 ? json.Length -1 : 150;
+            var first150 = json[..max].Replace(" ", "");
             if (first150.Contains(V3V1))
             {
                 var v3Choreography = JsonUtility.FromJson<BeatsaberV3Choreography>(json);

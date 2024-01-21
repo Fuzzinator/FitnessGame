@@ -54,7 +54,7 @@ public class SetGraphicsInteractable : Graphic
         {
             TryGetComponent(out _parentGroup);
         }
-        if (_graphics.Length == 0 && _parentGroup != null)
+        if (_graphics?.Length == 0 && _parentGroup != null)
         {
             _graphics = _parentGroup.GetComponentsInChildren<Graphic>();
         }

@@ -263,7 +263,6 @@ public class SongInfo
             }
         }
 
-
         for (var i = 0; i < _difficultyBeatmapSets.Length; i++)
         {
             var mapName = _difficultyBeatmapSets[i].BeatMapName;
@@ -308,6 +307,15 @@ public class SongInfo
                     case GameMode.LegDay:
                         break;
                     case GameMode.NoObstacles:
+                        break;
+                    case GameMode.Lawless:
+                        if (hasNormal || difficultySet.DifficultyInfos != null)
+                        {
+                            break;
+                        }
+
+                        difficultySet = _difficultyBeatmapSets[i];
+
                         break;
                     default: break;
                 }

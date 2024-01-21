@@ -107,7 +107,7 @@ public class BeatSaverPageController : MonoBehaviour
         {
             _audioSource.Stop();
         }
-        if(_playSongsCanvas != null)
+        if (_playSongsCanvas != null)
         {
             _playSongsCanvas.gameObject.SetActive(false);
         }
@@ -412,7 +412,14 @@ public class BeatSaverPageController : MonoBehaviour
         }
 
         await UniTask.DelayFrame(1);
-        ZipFileManagement.ExtractAndSaveZippedSong(folderName, songBytes);
+        try
+        {
+            ZipFileManagement.ExtractAndSaveZippedSong(folderName, songBytes);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"{folderName} cant be saved might have illegal characters {ex}");
+        }
         await UniTask.DelayFrame(1);
         await UniTask.SwitchToMainThread(_downloadsTokenSource.Token);
         _downloadingIds.Remove(beatmapID);
@@ -682,7 +689,7 @@ public class BeatSaverPageController : MonoBehaviour
     public void StartPlaySong()
     {
         var songInfo = SongInfoFilesReader.Instance.TryGetSongInfo(GetFolderName());
-        if(songInfo == null) 
+        if (songInfo == null)
         {
             var visuals = new Notification.NotificationVisuals("Song could not be found in available songs.", "Cannot Load Song", "Okay");
             NotificationManager.RequestNotification(visuals);
@@ -701,6 +708,6 @@ public class BeatSaverPageController : MonoBehaviour
 
     private string GetFolderName()
     {
-        return $"{_activeBeatmap.ID} ({_activeBeatmap.Metadata.SongName} - {_activeBeatmap.Metadata.LevelAuthorName})";
+        return $"{_activeBeatmap.ID} ({_activeBeatmap.Metadata.SongName} - {_activeBeatmap.Metadata.LevelAuthorName})".RemoveIllegalIOCharacters();
     }
 }

@@ -20,7 +20,7 @@ public class PassthroughManager : MonoBehaviour
 #if UNITY_STANDALONE_WIN
         Destroy(gameObject);
         return;
-#endif
+#else
         if (DynamicInstance == null)
         {
             DynamicInstance = this;
@@ -30,6 +30,7 @@ public class PassthroughManager : MonoBehaviour
             Destroy(DynamicInstance);
             DynamicInstance = this; 
         }
+#endif
     }
 
     private void OnEnable()
