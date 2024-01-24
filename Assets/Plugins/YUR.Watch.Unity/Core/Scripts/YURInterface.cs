@@ -75,22 +75,28 @@ namespace YUR.Core
             RegisterEvents();
             RegisterInnerEvents();
 
-            string publicPath = GetPublicDataPath();   // path shared between yur-integrated devices
-            string privatePath = GetPrivateDataPath(); // path unique to this specific application
+            Login(UserID);
 
-            // core SDK will not create the paths, so we have to!
-            if(!publicPath.Equals(""))
-                System.IO.Directory.CreateDirectory(publicPath);
-            if (!privatePath.Equals(""))
-                System.IO.Directory.CreateDirectory(privatePath);
-
-            sdk.StartNetwork(privatePath, UserID, publicPath);
             InitGameInfo(info);
             if (!sdk.IsOnline())
             {
                 Invoke("OfflineAdd", 0.05f);
             }
             StartCoroutine(TryStartWorkoutCoroutine());
+        }
+
+        public void Login(string UserID)
+        {
+            string publicPath = GetPublicDataPath();   // path shared between yur-integrated devices
+            string privatePath = GetPrivateDataPath(); // path unique to this specific application
+
+            // core SDK will not create the paths, so we have to!
+            if (!publicPath.Equals(""))
+                System.IO.Directory.CreateDirectory(publicPath);
+            if (!privatePath.Equals(""))
+                System.IO.Directory.CreateDirectory(privatePath);
+
+            sdk.StartNetwork(privatePath, UserID, publicPath);
         }
 
         void OfflineAdd()

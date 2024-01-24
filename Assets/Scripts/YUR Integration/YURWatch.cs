@@ -7,6 +7,11 @@ using YUR.Core.Config;
 
 namespace YUR.Core
 {
+    /// <summary>
+    /// This class actually belongs in Assets/Plugins/YUR.Watch.Unity/Core/
+    /// I moved it so I can use Profile Manager to control the watch instead of relying on individual systems.
+    /// Bad practice I know, sorry future me.
+    /// </summary>
     public class YURWatch : MonoBehaviour
     {
         public YURSettings Settings;
@@ -17,10 +22,32 @@ namespace YUR.Core
 
         private GameObject watch;
 
+        private Profile _currentProfile;
+
 
         public void Start()
         {
-            WaitForInitialize().Forget();
+            ProfileManager.Instance.activeProfileUpdated.AddListener(ActiveProfileUpdatedHandler);
+            //WaitForInitialize().Forget();
+        }
+
+        private void ActiveProfileUpdatedHandler()
+        {
+            var activeProfile = ProfileManager.Instance.ActiveProfile;
+            if(activeProfile == null || _currentProfile == activeProfile)
+            {
+                return;
+            }
+            if(_currentProfile == null)
+            {
+                _currentProfile = activeProfile;
+                Begin(activeProfile.GUID);
+            }
+            else
+            {
+                YURInterface.Instance.Logout();
+                YURInterface.Instance.Login(activeProfile.GUID);
+            }
         }
 
         private async UniTaskVoid WaitForInitialize()
