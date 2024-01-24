@@ -20,6 +20,7 @@ public class AzureSqlManager : MonoBehaviour
     private const string SetLeaderboardEnd = "?code=mwB8YMyIHWkFd0qnX7pTEz1vYa0mv989iYA4rkL5XDHoAzFuocSNyg==";
     private const string GetLeaderboardEnd = "?code=g5d2kGCy-SVPpBp0LlX0gNvvdQ17dFYU-nnaeB15hR4uAzFu2s9d6A==";
     private const string SendErrorLogEnd = "?code=PNCCmOAjTFZ-T7yWMWElEDNyOtw2EQsLLSrzTmRHtqaSAzFu3UjBLA==";
+    private const string PlayerAgreedToHelp = "PlayerHasAgreedToSendErrorLogs";
 
     private bool _serverRunning = false;
     private bool _warmingServer = false;
@@ -230,7 +231,7 @@ public class AzureSqlManager : MonoBehaviour
     #region Error Logging
     public void TrySendErrorReport(string errorLog)
     {
-        if (!NetworkConnectionManager.Instance.NetworkConnected)
+        if (!NetworkConnectionManager.Instance.NetworkConnected || !SettingsManager.GetSetting(PlayerAgreedToHelp, false))
         {
             return;
         }

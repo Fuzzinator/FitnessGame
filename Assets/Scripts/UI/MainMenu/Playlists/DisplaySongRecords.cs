@@ -172,6 +172,10 @@ namespace UI
             _statusDisplayBackground.gameObject.SetActive(false);
             if (songRecord != null)
             {
+                if(songRecord.Length == 1 && string.IsNullOrWhiteSpace(songRecord[0].GUID))
+                {
+                    return;
+                }
                 SetFields(songRecord);
             }
         }

@@ -304,45 +304,72 @@ public class SettingsManager : MonoBehaviour
 
     public static void SetSetting<T>(string settingName, T value, bool isProfileSetting = true, Profile overrideProfile = null)
     {
-        if (!isProfileSetting)
+        try
         {
-            ES3.Save(settingName, value);
-        }
-        else
-        {
-            if (overrideProfile != null)
+            if (!isProfileSetting)
             {
-                ES3.Save(settingName, value, ProfileManager.GetProfileSettings(overrideProfile));
-                return;
+                ES3.Save(settingName, value);
             }
-            if (ProfileManager.Instance.ProfileSettings == null)
+            else
             {
-                return;
-            }
+                if (overrideProfile != null)
+                {
+                    ES3.Save(settingName, value, ProfileManager.GetProfileSettings(overrideProfile));
+                    return;
+                }
+                if (ProfileManager.Instance.ProfileSettings == null)
+                {
+                    return;
+                }
 
-            ES3.Save(settingName, value, ProfileManager.Instance.ProfileSettings);
+                ES3.Save(settingName, value, ProfileManager.Instance.ProfileSettings);
+            }
+        }
+        catch (Exception ex) when (ex is InvalidCastException)
+        {
+            AzureSqlManager.Instance.TrySendErrorReport($"Encountered error setting setting \"{settingName}\" reported error is: {ex.Message}");
+            DeleteSetting(settingName, isProfileSetting, overrideProfile);
+            SetSetting(settingName, value, isProfileSetting, overrideProfile);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Cant set:{settingName}--{ex.Message}--{ex.StackTrace}");
         }
     }
 
     public static T GetSetting<T>(string settingName, T defaultValue, bool isProfileSetting = true, Profile overrideProfile = null)
     {
-        if (!isProfileSetting)
+        try
         {
-            return ES3.Load(settingName, defaultValue);
-        }
+            if (!isProfileSetting)
+            {
+                return ES3.Load(settingName, defaultValue);
+            }
 
-        if (overrideProfile != null)
-        {
-            return ES3.Load(settingName, defaultValue, ProfileManager.GetProfileSettings(overrideProfile));
+            if (overrideProfile != null)
+            {
+                return ES3.Load(settingName, defaultValue, ProfileManager.GetProfileSettings(overrideProfile));
+            }
+            if (ProfileManager.Instance.ProfileSettings == null)
+            {
+                return defaultValue;
+            }
+
+            var value = ES3.Load(settingName, defaultValue, ProfileManager.Instance.ProfileSettings);
+
+            return value;
         }
-        if (ProfileManager.Instance.ProfileSettings == null)
+        catch (Exception ex) when (ex is InvalidOperationException)
         {
+            AzureSqlManager.Instance.TrySendErrorReport($"Encountered error getting setting \"{settingName}\" reported error is: {ex.Message}");
+            DeleteSetting(settingName, isProfileSetting, overrideProfile);
             return defaultValue;
         }
-
-        var value = ES3.Load(settingName, defaultValue, ProfileManager.Instance.ProfileSettings);
-
-        return value;
+        catch (Exception ex)
+        {
+            Debug.LogError($"Cant get:{settingName}--{ex.Message}--{ex.StackTrace}");
+            return defaultValue;
+        }
     }
 
     public static void DeleteSetting(string settingName, bool isProfileSetting = true, Profile overrideProfile = null)

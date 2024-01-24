@@ -213,7 +213,7 @@ public class CustomEnvironmentCreator : MonoBehaviour
 
     public void SetGloves(EnvAssetReference gloves)
     {
-        if (gloves == null)
+        if (gloves == null || string.IsNullOrWhiteSpace(gloves.AssetName))
         {
             return;
         }
@@ -222,7 +222,7 @@ public class CustomEnvironmentCreator : MonoBehaviour
 
     public void SetTargets(EnvAssetReference targets)
     {
-        if (targets == null)
+        if (targets == null || string.IsNullOrWhiteSpace(targets.AssetName))
         {
             return;
         }
@@ -231,7 +231,7 @@ public class CustomEnvironmentCreator : MonoBehaviour
 
     public void SetObstacles(EnvAssetReference obstacles)
     {
-        if (obstacles == null)
+        if (obstacles == null || string.IsNullOrWhiteSpace(obstacles.AssetName))
         {
             return;
         }

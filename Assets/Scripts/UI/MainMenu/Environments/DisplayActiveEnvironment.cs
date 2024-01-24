@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using TMPro;
+using UI;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,6 +26,10 @@ public class DisplayActiveEnvironment : MonoBehaviour
     private TextMeshProUGUI _obstaclesName;
     [SerializeField]
     private Image _environmentImage;
+    [SerializeField]
+    private MultiGraphicButton _editButton;
+    [SerializeField]
+    private Button _deleteButton;
     [SerializeField]
     private AvailableEnvironmentsUIController _availableEnvironmentsUIController;
 
@@ -94,6 +99,8 @@ public class DisplayActiveEnvironment : MonoBehaviour
             _skyboxBrightness.SetTextZeroAlloc(ActiveCustomEnvironment.SkyboxBrightness, true);
 
             SetImageAsync(ActiveCustomEnvironment.SkyboxName, ActiveCustomEnvironment.SkyboxPath).Forget();
+            _editButton.interactable = true;
+            _deleteButton.interactable = true;
         }
         else
         {
@@ -104,6 +111,8 @@ public class DisplayActiveEnvironment : MonoBehaviour
             _obstaclesName.ClearText();
             _environmentImage.sprite = null;
             _environmentImage.enabled = false;
+            _editButton.interactable = false;
+            _deleteButton.interactable = false;
         }
     }
 
@@ -125,11 +134,19 @@ public class DisplayActiveEnvironment : MonoBehaviour
 
     public void EditEnvironment()
     {
+        if(_activeCustomEnvironment == null)
+        {
+            return;
+        }
         _availableEnvironmentsUIController.EditEnvironment(_activeCustomEnvironment);
     }
 
     public void TryDeleteEnvironment()
     {
+        if (_activeCustomEnvironment == null)
+        {
+            return;
+        }
         var visuals = CustomEnvironmentsController.ConfirmDeleteEnvironment;
         NotificationManager.RequestNotification(visuals, () => ConfirmDeleteEnvironment());
     }

@@ -10,7 +10,7 @@ public class CleanupPreviousVersions : MonoBehaviour
 
     private const string Version = "CURRENT_VERSION";
 
-    private void CheckVersions()
+    public void CheckVersions()
     {
         var previousVersion = SettingsManager.GetSetting<string>(Version, null);
 

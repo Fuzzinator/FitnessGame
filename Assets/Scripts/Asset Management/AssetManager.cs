@@ -577,7 +577,7 @@ public class AssetManager : MonoBehaviour
         var files = info.GetFiles();
         if(files.Length == 0)
         {
-            info.Delete();
+            info.Delete(true);
         }
         foreach (var file in files)
         {

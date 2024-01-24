@@ -59,12 +59,9 @@ public class ErrorReporter : MonoBehaviour
             {
                 return;
             }
-
-            DisplayNotification(text, stacktrace);
-            if (SettingsManager.GetSetting(PlayerAgreedToHelp, false))
-            {
-                SendErrorLog(text);
-            }
+            var notification = $"{text}\n{stacktrace}";
+            DisplayNotification(notification);
+            SendErrorLog(notification);
         };
         Application.logMessageReceived += _callback;
     }
@@ -79,7 +76,7 @@ public class ErrorReporter : MonoBehaviour
         ES3.Save(DateTime.Now.ToString("yyyyMMddHHmmss"), $"{logType}: {text}\n{stacktrace}", _settings);
     }
 
-    private void DisplayNotification(string text, string stacktrace)
+    private void DisplayNotification(string text)
     {
         var hasBeenPromptedToHelp = SettingsManager.GetSetting(HasRequestedHelp, false);
         if (hasBeenPromptedToHelp)
@@ -89,7 +86,7 @@ public class ErrorReporter : MonoBehaviour
             {
                 var visuals =
                     new Notification.NotificationVisuals(ERRORBODY, ERRORTITLE, autoTimeOutTime: 5f, popUp: true);
-                NotificationManager.RequestNotification(visuals, () => Log($"{text}\n{stacktrace}"));
+                NotificationManager.RequestNotification(visuals, () => Log(text));
             }
         }
         else
@@ -100,10 +97,14 @@ public class ErrorReporter : MonoBehaviour
                     new Notification.NotificationVisuals(ErrorBodyRequestSendData, ERRORTITLE, "Send Logs", "Opt Out", disableUI: true);
                 NotificationManager.RequestNotification(visuals, () =>
                 {
-                    var log = $"{text}\n{stacktrace}";
-                    Log(log);
-                    SendErrorLog(log);
+                    SettingsManager.SetSetting(PlayerAgreedToHelp, true);
+                    Log(text);
+                    SendErrorLog(text);
+                }, () =>
+                {
+                    SettingsManager.SetSetting(PlayerAgreedToHelp, false);
                 });
+
                 SettingsManager.SetSetting(HasRequestedHelp, true);
             }
         }
