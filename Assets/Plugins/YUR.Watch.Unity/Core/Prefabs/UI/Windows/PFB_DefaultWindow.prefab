@@ -28,7 +28,6 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8288546192891338581}
   m_RootOrder: 0
@@ -102,7 +101,6 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5368121916119574617}
   m_Father: {fileID: 9221986174665694321}
@@ -122,8 +120,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9221986174665694321}
+  - component: {fileID: 9221986174665694322}
   - component: {fileID: 2597484118329521808}
-  - component: {fileID: 3044986429648178037}
   m_Layer: 5
   m_Name: PFB_DefaultWindow
   m_TagString: Untagged
@@ -141,7 +139,6 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -0.000023841858}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8288546192891338581}
   m_Father: {fileID: 0}
@@ -152,6 +149,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 140, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &9221986174665694322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9221986174665694320}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b80d5865681aa334b8bfb8a725b41f07, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debug: 0
+  screenType: 2
+  container: {fileID: 8510806036371648462}
 --- !u!114 &2597484118329521808
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -172,18 +184,3 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
---- !u!114 &3044986429648178037
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9221986174665694320}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b80d5865681aa334b8bfb8a725b41f07, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  debug: 0
-  screenType: 6
-  container: {fileID: 8510806036371648462}
