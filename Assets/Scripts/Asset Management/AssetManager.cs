@@ -669,7 +669,7 @@ public class AssetManager : MonoBehaviour
                     item.SetSongID(songID);
                     updatedMaps = true;
                 }
-                if (songScore >= 0 && item.SongScore >= 0)
+                if (songScore >= 0 && item.SongScore <= 0)
                 {
                     item.SetSongScore(songScore);
                     updatedMaps = true;

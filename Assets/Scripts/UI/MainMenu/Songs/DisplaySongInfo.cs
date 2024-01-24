@@ -10,7 +10,7 @@ namespace UI.Scrollers.Playlists
     {
         [SerializeField]
         private CanvasGroup _canvasGroup;
-        
+
         [SerializeField]
         private TextMeshProUGUI _songName;
 
@@ -61,13 +61,13 @@ namespace UI.Scrollers.Playlists
 
         public void CheckIfShouldClear()
         {
-            if(_currentSongInfo != null && SongInfoFilesReader.Instance.availableSongs.Exists((i) => i.fileLocation.Equals(_currentSongInfo.fileLocation, StringComparison.InvariantCultureIgnoreCase)))
+            if (_currentSongInfo != null && SongInfoFilesReader.Instance.availableSongs.Exists((i) => i.fileLocation.Equals(_currentSongInfo.fileLocation, StringComparison.InvariantCultureIgnoreCase)))
             {
                 return;
             }
             ClearDisplayedInfo();
         }
-        
+
         private void OnDisable()
         {
             ClearDisplayedInfo();
@@ -82,13 +82,13 @@ namespace UI.Scrollers.Playlists
             _songLength.SetTextZeroAlloc(info.ReadableLength, true);
             _beatsPerMinute.SetTextZeroAlloc(info.BeatsPerMinute, true);
 
-            if(info.SongScore < 0)
+            if (info.SongScore < 0)
             {
                 _songRating.SetTextZeroAlloc(string.Empty, true);
             }
             else
             {
-                _songRating.SetTextZeroAlloc(info.SongScore, true);
+                _songRating.SetTextZeroAlloc(info.SongScore * 100, true);
             }
 
             _songOptions.UpdateDifficultyOptions(info, info.DifficultySets);

@@ -43,11 +43,11 @@ namespace YUR.Core
                 _currentProfile = activeProfile;
                 Begin(activeProfile.GUID);
             }
-            else
+            /*else
             {
                 YURInterface.Instance.Logout();
                 YURInterface.Instance.Login(activeProfile.GUID);
-            }
+            }*/
         }
 
         private async UniTaskVoid WaitForInitialize()
