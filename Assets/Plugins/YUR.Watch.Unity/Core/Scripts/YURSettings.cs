@@ -22,7 +22,10 @@ namespace YUR.Core.Config
         public Vector3 RightHandEulerOffset = new Vector3();
 
         public HandSide handInUse;
-        public YUR_SDK.SubPlatoform SubPlatform = YUR_SDK.SubPlatoform.Android_Quest;
+        [SerializeField]
+        private YUR_SDK.SubPlatoform _androidPlatform = YUR_SDK.SubPlatoform.Android_Quest;
+        [SerializeField]
+        private YUR_SDK.SubPlatoform _pcvrPlatform = YUR_SDK.SubPlatoform.Auto;
         void Reset()
         {
             GameName = Application.identifier;
@@ -30,6 +33,18 @@ namespace YUR.Core.Config
             LeftHandEulerOffset = new Vector3();
             RightHandPositionOffset = new Vector3();
             RightHandEulerOffset = new Vector3();
+        }
+
+        public YUR_SDK.SubPlatoform SubPlatform
+        {
+            get
+            {
+#if UNITY_ANDROID
+                return _androidPlatform;
+#elif UNITY_STANDALONE_WIN
+                return _pcvrPlatform;
+#endif
+            }
         }
     }
 }

@@ -359,9 +359,9 @@ public class SettingsManager : MonoBehaviour
 
             return value;
         }
-        catch (Exception ex) when (ex is InvalidOperationException)
+        catch (Exception ex) when (ex is InvalidOperationException or NotSupportedException)
         {
-            AzureSqlManager.Instance.TrySendErrorReport($"Encountered error getting setting \"{settingName}\" reported error is: {ex.Message}");
+            AzureSqlManager.Instance.TrySendErrorReport($"Encountered error getting setting \"{settingName}\" reported error is: {ex.Message}--{ex.StackTrace}");
             DeleteSetting(settingName, isProfileSetting, overrideProfile);
             return defaultValue;
         }
@@ -371,6 +371,7 @@ public class SettingsManager : MonoBehaviour
             return defaultValue;
         }
     }
+
 
     public static void DeleteSetting(string settingName, bool isProfileSetting = true, Profile overrideProfile = null)
     {

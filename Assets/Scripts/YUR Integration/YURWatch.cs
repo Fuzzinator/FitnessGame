@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using Oculus.Platform;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -27,8 +28,11 @@ namespace YUR.Core
 
         public void Start()
         {
+#if !UNITY_ANDROID
+            WaitForInitialize().Forget();
+#elif !UNITY_STANDALONE_WIN
             ProfileManager.Instance.activeProfileUpdated.AddListener(ActiveProfileUpdatedHandler);
-            //WaitForInitialize().Forget();
+#endif
         }
 
         private void ActiveProfileUpdatedHandler()
@@ -53,18 +57,17 @@ namespace YUR.Core
         private async UniTaskVoid WaitForInitialize()
         {
 
-#if YUR_ECO_META
+#if UNITY_ANDROID
             await UniTask.WaitUntil(() => Oculus.Platform.Core.IsInitialized());
 #endif
-
             Begin(GetUniqueEcosystemID());
         }
 
         private string GetUniqueEcosystemID()
         {
-#if YUR_ECO_META
+#if UNITY_ANDROID
             return Oculus.Platform.Users.GetLoggedInUser().ToString();
-# else
+#elif UNITY_STANDALONE_WIN
             return "";
 #endif
         }
