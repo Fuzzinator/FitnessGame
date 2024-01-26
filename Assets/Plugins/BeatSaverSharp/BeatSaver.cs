@@ -348,7 +348,6 @@ namespace BeatSaverSharp
             var response = await _httpService.GetAsync(url, token);//.ConfigureAwait(false);
             if (!response.Successful)
                 return null;
-
             var page = await response.ReadAsObjectAsync<SerializableSearch>();//.ConfigureAwait(false);
             if (page.Docs.Count == 0)
                 return null;

@@ -13,7 +13,7 @@ public class InitializeBeatSaverAPI : MonoBehaviour
         _controller.Initialize();
         if (NetworkConnectionManager.Instance.NetworkConnected)
         {
-            _controller.RequestHighestRated();
+            _controller.RequestHighestRated(true);
         }
     }
 }

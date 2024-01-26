@@ -12,6 +12,8 @@ using UnityEngine.UI;
 using UI.Scrollers.BeatsaverIntegraton;
 using UnityEngine.Serialization;
 using EnhancedUI.EnhancedScroller;
+using UnityEditor;
+using static UnityEditor.Progress;
 
 public class BeatSaverPageController : MonoBehaviour
 {
@@ -164,13 +166,13 @@ public class BeatSaverPageController : MonoBehaviour
         RequestLatestAsync().Forget();
     }
 
-    public void RequestHighestRated()
+    public void RequestHighestRated(bool initializing)
     {
         ShowLoading(true);
         var rating = SearchTextFilterOption.Rating;
         rating.Query = _inputField.text;
 
-        SearchAsync(rating).Forget();
+        SearchAsync(rating, initializing).Forget();
     }
 
     public void RequestMostRelevant()
@@ -275,7 +277,33 @@ public class BeatSaverPageController : MonoBehaviour
         {
             await UniTask.DelayFrame(1, cancellationToken: _cancellationTokenSource.Token);
         }
-        var request = await _beatSaver.LatestBeatmaps(token: _cancellationTokenSource.Token);
+
+        Page request = null;
+        try
+        {
+            request = await _beatSaver.LatestBeatmaps(token: _cancellationTokenSource.Token);
+        }
+        catch (Exception ex)
+        {
+            ShowLoading(false);
+
+            if (ex is TimeoutException)
+            {
+                ErrorReporter.SetSuppressed(true);
+                Debug.LogError($"Failed to retrieve latest beatmaps. Error:{ex.Message}--{ex.StackTrace}");
+                ErrorReporter.SetSuppressed(false);
+                var visuals = new Notification.NotificationVisuals($"Failed to retrieve latest songs because the connection timed out. Would you like to try again?", "Connection Timed Out", "Yes", "No");
+                NotificationManager.RequestNotification(visuals, () =>
+                {
+                    RequestLatestAsync().Forget();
+                });
+            }
+            else
+            {
+                Debug.LogError($"Failed to retrieve latest beatmaps. Error:{ex.Message}--{ex.StackTrace}");
+            }
+        }
+
         if (request == null)
         {
             return;
@@ -292,7 +320,9 @@ public class BeatSaverPageController : MonoBehaviour
         ShowLoading(true);
         _scroller.SetCanScroll(false);
         _activePage = _nextPage;
+
         _nextPage = await _activePage.Next(_cancellationTokenSource.Token);
+
         if (_activePage == null || !setData)
         {
             return;
@@ -316,7 +346,7 @@ public class BeatSaverPageController : MonoBehaviour
         await UpdateDataBackwards();
     }
 
-    private async UniTask SearchAsync(SearchTextFilterOption option)
+    private async UniTask SearchAsync(SearchTextFilterOption option, bool initializing = false)
     {
         try
         {
@@ -326,7 +356,36 @@ public class BeatSaverPageController : MonoBehaviour
                 await UniTask.DelayFrame(1, cancellationToken: _cancellationTokenSource.Token);
             }
             _scroller.SetCanScroll(false);
-            var request = await _beatSaver.SearchBeatmaps(option, token: _cancellationTokenSource.Token);
+
+            Page request = null;
+            try
+            {
+                request = await _beatSaver.SearchBeatmaps(option, token: _cancellationTokenSource.Token);
+            }
+            catch (Exception ex)
+            {
+                ShowLoading(false);
+
+                if (ex is TimeoutException)
+                {
+                    ErrorReporter.SetSuppressed(true);
+                    Debug.LogError($"Failed to search beatmaps due to connection timeout. Attempted search:{option.Query}-{option.SortOrder}. Error:{ex.Message}--{ex.StackTrace}");
+                    ErrorReporter.SetSuppressed(false);
+
+                    if (!initializing)
+                    {
+                        var visuals = new Notification.NotificationVisuals($"Failed to retrieve songs because the connection timed out. Would you like to try again?", "Connection Timed Out", "Yes", "No");
+                        NotificationManager.RequestNotification(visuals, () =>
+                        {
+                            SearchAsync(option).Forget();
+                        });
+                    }
+                }
+                else
+                {
+                    Debug.LogError($"Failed to search beatmaps. Attempted search:{option.Query}-{option.SortOrder}. Error:{ex.Message}--{ex.StackTrace}");
+                }
+            }
             if (request == null)
             {
                 return;
@@ -336,6 +395,10 @@ public class BeatSaverPageController : MonoBehaviour
         }
         catch (Exception e)
         {
+            if (e is Newtonsoft.Json.JsonSerializationException)
+            {
+                return;
+            }
             await UniTask.SwitchToMainThread(_cancellationTokenSource.Token);
 
             if (e is not System.Threading.Tasks.TaskCanceledException)
@@ -387,10 +450,8 @@ public class BeatSaverPageController : MonoBehaviour
             Debug.Log("Will Not Download");
             return;
         }
-
-        var beatmapID = _activeBeatmap.ID;
-        var songScore = _activeBeatmap.Stats.Score;
-        _downloadingIds.Add(beatmapID);
+        var targetBeatmap = _activeBeatmap;
+        _downloadingIds.Add(targetBeatmap.ID);
         var progress = new Progress<double>();
         var loadingDisplay = _loadingDisplays.DisplayNewLoading(_activeBeatmap.Metadata.SongName);
         if (loadingDisplay != null)
@@ -402,8 +463,29 @@ public class BeatSaverPageController : MonoBehaviour
         {
             await RefreshDownloadsToken();
         }
+        byte[] songBytes = null;
+        try
+        {
+            songBytes = await _activeBeatmap.LatestVersion.DownloadZIP(_downloadsTokenSource.Token, progress);
+        }
+        catch (Exception ex)
+        {
+            if (ex is TimeoutException)
+            {
+                _downloadingIds.Remove(targetBeatmap.ID);
+                loadingDisplay.ReturnToPool();
 
-        var songBytes = await _activeBeatmap.LatestVersion.DownloadZIP(_downloadsTokenSource.Token, progress);
+                var visuals = new Notification.NotificationVisuals($"{targetBeatmap.Name} failed to download because the connection timed out. Would you like to try again?", "Download Failed", "Yes", "No");
+                NotificationManager.RequestNotification(visuals, () =>
+                {
+                    _cellView = activeCell;
+                    _activeBeatmap = targetBeatmap;
+                    DownloadSongAsync().Forget();
+                });
+                return;
+            }
+        }
+
         if (songBytes == null || _downloadsTokenSource.IsCancellationRequested)
         {
             NotificationManager.RequestNotification(new Notification.NotificationVisuals("Download failed."));
@@ -418,19 +500,19 @@ public class BeatSaverPageController : MonoBehaviour
         }
         catch (Exception ex)
         {
-            Debug.LogError($"{folderName} cant be saved might have illegal characters {ex}");
+            Debug.LogError($"{folderName} cant be saved might have illegal characters {ex.Message} -- {ex.StackTrace}");
         }
         await UniTask.DelayFrame(1);
         await UniTask.SwitchToMainThread(_downloadsTokenSource.Token);
-        _downloadingIds.Remove(beatmapID);
-        if (beatmapID == _activeBeatmap.ID)
+        _downloadingIds.Remove(targetBeatmap.ID);
+        if (targetBeatmap.ID == _activeBeatmap.ID)
         {
             _downloadButton.interactable = true;
         }
         activeCell.SetDownloaded(true);
 
         //TODO: Need to remove the existing song if a duplicate exists in the SongInfoFilesReader
-        await SongInfoFilesReader.Instance.LoadNewSong(folderName, beatmapID, songScore);
+        await SongInfoFilesReader.Instance.LoadNewSong(folderName, targetBeatmap.ID, targetBeatmap.Stats.Score);
 
         PlaylistFilesReader.Instance.RefreshPlaylistsValidStates().Forget();
         UpdateUI().Forget();
@@ -587,8 +669,24 @@ public class BeatSaverPageController : MonoBehaviour
             sb.AppendJoin(", ", difficultyNames);
             _mapDifficulties.SetText(sb);
         }
-
-        var imageBytes = await _activeBeatmap.LatestVersion.DownloadCoverImage(token: _cancellationTokenSource.Token);
+        byte[] imageBytes = null;
+        try
+        {
+            imageBytes = await _activeBeatmap.LatestVersion.DownloadCoverImage(token: _cancellationTokenSource.Token);
+        }
+        catch (Exception ex)
+        {
+            if (ex is TimeoutException)
+            {
+                ErrorReporter.SetSuppressed(true);
+                Debug.LogError($"Connection timed out to download image for {_activeBeatmap.Name}-{_activeBeatmap.ID}. Error:{ex.Message}--{ex.StackTrace}");
+                ErrorReporter.SetSuppressed(false);
+            }
+            else
+            {
+                Debug.LogError($"Failed to load image for song {_activeBeatmap.Name}-{_activeBeatmap.ID}. Error:{ex.Message}--{ex.StackTrace}");
+            }
+        }
         if (imageBytes != null)
         {
             await UniTask.SwitchToMainThread(_cancellationTokenSource.Token);

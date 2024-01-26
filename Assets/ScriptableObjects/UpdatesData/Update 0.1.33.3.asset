@@ -21,4 +21,7 @@ MonoBehaviour:
     a playlist to fail when including the built in songs \"Dance\" or \"Sky\".\n\t\u2022
     Fixed bug causing players to have to sign in to YUR every time they opened the
     game.\n\t\u2022 Fixed bug causing retrieving settings to sometimes break due
-    to corrupted data"
+    to corrupted data.\n\t\u2022 Added an internal \"Legacy\" configuration for beatmaps
+    to fixed bug causing an error to be thrown when retrieving some custom songs.\n\t\u2022
+    Improved handling of errors when downloading songs fails. If connections time
+    out, players will be given an option to try again."
