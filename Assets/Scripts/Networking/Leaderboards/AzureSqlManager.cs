@@ -242,7 +242,7 @@ public class AzureSqlManager : MonoBehaviour
     {
         var errorTimeAsString = DateTime.Now.ToString("yyyyMMddHHmmss");
         var url = $"{RootURL}ReportError/{errorTimeAsString}{SendErrorLogEnd}";
-        var errorLog = new ErrorLog(errorTimeAsString, errorMessage);
+        var errorLog = new ErrorLog(errorTimeAsString, $"{Application.version}:{errorMessage}");
         var json = JsonConvert.SerializeObject(errorLog);
 
         var bytes = Encoding.UTF8.GetBytes(json);
@@ -269,7 +269,7 @@ public class AzureSqlManager : MonoBehaviour
             Debug.LogWarning($"Failed to post score. Error returned was:{e.Message}");
         }
     }
-    #endregion
+#endregion
 
     public void UpdateDisplayName(string displayName)
     {

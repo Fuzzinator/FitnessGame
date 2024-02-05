@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Cysharp.Threading.Tasks.CompilerServices;
 using GameModeManagement;
 using SimpleTweens;
 using Unity.Mathematics;
@@ -251,9 +252,12 @@ public class ChoreographySequencer : MonoBehaviour
 
     private void CreateSequence(ChoreographyFormation formation, int nextFormationIndex)
     {
-        if (formation.HasEvent && formation.Event.Type == ChoreographyEvent.EventType.EarlyRotation)
+        if (formation.HasEvent)
         {
-            RotateSpawnSource(formation.Event.RotationValue);
+            if (formation.Event.Type == ChoreographyEvent.EventType.EarlyRotation)
+            {
+                RotateSpawnSource(formation.Event.RotationValue);
+            }
         }
 
         var formationHolder = _formationHolderPool.GetNewPoolable() as FormationHolder;
@@ -287,10 +291,24 @@ public class ChoreographySequencer : MonoBehaviour
 
         tween.DelayTweenStart(delay);
 
-        if (formation.HasEvent && formation.Event.Type == ChoreographyEvent.EventType.LateRotation)
+        if (formation.HasEvent)
         {
-            RotateSpawnSource(formation.Event.RotationValue);
+            if (formation.Event.Type == ChoreographyEvent.EventType.LateRotation)
+            {
+
+                RotateSpawnSource(formation.Event.RotationValue);
+            }
+            else if (formation.Event.Type == ChoreographyEvent.EventType.ChangeFooting)
+            {
+                WaitAndSwapFooting(delay).Forget();
+            }
         }
+    }
+
+    private async UniTaskVoid WaitAndSwapFooting(float delay)
+    {
+        await UniTask.Delay(TimeSpan.FromSeconds(delay), cancellationToken: _cancellationToken).SuppressCancellationThrow();
+        SwitchFootPlacement();
     }
 
     public void TryCreateNextSequence(int nextFormationIndex)

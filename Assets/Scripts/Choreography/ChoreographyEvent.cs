@@ -73,7 +73,8 @@ public struct ChoreographyEvent// : ISequenceable //First release wont use this 
         EarlyRotation = 14, //for 360/90 mode
         LateRotation = 15, //for 360/90 mode
         LowerCarHydrolics = 16, //Car on one level
-        RaiseCarHydrolics = 17
+        RaiseCarHydrolics = 17,
+        ChangeFooting = 30
     }
 
     public enum LightEventValue

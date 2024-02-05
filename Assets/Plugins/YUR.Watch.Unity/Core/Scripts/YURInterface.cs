@@ -41,9 +41,9 @@ namespace YUR.Core
         private YURProfile _yurProfile;
         private YURWidgets _widgets;
 
-        public Transform HMD => YURHMD.Instance.transform;
-        public Transform Left => YURLeftHand.Instance.transform;
-        public Transform Right => YURRightHand.Instance.transform;
+        public Transform HMD => YURHMD.Instance?.transform;
+        public Transform Left => YURLeftHand.Instance?.transform;
+        public Transform Right => YURRightHand.Instance?.transform;
 
         private YUR_SDK.CResults _cResults;
 
@@ -462,6 +462,7 @@ namespace YUR.Core
             {
                 return;
             }
+
             //YUR_SDK.CResults results = sdk.Calculator(HMD.AsYURDeviceSample(), Left.AsYURDeviceSample(), Right.AsYURDeviceSample());
 	        sdk.CalculatorAsync(HMD.AsYURDeviceSample(), Left.AsYURDeviceSample(), Right.AsYURDeviceSample());
 

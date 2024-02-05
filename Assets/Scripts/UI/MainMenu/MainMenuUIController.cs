@@ -13,6 +13,9 @@ public class MainMenuUIController : BaseGameStateListener
     [SerializeField]
     private MenuPage[] _menuPages;
 
+    [SerializeField]
+    private int _targetDefaultPage = 0;
+
     private MenuPage _activeMenuPage;
 
     private List<MonoBehaviour> _requestSources = new List<MonoBehaviour>();
@@ -44,7 +47,7 @@ public class MainMenuUIController : BaseGameStateListener
             return;
         }
 
-        SetActivePage(0);
+        SetActivePage(_targetDefaultPage);
     }
 
     protected new void OnDisable()

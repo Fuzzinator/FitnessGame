@@ -8,7 +8,7 @@ namespace YUR.Core
     public class YURHMD : YURBaseNode
     {
         public static YURHMD Instance { get; private set; }
-        public static bool IsNull { get; private set; }
+        public static bool IsNull { get; private set; } = true;
         internal override Transform mainAnchor => IsNull ? null : Instance.transform;//{ get => YURWatch.HMDAnchor; set => YURWatch.HMDAnchor = value; }
 
         protected override void Awake()

@@ -12,8 +12,7 @@ using UnityEngine.UI;
 using UI.Scrollers.BeatsaverIntegraton;
 using UnityEngine.Serialization;
 using EnhancedUI.EnhancedScroller;
-using UnityEditor;
-using static UnityEditor.Progress;
+using UnityEngine.UIElements.Experimental;
 
 public class BeatSaverPageController : MonoBehaviour
 {
@@ -163,16 +162,29 @@ public class BeatSaverPageController : MonoBehaviour
 
     public void RequestLatest()
     {
-        RequestLatestAsync().Forget();
+        ShowLoading(true);
+        var latest = SearchTextFilterOption.Latest;
+        latest.Query = _inputField.text;
+        SearchAsync(latest, true).Forget();
+        //RequestLatestAsync().Forget();
     }
 
-    public void RequestHighestRated(bool initializing)
+    public void InitializeServerConnection()
     {
         ShowLoading(true);
         var rating = SearchTextFilterOption.Rating;
         rating.Query = _inputField.text;
 
-        SearchAsync(rating, initializing).Forget();
+        SearchAsync(rating, true).Forget();
+    }
+
+    public void RequestHighestRated()
+    {
+        ShowLoading(true);
+        var rating = SearchTextFilterOption.Rating;
+        rating.Query = _inputField.text;
+
+        SearchAsync(rating).Forget();
     }
 
     public void RequestMostRelevant()
@@ -275,7 +287,7 @@ public class BeatSaverPageController : MonoBehaviour
         _scroller.SetCanScroll(false);
         if (_beatSaver == null)
         {
-            await UniTask.DelayFrame(1, cancellationToken: _cancellationTokenSource.Token);
+            await UniTask.DelayFrame(1, cancellationToken: _cancellationTokenSource.Token).SuppressCancellationThrow();
         }
 
         Page request = null;
@@ -319,8 +331,13 @@ public class BeatSaverPageController : MonoBehaviour
 
         ShowLoading(true);
         _scroller.SetCanScroll(false);
-        _activePage = _nextPage;
+        var previousPage = _activePage;
+        _activePage = _nextPage ?? previousPage;
 
+        if(_cancellationTokenSource == null)
+        {
+            _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_token);
+        }
         _nextPage = await _activePage.Next(_cancellationTokenSource.Token);
 
         if (_activePage == null || !setData)
@@ -353,7 +370,7 @@ public class BeatSaverPageController : MonoBehaviour
             await RefreshToken();
             if (_beatSaver == null)
             {
-                await UniTask.DelayFrame(1, cancellationToken: _cancellationTokenSource.Token);
+                await UniTask.DelayFrame(1, cancellationToken: _cancellationTokenSource.Token).SuppressCancellationThrow();
             }
             _scroller.SetCanScroll(false);
 
@@ -420,13 +437,22 @@ public class BeatSaverPageController : MonoBehaviour
             _audioSource.Stop();
             return;
         }
-
+        var targetBeatmap = _activeBeatmap;
         await RefreshToken();
+        if(_activeBeatmap != targetBeatmap || targetBeatmap?.LatestVersion == null)
+        {
+            return;
+        }
 
-        var audioClip = await _activeBeatmap.LatestVersion.GetPlayablePreview(_cancellationTokenSource.Token);
+
+        if (_cancellationTokenSource == null)
+        {
+            _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_token);
+        }
+        var audioClip = await targetBeatmap.LatestVersion.GetPlayablePreview(_cancellationTokenSource.Token);
         if (audioClip == null)
         {
-            NotificationManager.RequestNotification(new Notification.NotificationVisuals("Preview failed."));
+            NotificationManager.RequestNotification(new Notification.NotificationVisuals("Unable to download the preview for ", "Preview failed.", autoTimeOutTime: 1f, popUp:true));
             Debug.LogError("Preview Failed");
             return;
         }
@@ -488,7 +514,8 @@ public class BeatSaverPageController : MonoBehaviour
 
         if (songBytes == null || _downloadsTokenSource.IsCancellationRequested)
         {
-            NotificationManager.RequestNotification(new Notification.NotificationVisuals("Download failed."));
+            var visuals = new Notification.NotificationVisuals($"Failed to download {targetBeatmap.Name}", "Download failed.", autoTimeOutTime: 1f, popUp: true);
+            NotificationManager.RequestNotification(visuals);
             Debug.LogError("Download Failed");
             return;
         }
@@ -741,7 +768,7 @@ public class BeatSaverPageController : MonoBehaviour
         if (_cancellationTokenSource != null)
         {
             _cancellationTokenSource.Cancel();
-            await UniTask.DelayFrame(1);
+            await UniTask.DelayFrame(1).SuppressCancellationThrow();
             _cancellationTokenSource.Dispose();
         }
 

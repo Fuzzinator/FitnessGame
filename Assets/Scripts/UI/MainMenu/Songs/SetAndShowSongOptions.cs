@@ -468,7 +468,7 @@ public class SetAndShowSongOptions : MonoBehaviour
             audioClip = clipRequest.AudioClip;
         }
 
-        await UniTask.DelayFrame(1, cancellationToken: _cancellationSource.Token);
+        await UniTask.DelayFrame(1, cancellationToken: _cancellationSource.Token).SuppressCancellationThrow();
         if (_cancellationSource.IsCancellationRequested)
         {
             if (_cancellationToken.IsCancellationRequested)

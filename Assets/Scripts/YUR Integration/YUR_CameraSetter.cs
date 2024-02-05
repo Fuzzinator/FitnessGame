@@ -9,7 +9,7 @@ public class YUR_CameraSetter : MonoBehaviour
     private Canvas _canvas;
     void Start()
     {
-        if(YURHMD.Instance.TryGetComponent(out Camera cam))
+        if (YURHMD.Instance != null && YURHMD.Instance.TryGetComponent(out Camera cam))
         {
             _canvas.worldCamera = cam;
         }

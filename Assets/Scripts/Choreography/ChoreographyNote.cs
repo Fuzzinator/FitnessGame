@@ -28,6 +28,23 @@ public struct ChoreographyNote// : ISequenceable
     private CutDirection _cutDirection;
     [SerializeField]
     private int _isSuperNote;
+
+    public bool IsDirectional
+    {
+        get
+        {
+            switch(_cutDirection)
+            {
+                case CutDirection.Uppercut:
+                case CutDirection.UppercutLeft:
+                case CutDirection.UppercutRight:
+                case CutDirection.HookRight:
+                case CutDirection.HookLeft:
+                    return true;
+                default: return false;
+            }
+        }
+    }
     
     public ChoreographyNote(float time, int lineIndex, LineLayerType lineLayer, HitSideType hitSide,
         CutDirection cutDirection, bool isSuperNote)

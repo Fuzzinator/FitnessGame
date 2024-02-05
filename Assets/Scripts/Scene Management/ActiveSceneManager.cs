@@ -17,6 +17,7 @@ public class ActiveSceneManager : MonoBehaviour
     private AsyncOperation _gameSceneLoader;
 
     private const string MAINMENUNAME = "Main Menu";
+    private const string NonVRMAINMENUNAME = "Non VR Tool";
     private const string BASELEVELNAME = "Base Level";
     private const string BASELEVELTRAILERNAME = "Base Level (For Trailer)";
 
@@ -34,7 +35,14 @@ public class ActiveSceneManager : MonoBehaviour
 
     private void Start()
     {
-        LoadMainMenu();
+        if (GameManager.Instance.VRMode)
+        {
+            LoadMainMenu();
+        }
+        else
+        {
+            LoadNonVRMainMenu();
+        }
     }
 
     public void SetScene(string newSceneName, bool additive = false)
@@ -45,6 +53,16 @@ public class ActiveSceneManager : MonoBehaviour
     public async void LoadMainMenu()
     {
         await LoadSceneAsync(MAINMENUNAME);
+        if (EnvironmentController.Instance.SceneLoadHandle.IsValid())
+        {
+            await Addressables.UnloadSceneAsync(EnvironmentController.Instance.SceneLoadHandle);
+            Addressables.Release(EnvironmentController.Instance.SceneLoadHandle);
+        }
+    }
+
+    public async void LoadNonVRMainMenu()
+    {
+        await LoadSceneAsync(NonVRMAINMENUNAME);
         if (EnvironmentController.Instance.SceneLoadHandle.IsValid())
         {
             await Addressables.UnloadSceneAsync(EnvironmentController.Instance.SceneLoadHandle);

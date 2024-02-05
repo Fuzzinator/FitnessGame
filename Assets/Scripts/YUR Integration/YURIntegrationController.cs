@@ -11,7 +11,15 @@ public sealed class YURIntegrationController : BaseGameStateListener
     private YURWatch _yurWatch;
 
     private const string USEYUR = "EnableYUR";
-    
+
+    private void Awake()
+    {
+        if(GameManager.Instance != null && !GameManager.Instance.VRMode)
+        {
+            Destroy(gameObject);
+        }
+    }
+
     protected override void OnEnable()
     {
         base.OnEnable();

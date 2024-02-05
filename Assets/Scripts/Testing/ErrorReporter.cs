@@ -4,12 +4,6 @@ using UnityEngine;
 
 public class ErrorReporter : MonoBehaviour
 {
-    [SerializeField]
-    private TextMeshProUGUI _textField;
-
-    [SerializeField]
-    private Canvas _debugCanvas;
-
     public static ErrorReporter Instance { get; private set; }
 
     private Application.LogCallback _callback;
@@ -86,7 +80,7 @@ public class ErrorReporter : MonoBehaviour
             {
                 var visuals =
                     new Notification.NotificationVisuals(ERRORBODY, ERRORTITLE, autoTimeOutTime: 5f, popUp: true);
-                NotificationManager.RequestNotification(visuals, () => Log(text));
+                NotificationManager.RequestNotification(visuals);
             }
         }
         else
@@ -98,7 +92,6 @@ public class ErrorReporter : MonoBehaviour
                 NotificationManager.RequestNotification(visuals, () =>
                 {
                     SettingsManager.SetSetting(PlayerAgreedToHelp, true);
-                    Log(text);
                     SendErrorLog(text);
                 }, () =>
                 {
@@ -125,11 +118,5 @@ public class ErrorReporter : MonoBehaviour
     private void SendErrorLog(string log)
     {
         AzureSqlManager.Instance.TrySendErrorReport(log);
-    }
-
-    public static void Log(string text)
-    {
-        Instance._debugCanvas.gameObject.SetActive(true);
-        Instance._textField.SetTextZeroAlloc(text, true);
     }
 }

@@ -7,7 +7,7 @@ namespace YUR.Core
     public class YURRightHand : YURBaseNode
     {
         public static YURRightHand Instance { get; private set; }
-        public static bool IsNull { get; private set; }
+        public static bool IsNull { get; private set; } = true;
         internal override Transform mainAnchor => IsNull ? null : Instance.transform;//{ get => YURWatch.RightHandAnchor; set => YURWatch.RightHandAnchor = value; }
         protected override void Awake()
         {

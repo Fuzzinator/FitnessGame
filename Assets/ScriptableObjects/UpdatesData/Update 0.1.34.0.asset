@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfa4570e2bc62fc4987f761b13c5dfcc, type: 3}
+  m_Name: Update 0.1.34.0
+  m_EditorClassIdentifier: 
+  <TargetPlatform>k__BackingField: 0
+  <VersionNumber>k__BackingField: <style=Title>Version 0.1.33</style>
+  <ShortDescription>k__BackingField: '1) Core gameplay flow improvements
+
+
+    2)
+    Stance changes during songs!
+
+
+    3) Bug fixes'
+  <Description>k__BackingField: "1)  Re-worked beatmaping algorithm to ensure a better
+    flow and balanced workout. \n\t\u2022 Directional targets will now always appear
+    on the side opposite of the previous target allowing more fluid movement. \n\t\u2022
+    Decreased maximum number of targest allowed on the same side ensuring both sides
+    get a great workout!\n\r\n2) Player stance now changes during songs!\n\t\u2022
+    Whenever a song is at least 1.55 minutes long, stance change events will occur.\n\t\u2022
+    Stance change events currently occur once every minute.\n\t\u2022 When a stance
+    change event fires, the choreography will pause for 5 seconds during which time
+    it will show the stance change indicator. \n\r\n3) Bug Fixes:\r\n\t\u2022 Improved
+    handing of cancelled delayed events preventing errors to be logged with it is
+    already being handled.\n\t\u2022 Fixed issue causing custom songs page to sometimes
+    throw an error when trying to scroll due to a cancelled token."

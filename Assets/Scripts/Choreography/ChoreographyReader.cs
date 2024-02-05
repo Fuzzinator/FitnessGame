@@ -43,6 +43,12 @@ public class ChoreographyReader : MonoBehaviour
 
     private CancellationTokenSource _cancellationSource;
 
+    private const float ThirtyfiveSeconds = 0.58333f;
+    private const float ThreeAndAThirdSeconds = 0.05549f;
+    private const float ThirdOfASecond = 0.005499f;
+    private const string StanceChangeFrequency = "StanceChangeFrequency";
+    private const string ChangeStanceDuringSongs = "ChangeStanceDuringSongs";
+
     private void Awake()
     {
         if (Instance == null)
@@ -140,6 +146,12 @@ public class ChoreographyReader : MonoBehaviour
 
         var notes = Notes;
         var obstacles = Obstacles;
+        var beatsTime = SongInfoReader.Instance.BeatsPerMinute;
+        var songLength = (SongInfoReader.Instance.songInfo.SongLength / 60) * beatsTime;
+
+        var changeStanceMidSong = SettingsManager.GetSetting(ChangeStanceDuringSongs, true);
+        var stanceChangeFrequency = changeStanceMidSong ? SettingsManager.GetSetting(StanceChangeFrequency, 1f) * beatsTime: 1f;
+
 
         if (SettingsManager.GetCachedBool(_leftHandedMode, false))
         {
@@ -195,7 +207,7 @@ public class ChoreographyReader : MonoBehaviour
         {
             _sequenceables.Add(new ChoreographyFormation(obstacles[i]));
         }
-
+        var swapCount = 0f;
         if (Events != null)
         {
             for (var i = 0; i < Events.Length; i++) //Need to process Events differently. TODO: Figure this out
@@ -223,9 +235,55 @@ public class ChoreographyReader : MonoBehaviour
                         break;
                 }
             }
-        }
 
+            if (changeStanceMidSong && songLength > stanceChangeFrequency)
+            {
+                var leftoverSeconds = songLength % stanceChangeFrequency;
+                swapCount = (songLength / stanceChangeFrequency) + (leftoverSeconds > ThirtyfiveSeconds * beatsTime ? 0 : -1);
+                for (var i = 1; i <= swapCount; i++)
+                {
+                    var swapFootingEvent = new ChoreographyEvent(i * stanceChangeFrequency, ChoreographyEvent.EventType.ChangeFooting, ChoreographyEvent.RotateEventValue.ClockWise60);
+                    _sequenceables.Add(new ChoreographyFormation(swapFootingEvent));
+                }
+            }
+        }
+        var modedThirdSecond = ThirdOfASecond * beatsTime;
+        var modedThreeAndThirdSeconds = ThreeAndAThirdSeconds * beatsTime;
         _sequenceables.Sort((sequenceable0, sequenceable1) => sequenceable0.Time.CompareTo(sequenceable1.Time));
+        
+        if (swapCount > 0)
+        {
+            for (var i = 1; i <= swapCount; i++)
+            {
+                var firstToRemoveIndex = _sequenceables.FindIndex((sequenceable) => sequenceable.Time >= (i * stanceChangeFrequency) - modedThirdSecond);
+                if (firstToRemoveIndex > 0)
+                {
+                    var nextTime = _sequenceables[firstToRemoveIndex].Time;
+                    var timeCap = (i * stanceChangeFrequency) + modedThreeAndThirdSeconds;
+                    while (nextTime < timeCap)
+                    {
+                        if (_sequenceables[firstToRemoveIndex].HasEvent && _sequenceables[firstToRemoveIndex].Event.Type == ChoreographyEvent.EventType.ChangeFooting)
+                        {
+                            firstToRemoveIndex++;
+
+                            if (firstToRemoveIndex >= _sequenceables.Count)
+                            {
+                                break;
+                            }
+                            nextTime = _sequenceables[firstToRemoveIndex].Time;
+                            continue;
+                        }
+                        _sequenceables.RemoveAt(firstToRemoveIndex);
+
+                        if (firstToRemoveIndex >= _sequenceables.Count)
+                        {
+                            break;
+                        }
+                        nextTime = _sequenceables[firstToRemoveIndex].Time;
+                    }
+                }
+            }
+        }
     }
 
     private void UpdateFormation()
@@ -245,6 +303,8 @@ public class ChoreographyReader : MonoBehaviour
         float lastRotation = -1f;
         float lastObstacle = -1f;
         int lastDodgeObstacleSide = 0;
+        ChoreographyNote lastNote = new ChoreographyNote();
+        lastNote = lastNote.SetCutDirection(CutDirection.Jab);
         var leftSidePriority = 0;
         var leftSideAdd = 0;
         var rightSidePriority = 0;
@@ -300,8 +360,11 @@ public class ChoreographyReader : MonoBehaviour
                         }
                         else
                         {
-                            //For now TODO: Lighting events.
-                            continue;
+                            if (chorEvent.Type != ChoreographyEvent.EventType.ChangeFooting)
+                            {
+                                //For now TODO: Lighting events.
+                                continue;
+                            }
                         }
                     }
 
@@ -370,7 +433,8 @@ public class ChoreographyReader : MonoBehaviour
                                     blockAdd = 3;
                                 }
                             }
-                            else if (notePriority < leftSidePriority && Mathf.Abs(notePriority - leftSidePriority) > 10)
+                            else if (notePriority < leftSidePriority && Mathf.Abs(notePriority - leftSidePriority) > 3 ||
+                                (note.IsDirectional || lastNote.IsDirectional) && lastNote.HitSideType == HitSideType.Right)
                             {
                                 note = note.SetType(HitSideType.Left);
                                 leftSidePriority++;
@@ -387,8 +451,8 @@ public class ChoreographyReader : MonoBehaviour
                                     leftSideAdd = 3;
                                 }
                             }
-                            else if (notePriority < rightSidePriority &&
-                                     Mathf.Abs(notePriority - rightSidePriority) > 10)
+                            else if (notePriority < rightSidePriority && Mathf.Abs(notePriority - rightSidePriority) > 3 ||
+                                (note.IsDirectional || lastNote.IsDirectional) && lastNote.HitSideType == HitSideType.Left)
                             {
                                 note = note.SetType(HitSideType.Right);
                                 rightSidePriority++;
@@ -587,7 +651,7 @@ public class ChoreographyReader : MonoBehaviour
                     }
                 }
             }
-            else if (Mathf.Abs(lastRotation - sequenceable.Time) < .01f)
+            else if (Mathf.Abs(lastRotation - sequenceable.Time) < .01f || (sequenceable.HasEvent && sequenceable.Event.Type == ChoreographyEvent.EventType.ChangeFooting))
             {
                 if (sequenceable.HasEvent && !thisSequence.HasEvent)
                 {
@@ -639,6 +703,11 @@ public class ChoreographyReader : MonoBehaviour
                 }
 
                 _formations.Add(thisSequence);
+
+                if (thisSequence.HasNote)
+                {
+                    lastNote = thisSequence.Note;
+                }
 
                 lastSequence = thisSequence;
                 thisSequence = new ChoreographyFormation();

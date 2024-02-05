@@ -106,7 +106,10 @@ public class CustomEnvironment
         string skyboxDepthName = null, string skyboxDepthPath = null, float skyboxBrightness = 1,
         string meshPath = null, EnvAssetReference gloves = null, EnvAssetReference targets = null, EnvAssetReference obstacles = null)
     {
-        EnvironmentName = environmentName;
+        EnvironmentName = string.IsNullOrWhiteSpace(environmentName)
+            ? $"{DateTime.Now:yyyy-MM-dd} - {DateTime.Now:hh-mm}"
+            : environmentName;
+
         SkyboxName = skyboxName;
         SkyboxPath = skyboxPath;
         SkyboxDepthName = skyboxDepthName;

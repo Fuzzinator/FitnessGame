@@ -87,7 +87,7 @@ public class Notification : MonoBehaviour, IPoolable
             return;
         }
 
-        _canvas.worldCamera = Head.Instance.HeadCamera;
+        _canvas.worldCamera = Head.Instance?.HeadCamera;
         UIStateManager.Instance.RequestEnableInteraction(_canvas);
     }
 

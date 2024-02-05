@@ -321,7 +321,7 @@ public class CustomEnvironmentsController : MonoBehaviour
             {
                 _skyboxThumbnails = new Dictionary<string, Sprite>();
             }
-            if(_skyboxThumbnails.TryGetValue(imagePath, out var thumbnail) && thumbnail != null)
+            if (_skyboxThumbnails.TryGetValue(imagePath, out var thumbnail) && thumbnail != null)
             {
                 return thumbnail;
             }
@@ -523,7 +523,7 @@ public class CustomEnvironmentsController : MonoBehaviour
     }
     public static CustomEnvironment CreateCustomEnvironment(string environmentName, string skyboxPath, float brightness, EnvAssetReference gloves, EnvAssetReference targets, EnvAssetReference obstacles)
     {
-        var skyboxName = skyboxPath.Substring(skyboxPath.LastIndexOf("/") + 1);
+        var skyboxName = string.IsNullOrWhiteSpace(skyboxPath) ? string.Empty : skyboxPath.Substring(skyboxPath.LastIndexOf("/") + 1);
         var customEnvironment = new CustomEnvironment(environmentName, skyboxName, skyboxPath, skyboxBrightness: brightness, gloves: gloves, targets: targets, obstacles: obstacles);
         ValidateEnvironment(customEnvironment);
         return customEnvironment;

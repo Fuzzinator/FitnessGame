@@ -16,6 +16,9 @@ public class GameManager : MonoBehaviour
     [field: SerializeField]
     public bool DemoMode { get; private set; }
 
+    [field: SerializeField]
+    public bool VRMode { get; private set; }
+
     public bool GameIsPaused { get; private set; }
 
     public const int DemoModeMaxCustomSongs = 3;

@@ -35,7 +35,7 @@ public class UISliderFloatSetting : MonoBehaviour, ISaver
     protected float _currentValue;
 
     #region Const Strings
-    private string Format = "{0:.##}";
+    private const string Format = "{0:.##}";
     #endregion
 
     protected virtual void OnEnable()
