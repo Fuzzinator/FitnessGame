@@ -327,7 +327,7 @@ public class SettingsManager : MonoBehaviour
         }
         catch (Exception ex) when (ex is InvalidCastException)
         {
-            AzureSqlManager.Instance.TrySendErrorReport($"Encountered error setting setting \"{settingName}\" reported error is: {ex.Message}");
+            AzureSqlManager.Instance.TrySendErrorReport($"Encountered error setting setting \"{settingName}\" reported error is: {ex.Message}", ex.StackTrace);
             DeleteSetting(settingName, isProfileSetting, overrideProfile);
             SetSetting(settingName, value, isProfileSetting, overrideProfile);
         }
@@ -361,7 +361,7 @@ public class SettingsManager : MonoBehaviour
         }
         catch (Exception ex) when (ex is InvalidOperationException or NotSupportedException)
         {
-            AzureSqlManager.Instance.TrySendErrorReport($"Encountered error getting setting \"{settingName}\" reported error is: {ex.Message}--{ex.StackTrace}");
+            AzureSqlManager.Instance.TrySendErrorReport($"Encountered error getting setting \"{settingName}\" reported error is: {ex.Message}", ex.StackTrace);
             DeleteSetting(settingName, isProfileSetting, overrideProfile);
             return defaultValue;
         }

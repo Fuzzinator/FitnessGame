@@ -229,20 +229,20 @@ public class AzureSqlManager : MonoBehaviour
     #endregion
 
     #region Error Logging
-    public void TrySendErrorReport(string errorLog)
+    public void TrySendErrorReport(string errorLog, string stackTrace)
     {
         if (!NetworkConnectionManager.Instance.NetworkConnected || !SettingsManager.GetSetting(PlayerAgreedToHelp, false))
         {
             return;
         }
-        SendErrorReport(errorLog).Forget();
+        SendErrorReport(errorLog, stackTrace).Forget();
     }
 
-    private async UniTaskVoid SendErrorReport(string errorMessage)
+    private async UniTaskVoid SendErrorReport(string errorMessage, string stackTrace)
     {
         var errorTimeAsString = DateTime.Now.ToString("yyyyMMddHHmmss");
         var url = $"{RootURL}ReportError/{errorTimeAsString}{SendErrorLogEnd}";
-        var errorLog = new ErrorLog(errorTimeAsString, $"{Application.version}:{errorMessage}");
+        var errorLog = new ErrorLog(errorTimeAsString, errorMessage, stackTrace);
         var json = JsonConvert.SerializeObject(errorLog);
 
         var bytes = Encoding.UTF8.GetBytes(json);
@@ -309,13 +309,19 @@ public class ErrorLog
 {
     public string ErrorDate { get; set; }
 
+    public string GameVersion { get; set; }
+
     public string ErrorMessage { get; set; }
+
+    public string StackTrace { get; set; }
 
     public ErrorLog() { }
 
-    public ErrorLog(string errorDate, string errorMessage)
+    public ErrorLog(string errorDate, string errorMessage, string stackTrace)
     {
         ErrorDate = errorDate;
+        GameVersion = Application.version;
         ErrorMessage = errorMessage;
+        StackTrace = stackTrace;
     }
 }

@@ -53,9 +53,8 @@ public class ErrorReporter : MonoBehaviour
             {
                 return;
             }
-            var notification = $"{text}\n{stacktrace}";
-            DisplayNotification(notification);
-            SendErrorLog(notification);
+            DisplayNotification(text, stacktrace);
+            SendErrorLog(text, stacktrace);
         };
         Application.logMessageReceived += _callback;
     }
@@ -70,7 +69,7 @@ public class ErrorReporter : MonoBehaviour
         ES3.Save(DateTime.Now.ToString("yyyyMMddHHmmss"), $"{logType}: {text}\n{stacktrace}", _settings);
     }
 
-    private void DisplayNotification(string text)
+    private void DisplayNotification(string text, string stackTrace)
     {
         var hasBeenPromptedToHelp = SettingsManager.GetSetting(HasRequestedHelp, false);
         if (hasBeenPromptedToHelp)
@@ -92,7 +91,7 @@ public class ErrorReporter : MonoBehaviour
                 NotificationManager.RequestNotification(visuals, () =>
                 {
                     SettingsManager.SetSetting(PlayerAgreedToHelp, true);
-                    SendErrorLog(text);
+                    SendErrorLog(text, stackTrace);
                 }, () =>
                 {
                     SettingsManager.SetSetting(PlayerAgreedToHelp, false);
@@ -115,8 +114,8 @@ public class ErrorReporter : MonoBehaviour
     }
 
 
-    private void SendErrorLog(string log)
+    private void SendErrorLog(string log, string stackTrace)
     {
-        AzureSqlManager.Instance.TrySendErrorReport(log);
+        AzureSqlManager.Instance.TrySendErrorReport(log, stackTrace);
     }
 }
