@@ -675,7 +675,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -35, y: 0}
+  m_AnchoredPosition: {x: -32.5, y: 0}
   m_SizeDelta: {x: 25, y: 24}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &316518838436747127
@@ -706,7 +706,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 826bb4609c1ac234baec6d4437c4129c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 357e7b7be6c40495fa0816c73e2f203e, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -783,8 +783,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a33281b5e459dd04a81b5c599e607267, type: 3}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 74d7e4bfca9c9d34da052d0029b5d4d4, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -858,7 +858,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 9034798986618339709}
         m_TargetAssemblyTypeName: UI.Scrollers.Playlists.SongInfoCellView, Assembly-CSharp
-        m_MethodName: SetActiveSongInfo
+        m_MethodName: ToggleSongPreview
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -354,6 +354,11 @@ public class BeatSaverPageController : MonoBehaviour
         ShowLoading(true);
         _scroller.SetCanScroll(false);
         _nextPage = _activePage;
+        
+        if (_cancellationTokenSource == null)
+        {
+            _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_token);
+        }
         _activePage = await _activePage.Previous(_cancellationTokenSource.Token);
 
         if (_activePage == null || !setData)

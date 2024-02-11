@@ -83,7 +83,7 @@ namespace UI.Scrollers.Playlists
 
         public void ToggleSongPreview()
         {
-            _controller.ToggleSongPreview();
+            _controller.ToggleSongPreview(_songInfo);
         }
     }
 }

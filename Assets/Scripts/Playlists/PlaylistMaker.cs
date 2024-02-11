@@ -18,6 +18,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
 
     private List<PlaylistItem> _playlistItems = new List<PlaylistItem>();
     private SongInfo _activeItem;
+    private int _activeDataIndex;
     public SongInfo DisplayedSongInfo => _activeItem;
 
     [SerializeField]
@@ -126,6 +127,11 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         _activeItem = info;
     }
 
+    public void SetActivePlaylistItem(int dataIndex)
+    {
+        _activeDataIndex = dataIndex;
+    }
+
     public static PlaylistItem GetPlaylistItem(SongInfo songInfo, string difficulty,
         DifficultyInfo.DifficultyEnum difficultyEnum, GameMode gameMode)
     {
@@ -155,6 +161,16 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         }
     }
 
+    public void UpdatePlaylistItem(PlaylistItem item)
+    {
+        if (_activeDataIndex < _playlistItems.Count && _activeDataIndex >= 0)
+        {
+            _changesMade = true;
+            _playlistItems[_activeDataIndex] = item;
+            _playlistItemsUpdated?.Invoke();
+        }
+    }
+
     public void RemovePlaylistItem(PlaylistItem item)
     {
         if (!_playlistItems.Contains(item))
@@ -164,6 +180,17 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         }
         _changesMade = true;
         _playlistItems.Remove(item);
+        _playlistItemsUpdated?.Invoke();
+    }
+    public void RemoveActivePlaylistItem()
+    {
+        if (_activeDataIndex >= _playlistItems.Count && _activeDataIndex < 0)
+        {
+            Debug.LogWarning("Playlist not contained but trying to remove it. This shouldnt happen.");
+            return;
+        }
+        _changesMade = true;
+        _playlistItems.RemoveAt(_activeDataIndex);
         _playlistItemsUpdated?.Invoke();
     }
 
@@ -197,7 +224,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     public void SetTargetEnvironment(int envIndex)
     {
         var hasAsset = EnvironmentControlManager.Instance.TryGetEnvRefAtIndex(envIndex, out var envAsset);
-        if(hasAsset)
+        if (hasAsset)
         {
             _changesMade = true;
             _targetEnv = envAsset.Name;

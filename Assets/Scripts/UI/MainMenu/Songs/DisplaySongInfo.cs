@@ -92,8 +92,11 @@ namespace UI.Scrollers.Playlists
             }
 
             _songOptions.UpdateDifficultyOptions(info, info.DifficultySets);
-            _deleteButton.gameObject.SetActive(info.isCustomSong);
-            _deleteButtonText.gameObject.SetActive(info.isCustomSong);
+            if (_deleteButton != null)
+            {
+                _deleteButton.gameObject.SetActive(info.isCustomSong);
+                _deleteButtonText.gameObject.SetActive(info.isCustomSong);
+            }
         }
 
         private void ClearDisplayedInfo()
@@ -106,8 +109,12 @@ namespace UI.Scrollers.Playlists
             _songRating.ClearText();
             _beatsPerMinute.ClearText();
             _songOptions.HideOptions();
-            _deleteButton.gameObject.SetActive(false);
-            _deleteButtonText.gameObject.SetActive(false);
+
+            if (_deleteButton != null)
+            {
+                _deleteButton.gameObject.SetActive(false);
+                _deleteButtonText.gameObject.SetActive(false);
+            }
         }
 
         public void ToggleSongPreview()

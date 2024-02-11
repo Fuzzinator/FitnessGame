@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using EnhancedUI.EnhancedScroller;
 using GameModeManagement;
 using UnityEngine;
+using static UnityEngine.XR.Hands.XRHandSubsystemDescriptor;
 using StringComparison = System.StringComparison;
 
 namespace UI.Scrollers.Playlists
@@ -12,6 +13,8 @@ namespace UI.Scrollers.Playlists
     {
         [SerializeField]
         private DisplaySongInfo _displaySongInfo;
+        [SerializeField]
+        private SetAndShowSongOptions _songOptions;
 
         private List<SongInfo> _songInfos = new List<SongInfo>();
 
@@ -52,6 +55,11 @@ namespace UI.Scrollers.Playlists
             PlaylistMaker.Instance.SetActiveItem(info);
         }
 
+        public void ToggleSongPlay(SongInfo info)
+        {
+            _displaySongInfo.ToggleSongPreview();
+        }
+
         protected override void SetDataFromFilter()
         {
             _songInfos.Clear();
@@ -90,9 +98,13 @@ namespace UI.Scrollers.Playlists
             _scroller.SetScrollPositionImmediately(dataIndex);
         }
 
-        public void ToggleSongPreview()
+        public void ToggleSongPreview(SongInfo info)
         {
-            _displaySongInfo.ToggleSongPreview();
+            if(!_songOptions.Initialized)
+            {
+                _songOptions.Initialize();
+            }
+            _songOptions.ToggleIfSameSong(info);
         }
     }
 }

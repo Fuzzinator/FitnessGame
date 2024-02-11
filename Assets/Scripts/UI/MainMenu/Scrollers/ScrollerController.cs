@@ -70,6 +70,15 @@ namespace UI.Scrollers
             }
         }
 
+        public virtual void Refresh(float scrollPosition)
+        {
+            if (_scroller.Initialized)
+            {
+                SetDataFromFilter();
+                _scroller.ReloadData(scrollPosition);
+            }
+        }
+
         protected virtual void SetDataFromFilter()
         {
             

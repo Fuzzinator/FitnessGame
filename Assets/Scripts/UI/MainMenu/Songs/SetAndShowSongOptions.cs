@@ -11,6 +11,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.UI;
+using static UnityEngine.XR.Hands.XRHandSubsystemDescriptor;
 
 public class SetAndShowSongOptions : MonoBehaviour
 {
@@ -69,6 +70,8 @@ public class SetAndShowSongOptions : MonoBehaviour
 
     private bool _loadingSongPreview = false;
 
+    public bool Initialized => _cancellationSource != null;
+
     #region Const Strings
     private const string Preview = "Listen";
     private const string Loading = "Loading";
@@ -77,8 +80,7 @@ public class SetAndShowSongOptions : MonoBehaviour
 
     private void Start()
     {
-        _cancellationToken = this.GetCancellationTokenOnDestroy();
-        _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(_cancellationToken);
+        Initialize();
     }
 
     private void OnDisable()
@@ -87,6 +89,12 @@ public class SetAndShowSongOptions : MonoBehaviour
         {
             StopSongPreview();
         }
+    }
+
+    public void Initialize()
+    {
+        _cancellationToken = this.GetCancellationTokenOnDestroy();
+        _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(_cancellationToken);
     }
 
     public void UpdateDifficultyOptions(SongInfo songInfo, SongInfo.DifficultySet[] difficultySets)
@@ -361,8 +369,8 @@ public class SetAndShowSongOptions : MonoBehaviour
 
     public void SetSelectedDifAndMode(DifficultyInfo.DifficultyEnum difficulty, GameMode mode)
     {
-        var difficultyToggle = _typeDifficultyToggles[(int)difficulty-1];
-        var modeToggle = _gameTypeToggles[(int)mode-1];
+        var difficultyToggle = _typeDifficultyToggles[(int)difficulty - 1];
+        var modeToggle = _gameTypeToggles[(int)mode - 1];
 
         modeToggle.SetIsOnWithoutNotify(true);
         SetSelectedType(modeToggle, false);
@@ -379,6 +387,24 @@ public class SetAndShowSongOptions : MonoBehaviour
         {
             var playlistItem = PlaylistMaker.GetPlaylistItem(_songInfo, _selectedDifficulty, _difficultyEnum, _activeDifficultySet.MapGameMode);
             PlaylistMaker.Instance.AddPlaylistItem(playlistItem);
+        }
+    }
+
+    public void UpdateSelectedPlaylistItem()
+    {
+        if (PlaylistMaker.Instance != null)
+        {
+
+            var playlistItem = PlaylistMaker.GetPlaylistItem(_songInfo, _selectedDifficulty, _difficultyEnum, _activeDifficultySet.MapGameMode);
+            PlaylistMaker.Instance.UpdatePlaylistItem(playlistItem);
+        }
+    }
+
+    public void RemoveSelectedPlaylistItem()
+    {
+        if (PlaylistMaker.Instance != null)
+        {
+            PlaylistMaker.Instance.RemoveActivePlaylistItem();
         }
     }
 
@@ -408,6 +434,24 @@ public class SetAndShowSongOptions : MonoBehaviour
         }
         PlaySongAudioAsync().Forget();
     }
+
+    public void ToggleIfSameSong(SongInfo info)
+    {
+        if (_audioSource.isPlaying)
+        {
+            StopSongPreview();
+        }
+        if (_songInfo == info)
+        {
+            return;
+        }
+        else
+        {
+            UpdateDifficultyOptions(info, info.DifficultySets);
+        }
+        PlaySongAudioAsync().Forget();
+    }
+
     public void PreviewSong()
     {
         if (_loadingSongPreview || _audioSource.isPlaying)
@@ -454,7 +498,7 @@ public class SetAndShowSongOptions : MonoBehaviour
             _cancellationSource.Dispose();
             _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(_cancellationToken);
         }
-        _previewButtonText.SetTextZeroAlloc(Loading, true);
+        _previewButtonText?.SetTextZeroAlloc(Loading, true);
         _loadingSongPreview = true;
 
         if (_songInfo.isCustomSong)
@@ -481,7 +525,7 @@ public class SetAndShowSongOptions : MonoBehaviour
         _audioSource.clip = audioClip;
         _audioSource.Play();
 
-        _previewButtonText.SetTextZeroAlloc(Stop, true);
+        _previewButtonText?.SetTextZeroAlloc(Stop, true);
         _loadingSongPreview = false;
         await UniTask.WaitUntil(() => _audioSource.isPlaying, cancellationToken: _cancellationSource.Token);
 

@@ -97,6 +97,7 @@ public class ChoreographySequencer : MonoBehaviour
     private const string LEFTHANDED = "LeftHanded";
 
     private CancellationToken _cancellationToken;
+    private ChoreographyFormation _lastFormation;
 
     [SerializeField]
     private HitSideType _currentStance = HitSideType.Left;
@@ -274,6 +275,21 @@ public class ChoreographySequencer : MonoBehaviour
 
         var tweenSpeed = SongInfoReader.Instance.NoteSpeed / _meterDistance * 10;
 
+        if (_lastFormation.HasObstacle && _lastFormation.Obstacle.Type == ChoreographyObstacle.ObstacleType.Dodge)
+        {
+            if (formation.HasNote && !formation.HasObstacle)
+            {
+                var targetType = _currentStance == HitSideType.Left ? HitSideType.Right : HitSideType.Left;
+                var note = formation.Note.SetType(targetType);
+
+                if (note.CutDir == ChoreographyNote.CutDirection.HookLeft && targetType == HitSideType.Left ||
+                    note.CutDir == ChoreographyNote.CutDirection.HookRight && targetType == HitSideType.Right)
+                {
+                    note = note.SetCutDirection(ChoreographyNote.CutDirection.Jab);
+                }
+                formation = formation.SetNote(note);
+            }
+        }
 
         formationHolder.SetUp(this, formation, nextFormationIndex, _optimalStrikePoint.position, _currentRotation);
 
@@ -303,6 +319,7 @@ public class ChoreographySequencer : MonoBehaviour
                 WaitAndSwapFooting(delay).Forget();
             }
         }
+        _lastFormation = formation;
     }
 
     private async UniTaskVoid WaitAndSwapFooting(float delay)
