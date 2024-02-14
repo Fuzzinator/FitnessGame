@@ -30,6 +30,8 @@ namespace UI.Scrollers.Playlists
         private PlaylistItem _playlistItem;
         private int _songIndex;
 
+        private float _minDragPos;
+
         public void SetData(PlaylistSongInfoScrollerController controller, PlaylistItem item, int songIndex)
         {
             _controller = controller;
@@ -78,9 +80,11 @@ namespace UI.Scrollers.Playlists
                 _draggingCanvas.overrideSorting = true;
                 _draggingCanvas.sortingOrder = 10000;
             }
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(transform.parent as RectTransform, eventData.position, Head.Instance.HeadCamera, out _touchPos);
+            var rectTransform = (transform as RectTransform);
+            var parentRectTransform = transform.parent as RectTransform;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(parentRectTransform, eventData.position, Head.Instance.HeadCamera, out _touchPos);
             _dragYOffset = _touchPos.y - (transform as RectTransform).anchoredPosition.y;
-
+            _minDragPos = -(Mathf.Min(_controller.CellViewParent.rect.height, parentRectTransform.rect.height)- rectTransform.rect.height);
             _isDragging = true;
         }
 
@@ -88,7 +92,8 @@ namespace UI.Scrollers.Playlists
         {
             var rectTransform = (transform as RectTransform);
             RectTransformUtility.ScreenPointToLocalPointInRectangle(transform.parent as RectTransform, eventData.position, Head.Instance.HeadCamera, out var currentPos);
-            rectTransform.anchoredPosition = new Vector2(rectTransform.anchoredPosition.x, currentPos.y - _dragYOffset);
+            var targetYPos = Mathf.Clamp(currentPos.y - _dragYOffset, _minDragPos, 0f);
+            rectTransform.anchoredPosition = new Vector2(rectTransform.anchoredPosition.x, targetYPos);
         }
 
         public void OnEndDrag(PointerEventData eventData)

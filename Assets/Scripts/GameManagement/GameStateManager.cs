@@ -56,7 +56,7 @@ public class GameStateManager : MonoBehaviour
             {
                 var menuInput = GetMenuInputName();
                 InputManager.Instance.MainInput[menuInput].performed += TryTogglePlayPauseState;
-                FocusTracker.Instance.focusChanged.AddListener(ManageFocusState);
+                FocusTracker.Instance.OnFocusChanged.AddListener(ManageFocusState);
             }
         }
     }
@@ -68,7 +68,7 @@ public class GameStateManager : MonoBehaviour
             {
                 var menuInput = GetMenuInputName();
                 InputManager.Instance.MainInput[menuInput].performed -= TryTogglePlayPauseState;
-                FocusTracker.Instance.focusChanged.RemoveListener(ManageFocusState);
+                FocusTracker.Instance.OnFocusChanged.RemoveListener(ManageFocusState);
             }
         }
     }

@@ -1,8 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
 using EnhancedUI.EnhancedScroller;
-using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
 namespace UI.Scrollers.Playlists
@@ -11,6 +7,9 @@ namespace UI.Scrollers.Playlists
     {
         [SerializeField]
         private DisplaySongInfo _displaySongInfo;
+
+        [field: SerializeField]
+        public RectTransform CellViewParent { get; private set;}
 
         public override int GetNumberOfCells(EnhancedScroller scroller)
         {

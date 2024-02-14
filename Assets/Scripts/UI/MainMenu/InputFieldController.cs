@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 
 public class InputFieldController : MonoBehaviour
@@ -17,6 +18,9 @@ public class InputFieldController : MonoBehaviour
     [SerializeField]
     protected UnityEvent<string> _editFieldCompleted = new UnityEvent<string>();
 
+    private const string UIInteraction = "";
+    private const string ConfirmButton = "ConfirmText";
+
     public virtual void StartEditTextField()
     {
         EditTextField().Forget();
@@ -25,16 +29,29 @@ public class InputFieldController : MonoBehaviour
     public virtual void ClearTextField()
     {
         _inputField.text = null;
+        _editFieldCompleted?.Invoke(_inputField.text);
     }
-    
+
     protected virtual async UniTask EditTextField()
     {
 #if UNITY_STANDALONE_WIN
         var keyboard = KeyboardManager.Instance.ActivateKeyboard(_inputField, _defaultText);
         await UniTask.WaitWhile(() => keyboard.gameObject.activeInHierarchy);
+        _editFieldCompleted?.Invoke(_inputField.text);
 #elif UNITY_ANDROID
-        await UniTask.WaitWhile(() => !FocusTracker.Instance.IsFocused);//keyboard.gameObject.activeInHierarchy);
+        FocusTracker.Instance.OnFocusChanged.AddListener(EditFieldCompleteFromFocus);
+        await UniTask.DelayFrame(1);
 #endif
+    }
+
+    private void EditFieldCompleteFromFocus(bool focusState)
+    {
+        if(!focusState)
+        {
+            return;
+        }
+
+        FocusTracker.Instance.OnFocusChanged.RemoveListener(EditFieldCompleteFromFocus);
         _editFieldCompleted?.Invoke(_inputField.text);
     }
 

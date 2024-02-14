@@ -150,7 +150,7 @@ public class ChoreographyReader : MonoBehaviour
         var songLength = (SongInfoReader.Instance.songInfo.SongLength / 60) * beatsTime;
 
         var changeStanceMidSong = SettingsManager.GetSetting(ChangeStanceDuringSongs, true);
-        var stanceChangeFrequency = changeStanceMidSong ? SettingsManager.GetSetting(StanceChangeFrequency, 1f) * beatsTime: 1f;
+        var stanceChangeFrequency = changeStanceMidSong ? SettingsManager.GetSetting(StanceChangeFrequency, 1f) * beatsTime : 1f;
 
 
         if (SettingsManager.GetCachedBool(_leftHandedMode, false))
@@ -250,7 +250,7 @@ public class ChoreographyReader : MonoBehaviour
         var modedThirdSecond = ThirdOfASecond * beatsTime;
         var modedThreeAndThirdSeconds = ThreeAndAThirdSeconds * beatsTime;
         _sequenceables.Sort((sequenceable0, sequenceable1) => sequenceable0.Time.CompareTo(sequenceable1.Time));
-        
+
         if (swapCount > 0)
         {
             for (var i = 1; i <= swapCount; i++)
@@ -413,6 +413,24 @@ public class ChoreographyReader : MonoBehaviour
 
                     if (!shouldSkipNote)
                     {
+                        if (lastSequence.HasObstacle && lastSequence.Obstacle.Type == ChoreographyObstacle.ObstacleType.Crouch)
+                        {
+                            switch (note.LineLayer)
+                            {
+                                case LineLayerType.Low:
+                                    note = note.SetToBasicJab(); 
+                                    break;
+                                case LineLayerType.Middle:
+                                    note = note.SetCutDirection(CutDirection.Uppercut);
+                                    break;
+                                case LineLayerType.High:
+                                    note = note.SetLineLayer(LineLayerType.Middle);
+                                    note = note.SetCutDirection(CutDirection.Uppercut);
+                                    break;
+                            }
+
+                        }
+
                         if (CanSwitchHands)
                         {
                             if (CanHaveBlock && notePriority < blockPriority &&
