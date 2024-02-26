@@ -527,7 +527,7 @@ public class SongInfo
         }
 
         _songArt = Sprite.Create(image, new Rect(0, 0, image.width, image.height),
-            Vector2.one * .5f, 100f);
+            Vector2.one * .5f, 100f, 0, SpriteMeshType.FullRect);
         return _songArt;
     }
 
@@ -557,7 +557,7 @@ public class SongInfo
     public void SetImage(Texture2D texture)
     {
         _songArt = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height),
-            Vector2.one * .5f, 100f);
+            Vector2.one * .5f, 100f, 0, SpriteMeshType.FullRect);
     }
 
     public void SetSongID(string id)

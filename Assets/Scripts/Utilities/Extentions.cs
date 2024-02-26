@@ -47,8 +47,32 @@ public static class Extentions
         result.Apply();
         return result;
     }
-
     public static async UniTask<Texture2D> ScaleTextureAsync(this Texture2D myTexture, int newWidth, int newHeight, TextureFormat format)
+    {
+        var result = new Texture2D(newWidth, newHeight, format, false)
+        {
+            name = myTexture.name,
+        };
+        var pixels = result.GetPixels(0);
+        var width = myTexture.width;
+        var height = myTexture.height;
+        var xIncrease = (1f / width) * ((float)width / newWidth);
+        var yIncrease = (1f / height) * ((float)height / newHeight);
+        for (var i = 0; i < pixels.Length; i++)
+        {
+            pixels[i] = myTexture.GetPixelBilinear(xIncrease * ((float)i % newWidth),
+                yIncrease * (Mathf.Floor(i / newWidth)));
+            if(i % newWidth == 0)
+            {
+                await UniTask.Yield(PlayerLoopTiming.Update);
+            }
+        }
+        result.SetPixels(pixels, 0);
+        result.Apply();
+        return result;
+    }
+
+    /*public static async UniTask<Texture2D> ScaleTextureAsync(this Texture2D myTexture, int newWidth, int newHeight, TextureFormat format)
     {
         var result = new Texture2D(newWidth, newHeight, format, false)
         {
@@ -68,7 +92,7 @@ public static class Extentions
         resultPixels.Dispose();
 
         return result;
-    }
+    }*/
 
     private struct ScaleTextureJob : IJobParallelFor
     {
@@ -93,7 +117,7 @@ public static class Extentions
         public void Execute(int index)
         {
             int y = (int)math.ceil((float)index / width);
-            var x = index / 1+(width * y);
+            var x = index / 1 + (width * y);
             resultPixels[index] = GetPixelBilinear(x, y);
         }
 

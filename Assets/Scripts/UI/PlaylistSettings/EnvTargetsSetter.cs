@@ -7,18 +7,6 @@ public class EnvTargetsSetter : EnvironmentAssetSetter
 {
     public override string GetPlaylistAssetName(Playlist playlist)
     {
-        SaveLog("Targets: Getting Playlist Gloves Name");
-        SaveLog($"Targets: Playlist: {playlist}");
-        if (playlist != null)
-        {
-            SaveLog($"Targets: Playlist Name: {playlist.PlaylistName}");
-            SaveLog($"Targets: Playlist Targets: {playlist.Targets}");
-            if (playlist.Targets != null)
-            {
-                SaveLog($"Trying to get targets name");
-                SaveLog($"Targets: Playlist Targets Name: {playlist.Targets.AssetName}");
-            }
-        }
         return playlist?.TargetEnvTargetsName;
     }
 

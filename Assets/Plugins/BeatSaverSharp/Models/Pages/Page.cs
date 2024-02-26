@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
@@ -15,7 +16,7 @@ namespace BeatSaverSharp.Models.Pages
             Beatmaps = beatmaps;
         }
 
-        public abstract UniTask<Page?> Previous(CancellationToken token = default);
-        public abstract UniTask<Page?> Next(CancellationToken token = default);
+        public abstract UniTask<Page?> Previous(CancellationToken token = default, IProgress<double> progress = null);
+        public abstract UniTask<Page?> Next(CancellationToken token = default, IProgress<double> progress = null);
     }
 }

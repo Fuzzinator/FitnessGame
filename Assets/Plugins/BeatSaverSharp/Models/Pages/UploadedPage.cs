@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
@@ -16,7 +17,7 @@ namespace BeatSaverSharp.Models.Pages
             PreviousPage = previousPage;
         }
 
-        public override async UniTask<Page?> Next(CancellationToken token = default)
+        public override async UniTask<Page?> Next(CancellationToken token = default, IProgress<double> progress = null)
         {
             if (Beatmaps.Count == 0)
                 return null;
@@ -29,7 +30,7 @@ namespace BeatSaverSharp.Models.Pages
             return nextPage;
         }
 
-        public override async UniTask<Page?> Previous(CancellationToken token = default)
+        public override async UniTask<Page?> Previous(CancellationToken token = default, IProgress<double> progress = null)
         {
             if (PreviousPage is null && Beatmaps.Count > 0)
             {

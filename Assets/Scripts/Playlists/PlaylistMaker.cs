@@ -224,7 +224,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     public void SetTargetEnvironment(int envIndex)
     {
         var hasAsset = EnvironmentControlManager.Instance.TryGetEnvRefAtIndex(envIndex, out var envAsset);
-        if (hasAsset)
+        if (hasAsset && _targetEnv != envAsset.Name)
         {
             _changesMade = true;
             _targetEnv = envAsset.Name;
@@ -246,10 +246,6 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
 
     private async UniTaskVoid CreatePlaylistAsync()
     {
-        var sprite = await GetSprite();
-        var newPlaylist = new Playlist(_playlistItems, _gameMode, _difficulty, _startingSide, _playlistName, true, _targetEnv, sprite, Gloves, Targets, Obstacles);
-        PlaylistManager.Instance.CurrentPlaylist = newPlaylist;
-
         if (_playlistItems == null || _playlistItems.Count == 0)
         {
             //Debug.LogError("Cannot create empty playlist");
@@ -258,6 +254,12 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
             NotificationManager.RequestNotification(visuals);
             return;
         }
+
+        var sprite = await GetSprite();
+        var newPlaylist = new Playlist(_playlistItems, _gameMode, _difficulty, _startingSide, _playlistName, true, _targetEnv, sprite, Gloves, Targets, Obstacles);
+        PlaylistManager.Instance.CurrentPlaylist = newPlaylist;
+
+        
         if (!Directory.Exists(AssetManager.PlaylistsPath))
         {
             Directory.CreateDirectory(AssetManager.PlaylistsPath);
@@ -438,7 +440,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
 
     public void SetGloves(EnvAssetReference gloves)
     {
-        if (Gloves == gloves)
+        if (Gloves == gloves || Gloves.AssetName == gloves.AssetName)
         {
             return;
         }
@@ -449,7 +451,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
 
     public void SetTargets(EnvAssetReference targets)
     {
-        if (Targets == targets)
+        if (Targets == targets || Targets.AssetName == targets.AssetName)
         {
             return;
         }
@@ -460,7 +462,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
 
     public void SetObstacles(EnvAssetReference obstacles)
     {
-        if (Obstacles == obstacles)
+        if (Obstacles == obstacles || Obstacles.AssetName == obstacles.AssetName)
         {
             return;
         }
@@ -491,7 +493,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
 
     public void TryReturnToHome()
     {
-        if (_changesMade)
+        if (_changesMade && _playlistItems != null && _playlistItems.Count > 0)
         {
             var visuals = new Notification.NotificationVisuals("Unsaved changes in playlist. Would you like to save?", "Unsaved Changes", "Yes", "No", "Cancel");
             NotificationManager.RequestNotification(visuals, () => CreatePlaylistAndGoHome(), () => MainMenuUIController.Instance.SetActivePage(0));

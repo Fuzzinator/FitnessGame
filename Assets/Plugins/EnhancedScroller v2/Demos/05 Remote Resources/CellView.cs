@@ -60,7 +60,8 @@ namespace EnhancedScrollerDemos.RemoteResourcesDemo
 
             if (texture != null)
             {
-                cellImage.sprite = Sprite.Create(texture, new Rect(0, 0, data.imageDimensions.x, data.imageDimensions.y), new Vector2(0, 0), data.imageDimensions.x);
+                cellImage.sprite = Sprite.Create(texture, new Rect(0, 0, data.imageDimensions.x, data.imageDimensions.y),
+                    new Vector2(0, 0), data.imageDimensions.x, 0, SpriteMeshType.FullRect);
             }
             else
             {

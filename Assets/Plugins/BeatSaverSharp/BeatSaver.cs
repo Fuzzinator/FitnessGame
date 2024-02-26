@@ -104,7 +104,7 @@ namespace BeatSaverSharp
 
 #region Paged Beatmaps
 
-        public async UniTask<Page?> LatestBeatmaps(UploadedFilterOptions? options = default, CancellationToken token = default)
+        public async UniTask<Page?> LatestBeatmaps(UploadedFilterOptions? options = default, CancellationToken token = default, IProgress<double> progress = null)
         {
             if (options == null)
                 options = new UploadedFilterOptions(null, false);
@@ -127,7 +127,7 @@ namespace BeatSaverSharp
                 sb.Append("&sort=").Append(sort);
             }
 
-            var result = await GetBeatmapsFromPage(sb.ToString(), token);//.ConfigureAwait(false);
+            var result = await GetBeatmapsFromPage(sb.ToString(), token, progress);//.ConfigureAwait(false);
             if (result is null)
                 return null;
 
@@ -137,9 +137,9 @@ namespace BeatSaverSharp
             };
         }
 
-        public async UniTask<Page?> UploaderBeatmaps(int uploaderID, int page = 0, CancellationToken token = default)
+        public async UniTask<Page?> UploaderBeatmaps(int uploaderID, int page = 0, CancellationToken token = default, IProgress<double> progress = null)
         {
-            var result = await GetBeatmapsFromPage($"maps/uploader/{uploaderID}/{page}", token);//.ConfigureAwait(false);
+            var result = await GetBeatmapsFromPage($"maps/uploader/{uploaderID}/{page}", token, progress);//.ConfigureAwait(false);
             if (result is null)
                 return null;
 
@@ -149,7 +149,7 @@ namespace BeatSaverSharp
             };
         }
 
-        public async UniTask<Page?> SearchBeatmaps(SearchTextFilterOption? searchOptions = default, int page = 0, CancellationToken token = default)
+        public async UniTask<Page?> SearchBeatmaps(SearchTextFilterOption? searchOptions = default, int page = 0, CancellationToken token = default, IProgress<double> progress = null)
         {
             string searchURL = $"search/text/{page}";
 
@@ -179,7 +179,7 @@ namespace BeatSaverSharp
                 }
             }
 
-            var result = await GetBeatmapsFromPage(searchURL, token);//.ConfigureAwait(false);
+            var result = await GetBeatmapsFromPage(searchURL, token, progress);//.ConfigureAwait(false);
             if (result is null)
                 return null;
 
@@ -343,9 +343,9 @@ namespace BeatSaverSharp
             }
         }
 
-        private async UniTask<IReadOnlyList<Beatmap>?> GetBeatmapsFromPage(string url, CancellationToken token = default)
+        private async UniTask<IReadOnlyList<Beatmap>?> GetBeatmapsFromPage(string url, CancellationToken token = default, IProgress<double> progress = null)
         {
-            var response = await _httpService.GetAsync(url, token);//.ConfigureAwait(false);
+            var response = await _httpService.GetAsync(url, token, progress);//.ConfigureAwait(false);
             if (!response.Successful)
                 return null;
             var page = await response.ReadAsObjectAsync<SerializableSearch>();//.ConfigureAwait(false);

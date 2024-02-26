@@ -43,12 +43,14 @@ namespace EnhancedUI.EnhancedScroller
                 if (_currentPageNumber > 0)
                 {
                     _currentPageNumber--;
+                    SetCanScroll(false);
                     _loopingBackwards.Invoke(TopOffset-PlacementOffset);
                 }
             }
             else if (scroll < BottomOffset)
             {
                 _currentPageNumber++;
+                SetCanScroll(false);
                 _loopingForward.Invoke(BottomOffset+ PlacementOffset);
             }
         }

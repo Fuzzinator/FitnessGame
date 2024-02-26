@@ -6,19 +6,6 @@ public class EnvObstaclesSetter : EnvironmentAssetSetter
 {
     public override string GetPlaylistAssetName(Playlist playlist)
     {
-        SaveLog("Obstacles: Getting Playlist Gloves Name");
-        SaveLog($"Obstacles: Playlist: {playlist}");
-        if (playlist != null)
-        {
-            SaveLog($"Obstacles: Playlist Name: {playlist.PlaylistName}");
-            SaveLog($"Obstacles: Playlist Obstacles: {playlist.Obstacles}");
-
-            if (playlist.Obstacles != null)
-            {
-                SaveLog($"Trying to get obstacles name");
-                SaveLog($"Obstacles: Playlist Obstacles Name: {playlist.Obstacles.AssetName}");
-            }
-        }
         return playlist?.TargetEnvObstaclesName;
     }
 

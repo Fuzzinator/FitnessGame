@@ -18,6 +18,10 @@ public class InputFieldController : MonoBehaviour
     [SerializeField]
     protected UnityEvent<string> _editFieldCompleted = new UnityEvent<string>();
 
+#if UNITY_ANDROID
+    private TouchScreenKeyboard _keyboard;
+#endif
+
     private const string UIInteraction = "";
     private const string ConfirmButton = "ConfirmText";
 
@@ -39,6 +43,7 @@ public class InputFieldController : MonoBehaviour
         await UniTask.WaitWhile(() => keyboard.gameObject.activeInHierarchy);
         _editFieldCompleted?.Invoke(_inputField.text);
 #elif UNITY_ANDROID
+        _keyboard = TouchScreenKeyboard.Open(_inputField.text, TouchScreenKeyboardType.Search);
         FocusTracker.Instance.OnFocusChanged.AddListener(EditFieldCompleteFromFocus);
         await UniTask.DelayFrame(1);
 #endif
@@ -52,6 +57,9 @@ public class InputFieldController : MonoBehaviour
         }
 
         FocusTracker.Instance.OnFocusChanged.RemoveListener(EditFieldCompleteFromFocus);
+#if !UNITY_EDITOR
+        _inputField.text = _keyboard.text;
+#endif
         _editFieldCompleted?.Invoke(_inputField.text);
     }
 

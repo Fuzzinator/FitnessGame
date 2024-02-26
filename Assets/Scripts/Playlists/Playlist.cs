@@ -165,8 +165,8 @@ public class Playlist
     private const string PLAYLISTVERSION = "0.0.4";
 
     public Playlist(List<PlaylistItem> items, GameMode gameMode, DifficultyInfo.DifficultyEnum difficulty, HitSideType startingSide,
-        string playlistName = null, bool isCustomPlaylist = true, string targetEnvName = null, Texture2D image = null, 
-        EnvAssetReference gloves = null, EnvAssetReference targets = null, EnvAssetReference obstacles = null, 
+        string playlistName = null, bool isCustomPlaylist = true, string targetEnvName = null, Texture2D image = null,
+        EnvAssetReference gloves = null, EnvAssetReference targets = null, EnvAssetReference obstacles = null,
         bool forceNoObstacles = false, bool forceOneHanded = false, bool forceJabsOnly = false)
     {
         _playlistName = string.IsNullOrWhiteSpace(playlistName)
@@ -189,7 +189,7 @@ public class Playlist
         _guid = Guid.NewGuid().ToString();
         _startingSide = startingSide;
         _setStartingSide = true;
-        if(gloves != null)
+        if (gloves != null)
         {
             Gloves = gloves;
         }
@@ -198,7 +198,7 @@ public class Playlist
             Gloves = EnvironmentControlManager.Instance.GetGloveAtIndex(0);
         }
 
-        if(targets != null)
+        if (targets != null)
         {
             Targets = targets;
         }
@@ -207,7 +207,7 @@ public class Playlist
             Targets = EnvironmentControlManager.Instance.GetTargetAtIndex(0);
         }
 
-        if(obstacles != null)
+        if (obstacles != null)
         {
             Obstacles = obstacles;
         }
@@ -289,7 +289,7 @@ public class Playlist
     public void SetIcon(Texture2D texture)
     {
         var sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height),
-            Vector2.one * .5f, 100f);
+            Vector2.one * .5f, 100f, 0, SpriteMeshType.FullRect);
         _image = sprite;
     }
 

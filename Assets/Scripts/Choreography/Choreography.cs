@@ -195,6 +195,7 @@ public class Choreography
     public static async UniTask<bool> AsyncSave(Choreography choreography, string fileLocation, string fileName,
         string songName, CancellationToken token)
     {
+        fileName = fileName.Replace("/", "");
         var path = $"{AssetManager.SongsPath}/{fileLocation}/{fileName}";
         try
         {

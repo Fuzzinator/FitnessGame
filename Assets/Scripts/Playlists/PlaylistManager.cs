@@ -243,8 +243,13 @@ public class PlaylistManager : MonoBehaviour
         {
             info = SongInfoReader.Instance?.songInfo;
         }
+        var recordableName = info.RecordableName;
+        if(string.Equals(recordableName, "LOCAL"))
+        {
+            return recordableName;
+        }
 
-        var songID = $"Song_{info.RecordableName}{TargetDifficulty}{TargetGameMode}";
+        var songID = $"Song_{recordableName}{TargetDifficulty}{TargetGameMode}";
         return songID;
     }
 

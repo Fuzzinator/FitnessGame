@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.Events;
 using static SettingsManager;
+using static UnityEngine.Rendering.DebugUI;
 
 public class SettingsManager : MonoBehaviour
 {
@@ -110,6 +111,15 @@ public class SettingsManager : MonoBehaviour
         _boolSettings?.Clear();
         _floatSettings?.Clear();
         _intSettings?.Clear();
+        SetInitialProfileSettings();
+    }
+
+    private void SetInitialProfileSettings()
+    {
+        SetAudioSettings();
+
+        var fps = GetSetting(FPSSETTING, (int)GetFPSSetting());
+        SetTargetFPS((FPSSetting)fps);
     }
 
     #region Audio Settings

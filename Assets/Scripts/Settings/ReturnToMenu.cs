@@ -16,6 +16,15 @@ public class ReturnToMenu : MonoBehaviour
     private DisplaySongInfo _availableSongsInfoDisplay;
     [SerializeField]
     private SetAndShowSongOptions _songOptions;
+    [SerializeField]
+    private EnvGlovesSetter _envGlovesSetter;
+    [SerializeField]
+    private EnvTargetsSetter _envTargetsSetter;
+    [SerializeField]
+    private EnvObstaclesSetter _envObstaclesSetter;
+    [SerializeField]
+    private PlaylistOverridesSetter _playlistOverrides;
+
 
     void Start()
     {
@@ -53,5 +62,11 @@ public class ReturnToMenu : MonoBehaviour
         _availableSongsInfoDisplay.RequestDisplay(playlistItem.SongInfo);
         PlaylistMaker.Instance.SetActiveItem(playlistItem.SongInfo);
         _songOptions.SetSelectedDifAndMode(playlistItem.DifficultyEnum, playlistItem.TargetGameMode);
+        _envGlovesSetter.UpdateFromPlaylist(currentPlaylist);
+        _envTargetsSetter.UpdateFromPlaylist(currentPlaylist);
+        _envObstaclesSetter.UpdateFromPlaylist(currentPlaylist);
+        _playlistOverrides.JabsOnlyToggleSet(currentPlaylist.ForceJabsOnly);
+        _playlistOverrides.NoObstaclesToggleSet(currentPlaylist.ForceNoObstacles);
+        _playlistOverrides.OneHandedToggleSet(currentPlaylist.ForceOneHanded);
     }
 }

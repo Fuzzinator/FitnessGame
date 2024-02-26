@@ -51,7 +51,7 @@ namespace UI.Scrollers.BeatsaverIntegraton
             _beatmap = item;
             _controller = controller;
             SetDownloadedMarker();
-            UniTask.RunOnThreadPool(() => GetAndSetImage(item));
+            //UniTask.RunOnThreadPool(() => GetAndSetImage(item)).Forget();
         }
 
         public void Selected()
@@ -107,14 +107,16 @@ namespace UI.Scrollers.BeatsaverIntegraton
             }
             if (imageBytes != null)
             {
-                await UniTask.SwitchToMainThread(_controller.CancellationToken);
+                await UniTask.SwitchToMainThread();
                 if (item != _beatmap)
                 {
                     return;
                 }
                 var image = new Texture2D(1, 1);
                 image.LoadImage(imageBytes);
-                _songImage.sprite = Sprite.Create(image, new Rect(0, 0, image.width, image.height), Vector2.one * .5f, 100f);
+                await image.ScaleTextureAsync(64, 64, image.format);
+                _songImage.sprite = Sprite.Create(image, new Rect(0, 0, image.width, image.height),
+                    Vector2.one * .5f, 100f, 0, SpriteMeshType.FullRect);
             }
         }
     }

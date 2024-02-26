@@ -59,6 +59,7 @@ public class CustomEnvironmentsController : MonoBehaviour
         message = "Are you sure you would like to delete this environment? This cannot be undone."
     };
 
+    private static readonly string[] _imageExtensions = { ".png", ".bmp", ".jpg", ".jpeg", ".hdr" };
     private const string Png = ".png";
     private const string Bmp = ".bmp";
     private const string Jpg = ".jpg";
@@ -197,7 +198,8 @@ public class CustomEnvironmentsController : MonoBehaviour
         {
             _imagesInDownloads.Clear();
         }
-
+        AssetManager.GetAssetPathsFromDownloads(_imageExtensions, _imagesInDownloads);
+        return _imagesInDownloads;
         //
         // Android 11 is fucking stupid and breaks loading files from the downloads folder unless they are images.
         // This is an attempt at fixing it by using the MediaStore.Downloads functionality but it returns with a cursor with a count of 0
@@ -231,7 +233,7 @@ public class CustomEnvironmentsController : MonoBehaviour
 
                 cursor.Call("close");
         #else*/
-        var info = new DirectoryInfo(AssetManager.DownloadsPath());
+        /*var info = new DirectoryInfo(AssetManager.DownloadsPath());
         var files = info.EnumerateFiles();
         foreach (var file in files)
         {
@@ -251,9 +253,8 @@ public class CustomEnvironmentsController : MonoBehaviour
                     _imagesInDownloads.Add(fullName);
                 }
             }
-        }
+        }*/
         //#endif
-        return _imagesInDownloads;
     }
 
     public static async UniTask<Texture2D> LoadEnvironmentTexture(string imagePath, CancellationToken token)
@@ -675,7 +676,7 @@ public class CustomEnvironmentsController : MonoBehaviour
 
     public static string GetDownloadsImagePath(int index)
     {
-        if (index < 1 && index >= _imagesInDownloads.Count)
+        if (_imagesInDownloads == null || index < 1 && index >= _imagesInDownloads.Count)
         {
             return null;
         }
@@ -683,7 +684,7 @@ public class CustomEnvironmentsController : MonoBehaviour
     }
     public static string GetDownloadsImageName(int index)
     {
-        if (index < 1 && index >= _imagesInDownloads.Count)
+        if (_imagesInDownloads == null || index < 1 && index >= _imagesInDownloads.Count)
         {
             return null;
         }
@@ -696,7 +697,10 @@ public class CustomEnvironmentsController : MonoBehaviour
         _availableCustomSkyboxNames?.Clear();
         _availableCustomSkyboxDepthPaths?.Clear();
         _availableCustomSkyboxDepthNames?.Clear();
-        _imagesInDownloads?.Clear();
+        if (_imagesInDownloads != null)
+        {
+            CollectionPool<List<string>, string>.Release(_imagesInDownloads);
+        }
         _customEnvironments?.Clear();
         _availableCustomEnvironments?.Clear();
         _skyboxThumbnails?.Clear();

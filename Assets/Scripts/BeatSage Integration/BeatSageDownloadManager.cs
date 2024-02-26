@@ -5,27 +5,20 @@ using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
-using static BeatSageDownloadManager;
-using System.Collections.ObjectModel;
 using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
 using System.Net;
-using System.Text;
 using System.Threading;
 using UnityEngine.UIElements;
 using Cysharp.Threading.Tasks;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
+using static BeatSageDownloadManager;
+using UnityEngine.Events;
 
-public class BeatSageDownloadManager : MonoBehaviour
+public class BeatSageDownloadManager
 {
-    private string downloadStatus;
-
-    [field:SerializeField]
-    public List<string> FileLocations { get; private set; } = new List<string>();
-    public static List<Download> downloads = new List<Download>();
+    public static List<Download> Downloads { get; private set; } = new List<Download>();
 
     private static HttpClient _httpClient;
     public static HttpClient HttpClient
@@ -43,108 +36,64 @@ public class BeatSageDownloadManager : MonoBehaviour
         }
     }
 
-    /*private void OnValidate()
+    public static Download TryAddDownload(string songName, string filePath)
     {
-        if (FileLocations.Count > 0 && !string.IsNullOrWhiteSpace(FileLocations[0]))
+        if (Downloads.Any((i) => i.FilePath == filePath))
         {
-            AddDownloads();
-            RunDownloads().Forget();
+            var fileName = Path.GetFileName(filePath);
+            var visuals = new Notification.NotificationVisuals($"{fileName} is already being converted.", "Conversion Failed", autoTimeOutTime: 1.5f, popUp: true);
+            NotificationManager.RequestNotification(visuals);
+            return null;
         }
-    }*/
-
-    public static CancellationTokenSource cts;
-
-    public static Label newUpdateAvailableLabel;
-
-    public void AddDownloads()
-    {
-        string selectedDifficulties = "Expert,ExpertPlus,Normal,Hard";
-        string selectedGameModes = "Standard,90Degree,NoArrows,OneSaber";
-        string selectedSongEvents = "DotBlocks,Obstacles,Bombs";
-        string selectedEnvironment = "DefaultEnvironment";
-        string selectedModelVersion = "v2-flow";
-
-        for (int i = 0; i < FileLocations.Count; i++)
-        {
-            if (FileLocations[i].Contains(".mp3"))
-            {
-                string filePath = FileLocations[i].TrimEnd('\r', '\n');
-
-                Console.WriteLine("File Path: " + filePath);
-
-                Add(new Download()
-                {
-                    Number = downloads.Count + 1,
-                    YoutubeID = "",
-                    Title = "???",
-                    Artist = "???",
-                    Status = "Queued",
-                    Difficulties = selectedDifficulties,
-                    GameModes = selectedGameModes,
-                    SongEvents = selectedSongEvents,
-                    FilePath = filePath,
-                    FileName = Path.GetFileName(filePath),
-                    Environment = selectedEnvironment,
-                    ModelVersion = selectedModelVersion,
-                    IsAlive = false
-                });
-            }
-        }
+        return AddDownload(filePath);
     }
 
-    public async UniTaskVoid RunDownloads()
+    public static Download AddDownload(string filePath)
     {
-        Console.WriteLine("RunDownloads Started");
+        filePath = filePath.TrimEnd('\r', '\n');
 
-        int previousNumberOfDownloads = downloads.Count;
+        var download = new Download(filePath);
+        Downloads.Add(download);
 
-        //SaveDownloads();
+        HandleDownload(download).Forget();
+        return download;
+    }
 
-        cts = new CancellationTokenSource();
+    private static async UniTaskVoid HandleDownload(Download download)
+    {
 
-        List<Download> incompleteDownloads = new List<Download>();
+        var cts = new CancellationTokenSource();
 
-        foreach (Download download in downloads)
+        download.IsAlive = true;
+        if ((download.FilePath != "") && (download.FilePath != null))
         {
-            if (download.Status == "Queued")
+            try
             {
-                incompleteDownloads.Add(download);
+                await CreateCustomLevelFromFile(download, cts);
+                if (download.Progress > 1)
+                {
+                    download.Progress = 1;
+                }
             }
-        }
-
-        if (incompleteDownloads.Count >= 1)
-        {
-            Download currentDownload = incompleteDownloads[0];
-            currentDownload.IsAlive = true;
-
-            if ((currentDownload.FilePath != "") && (currentDownload.FilePath != null))
+            catch (Exception e)
             {
-                try
-                {
-                    await CreateCustomLevelFromFile(currentDownload);
-                }
-                catch
-                {
-                    currentDownload.Status = "Unable To Create Level";
-                }
+                download.Status = "Unable To Create Level";
 
-                currentDownload.IsAlive = false;
-                cts.Dispose();
+                download.Progress = -1;
+                Downloads.Remove(download);
             }
 
+            download.IsAlive = false;
+            cts.Dispose();
         }
-
         cts.Dispose();
     }
 
-    public void Add(Download download)
-    {
-        downloads.Add(download);
-    }
-
-    async UniTask CreateCustomLevelFromFile(Download download)
+    private static async UniTask CreateCustomLevelFromFile(Download download, CancellationTokenSource cts)
     {
         download.Status = "Uploading File";
+        //Update displayed progress
+        download.Progress = 0.1;
 
         var tagFile = TagLib.File.Create(download.FilePath);
 
@@ -184,6 +133,9 @@ public class BeatSageDownloadManager : MonoBehaviour
 
         byte[] bytes = File.ReadAllBytes(download.FilePath);
 
+        //Update displayed progress
+        download.Progress = 0.2;
+
         string boundary = "----WebKitFormBoundaryaA38RFcmCeKFPOms";
         var content = new MultipartFormDataContent(boundary);
 
@@ -208,31 +160,28 @@ public class BeatSageDownloadManager : MonoBehaviour
 
         var response = await HttpClient.PostAsync("https://beatsage.com/beatsaber_custom_level_create", content, cts.Token);
 
-        var responseString = await response.Content.ReadAsStringAsync();
+        //Update displayed progress
+        download.Progress = 0.25;
 
-        Console.WriteLine(responseString);
+        var responseString = await response.Content.ReadAsStringAsync();
 
         JObject jsonString = JObject.Parse(responseString);
 
         string levelID = (string)jsonString["id"];
 
-        Console.WriteLine(levelID);
-
-        await CheckDownload(levelID, trackName, artistName, download);
+        await CheckDownload(levelID, trackName, artistName, download, cts);
     }
 
-    async UniTask CheckDownload(string levelId, string trackName, string artistName, Download download)
+    private static async UniTask CheckDownload(string levelId, string trackName, string artistName, Download download, CancellationTokenSource cts)
     {
         download.Status = "Generating Custom Level";
 
         string url = "https://beatsage.com/beatsaber_custom_level_heartbeat/" + levelId;
 
-        Console.WriteLine(url);
+        download.downloadStatus = "PENDING";
 
-        downloadStatus = "PENDING";
-
-
-        while (downloadStatus == "PENDING")
+        var progress = 0.25;
+        while (download.downloadStatus == "PENDING")
         {
             try
             {
@@ -240,8 +189,6 @@ public class BeatSageDownloadManager : MonoBehaviour
                 {
                     return;
                 }
-
-                Console.WriteLine(downloadStatus);
 
                 await UniTask.Delay(1000);
 
@@ -253,102 +200,102 @@ public class BeatSageDownloadManager : MonoBehaviour
 
                 JObject jsonString = JObject.Parse(responseString);
 
-                downloadStatus = (string)jsonString["status"];
+                download.downloadStatus = (string)jsonString["status"];
+                if (progress < .75f)
+                {
+                    progress += Time.deltaTime * .5f;
+                    //Update displayed progress
+                    download.Progress = progress;
+                }
 
             }
-            catch
+            catch (Exception e)
             {
+                break;
             }
 
         }
 
-        if (downloadStatus == "DONE")
+        if (download.downloadStatus == "DONE")
         {
-            RetrieveDownload(levelId, trackName, artistName, download);
+            //Update displayed progress
+            download.Progress = 0.8;
+            await RetrieveDownload(levelId, trackName, artistName, download);
+        }
+        else if (download.downloadStatus == "FAILED")
+        {
+            download.Progress = -1;
+            Downloads.Remove(download);
         }
     }
 
-    void RetrieveDownload(string levelId, string trackName, string artistName, Download download)
+    private static async UniTask RetrieveDownload(string levelId, string trackName, string artistName, Download download)
     {
         download.Status = "Downloading";
+        //Update displayed progress
+        download.Progress = .85;
 
-        string url = "https://beatsage.com/beatsaber_custom_level_download/" + levelId;
+        var url = "https://beatsage.com/beatsaber_custom_level_download/" + levelId;
 
-        Console.WriteLine(url);
+        var client = new WebClient();
+        var uri = new Uri(url);
 
-        WebClient client = new WebClient();
-        Uri uri = new Uri(url);
+        var fileName = "[BSD] " + trackName + " - " + artistName;
+        fileName = fileName.RemoveIllegalIOCharacters();
+        var songBytes = await client.DownloadDataTaskAsync(uri);
 
-        var songsPath = AssetManager.SongsPath;
-
-        int pathLength = songsPath.Count();
-
-        string fileName = "[BSD] " + trackName + " - " + artistName;
-
-        var filePath = (songsPath + @"\" + fileName);//.Substring(0, 244 - pathLength);
-        
         download.Status = "Extracting";
-
-        if (Directory.Exists("temp.zip"))
+        try
         {
-            Directory.Delete("temp.zip");
+            ZipFileManagement.ExtractAndSaveZippedSong(fileName, songBytes);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"{fileName} cant be saved might have illegal characters {ex.Message} -- {ex.StackTrace}");
         }
 
-        client.DownloadFile(uri, "temp.zip");
-
-        if (Directory.Exists(filePath))
-        {
-            Directory.Delete(filePath, true);
-        }
-
-        ZipFile.ExtractToDirectory("temp.zip", filePath);
-
-        if (File.Exists("temp.zip"))
-        {
-            File.Delete("temp.zip");
-        }
-
-        /*if (Settings.Default.automaticExtraction)
-        {
-            
-        }
-        else
-        {
-
-            if (File.Exists(filePath + ".zip"))
-            {
-                File.Delete(filePath + ".zip");
-            }
-
-            client.DownloadFile(uri, filePath + ".zip");
-        }*/
-
+        //Update displayed progress
+        download.Progress = .95;
 
         download.Status = "Completed";
         download.IsAlive = false;
+
+        //UpdateImage(filePath, download);
+
+        await UniTask.DelayFrame(1);
+        if (SongInfoFilesReader.Instance != null)
+        {
+            SongInfoFilesReader.Instance.LoadNewSong(fileName, "LOCAL", 0).Forget();
+            PlaylistFilesReader.Instance.RefreshPlaylistsValidStates().Forget();
+        }
+        //Update displayed progress
+        download.Progress = 1;
+        Downloads.Remove(download);
     }
 
-   /* public void SaveDownloads()
+    //maybe later?
+    private static void UpdateImage(string fileLocation, Download download)
     {
-        List<Download> downloadsList = new List<Download>();
-
-        foreach (Download download in downloads)
+        var info = new DirectoryInfo(fileLocation);
+        var creationDate = info.CreationTime;
+        var files = info.GetFiles();
+        if (files.Length == 0)
         {
-            downloadsList.Add(download);
+            info.Delete(true);
         }
-
-        if (downloadsList.Count > 0)
+        foreach (var file in files)
         {
-            using (MemoryStream ms = new MemoryStream())
+            if (file == null || !file.Extension.Equals(".jpg"))
             {
-                BinaryFormatter bf = new BinaryFormatter();
-                bf.Serialize(ms, downloadsList);
-                ms.Position = 0;
-                byte[] buffer = new byte[(int)ms.Length];
-                ms.Read(buffer, 0, buffer.Length);
+                continue;
             }
+
+            var fileName = file.Name;
+            file.Delete();
+
         }
-    }*/
+    }
+
 
     [Serializable]
     public class Download
@@ -367,6 +314,36 @@ public class BeatSageDownloadManager : MonoBehaviour
         private string environment;
         private string modelVersion;
         private bool isAlive;
+        public string downloadStatus;
+        private double _progress;
+        public double Progress
+        {
+            get => _progress;
+            set
+            {
+                _progress = value;
+                ProgressUpdated?.Invoke(value);
+            }
+        }
+        public UnityEvent<double> ProgressUpdated { get; }
+
+        public Download(string filePath)
+        {
+            Number = Downloads.Count + 1;
+            YoutubeID = "";
+            Title = "???";
+            Artist = "???";
+            Status = "Queued";
+            Difficulties = "Expert,ExpertPlus,Normal,Hard";
+            GameModes = "Standard,90Degree,NoArrows,OneSaber";
+            SongEvents = "DotBlocks,Obstacles,Bombs";
+            FilePath = filePath;
+            FileName = Path.GetFileName(filePath);
+            Environment = "DefaultEnvironment";
+            ModelVersion = "v2-flow";
+            IsAlive = false;
+            ProgressUpdated = new UnityEvent<double>();
+        }
 
         public int Number
         {
@@ -569,198 +546,4 @@ public class BeatSageDownloadManager : MonoBehaviour
             }
         }
     }
-    /*internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase
-    {
-
-        private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
-
-        public static Settings Default
-        {
-            get
-            {
-                return defaultInstance;
-            }
-        }
-
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Downloads")]
-        public string outputDirectory
-        {
-            get
-            {
-                return ((string)(this["outputDirectory"]));
-            }
-            set
-            {
-                this["outputDirectory"] = value;
-            }
-        }
-
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Expert,ExpertPlus")]
-        public string previousDifficulties
-        {
-            get
-            {
-                return ((string)(this["previousDifficulties"]));
-            }
-            set
-            {
-                this["previousDifficulties"] = value;
-            }
-        }
-
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Standard")]
-        public string previousGameModes
-        {
-            get
-            {
-                return ((string)(this["previousGameModes"]));
-            }
-            set
-            {
-                this["previousGameModes"] = value;
-            }
-        }
-
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string previousGameEvents
-        {
-            get
-            {
-                return ((string)(this["previousGameEvents"]));
-            }
-            set
-            {
-                this["previousGameEvents"] = value;
-            }
-        }
-
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Default")]
-        public string previousEnvironment
-        {
-            get
-            {
-                return ((string)(this["previousEnvironment"]));
-            }
-            set
-            {
-                this["previousEnvironment"] = value;
-            }
-        }
-
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("V2")]
-        public string previousModelVersion
-        {
-            get
-            {
-                return ((string)(this["previousModelVersion"]));
-            }
-            set
-            {
-                this["previousModelVersion"] = value;
-            }
-        }
-
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool automaticExtraction
-        {
-            get
-            {
-                return ((bool)(this["automaticExtraction"]));
-            }
-            set
-            {
-                this["automaticExtraction"] = value;
-            }
-        }
-
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool overwriteExisting
-        {
-            get
-            {
-                return ((bool)(this["overwriteExisting"]));
-            }
-            set
-            {
-                this["overwriteExisting"] = value;
-            }
-        }
-
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string savedDownloads
-        {
-            get
-            {
-                return ((string)(this["savedDownloads"]));
-            }
-            set
-            {
-                this["savedDownloads"] = value;
-            }
-        }
-
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool saveDownloadsQueue
-        {
-            get
-            {
-                return ((bool)(this["saveDownloadsQueue"]));
-            }
-            set
-            {
-                this["saveDownloadsQueue"] = value;
-            }
-        }
-
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool enableLocalYouTubeDownload
-        {
-            get
-            {
-                return ((bool)(this["enableLocalYouTubeDownload"]));
-            }
-            set
-            {
-                this["enableLocalYouTubeDownload"] = value;
-            }
-        }
-
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("v1.2.6")]
-        public string currentVersion
-        {
-            get
-            {
-                return ((string)(this["currentVersion"]));
-            }
-            set
-            {
-                this["currentVersion"] = value;
-            }
-        }
-    }*/
-
 }

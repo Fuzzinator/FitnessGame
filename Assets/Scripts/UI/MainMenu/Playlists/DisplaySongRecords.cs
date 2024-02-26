@@ -156,7 +156,13 @@ namespace UI
                 _cancellationToken = new CancellationTokenSource();
                 _tokenDisposed = false;
             }
-            if (!NetworkConnectionManager.Instance.NetworkConnected)
+            if(string.Equals(_songInfo.RecordableName, "LOCAL"))
+            {
+                _statusDisplay.SetText("Local mp3 songs not supported at this time.");
+                _statusDisplayBackground.gameObject.SetActive(true);
+                return;
+            }
+            else if (!NetworkConnectionManager.Instance.NetworkConnected)
             {
                 _statusDisplay.SetText("Not connected to the internet. Online leaderboards unavailable.");
                 _statusDisplayBackground.gameObject.SetActive(true);

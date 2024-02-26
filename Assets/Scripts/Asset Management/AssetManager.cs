@@ -1,18 +1,16 @@
 using System;
 using System.IO;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Cysharp.Threading.Tasks.Linq;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
 using UnityEngine.ResourceManagement.AsyncOperations;
-using static UnityEngine.XR.Hands.XRHandSubsystemDescriptor;
 
 #if UNITY_ANDROID
 using UnityEngine.Android;
+//using System.Net.NetworkInformation;
 #endif
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
 using System.Runtime.InteropServices;
@@ -147,30 +145,11 @@ public class AssetManager : MonoBehaviour
 #endif
     }
 
-    public static async UniTask<AudioClip> LoadCustomSong(string parentDirectory, SongInfo info,
-        CancellationToken cancellationToken)
+    public static async UniTask<AudioClip> LoadCustomSong(string path, CancellationToken cancellationToken, AudioType audioType, bool deleteFolder)
     {
-        if (!CheckPermissions())
-        {
-            Debug.LogWarning("User did not give permissions cannot access custom files");
-            return null;
-        }
-
         try
         {
-#if UNITY_EDITOR
-            var path = $"{SongsPath}{parentDirectory}/{info.SongFilename}";
-#else
-#if UNITY_ANDROID
-            var path =
-            $"{ANDROIDPATHSTART}{SongsPath}{parentDirectory}/{info.SongFilename}";
-#elif UNITY_STANDALONE_WIN
-            var path = $"{SongsPath}{parentDirectory}/{info.SongFilename}";
-#endif
-
-#endif
-
-            var uwr = UnityWebRequestMultimedia.GetAudioClip(path, AudioType.OGGVORBIS);
+            var uwr = UnityWebRequestMultimedia.GetAudioClip(path, audioType);
             ((DownloadHandlerAudioClip)uwr.downloadHandler).streamAudio = true;
             var request = uwr.SendWebRequest();
             await request.ToUniTask(cancellationToken: cancellationToken);
@@ -183,9 +162,13 @@ public class AssetManager : MonoBehaviour
                 if (clip.length == 0)
                 {
                     uwr.Dispose();
-                    Directory.Delete($"{SongsPath}{parentDirectory}", true);
+                    if (deleteFolder)
+                    {
+                        var directory = Path.GetDirectoryName(path);
+                        Directory.Delete(directory, true);
+                    }
                 }
-                clip.name = info.SongName;
+                clip.name = Path.GetFileName(path);
                 return clip;
             }
             else
@@ -204,6 +187,29 @@ public class AssetManager : MonoBehaviour
             Debug.LogError($"failed to get audio clip\n {e.Message}");
             return null;
         }
+    }
+
+    public static async UniTask<AudioClip> LoadCustomSong(string parentDirectory, SongInfo info,
+        CancellationToken cancellationToken)
+    {
+        if (!CheckPermissions())
+        {
+            Debug.LogWarning("User did not give permissions cannot access custom files");
+            return null;
+        }
+#if UNITY_EDITOR
+        var path = $"{SongsPath}{parentDirectory}/{info.SongFilename}";
+#else
+#if UNITY_ANDROID
+            var path =
+            $"{ANDROIDPATHSTART}{SongsPath}{parentDirectory}/{info.SongFilename}";
+#elif UNITY_STANDALONE_WIN
+            var path = $"{SongsPath}{parentDirectory}/{info.SongFilename}";
+#endif
+
+#endif
+
+        return await LoadCustomSong(path, cancellationToken, AudioType.OGGVORBIS, true);
     }
 
     public static async UniTask<AudioClipRequest> LoadBuiltInSong(SongInfo item, CancellationToken cancellationToken)
@@ -575,7 +581,7 @@ public class AssetManager : MonoBehaviour
         var info = new DirectoryInfo(fileLocation);
         var creationDate = info.CreationTime;
         var files = info.GetFiles();
-        if(files.Length == 0)
+        if (files.Length == 0)
         {
             info.Delete(true);
         }
@@ -754,6 +760,31 @@ public class AssetManager : MonoBehaviour
         await writingTask;
 
         streamWriter.Close();
+    }
+
+    public static void GetAssetPathsFromDownloads(string[] extensions, List<string> listOfFiles)
+    {
+        var info = new DirectoryInfo(DownloadsPath());
+        var files = info.EnumerateFiles();
+        foreach (var file in files)
+        {
+            if (file == null)
+            {
+                continue;
+            }
+            foreach (var extension in extensions)
+            {
+
+                if (string.Equals(file.Extension, extension, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    var fullName = file.FullName.Replace('\\', '/');
+                    if (!listOfFiles.Contains(fullName))
+                    {
+                        listOfFiles.Add(fullName);
+                    }
+                }
+            }
+        }
     }
 }
 

@@ -20,7 +20,7 @@ public class BeatSaverPageController : MonoBehaviour
     private BeatSaverSongsScrollerController _scrollerController;
 
     [SerializeField]
-    private GameObject _showLoadingObject;
+    private LoadingProgressUIDisplay _loadingProgressObj;
     [SerializeField]
     private CanvasGroup _canvasController;
 
@@ -112,6 +112,14 @@ public class BeatSaverPageController : MonoBehaviour
         {
             _playSongsCanvas.gameObject.SetActive(false);
         }
+        Reset();
+    }
+
+    private void Reset()
+    {
+        RefreshToken().Forget();
+        ShowLoading(false);
+        _scroller.SetCanScroll(false);
     }
 
     public void RequestFilterBy(int sortingOptions)
@@ -293,7 +301,7 @@ public class BeatSaverPageController : MonoBehaviour
         Page request = null;
         try
         {
-            request = await _beatSaver.LatestBeatmaps(token: _cancellationTokenSource.Token);
+            request = await _beatSaver.LatestBeatmaps(token: _cancellationTokenSource.Token, progress: _loadingProgressObj.ProgressDisplay);
         }
         catch (Exception ex)
         {
@@ -321,7 +329,7 @@ public class BeatSaverPageController : MonoBehaviour
             return;
         }
         _activePage = request;
-        _nextPage = await _activePage.Next(_cancellationTokenSource.Token);
+        _nextPage = await _activePage.Next(_cancellationTokenSource.Token, _loadingProgressObj.ProgressDisplay);
         await UpdateDataForward();
     }
 
@@ -334,11 +342,11 @@ public class BeatSaverPageController : MonoBehaviour
         var previousPage = _activePage;
         _activePage = _nextPage ?? previousPage;
 
-        if(_cancellationTokenSource == null)
+        if (_cancellationTokenSource == null)
         {
             _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_token);
         }
-        _nextPage = await _activePage.Next(_cancellationTokenSource.Token);
+        _nextPage = await _activePage.Next(_cancellationTokenSource.Token, _loadingProgressObj.ProgressDisplay);
 
         if (_activePage == null || !setData)
         {
@@ -354,12 +362,12 @@ public class BeatSaverPageController : MonoBehaviour
         ShowLoading(true);
         _scroller.SetCanScroll(false);
         _nextPage = _activePage;
-        
+
         if (_cancellationTokenSource == null)
         {
             _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_token);
         }
-        _activePage = await _activePage.Previous(_cancellationTokenSource.Token);
+        _activePage = await _activePage.Previous(_cancellationTokenSource.Token, _loadingProgressObj.ProgressDisplay);
 
         if (_activePage == null || !setData)
         {
@@ -382,7 +390,7 @@ public class BeatSaverPageController : MonoBehaviour
             Page request = null;
             try
             {
-                request = await _beatSaver.SearchBeatmaps(option, token: _cancellationTokenSource.Token);
+                request = await _beatSaver.SearchBeatmaps(option, token: _cancellationTokenSource.Token, progress: _loadingProgressObj.ProgressDisplay);
             }
             catch (Exception ex)
             {
@@ -413,7 +421,7 @@ public class BeatSaverPageController : MonoBehaviour
                 return;
             }
             _activePage = request;
-            _nextPage = await _activePage.Next(token: _cancellationTokenSource.Token);
+            _nextPage = await _activePage.Next(token: _cancellationTokenSource.Token, _loadingProgressObj.ProgressDisplay);
         }
         catch (Exception e)
         {
@@ -437,6 +445,10 @@ public class BeatSaverPageController : MonoBehaviour
 
     private async UniTaskVoid PlaySongAudioAsync()
     {
+        if(_audioSource == null)
+        {
+            return;
+        }
         if (_audioSource.isPlaying)
         {
             _audioSource.Stop();
@@ -444,7 +456,7 @@ public class BeatSaverPageController : MonoBehaviour
         }
         var targetBeatmap = _activeBeatmap;
         await RefreshToken();
-        if(_activeBeatmap != targetBeatmap || targetBeatmap?.LatestVersion == null)
+        if (_activeBeatmap != targetBeatmap || targetBeatmap?.LatestVersion == null || _audioSource == null)
         {
             return;
         }
@@ -457,12 +469,16 @@ public class BeatSaverPageController : MonoBehaviour
         var audioClip = await targetBeatmap.LatestVersion.GetPlayablePreview(_cancellationTokenSource.Token);
         if (audioClip == null)
         {
-            NotificationManager.RequestNotification(new Notification.NotificationVisuals("Unable to download the preview for ", "Preview failed.", autoTimeOutTime: 1f, popUp:true));
+            NotificationManager.RequestNotification(new Notification.NotificationVisuals("Unable to download the preview for ", "Preview failed.", autoTimeOutTime: 1f, popUp: true));
             Debug.LogError("Preview Failed");
             return;
         }
 
         await UniTask.DelayFrame(1);
+        if( _audioSource == null )
+        {
+            return;
+        }
         _audioSource.clip = audioClip;
         _audioSource.Play();
         await UniTask.WaitUntil(() => !_audioSource.isPlaying && FocusTracker.Instance.IsFocused);
@@ -484,7 +500,8 @@ public class BeatSaverPageController : MonoBehaviour
         var targetBeatmap = _activeBeatmap;
         _downloadingIds.Add(targetBeatmap.ID);
         var progress = new Progress<double>();
-        var loadingDisplay = _loadingDisplays.DisplayNewLoading(_activeBeatmap.Metadata.SongName);
+        var songName = _activeBeatmap.Metadata?.SongSubName ?? _activeBeatmap.Name;
+        var loadingDisplay = _loadingDisplays.DisplayNewLoading(songName);
         if (loadingDisplay != null)
         {
             progress.ProgressChanged += (sender, d) => loadingDisplay.UpdateLoadingBar(d);
@@ -497,12 +514,21 @@ public class BeatSaverPageController : MonoBehaviour
         byte[] songBytes = null;
         try
         {
+            if (_downloadsTokenSource == null)
+            {
+                _downloadsTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_token);
+            }
             songBytes = await _activeBeatmap.LatestVersion.DownloadZIP(_downloadsTokenSource.Token, progress);
         }
         catch (Exception ex)
         {
             if (ex is TimeoutException)
             {
+                if (targetBeatmap == null)
+                {
+                    return;
+                }
+
                 _downloadingIds.Remove(targetBeatmap.ID);
                 loadingDisplay.ReturnToPool();
 
@@ -725,7 +751,7 @@ public class BeatSaverPageController : MonoBehaviour
             _activeBeatmapImage = new Texture2D(1, 1);
             _activeBeatmapImage.LoadImage(imageBytes);
             _songImage.sprite = Sprite.Create(_activeBeatmapImage,
-                new Rect(0, 0, _activeBeatmapImage.width, _activeBeatmapImage.height), Vector2.one * .5f, 100f);
+                new Rect(0, 0, _activeBeatmapImage.width, _activeBeatmapImage.height), Vector2.one * .5f, 100f, 0, SpriteMeshType.FullRect);
         }
 
         _downloadButton.interactable = !_downloadingIds.Contains(_activeBeatmap.ID);
@@ -804,7 +830,7 @@ public class BeatSaverPageController : MonoBehaviour
 
     private void ShowLoading(bool isLoading)
     {
-        _showLoadingObject.SetActive(isLoading);
+        _loadingProgressObj.gameObject.SetActive(isLoading);
         _canvasController.interactable = !isLoading;
     }
 

@@ -496,6 +496,11 @@ public class SetAndShowSongOptions : MonoBehaviour
         if (_cancellationSource.IsCancellationRequested)
         {
             _cancellationSource.Dispose();
+            if(_cancellationToken.IsCancellationRequested)
+            {
+                return;
+            }
+            await UniTask.DelayFrame(1);
             _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(_cancellationToken);
         }
         _previewButtonText?.SetTextZeroAlloc(Loading, true);
@@ -511,7 +516,6 @@ public class SetAndShowSongOptions : MonoBehaviour
             _currentSongRequestHandle = clipRequest.OperationHandle;
             audioClip = clipRequest.AudioClip;
         }
-
         await UniTask.DelayFrame(1, cancellationToken: _cancellationSource.Token).SuppressCancellationThrow();
         if (_cancellationSource.IsCancellationRequested)
         {
