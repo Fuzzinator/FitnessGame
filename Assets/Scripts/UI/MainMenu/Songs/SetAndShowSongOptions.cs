@@ -492,65 +492,76 @@ public class SetAndShowSongOptions : MonoBehaviour
 
     private async UniTaskVoid PlaySongAudioAsync()
     {
-        AudioClip audioClip;
-        if (_cancellationSource.IsCancellationRequested)
+        try
         {
-            _cancellationSource.Dispose();
-            if(_cancellationToken.IsCancellationRequested)
+
+            AudioClip audioClip;
+            if (_cancellationSource.IsCancellationRequested)
             {
+                _cancellationSource.Dispose();
+                if (_cancellationToken.IsCancellationRequested)
+                {
+                    return;
+                }
+                await UniTask.DelayFrame(1);
+                _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(_cancellationToken);
+            }
+            _previewButtonText?.SetTextZeroAlloc(Loading, true);
+            _loadingSongPreview = true;
+
+            if (_songInfo.isCustomSong)
+            {
+                audioClip = await AssetManager.LoadCustomSong(_songInfo.fileLocation, _songInfo, _cancellationSource.Token);
+            }
+            else
+            {
+                var clipRequest = await AssetManager.LoadBuiltInSong(_songInfo, _cancellationSource.Token);
+                _currentSongRequestHandle = clipRequest.OperationHandle;
+                audioClip = clipRequest.AudioClip;
+            }
+            await UniTask.DelayFrame(1).SuppressCancellationThrow();
+            if (_cancellationSource.IsCancellationRequested)
+            {
+                if (_cancellationToken.IsCancellationRequested)
+                {
+                    return;
+                }
+                StopSongPreview();
                 return;
             }
-            await UniTask.DelayFrame(1);
-            _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(_cancellationToken);
-        }
-        _previewButtonText?.SetTextZeroAlloc(Loading, true);
-        _loadingSongPreview = true;
+            _audioSource.clip = audioClip;
+            _audioSource.Play();
 
-        if (_songInfo.isCustomSong)
-        {
-            audioClip = await AssetManager.LoadCustomSong(_songInfo.fileLocation, _songInfo, _cancellationSource.Token);
-        }
-        else
-        {
-            var clipRequest = await AssetManager.LoadBuiltInSong(_songInfo, _cancellationSource.Token);
-            _currentSongRequestHandle = clipRequest.OperationHandle;
-            audioClip = clipRequest.AudioClip;
-        }
-        await UniTask.DelayFrame(1).SuppressCancellationThrow();
-        if (_cancellationSource.IsCancellationRequested)
-        {
+            _previewButtonText?.SetTextZeroAlloc(Stop, true);
+            _loadingSongPreview = false;
+            await UniTask.WaitUntil(() => _audioSource == null || _audioSource.isPlaying, cancellationToken: _cancellationSource.Token);
+
+            if (_cancellationSource.IsCancellationRequested)
+            {
+                if (_cancellationToken.IsCancellationRequested)
+                {
+                    return;
+                }
+                StopSongPreview();
+                return;
+            }
+
+            await UniTask.WaitUntil(() => _audioSource == null || !_audioSource.isPlaying && FocusTracker.Instance.IsFocused, cancellationToken: _cancellationSource.Token);
+
             if (_cancellationToken.IsCancellationRequested)
             {
                 return;
             }
+
             StopSongPreview();
-            return;
         }
-        _audioSource.clip = audioClip;
-        _audioSource.Play();
-
-        _previewButtonText?.SetTextZeroAlloc(Stop, true);
-        _loadingSongPreview = false;
-        await UniTask.WaitUntil(() => _audioSource == null || _audioSource.isPlaying, cancellationToken: _cancellationSource.Token);
-
-        if (_cancellationSource.IsCancellationRequested)
+        catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            if (_cancellationToken.IsCancellationRequested)
+            if (ex is not ObjectDisposedException)
             {
-                return;
+                Debug.LogError(ex);
             }
-            StopSongPreview();
-            return;
         }
-
-        await UniTask.WaitUntil(() => _audioSource == null || !_audioSource.isPlaying && FocusTracker.Instance.IsFocused, cancellationToken: _cancellationSource.Token);
-
-        if (_cancellationToken.IsCancellationRequested)
-        {
-            return;
-        }
-
-        StopSongPreview();
     }
 
     private async UniTaskVoid WaitAndPlayPreview()

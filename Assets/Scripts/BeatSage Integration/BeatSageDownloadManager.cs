@@ -243,7 +243,12 @@ public class BeatSageDownloadManager
         var fileName = "[BSD] " + trackName + " - " + artistName;
         fileName = fileName.RemoveIllegalIOCharacters();
         var songBytes = await client.DownloadDataTaskAsync(uri);
-
+        var targetDir = $"{AssetManager.SongsPath}{fileName}";
+        if (Directory.Exists(targetDir))
+        {
+            Directory.Delete(targetDir, true);
+        }
+        await UniTask.DelayFrame(1);
         download.Status = "Extracting";
         try
         {
