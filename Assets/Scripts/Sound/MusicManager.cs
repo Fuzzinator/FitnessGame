@@ -27,11 +27,11 @@ public class MusicManager : BaseGameStateListener
 
     private float _previousTime = 0;
 
-    public bool IsPlaying => _musicAudioSource.isPlaying;
+    public bool IsPlaying => _musicAudioSource != null && _musicAudioSource.isPlaying;
 
     public bool IsPaused => _musicPaused || _applicationPaused;
 
-    private bool IsPlayingOrPaused => _musicAudioSource.isPlaying || _musicPaused || _applicationPaused;
+    private bool IsPlayingOrPaused => _musicAudioSource != null && (_musicAudioSource.isPlaying || _musicPaused || _applicationPaused);
 
     private bool IsSongCompleted => _previousTime > 0 && _musicAudioSource.time == 0;
 

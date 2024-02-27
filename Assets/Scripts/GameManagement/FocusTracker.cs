@@ -16,7 +16,7 @@ public class FocusTracker : MonoBehaviour
         get;
         private set;
     }
-    
+
 #if UNITY_EDITOR
     [Header("Editor Only Properties"), SerializeField]
     private bool _trackFocus = true;
@@ -33,7 +33,7 @@ public class FocusTracker : MonoBehaviour
             Destroy(this);
         }
     }
-    
+
     private void OnDestroy()
     {
         if (Instance == this)
@@ -57,7 +57,7 @@ public class FocusTracker : MonoBehaviour
 #if UNITY_EDITOR
         if (_trackFocus)
 #endif
-            focusChanged?.Invoke(pause);
+            OnFocusChanged?.Invoke(pause);
         IsFocused = pause;
     }
 #endif

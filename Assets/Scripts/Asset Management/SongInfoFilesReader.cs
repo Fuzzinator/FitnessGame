@@ -158,11 +158,12 @@ public class SongInfoFilesReader : MonoBehaviour
         var songInfo = await AssetManager.TryGetSingleCustomSong(songFolderName, _cancellationSource.Token, songID, songScore);
         if (songInfo != null)
         {
-            var existingSong = availableSongs.Find((info) => string.Equals(info.SongID, songID, StringComparison.InvariantCultureIgnoreCase) ||
+            var existingSong = availableSongs.Find((info) => (!string.Equals(songID, "LOCAL") && string.Equals(info.SongID, songID, StringComparison.InvariantCultureIgnoreCase))  ||
                                                              string.Equals(info.fileLocation, songInfo.fileLocation, StringComparison.InvariantCultureIgnoreCase));
             if (existingSong != null)
             {
                 availableSongs.Remove(existingSong);
+                CustomSongsCount--;
             }
             availableSongs.Add(songInfo);
             CustomSongsCount++;

@@ -57,7 +57,7 @@ public class InputFieldController : MonoBehaviour
         }
 
         FocusTracker.Instance.OnFocusChanged.RemoveListener(EditFieldCompleteFromFocus);
-#if !UNITY_EDITOR
+#if UNITY_ANDROID && !UNITY_EDITOR
         _inputField.text = _keyboard.text;
 #endif
         _editFieldCompleted?.Invoke(_inputField.text);

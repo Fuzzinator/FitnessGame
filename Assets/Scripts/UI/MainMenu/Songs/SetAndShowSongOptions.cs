@@ -516,7 +516,7 @@ public class SetAndShowSongOptions : MonoBehaviour
             _currentSongRequestHandle = clipRequest.OperationHandle;
             audioClip = clipRequest.AudioClip;
         }
-        await UniTask.DelayFrame(1, cancellationToken: _cancellationSource.Token).SuppressCancellationThrow();
+        await UniTask.DelayFrame(1).SuppressCancellationThrow();
         if (_cancellationSource.IsCancellationRequested)
         {
             if (_cancellationToken.IsCancellationRequested)
@@ -531,7 +531,7 @@ public class SetAndShowSongOptions : MonoBehaviour
 
         _previewButtonText?.SetTextZeroAlloc(Stop, true);
         _loadingSongPreview = false;
-        await UniTask.WaitUntil(() => _audioSource.isPlaying, cancellationToken: _cancellationSource.Token);
+        await UniTask.WaitUntil(() => _audioSource == null || _audioSource.isPlaying, cancellationToken: _cancellationSource.Token);
 
         if (_cancellationSource.IsCancellationRequested)
         {
@@ -543,7 +543,7 @@ public class SetAndShowSongOptions : MonoBehaviour
             return;
         }
 
-        await UniTask.WaitUntil(() => !_audioSource.isPlaying && FocusTracker.Instance.IsFocused, cancellationToken: _cancellationSource.Token);
+        await UniTask.WaitUntil(() => _audioSource == null || !_audioSource.isPlaying && FocusTracker.Instance.IsFocused, cancellationToken: _cancellationSource.Token);
 
         if (_cancellationToken.IsCancellationRequested)
         {

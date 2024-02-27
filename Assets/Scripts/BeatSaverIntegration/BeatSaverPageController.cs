@@ -481,7 +481,7 @@ public class BeatSaverPageController : MonoBehaviour
         }
         _audioSource.clip = audioClip;
         _audioSource.Play();
-        await UniTask.WaitUntil(() => !_audioSource.isPlaying && FocusTracker.Instance.IsFocused);
+        await UniTask.WaitUntil(() => _audioSource == null || !_audioSource.isPlaying && FocusTracker.Instance.IsFocused);
     }
 
     private async UniTaskVoid DownloadSongAsync()
@@ -500,7 +500,7 @@ public class BeatSaverPageController : MonoBehaviour
         var targetBeatmap = _activeBeatmap;
         _downloadingIds.Add(targetBeatmap.ID);
         var progress = new Progress<double>();
-        var songName = _activeBeatmap.Metadata?.SongSubName ?? _activeBeatmap.Name;
+        var songName = _activeBeatmap.Metadata?.SongName ?? _activeBeatmap.Name;
         var loadingDisplay = _loadingDisplays.DisplayNewLoading(songName);
         if (loadingDisplay != null)
         {
