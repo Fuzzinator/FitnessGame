@@ -15,8 +15,10 @@ namespace UI.Scrollers
 
         public override EnhancedScrollerCellView GetCellView(EnhancedScroller scroller, int dataIndex, int cellIndex)
         {
+            var mp3Name = _availableLocalMP3sUIController.GetMp3Name(dataIndex);
+
             var cellView = base.GetCellView(scroller, dataIndex, cellIndex) as LocalMP3CellView;
-            cellView.SetData(_availableLocalMP3sUIController.GetMP3Info(dataIndex), dataIndex, this);
+            cellView.SetData(mp3Name, _availableLocalMP3sUIController.GetMP3Info(dataIndex), dataIndex, this);
             return cellView;
         }
 

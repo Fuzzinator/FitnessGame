@@ -62,6 +62,13 @@ public class AvailableLocalMP3sUIController : MonoBehaviour
         _scroller.Refresh();
     }
 
+    public string GetMp3Name(int index)
+    {
+        var filePath = AvailableMP3Paths[index];
+        var path = Path.GetFileName(filePath);
+        return path;
+    }
+
     public TagLib.File GetMP3Info(int index)
     {
         var filePath = AvailableMP3Paths[index];

@@ -157,14 +157,22 @@ namespace InfoSaving
             return null;
         }
 
-        public static bool PlaylistKeyExists(string key)
+        public static async UniTask<bool> PlaylistKeyExists(string key, CancellationToken token)
         {
-            return KeyExists(key, PlaylistSettings);
+            await UniTask.WaitWhile(() => _accessingPlaylistRecords, cancellationToken: token);
+            _accessingPlaylistRecords = true;
+            var keyExists = KeyExists(key, PlaylistSettings);
+            _accessingPlaylistRecords = false;
+            return keyExists;
         }
 
-        public static bool SongKeyExists(string key)
+        public static async UniTask<bool> SongKeyExists(string key, CancellationToken token)
         {
-            return KeyExists(key, SongSettings);
+            await UniTask.WaitWhile(() => _accessingSongRecords, cancellationToken: token);
+            _accessingSongRecords = true;
+            var keyExists = KeyExists(key, SongSettings);
+            _accessingSongRecords = false;
+            return keyExists;
         }
 
         private static bool KeyExists(string key, string folder)
@@ -211,7 +219,7 @@ namespace InfoSaving
             if (!string.IsNullOrWhiteSpace(info.SongID))
             {
                 var currentSongName = SongInfoReader.GetFullSongName(info, difficultyEnum, gameMode);
-                var hasRecord = SongKeyExists(currentSongName);
+                var hasRecord = await SongKeyExists(currentSongName, token);
                 if (hasRecord)
                 {
                     try
@@ -242,8 +250,7 @@ namespace InfoSaving
             else
             {
                 var currentSongName = SongInfoReader.GetFullSongNameNoID(info, difficultyEnum, gameMode);
-                var hasRecord = SongKeyExists(currentSongName);
-                if (hasRecord)
+                var hasRecord = await SongKeyExists(currentSongName, token);
                 {
                     try
                     {
@@ -280,10 +287,10 @@ namespace InfoSaving
             if (!string.IsNullOrWhiteSpace(info.SongID))
             {
                 var currentSongScoreName = SongInfoReader.GetFullSongName(info, difficultyEnum, gameMode, SCORE);
-                var hasScoreRecord = SongKeyExists(currentSongScoreName);
+                var hasScoreRecord = await SongKeyExists(currentSongScoreName, token);
 
                 var currentSongStreakName = SongInfoReader.GetFullSongName(info, difficultyEnum, gameMode, STREAK);
-                var hasStreakRecord = SongKeyExists(currentSongStreakName);
+                var hasStreakRecord =await  SongKeyExists(currentSongStreakName, token);
 
                 if (!hasStreakRecord || !hasScoreRecord)
                 {
@@ -403,9 +410,8 @@ namespace InfoSaving
         public static async UniTask<PlaylistRecord[]> TryGetPlaylistRecords(Playlist playlist, CancellationToken token)
         {
             var playlistFullScoreName = $"{playlist.GUID}-{playlist.DifficultyEnum}-{playlist.TargetGameMode}";
-
-            var scoreExists = PlaylistKeyExists(playlistFullScoreName);
-
+            
+            var scoreExists = await PlaylistKeyExists(playlistFullScoreName, token);
 
             if (scoreExists)
             {
@@ -444,10 +450,9 @@ namespace InfoSaving
         {
             var playlistFullScoreName = $"{SCORE}{playlist.GUID}-{playlist.DifficultyEnum}-{playlist.TargetGameMode}";
             var playlistFullStreakName = $"{STREAK}{playlist.GUID}-{playlist.DifficultyEnum}-{playlist.TargetGameMode}";
-
-            var scoreExists = PlaylistKeyExists(playlistFullScoreName);
-            var streakExists = PlaylistKeyExists(playlistFullStreakName);
-
+            
+            var scoreExists = await PlaylistKeyExists(playlistFullScoreName, token);
+            var streakExists = await PlaylistKeyExists(playlistFullStreakName, token);
             var exists = scoreExists && streakExists;
 
             if (exists)
@@ -481,9 +486,9 @@ namespace InfoSaving
         private static async UniTask<SongAndPlaylistRecords> GetOldRecordFromName(SongInfo info, DifficultyEnum difficultyEnum, GameMode gameMode, CancellationToken token, bool deleteNameKeys)
         {
             var currentSongScoreName = SongInfoReader.GetFullSongNameNoID(info, difficultyEnum, gameMode, SCORE);
-            var hasScoreRecord = SongKeyExists(currentSongScoreName);
+            var hasScoreRecord = await SongKeyExists(currentSongScoreName, token);
             var currentSongStreakName = SongInfoReader.GetFullSongNameNoID(info, difficultyEnum, gameMode, STREAK);
-            var hasStreakRecord = SongKeyExists(currentSongStreakName);
+            var hasStreakRecord = await SongKeyExists(currentSongStreakName, token);
 
             var exists = hasScoreRecord && hasStreakRecord;
 

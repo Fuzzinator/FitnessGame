@@ -75,7 +75,7 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
             _currentSongRecordName = PlaylistManager.Instance.GetFullSongName(noID: true);
         }
         _profileBestScoreName = $"{ProfileManager.Instance.ActiveProfile.GUID}-HighScore:{_currentSongRecordName}";
-        if (PlayerStatsFileManager.SongKeyExists(_profileBestScoreName))
+        if (await PlayerStatsFileManager.SongKeyExists(_profileBestScoreName, _cancellationToken))
         {
             _profileBestScore = (SongRecord)await PlayerStatsFileManager.GetSongValue<SongRecord>(_profileBestScoreName, _cancellationToken);
         }
@@ -146,7 +146,7 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
         }
 
         var playlistFullName = $"{playlist.GUID}-{playlist.DifficultyEnum}-{playlist.TargetGameMode}";
-        var recordExists = PlayerStatsFileManager.PlaylistKeyExists(playlistFullName);
+        var recordExists = await PlayerStatsFileManager.PlaylistKeyExists(playlistFullName, _cancellationToken);
         ulong songScore = 0;
         int bestStreak = 0;
         var scoreIndex = -1;
@@ -185,9 +185,9 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
         {
             var playlistFullScoreName = $"{SCORE}{playlist.GUID}-{playlist.DifficultyEnum}-{playlist.TargetGameMode}";
             var playlistFullStreakName = $"{STREAK}{playlist.GUID}-{playlist.DifficultyEnum}-{playlist.TargetGameMode}";
-
-            var scoreExists = PlayerStatsFileManager.PlaylistKeyExists(playlistFullScoreName);
-            var streakExists = PlayerStatsFileManager.PlaylistKeyExists(playlistFullStreakName);
+            var scoreExists = await PlayerStatsFileManager.PlaylistKeyExists(playlistFullScoreName, _cancellationToken);
+            await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
+            var streakExists = await PlayerStatsFileManager.PlaylistKeyExists(playlistFullStreakName, _cancellationToken);
 
             if (!scoreExists && !streakExists)
             {

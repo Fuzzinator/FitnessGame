@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class EnvironmentSelectionLoader : MonoBehaviour
 {
@@ -9,6 +11,14 @@ public class EnvironmentSelectionLoader : MonoBehaviour
         if (EnvironmentControlManager.Instance != null)
         {
             EnvironmentControlManager.Instance.LoadSelection();
+        }
+    }
+
+    public void RevertToDefaultEnvironment()
+    {
+        if (EnvironmentControlManager.Instance != null)
+        {
+            EnvironmentControlManager.Instance.RevertToDefaultEnvironment();
         }
     }
 }

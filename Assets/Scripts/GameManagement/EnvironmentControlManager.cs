@@ -189,12 +189,21 @@ public class EnvironmentControlManager : MonoBehaviour
         LoadSelection();
     }
 
+    public void RevertToDefaultEnvironment()
+    {
+        _targetEnvironmentIndex = GetSceneIndexFromString(string.Empty);
+    }
+
     private int GetSceneIndexFromString(string sceneName)
     {
         var index = 0;
         if (string.IsNullOrWhiteSpace(sceneName))
         {
-            return index;
+            sceneName = SettingsManager.GetSetting("DefaultEnvironment", string.Empty);
+            if (string.IsNullOrWhiteSpace(sceneName))
+            {
+                return index;
+            }
         }
         for (var i = 0; i < _availableEnvironments.Count; i++)
         {

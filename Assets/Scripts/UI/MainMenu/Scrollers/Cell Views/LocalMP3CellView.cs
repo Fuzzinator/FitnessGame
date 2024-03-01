@@ -25,15 +25,15 @@ namespace UI.Scrollers
         private const string SONGINFOFORMAT =
             "<align=left>{0}</style>\n<size=50%>{1}<line-indent=15%>{2}<line-indent=15%>{3}</size></align>";
 
-        public void SetData(TagLib.File tagFile, int index, AvailableLocalMp3sScrollerController controller)
+        public void SetData(string name, TagLib.File tagFile, int index, AvailableLocalMp3sScrollerController controller)
         {
             _index = index;
             _controller = controller;
-            SetText(tagFile);
+            SetText(name, tagFile);
             TrySetImage(tagFile);
         }
 
-        private void SetText(TagLib.File tagFile)
+        private void SetText(string name, TagLib.File tagFile)
         {
             var performersName = "Unknown";
             if (tagFile.Tag.Performers != null && tagFile.Tag.Performers.Length > 0)
@@ -49,7 +49,7 @@ namespace UI.Scrollers
             using (var sb = ZString.CreateStringBuilder(true))
             {
                 sb.AppendFormat(SONGINFOFORMAT,
-                    tagFile.Tag.Title ?? "Unknown Artist",
+                    name,
                     performersName,
                     songLength,
                     tagFile.Tag.Album ?? "Unknown Album");

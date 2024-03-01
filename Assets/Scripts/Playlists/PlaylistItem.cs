@@ -56,7 +56,7 @@ public struct PlaylistItem
         set => _songInfo = value;
     }
 
-    public PlaylistItem(SongInfo songInfo, string difficulty,DifficultyInfo.DifficultyEnum difficultyEnum, GameMode gameMode, bool forceNoObstacles, bool forceOnHanded, bool forceJabsOnly)
+    public PlaylistItem(SongInfo songInfo, string difficulty, DifficultyInfo.DifficultyEnum difficultyEnum, GameMode gameMode, bool forceNoObstacles, bool forceOnHanded, bool forceJabsOnly)
     {
         _songName = songInfo.SongName;
         _fileLocation = songInfo.fileLocation;
@@ -70,7 +70,7 @@ public struct PlaylistItem
         ForceOneHanded = forceOnHanded;
         ForceJabsOnly = forceJabsOnly;
     }
-    
+
     public string Difficulty => _difficulty;
     public DifficultyInfo.DifficultyEnum DifficultyEnum => _difficultyEnum;
 
@@ -109,11 +109,7 @@ public struct PlaylistItem
 
     public bool Equals(PlaylistItem other)
     {
-        if(!string.IsNullOrWhiteSpace(SongID) && !string.IsNullOrWhiteSpace(other.SongID))
-        {
-            return string.Equals(SongID, other.SongID);
-        }
-        return _songName == other._songName && _fileLocation == other._fileLocation && _difficulty == other._difficulty && TargetGameMode == other.TargetGameMode;
+        return _fileLocation == other._fileLocation && _difficulty == other._difficulty && TargetGameMode == other.TargetGameMode;
     }
 
     public override bool Equals(object obj)
@@ -123,6 +119,6 @@ public struct PlaylistItem
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(_songName, _fileLocation, _difficulty);
+        return HashCode.Combine(_songName, _fileLocation, _difficulty, TargetGameMode);
     }
 }

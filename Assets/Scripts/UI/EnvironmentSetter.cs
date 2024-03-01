@@ -11,7 +11,7 @@ namespace UI
                 UpdateDropDownOptions();
                 EnvironmentControlManager.Instance.availableReferencesUpdated.AddListener(UpdateDropDownOptions);
             }
-            
+
             PlaylistManager.Instance.currentPlaylistUpdated.AddListener(UpdatePlaylist);
         }
 
@@ -21,7 +21,7 @@ namespace UI
             {
                 EnvironmentControlManager.Instance.availableReferencesUpdated.RemoveListener(UpdateDropDownOptions);
             }
-            
+
             PlaylistManager.Instance.currentPlaylistUpdated.RemoveListener(UpdatePlaylist);
         }
 
@@ -62,9 +62,13 @@ namespace UI
         {
             if (string.IsNullOrWhiteSpace(optionName))
             {
-                return 0;
+                optionName = SettingsManager.GetSetting("DefaultEnvironment", string.Empty);
+                if (string.IsNullOrWhiteSpace(optionName))
+                {
+                    return 0;
+                }
             }
-            
+
             for (var i = 0; i < _dropdownField.options.Count; i++)
             {
                 var option = _dropdownField.options[i];

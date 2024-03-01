@@ -31,9 +31,10 @@ namespace UI
 
         protected override void UpdateDropDownOptions()
         {
+            var targetLength = GameModeExtensions.DifficultyDisplayNames.Length - 2;
             _dropdownField.options =
-                new List<TMP_Dropdown.OptionData>(GameModeExtensions.DifficultyDisplayNames.Length);
-            for (var i = 0; i < GameModeExtensions.DifficultyDisplayNames.Length; i++)
+                new List<TMP_Dropdown.OptionData>(targetLength);
+            for (var i = 0; i < targetLength; i++)
             {
                 _dropdownField.options.Add(new TMP_Dropdown.OptionData(GameModeExtensions.DifficultyDisplayNames[i]));
                 _dropdownField.RefreshShownValue();
