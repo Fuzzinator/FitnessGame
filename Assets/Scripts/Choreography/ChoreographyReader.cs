@@ -35,6 +35,8 @@ public class ChoreographyReader : MonoBehaviour
     public bool CanSwitchHands => PlaylistManager.Instance.TargetGameMode is not GameMode.OneHanded
         && !PlaylistManager.Instance.ForceOneHanded;
 
+    public float TimeToPoint { get; set; }
+
 
     [Header("Settings")]
     [SerializeField]
@@ -315,10 +317,15 @@ public class ChoreographyReader : MonoBehaviour
 
         var minTargetDistance = _difficultyInfo.MinTargetSpace;
         var minGapToSwapObstacle = minTargetDistance;
+
+        var beatsTime = 60 / SongInfoReader.Instance.BeatsPerMinute;
         for (var i = 0; i < _sequenceables.Count; i++)
         {
             var sequenceable = _sequenceables[i];
-
+            if((sequenceable.Time * beatsTime) -TimeToPoint <= 0)
+            {
+                continue;
+            }
             //Used to determine minimum time between notes and if this current target is far enough apart.
             if (lastTime < sequenceable.Time)
             {

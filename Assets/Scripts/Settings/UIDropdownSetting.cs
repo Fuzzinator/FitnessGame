@@ -7,13 +7,10 @@ public class UIDropdownSetting : MonoBehaviour, ISaver
 {
 
     [SerializeField]
-    private string _settingName;
+    protected string _settingName;
 
     [SerializeField]
     protected string _defaultValue;
-
-    [SerializeField]
-    private bool _cached = false;
 
     [SerializeField]
     protected TMP_Dropdown_XRSupport _dropdown;

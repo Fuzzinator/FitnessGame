@@ -10,6 +10,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 #if UNITY_ANDROID
 using UnityEngine.Android;
+using static UnityEngine.XR.Hands.XRHandSubsystemDescriptor;
 //using System.Net.NetworkInformation;
 #endif
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
@@ -764,7 +765,18 @@ public class AssetManager : MonoBehaviour
 
     public static void GetAssetPathsFromDownloads(string[] extensions, List<string> listOfFiles)
     {
-        var info = new DirectoryInfo(DownloadsPath());
+        EnumerateDirectory(new DirectoryInfo(DownloadsPath()), extensions, listOfFiles);
+#if UNITY_ANDROID
+        var altDownloadsFolder = "/sdcard/Android/data/com.oculus.browser/files/Download";
+        if (Directory.Exists(altDownloadsFolder))
+        {
+            EnumerateDirectory(new DirectoryInfo(altDownloadsFolder), extensions, listOfFiles);
+        }
+#endif
+    }
+
+    private static void EnumerateDirectory(DirectoryInfo info, string[] extensions, List<string> listOfFiles)
+    {
         var files = info.EnumerateFiles();
         foreach (var file in files)
         {
@@ -778,12 +790,18 @@ public class AssetManager : MonoBehaviour
                 if (string.Equals(file.Extension, extension, StringComparison.InvariantCultureIgnoreCase))
                 {
                     var fullName = file.FullName.Replace('\\', '/');
-                    if (!listOfFiles.Contains(fullName))
+                    if (!listOfFiles.Contains(fullName) && !listOfFiles.Contains(fullName))
                     {
                         listOfFiles.Add(fullName);
                     }
                 }
             }
+        }
+
+        var directories = info.EnumerateDirectories();
+        foreach (var directory in directories)
+        {            
+            EnumerateDirectory(directory, extensions, listOfFiles);
         }
     }
 }

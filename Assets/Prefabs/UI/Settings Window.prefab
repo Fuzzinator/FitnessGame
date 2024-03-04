@@ -140,9 +140,9 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UI.EnvironmentSetter, Assembly-CSharp
-        m_MethodName: SetDropdownOption
+      - m_Target: {fileID: 6939288550617509156}
+        m_TargetAssemblyTypeName: UIDropdownSetting, Assembly-CSharp
+        m_MethodName: DropdownSet
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -478,7 +478,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _settingName: DefaultEnvironment
   _defaultValue: 
-  _cached: 0
   _dropdown: {fileID: 6169443912880756481}
   _settingsDisplay: {fileID: 8478822547246551205}
   _profileEditor: {fileID: 0}

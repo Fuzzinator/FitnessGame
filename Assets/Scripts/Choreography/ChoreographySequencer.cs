@@ -235,6 +235,10 @@ public class ChoreographySequencer : MonoBehaviour
             return;
         }
 
+        var tweenSpeed = SongInfoReader.Instance.NoteSpeed / _meterDistance * 10;
+        var timeToPoint = _optimalPointDistance / tweenSpeed;
+
+        ChoreographyReader.Instance.TimeToPoint = timeToPoint;
         var formations = ChoreographyReader.Instance.GetOrderedFormations();
         if (formations == null || formations.Count <= 0)
         {

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,5 +21,28 @@ public class UIDefaultEnvironmentSetting : UIDropdownSetting
         var listOfOptions = EnvironmentControlManager.Instance.GetNewAvailableEnvironmentsList();
         _dropdown.ClearOptions();
         _dropdown.AddOptions(listOfOptions);
+        var index = GetSettingIndex();
+    }
+
+    private int GetSettingIndex()
+    {
+        if (string.IsNullOrWhiteSpace(_defaultValue))
+        {
+            _defaultValue = SettingsManager.GetSetting(_settingName, string.Empty);
+            if (string.IsNullOrWhiteSpace(_defaultValue))
+            {
+                return 0;
+            }
+        }
+
+        for (var i = 0; i < _dropdown.options.Count; i++)
+        {
+            var option = _dropdown.options[i];
+            if (string.Equals(option.text, _defaultValue, StringComparison.InvariantCultureIgnoreCase))
+            {
+                return i;
+            }
+        }
+        return 0;
     }
 }

@@ -251,6 +251,7 @@ namespace InfoSaving
             {
                 var currentSongName = SongInfoReader.GetFullSongNameNoID(info, difficultyEnum, gameMode);
                 var hasRecord = await SongKeyExists(currentSongName, token);
+                if (hasRecord)
                 {
                     try
                     {
