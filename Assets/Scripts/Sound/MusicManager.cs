@@ -219,7 +219,7 @@ public class MusicManager : BaseGameStateListener
     {
         switch (oldState)
         {
-            case GameState.Paused when newState == GameState.Playing:
+            case GameState.PreparingToPlay when newState == GameState.Playing:
                 ToggleMusic(true);
                 break;
             case GameState.Playing when (newState == GameState.Paused || newState == GameState.Unfocused):

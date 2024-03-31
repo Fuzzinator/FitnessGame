@@ -32,6 +32,7 @@ public class XRRig_UIInteraction : BaseGameStateListener
                 break;
             case GameState.Playing:
             case GameState.InMainMenu:
+            case GameState.PreparingToPlay:
                 SetInteractionState(false);
                 break;
         }

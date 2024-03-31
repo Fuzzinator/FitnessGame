@@ -56,6 +56,7 @@ public class PauseMenuUIController : BaseGameStateListener
                 break;
             case GameState.Playing:
             case GameState.InMainMenu:
+            case GameState.PreparingToPlay:
                 DisableUI();
                 break;
         }

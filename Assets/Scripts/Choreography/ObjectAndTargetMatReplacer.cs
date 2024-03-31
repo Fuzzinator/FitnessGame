@@ -38,17 +38,17 @@ public class ObjectAndTargetMatReplacer : BaseGameStateListener
         _renderers.Clear();
         _rendererMatSet.Clear();
     }
-    
+
     private void AddRendererSet(BaseTarget target)
     {
         AddRenderers(target?.RendererSetter?.Renderers);
     }
-    
+
     private void AddRendererSet(BaseObstacle obstacle)
     {
         AddRenderers(obstacle?.RendererSetter?.Renderers);
     }
-    
+
     private void AddRenderers(Renderer[] renderers)
     {
         if (renderers != null)
@@ -60,15 +60,15 @@ public class ObjectAndTargetMatReplacer : BaseGameStateListener
             _renderers.AddRange(renderers);
         }
     }
-    
+
     private void RemoveRendererSet(BaseTarget target)
     {
         RemoveRenderers(target?.RendererSetter?.Renderers);
     }
-    
+
     private void RemoveRendererSet(BaseObstacle obstacle)
     {
-       RemoveRenderers(obstacle?.RendererSetter?.Renderers);
+        RemoveRenderers(obstacle?.RendererSetter?.Renderers);
     }
 
     private void RemoveRenderers(Renderer[] renderers)
@@ -87,24 +87,25 @@ public class ObjectAndTargetMatReplacer : BaseGameStateListener
             }
         }
     }
-    
+
     protected override void GameStateListener(GameState oldState, GameState newState)
     {
-       switch(newState)
-       {
-           case GameState.InMainMenu:
-           case GameState.Playing:
-               ResetMaterials();
-               break;
-           
-           case GameState.Entry:
-           case GameState.Paused:
-           case GameState.Unfocused:
-               ReplaceMaterials();
-               break;
-           default:
-               throw new ArgumentOutOfRangeException(nameof(newState), newState, null);
-       }
+        switch (newState)
+        {
+            case GameState.InMainMenu:
+            case GameState.Playing:
+            case GameState.PreparingToPlay:
+                ResetMaterials();
+                break;
+
+            case GameState.Entry:
+            case GameState.Paused:
+            case GameState.Unfocused:
+                ReplaceMaterials();
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(newState), newState, null);
+        }
     }
 
     private void ResetMaterials()

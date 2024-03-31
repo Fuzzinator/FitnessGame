@@ -57,7 +57,7 @@ public class GameManager : MonoBehaviour
             PauseGame();
         }
         else if ((newState == GameState.Playing || newState == GameState.InMainMenu) &&
-                 (oldState == GameState.Paused || oldState == GameState.Unfocused))
+                 (oldState == GameState.PreparingToPlay || oldState == GameState.Unfocused || oldState == GameState.Paused))
         {
             ResumeGame();
         }

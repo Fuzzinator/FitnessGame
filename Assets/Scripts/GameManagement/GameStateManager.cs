@@ -1,6 +1,8 @@
+using Cysharp.Threading.Tasks;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -16,7 +18,9 @@ public class GameStateManager : MonoBehaviour
     [SerializeField]
     private GameState _gameState = GameState.Entry;
     private GameState _previousGameState = GameState.Entry;
-    
+    private CancellationTokenSource _tokenSource;
+    private CancellationToken _onDestroyToken;
+
     #region Const Strings
     private const string MenuButtonAll = "Menu Button All";
     private const string MenuButtonMeta = "Menu Button Quest";
@@ -32,6 +36,15 @@ public class GameStateManager : MonoBehaviour
                 _previousGameState = _gameState;
                 _gameState = value;
                 gameStateChanged?.Invoke(_previousGameState, _gameState);
+                if(value == GameState.PreparingToPlay)
+                {
+                    TransitionToPlaying().Forget();
+                }
+                else
+                {
+                    _tokenSource.Cancel();
+                    RefreshToken();
+                }
             }
         }
     }
@@ -59,7 +72,10 @@ public class GameStateManager : MonoBehaviour
                 FocusTracker.Instance.OnFocusChanged.AddListener(ManageFocusState);
             }
         }
+        _onDestroyToken = this.GetCancellationTokenOnDestroy();
+        _tokenSource = CancellationTokenSource.CreateLinkedTokenSource(_onDestroyToken);
     }
+
     private void OnDisable()
     {
         if (InputManager.Instance != null && InputManager.Instance.MainInput != null)
@@ -75,17 +91,33 @@ public class GameStateManager : MonoBehaviour
 
     private void TryTogglePlayPauseState(InputAction.CallbackContext context)
     {
-        if (_gameState != GameState.Paused && _gameState != GameState.Playing)
+        if (_gameState != GameState.Paused && _gameState != GameState.Playing && _gameState != GameState.PreparingToPlay)
         {
             return;
         }
 
-        CurrentGameState = _gameState switch
+        switch(_gameState)
         {
-            GameState.Playing => GameState.Paused,
-            GameState.Paused => GameState.Playing,
-            _ => CurrentGameState
-        };
+            case GameState.Paused:
+                CurrentGameState = GameState.PreparingToPlay;
+                break;
+            case GameState.Playing:
+                CurrentGameState = GameState.Paused;
+                break;
+            case GameState.PreparingToPlay:
+                CurrentGameState = GameState.Paused;
+                break;
+        }
+    }
+
+    private async UniTask TransitionToPlaying()
+    {
+        await UniTask.Delay(TimeSpan.FromSeconds(3), ignoreTimeScale: true, cancellationToken:_tokenSource.Token);
+        if(_tokenSource.IsCancellationRequested || _gameState != GameState.PreparingToPlay)
+        {
+            return;
+        }
+        CurrentGameState = GameState.Playing;
     }
 
     private void ManageFocusState(bool currentlyFocused)
@@ -119,6 +151,16 @@ public class GameStateManager : MonoBehaviour
 #else
         return MenuButtonAll;
 #endif
+    }
+
+    private async UniTaskVoid RefreshToken()
+    {
+        await UniTask.DelayFrame(2);
+        if(_tokenSource != null && !_onDestroyToken.IsCancellationRequested)
+        {
+            _tokenSource.Dispose();
+            _tokenSource = CancellationTokenSource.CreateLinkedTokenSource(_onDestroyToken);
+        }
     }
 }
 [Serializable]

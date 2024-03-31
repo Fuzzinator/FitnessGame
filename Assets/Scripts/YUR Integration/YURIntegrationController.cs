@@ -52,7 +52,8 @@ public sealed class YURIntegrationController : BaseGameStateListener
         {
             case GameState.Entry:
                 break;
-            case GameState.Playing:                
+            case GameState.Playing:
+            case GameState.PreparingToPlay:
                 SetWatchState(useYUR && YURWatch.IsConnected());
                 break;
             case GameState.InMainMenu:

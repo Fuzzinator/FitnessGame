@@ -159,6 +159,7 @@ public class Hand : BaseGameStateListener
                 break;
             case GameState.Playing:
             case GameState.InMainMenu:
+            case GameState.PreparingToPlay:
                 _trackingPaused = false;
                 break;
         }

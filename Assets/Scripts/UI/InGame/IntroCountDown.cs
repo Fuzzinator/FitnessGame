@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class IntroCountDown : MonoBehaviour
+public class IntroCountDown : BaseGameStateListener
 {
    [SerializeField]
    private Animator _animator;
@@ -49,4 +49,16 @@ public class IntroCountDown : MonoBehaviour
       _animator.enabled = false;
       _canvas.enabled = false;
    }
+
+    protected override void GameStateListener(GameState oldState, GameState newState)
+    {
+        if(oldState == GameState.Playing && newState == GameState.Paused || newState == GameState.Unfocused)
+        {
+            CountDownFinished();
+        }
+        if(oldState == GameState.Paused && newState == GameState.PreparingToPlay)
+        {
+            StartCountDown(3);
+        }
+    }
 }

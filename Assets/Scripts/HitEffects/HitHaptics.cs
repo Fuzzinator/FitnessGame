@@ -7,7 +7,11 @@ using UnityEngine.UIElements;
 public class HitHaptics : MonoBehaviour, IValidHit//, IBadHit
 {
     //[SerializeField]
+#if UNITY_ANDROID
     private float _amplitude = .4f;
+#else
+    private float _amplitude = 1f;
+#endif
     [SerializeField]
     private float _effectLength = .15f;
 

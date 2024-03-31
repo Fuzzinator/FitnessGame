@@ -167,7 +167,7 @@ public class SoundManager : BaseGameStateListener
 
     protected override void GameStateListener(GameState oldState, GameState newState)
     {
-        if (oldState == GameState.Paused && newState == GameState.Playing)
+        if (oldState == GameState.PreparingToPlay && newState == GameState.Playing)
         {
             foreach (SoundObject soundObject in _activeSoundObjects)
             {

@@ -67,7 +67,7 @@ public class TrackWorkoutTime : BaseGameStateListener
     {
         switch (oldState)
         {
-            case GameState.Paused when newState == GameState.Playing:
+            case GameState.PreparingToPlay when newState == GameState.Playing:
                 _inPlayMode = true;
                 TryToggleTracker(true);
                 break;

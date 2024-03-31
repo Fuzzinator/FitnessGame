@@ -100,6 +100,7 @@ public class MainMenuUIController : BaseGameStateListener
                 break;
             case GameState.Playing:
             case GameState.InMainMenu:
+            case GameState.PreparingToPlay:
                 RequestEnableUI(this);
                 break;
         }
