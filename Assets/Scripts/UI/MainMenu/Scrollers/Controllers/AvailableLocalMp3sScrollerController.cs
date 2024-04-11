@@ -10,15 +10,15 @@ namespace UI.Scrollers
 
         public override int GetNumberOfCells(EnhancedScroller scroller)
         {
-            return _availableLocalMP3sUIController.AvailableMP3Paths.Count;
+            return LocalMP3sManager.AvailableMP3Paths.Count;
         }
 
         public override EnhancedScrollerCellView GetCellView(EnhancedScroller scroller, int dataIndex, int cellIndex)
         {
-            var mp3Name = _availableLocalMP3sUIController.GetMp3Name(dataIndex);
+            var mp3Name = LocalMP3sManager.GetMp3Name(dataIndex);
 
             var cellView = base.GetCellView(scroller, dataIndex, cellIndex) as LocalMP3CellView;
-            cellView.SetData(mp3Name, _availableLocalMP3sUIController.GetMP3Info(dataIndex), dataIndex, this);
+            cellView.SetData(mp3Name, LocalMP3sManager.GetMP3Info(dataIndex), dataIndex, this);
             return cellView;
         }
 

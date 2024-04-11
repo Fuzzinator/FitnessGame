@@ -120,6 +120,13 @@ namespace InfoSaving
                 {
                     return false;
                 }
+                else if (e is InvalidCastException)
+                {
+
+                    AzureSqlManager.Instance.TrySendErrorReport($"Encountered error setting setting \"{key}\" reported error is: {e.Message}", e.StackTrace);
+                    ES3.DeleteKey(key, settings);
+                    await SetValue(key, value, settings, token);
+                }
 
                 Debug.LogError(e);
                 return false;
@@ -206,7 +213,6 @@ namespace InfoSaving
         {
             ES3.DeleteKey(key, SongFolder);
         }
-
 
         public static void DeletePlaylistKey(string key)
         {

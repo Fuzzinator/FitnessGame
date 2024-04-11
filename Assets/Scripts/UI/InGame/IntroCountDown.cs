@@ -52,7 +52,7 @@ public class IntroCountDown : BaseGameStateListener
 
     protected override void GameStateListener(GameState oldState, GameState newState)
     {
-        if(oldState == GameState.Playing && newState == GameState.Paused || newState == GameState.Unfocused)
+        if((oldState == GameState.Playing || oldState == GameState.PreparingToPlay) && newState == GameState.Paused || newState == GameState.Unfocused)
         {
             CountDownFinished();
         }

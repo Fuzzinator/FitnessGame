@@ -173,7 +173,7 @@ public class PlaylistCountdownClock : MonoBehaviour
 
     private void GameStateListener(GameState oldState, GameState newState)
     {
-        if (oldState == GameState.Paused && newState == GameState.Playing)
+        if ((oldState == GameState.Paused || oldState == GameState.PreparingToPlay) && newState == GameState.Playing)
         {
             ToggleClockPaused(false);
         }

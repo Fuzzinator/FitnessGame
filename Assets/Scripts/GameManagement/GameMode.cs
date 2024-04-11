@@ -34,6 +34,7 @@ namespace GameModeManagement
         private const string LEGDAY = "LegDay";
         private const string NOOBSTACLES = "NoObstacles";
         private const string LAWLESS = "Lawless";
+        private const string LEGACY = "Legacy";
         
         private const string DISPLAYUNSET = "Default";
         private const string DISPLAYNORMAL = "Standard";
@@ -95,6 +96,7 @@ namespace GameModeManagement
                     gameMode = GameMode.Unset;
                     break;
                 case true when NORMAL.Equals(gameModeName, StringComparison.InvariantCultureIgnoreCase):
+                case true when LEGACY.Equals(gameModeName, StringComparison.InvariantCultureIgnoreCase):
                     gameMode = GameMode.Normal;
                     break;
                 case true when JABSONLY.Equals(gameModeName, StringComparison.InvariantCultureIgnoreCase):

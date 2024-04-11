@@ -36,7 +36,7 @@ public class CustomPlaylistsManager : MonoBehaviour
         var playlist = PlaylistManager.Instance.CurrentPlaylist.PlaylistName;
         var deleteVisuals = new Notification.NotificationVisuals(
             $"Are you sure you would like to permanently delete {playlist}?",
-            "Delete Song?", "Confirm", "Cancel");
+            "Delete Workout?", "Confirm", "Cancel");
 
         NotificationManager.RequestNotification(deleteVisuals, () => DeleteActivePlaylist());
     }

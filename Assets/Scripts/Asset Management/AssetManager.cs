@@ -53,6 +53,7 @@ public class AssetManager : MonoBehaviour
 #if UNITY_ANDROID
     private const string ANDROIDPATHSTART = "file://";
     private const string DownloadsFolder = "/sdcard/Download/";
+    private const string RootFolder = "/sdcard";
 #endif
 
 
@@ -72,6 +73,7 @@ public class AssetManager : MonoBehaviour
 
     private const string SONGINFONAME = "Info.txt";
     private const string ALTSONGINFONAME = "Info.dat";
+    private const string LocalSongsFolderName = "/ShadowBoXR-Songs";
 
     #endregion
 
@@ -121,6 +123,15 @@ public class AssetManager : MonoBehaviour
             Application.dataPath;
 #endif
     }
+
+    private static string GetAutoConvertSongsPath()
+    {
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN
+        return $"{Application.dataPath}{LocalSongsFolderName}";
+#elif UNITY_ANDROID
+        return $"{RootFolder}{LocalSongsFolderName}";
+#endif
+}
 
     public static bool CheckPermissions()
     {
@@ -763,16 +774,20 @@ public class AssetManager : MonoBehaviour
         streamWriter.Close();
     }
 
+    public static void GetAssetPathsFromAutoConvert(string[] extensions, List<string> listOfFiles)
+    {
+        var rootFolder = GetAutoConvertSongsPath();
+        if(!Directory.Exists(rootFolder))
+        {
+            Directory.CreateDirectory(rootFolder);
+            return;
+        }
+        EnumerateDirectory(new DirectoryInfo(rootFolder), extensions, listOfFiles);
+    }
+
     public static void GetAssetPathsFromDownloads(string[] extensions, List<string> listOfFiles)
     {
         EnumerateDirectory(new DirectoryInfo(DownloadsPath()), extensions, listOfFiles);
-#if UNITY_ANDROID
-        var altDownloadsFolder = "/sdcard/Android/data/com.oculus.browser/files/Download";
-        if (Directory.Exists(altDownloadsFolder))
-        {
-            EnumerateDirectory(new DirectoryInfo(altDownloadsFolder), extensions, listOfFiles);
-        }
-#endif
     }
 
     private static void EnumerateDirectory(DirectoryInfo info, string[] extensions, List<string> listOfFiles)
@@ -803,6 +818,28 @@ public class AssetManager : MonoBehaviour
         {            
             EnumerateDirectory(directory, extensions, listOfFiles);
         }
+    }
+
+    public static async UniTask<TagLib.File> GetTagLib(SongInfo info, CancellationToken cancellationToken)
+    {
+        if (!CheckPermissions())
+        {
+            Debug.LogWarning("User did not give permissions cannot access custom files");
+            return null;
+        }
+#if UNITY_EDITOR
+        var path = $"{SongsPath}{info.fileLocation}/{info.SongFilename}";
+#else
+#if UNITY_ANDROID
+            var path =
+            $"{ANDROIDPATHSTART}{SongsPath}{info.fileLocation}/{info.SongFilename}";
+#elif UNITY_STANDALONE_WIN
+            var path = $"{SongsPath}{info.fileLocation}/{info.SongFilename}";
+#endif
+
+#endif
+
+        return TagLib.File.Create(path);
     }
 }
 

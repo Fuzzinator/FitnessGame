@@ -21,9 +21,6 @@ public class AvailableLocalMP3sUIController : MonoBehaviour
     private CancellationToken _cancellationToken;
     private CancellationTokenSource _cancellationSource;
 
-    public List<string> AvailableMP3Paths { get; private set; }
-
-    private readonly string[] _mp3Extension = { ".mp3" };
 
     private void OnEnable()
     {
@@ -50,45 +47,13 @@ public class AvailableLocalMP3sUIController : MonoBehaviour
 
     public void UpdateAvailableMp3s()
     {
-        if (AvailableMP3Paths == null)
-        {
-            AvailableMP3Paths = CollectionPool<List<string>, string>.Get();
-        }
-        else
-        {
-            AvailableMP3Paths.Clear();
-        }
-        AssetManager.GetAssetPathsFromDownloads(_mp3Extension, AvailableMP3Paths);
+        LocalMP3sManager.UpdateAvailableMp3s();
         _scroller.Refresh();
-    }
-
-    public string GetMp3Name(int index)
-    {
-        var filePath = AvailableMP3Paths[index];
-        var path = Path.GetFileName(filePath);
-        return path;
-    }
-
-    public TagLib.File GetMP3Info(int index)
-    {
-        var filePath = AvailableMP3Paths[index];
-        var file = TagLib.File.Create(filePath);
-        return file;
     }
 
     public void TryConvertSong(int index)
     {
-        if (GameManager.Instance.DemoMode && BeatSageDownloadManager.Downloads.Count + SongInfoFilesReader.Instance.CustomSongsCount >= GameManager.DemoModeMaxCustomSongs)
-        {
-            var visuals = new Notification.NotificationVisuals(
-                        $"Cannot convert song. The maximum number of custom songs in this demo is {GameManager.DemoModeMaxCustomSongs}. To have more custom songs, please consider buying the full game.",
-                        "Demo Mode", autoTimeOutTime: 5f, button1Txt: "Okay");
-            NotificationManager.RequestNotification(visuals);
-            return;
-        }
-        var path = AvailableMP3Paths[index];
-        var songName = Path.GetFileName(path);
-        var download = BeatSageDownloadManager.TryAddDownload(songName, path);
+        var songName = LocalMP3sManager.TryConvertSong(index, out var download);
         if(download == null)
         {
             return;
@@ -143,7 +108,7 @@ public class AvailableLocalMP3sUIController : MonoBehaviour
 
         _loadingSongPreview = true;
 
-        var path = AvailableMP3Paths[index];
+        var path = LocalMP3sManager.AvailableMP3Paths[index];
         audioClip = await AssetManager.LoadCustomSong($"file://{path}", _cancellationSource.Token, AudioType.MPEG, false);
 
 

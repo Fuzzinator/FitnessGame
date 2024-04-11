@@ -12,7 +12,7 @@ using UnityEngine.UI;
 using UI.Scrollers.BeatsaverIntegraton;
 using UnityEngine.Serialization;
 using EnhancedUI.EnhancedScroller;
-using UnityEngine.UIElements.Experimental;
+using System.IO;
 
 public class BeatSaverPageController : MonoBehaviour
 {
@@ -287,7 +287,7 @@ public class BeatSaverPageController : MonoBehaviour
         MoveBackwardAsync(scrollValue).Forget();
     }
 
-    private async UniTaskVoid RequestLatestAsync()
+    private async UniTask RequestLatestAsync()
     {
         await RefreshToken();
 
@@ -346,6 +346,11 @@ public class BeatSaverPageController : MonoBehaviour
         {
             _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_token);
         }
+        if (_activePage == null)
+        {
+            await RequestLatestAsync();
+            return;
+        }
         _nextPage = await _activePage.Next(_cancellationTokenSource.Token, _loadingProgressObj.ProgressDisplay);
 
         if (_activePage == null || !setData)
@@ -366,6 +371,11 @@ public class BeatSaverPageController : MonoBehaviour
         if (_cancellationTokenSource == null)
         {
             _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_token);
+        }
+        if(_activePage == null)
+        {
+            await RequestLatestAsync();
+            return;
         }
         _activePage = await _activePage.Previous(_cancellationTokenSource.Token, _loadingProgressObj.ProgressDisplay);
 
@@ -512,6 +522,56 @@ public class BeatSaverPageController : MonoBehaviour
             await RefreshDownloadsToken();
         }
         byte[] songBytes = null;
+        await DownloadZip(songBytes, progress, targetBeatmap, loadingDisplay, activeCell);
+
+        if (songBytes == null || _downloadsTokenSource.IsCancellationRequested)
+        {
+            var visuals = new Notification.NotificationVisuals($"Failed to download {targetBeatmap.Name}", "Download failed.", autoTimeOutTime: 1f, popUp: true);
+            NotificationManager.RequestNotification(visuals);
+            Debug.LogError("Download Failed");
+            return;
+        }
+
+        await UniTask.DelayFrame(1);
+        if(_cancellationTokenSource == null || _cancellationTokenSource.IsCancellationRequested)
+        {
+            return;
+        }
+        try
+        {
+            if(Directory.Exists(folderName))
+            {
+                Directory.Delete(folderName, true);
+            }
+            ZipFileManagement.ExtractAndSaveZippedSong(folderName, songBytes);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"{folderName} cant be saved might have illegal characters {ex.Message} -- {ex.StackTrace}");
+        }
+        await UniTask.DelayFrame(1);
+        await UniTask.SwitchToMainThread(_downloadsTokenSource.Token);
+        _downloadingIds.Remove(targetBeatmap.ID);
+        if (targetBeatmap.ID == _activeBeatmap.ID)
+        {
+            _downloadButton.interactable = true;
+        }
+        activeCell.SetDownloaded(true);
+
+        //TODO: Need to remove the existing song if a duplicate exists in the SongInfoFilesReader
+        var score = 0f;
+        if(targetBeatmap.Stats != null)
+        {
+            score = targetBeatmap.Stats.Score;
+        }
+        await SongInfoFilesReader.Instance.LoadNewSong(folderName, targetBeatmap.ID, score);
+
+        PlaylistFilesReader.Instance.RefreshPlaylistsValidStates().Forget();
+        UpdateUI().Forget();
+    }
+
+    private async UniTask DownloadZip(byte[] songBytes, Progress<double> progress, Beatmap targetBeatmap, LoadingDisplay loadingDisplay, BeatSaverSongCellView activeCell)
+    {
         try
         {
             if (_downloadsTokenSource == null)
@@ -541,39 +601,11 @@ public class BeatSaverPageController : MonoBehaviour
                 });
                 return;
             }
+            else
+            {
+                Debug.LogError(ex);
+            }
         }
-
-        if (songBytes == null || _downloadsTokenSource.IsCancellationRequested)
-        {
-            var visuals = new Notification.NotificationVisuals($"Failed to download {targetBeatmap.Name}", "Download failed.", autoTimeOutTime: 1f, popUp: true);
-            NotificationManager.RequestNotification(visuals);
-            Debug.LogError("Download Failed");
-            return;
-        }
-
-        await UniTask.DelayFrame(1);
-        try
-        {
-            ZipFileManagement.ExtractAndSaveZippedSong(folderName, songBytes);
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"{folderName} cant be saved might have illegal characters {ex.Message} -- {ex.StackTrace}");
-        }
-        await UniTask.DelayFrame(1);
-        await UniTask.SwitchToMainThread(_downloadsTokenSource.Token);
-        _downloadingIds.Remove(targetBeatmap.ID);
-        if (targetBeatmap.ID == _activeBeatmap.ID)
-        {
-            _downloadButton.interactable = true;
-        }
-        activeCell.SetDownloaded(true);
-
-        //TODO: Need to remove the existing song if a duplicate exists in the SongInfoFilesReader
-        await SongInfoFilesReader.Instance.LoadNewSong(folderName, targetBeatmap.ID, targetBeatmap.Stats.Score);
-
-        PlaylistFilesReader.Instance.RefreshPlaylistsValidStates().Forget();
-        UpdateUI().Forget();
     }
 
     #endregion

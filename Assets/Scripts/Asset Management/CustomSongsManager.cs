@@ -21,7 +21,11 @@ public static class CustomSongsManager
             {
                 if (!token.IsCancellationRequested)
                 {
-                    Debug.LogError($"Failed to load {info.SongName}");
+                    ErrorReporter.SetSuppressed(true, true);
+                    Debug.LogError($"Failed to load {info.SongName}. SongID is: {info.SongID}. File location is {info.fileLocation}");
+                    ErrorReporter.SetSuppressed(false);
+                    var visuals = new Notification.NotificationVisuals($"The song {info.SongName} has failed to load it's information and may be corrupted. Re-downloadingmay resolve this issue.", "Failed Loading Song Info", "Okay");
+                    NotificationManager.RequestNotification(visuals);
                 }
 
                 return 0;
