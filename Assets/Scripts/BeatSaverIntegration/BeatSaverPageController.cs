@@ -372,7 +372,7 @@ public class BeatSaverPageController : MonoBehaviour
         {
             _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_token);
         }
-        if(_activePage == null)
+        if (_activePage == null)
         {
             await RequestLatestAsync();
             return;
@@ -455,7 +455,7 @@ public class BeatSaverPageController : MonoBehaviour
 
     private async UniTaskVoid PlaySongAudioAsync()
     {
-        if(_audioSource == null)
+        if (_audioSource == null)
         {
             return;
         }
@@ -485,7 +485,7 @@ public class BeatSaverPageController : MonoBehaviour
         }
 
         await UniTask.DelayFrame(1);
-        if( _audioSource == null )
+        if (_audioSource == null)
         {
             return;
         }
@@ -521,8 +521,7 @@ public class BeatSaverPageController : MonoBehaviour
         {
             await RefreshDownloadsToken();
         }
-        byte[] songBytes = null;
-        await DownloadZip(songBytes, progress, targetBeatmap, loadingDisplay, activeCell);
+        byte[] songBytes = await DownloadZip(progress, targetBeatmap, loadingDisplay, activeCell);
 
         if (songBytes == null || _downloadsTokenSource.IsCancellationRequested)
         {
@@ -533,13 +532,13 @@ public class BeatSaverPageController : MonoBehaviour
         }
 
         await UniTask.DelayFrame(1);
-        if(_cancellationTokenSource == null || _cancellationTokenSource.IsCancellationRequested)
+        if (_cancellationTokenSource == null || _cancellationTokenSource.IsCancellationRequested)
         {
             return;
         }
         try
         {
-            if(Directory.Exists(folderName))
+            if (Directory.Exists(folderName))
             {
                 Directory.Delete(folderName, true);
             }
@@ -560,7 +559,7 @@ public class BeatSaverPageController : MonoBehaviour
 
         //TODO: Need to remove the existing song if a duplicate exists in the SongInfoFilesReader
         var score = 0f;
-        if(targetBeatmap.Stats != null)
+        if (targetBeatmap.Stats != null)
         {
             score = targetBeatmap.Stats.Score;
         }
@@ -570,7 +569,7 @@ public class BeatSaverPageController : MonoBehaviour
         UpdateUI().Forget();
     }
 
-    private async UniTask DownloadZip(byte[] songBytes, Progress<double> progress, Beatmap targetBeatmap, LoadingDisplay loadingDisplay, BeatSaverSongCellView activeCell)
+    private async UniTask<byte[]> DownloadZip(Progress<double> progress, Beatmap targetBeatmap, LoadingDisplay loadingDisplay, BeatSaverSongCellView activeCell)
     {
         try
         {
@@ -578,7 +577,8 @@ public class BeatSaverPageController : MonoBehaviour
             {
                 _downloadsTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_token);
             }
-            songBytes = await _activeBeatmap.LatestVersion.DownloadZIP(_downloadsTokenSource.Token, progress);
+            var songBytes = await _activeBeatmap.LatestVersion.DownloadZIP(_downloadsTokenSource.Token, progress);
+            return songBytes;
         }
         catch (Exception ex)
         {
@@ -586,7 +586,7 @@ public class BeatSaverPageController : MonoBehaviour
             {
                 if (targetBeatmap == null)
                 {
-                    return;
+                    return null;
                 }
 
                 _downloadingIds.Remove(targetBeatmap.ID);
@@ -599,13 +599,14 @@ public class BeatSaverPageController : MonoBehaviour
                     _activeBeatmap = targetBeatmap;
                     DownloadSongAsync().Forget();
                 });
-                return;
+                return null;
             }
             else
             {
                 Debug.LogError(ex);
             }
         }
+        return null;
     }
 
     #endregion

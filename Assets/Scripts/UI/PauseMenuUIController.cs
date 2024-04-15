@@ -92,7 +92,7 @@ public class PauseMenuUIController : BaseGameStateListener
 
     public void StartReturnToMainMenu()
     {
-        ResumeGame();
+        GameStateManager.Instance.SetState(GameState.Playing);
         PlaylistManager.Instance.FullReset();
         _transitionController.RequestTransition();
     }

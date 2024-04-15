@@ -35,13 +35,13 @@ public class ActiveSceneManager : MonoBehaviour
 
     private void Start()
     {
+            LoadMainMenu();
         if (GameManager.Instance.VRMode)
         {
-            LoadMainMenu();
         }
         else
         {
-            LoadNonVRMainMenu();
+            //LoadNonVRMainMenu();
         }
     }
 

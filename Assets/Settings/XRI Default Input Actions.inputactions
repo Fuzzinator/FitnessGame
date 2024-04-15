@@ -1514,6 +1514,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "FollowCamera",
+                    "type": "Button",
+                    "id": "279d5342-0004-4a95-a4d8-a0a957a86e0c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -1712,6 +1721,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Right Joystick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f4287192-4bb0-4e13-99ed-a104cf2312ac",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FollowCamera",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

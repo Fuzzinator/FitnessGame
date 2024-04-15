@@ -129,14 +129,12 @@ public class BeatSageDownloadManager
         download.Artist = artistName;
         download.Title = trackName;
 
-        string fileName = "[BSD] " + trackName + " - " + artistName;
-
-        byte[] bytes = File.ReadAllBytes(download.FilePath);
+        var bytes = File.ReadAllBytes(download.FilePath);
 
         //Update displayed progress
         download.Progress = 0.2;
 
-        string boundary = "----WebKitFormBoundaryaA38RFcmCeKFPOms";
+        var boundary = "----WebKitFormBoundaryaA38RFcmCeKFPOms";
         var content = new MultipartFormDataContent(boundary);
 
         content.Add(new ByteArrayContent(bytes), "audio_file", download.FileName);

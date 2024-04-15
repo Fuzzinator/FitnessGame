@@ -6,7 +6,7 @@ using UnityEngine;
 public static class StringExtensions
 {
     private static string[] _escapeCharacters = new[] { "\'", "\n", "\r", "\t", "\b", "\f", "\\uxxxx", "\u0041" };
-    private static string[] _illegalCharacters = new[] {":", "*", "?", "\"", "<", ">", "|", "/", ".", "”", "\\"};
+    private static string[] _illegalCharacters = new[] {":", "*", "?", "\"", "<", ">", "|", "/", ".", "”", "\\", "+"};
     
     public static string RemoveIllegalIOCharacters(this string folderName)
     {
