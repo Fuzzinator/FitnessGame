@@ -16,7 +16,7 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3000
+  m_CustomRenderQueue: 3050
   stringTagMap:
     RenderType: Transparent
   disabledShaderPasses:
@@ -47,6 +47,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Icon:
+        m_Texture: {fileID: 2800000, guid: 2cd3021d552f725458f7bb9a26283672, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
@@ -89,7 +93,7 @@ Material:
     - Vector1_83d284af076f4a3e98934848258fc697: 2.5
     - Vector1_b49a3ebedd99447e94f08674320748ec: 30
     - _AlphaClip: 0
-    - _AppearDistance: 2
+    - _AppearDistance: 3
     - _Appear_Distance: -0.5
     - _Blend: 0
     - _BumpScale: 1
@@ -112,7 +116,7 @@ Material:
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueControl: 0
-    - _QueueOffset: 0
+    - _QueueOffset: 50
     - _ReceiveShadows: 1
     - _ScaleUpPower: -5.91
     - _Scale_Up_Power: 50
@@ -126,12 +130,12 @@ Material:
     - _ZWrite: 0
     - _ZWriteControl: 0
     m_Colors:
-    - Color_80afdcf4a7fe4aeaa77c373f4b9dbe73: {r: 0.40197787, g: 0.9911022, b: 0.9911022,
+    - Color_80afdcf4a7fe4aeaa77c373f4b9dbe73: {r: 0.57123137, g: 1.4031217, b: 1.4031217,
         a: 1}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _OptimalHitPosition: {r: 0, g: 1.2, b: 0.75, a: 0}
+    - _OptimalHitPosition: {r: 0, g: 1.2, b: 0.5, a: 0}
     - _Optimal_Hit_Position: {r: 0, g: 1, b: 0.6, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []

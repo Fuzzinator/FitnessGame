@@ -42,28 +42,29 @@ public struct ChoreographyFormation
     public bool HasObstacle => _hasObstacle;
     public bool HasEvent => _hasEvent;
 
-    public ChoreographyFormation SetNote(ChoreographyNote note)
+
+    public ChoreographyFormation SetNote(ChoreographyNote note, bool hasNote = true)
     {
         _note = note;
-        _hasNote = true;
+        _hasNote = hasNote;
         _time = note.Time;
         _isValid = true;
         return this;
     }
 
-    public ChoreographyFormation SetObstacle(ChoreographyObstacle obstacle)
+    public ChoreographyFormation SetObstacle(ChoreographyObstacle obstacle, bool hasObstacle = true)
     {
         _obstacle = obstacle;
-        _hasObstacle = true;
+        _hasObstacle = hasObstacle;
         _isValid = true;
         _time = obstacle.Time;
         return this;
     }
 
-    public ChoreographyFormation SetEvent(ChoreographyEvent e)
+    public ChoreographyFormation SetEvent(ChoreographyEvent e, bool hasEvent = true)
     {
         _event = e;
-        _hasEvent = true;
+        _hasEvent = hasEvent;
         _isValid = true;
         _time = e.Time;
         return this;

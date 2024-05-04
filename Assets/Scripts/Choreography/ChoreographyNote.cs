@@ -33,7 +33,7 @@ public struct ChoreographyNote// : ISequenceable
     {
         get
         {
-            switch(_cutDirection)
+            switch (_cutDirection)
             {
                 case CutDirection.Uppercut:
                 case CutDirection.UppercutLeft:
@@ -45,7 +45,23 @@ public struct ChoreographyNote// : ISequenceable
             }
         }
     }
-    
+
+    public bool IsJab
+    {
+        get
+        {
+            switch (_cutDirection)
+            {
+                case CutDirection.JabDown:
+                case CutDirection.HookLeftDown:
+                case CutDirection.HookRightDown:
+                case CutDirection.Jab:
+                    return true;
+                default: return false;
+            }
+        }
+    }
+
     public ChoreographyNote(float time, int lineIndex, LineLayerType lineLayer, HitSideType hitSide,
         CutDirection cutDirection, bool isSuperNote)
     {
@@ -54,7 +70,7 @@ public struct ChoreographyNote// : ISequenceable
         _lineLayer = lineLayer;
         _type = hitSide;
         _cutDirection = cutDirection;
-        _isSuperNote = isSuperNote?1:0;
+        _isSuperNote = isSuperNote ? 1 : 0;
     }
 
     public enum LineLayerType
@@ -68,7 +84,7 @@ public struct ChoreographyNote// : ISequenceable
     {
         SetCutDirection(CutDirection.Jab);
         SetLineLayer(LineLayerType.Middle);
-        SetLineIndex(_type == HitSideType.Left || _type == HitSideType.Block? 1:2);
+        SetLineIndex(_type == HitSideType.Left || _type == HitSideType.Block ? 1 : 2);
         return this;
     }
 

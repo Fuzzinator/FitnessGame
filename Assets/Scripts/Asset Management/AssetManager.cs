@@ -11,6 +11,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 #if UNITY_ANDROID
 using UnityEngine.Android;
 using static UnityEngine.XR.Hands.XRHandSubsystemDescriptor;
+using System.Security.AccessControl;
 //using System.Net.NetworkInformation;
 #endif
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
@@ -131,7 +132,7 @@ public class AssetManager : MonoBehaviour
 #elif UNITY_ANDROID
         return $"{RootFolder}{LocalSongsFolderName}";
 #endif
-}
+    }
 
     public static bool CheckPermissions()
     {
@@ -535,8 +536,29 @@ public class AssetManager : MonoBehaviour
         var directories = Directory.GetDirectories(SongsPath);
 
         var songFailed = false;
-        foreach (var dir in directories)
+        for (int i = 0; i < directories.Length; i++)
         {
+            var dir = directories[i];
+            /* string folderName = null;
+             if(dir.Contains("/"))
+             {
+                 folderName = dir.Substring(dir.LastIndexOf("/") + 1);
+             }
+             else if (dir.Contains("\\"))
+             {
+                 folderName = dir.Substring(dir.LastIndexOf("\\") + 1);
+             }
+             if(folderName != null && folderName.ContainsIllegalCharacters())
+             {*/
+#if UNITY_ANDROID
+            if (dir.Contains("+"))
+            {
+                NotifyWontLoadPlusFolders(dir);
+                //dir = await CleanPlusFolders(dir);
+                continue;
+            }
+#endif
+
             var item = await GetSingleCustomSong(dir, cancellationSource.Token);
             if (item != null)
             {
@@ -569,8 +591,30 @@ public class AssetManager : MonoBehaviour
             return null;
             //Directory.CreateDirectory(path);
         }
+        /* if (fileLocation.ContainsIllegalCharacters())
+         {
+             var cleanString = $"{SongsPath}{fileLocation.RemoveIllegalIOCharacters()}";
+             Directory.Move(path, cleanString);
+             path = cleanString;
+         }*/
 
-        var song = await GetSingleCustomSong(path, token, songID, songScore);
+#if UNITY_ANDROID
+        if (path.Contains("+"))
+        {
+            NotifyWontLoadPlusFolders(path);
+            //path = await CleanPlusFolders(path);
+            return null;
+        }
+#endif
+        SongInfo song = null;
+        try
+        {
+            song = await GetSingleCustomSong(path, token, songID, songScore);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError(ex);
+        }
 
         if (song == null)
         {
@@ -585,6 +629,16 @@ public class AssetManager : MonoBehaviour
 
         return song;
     }
+
+#if UNITY_ANDROID
+    private static void NotifyWontLoadPlusFolders(string fullPath)
+    {
+        //var separator = fullPath.Contains('/') ? "/" : "\\";
+        //var cleanString = fullPath.Substring(fullPath.LastIndexOf(separator) + 1);
+        var visuals = new Notification.NotificationVisuals("Songs in folders containing the character \"+\" cannot be read. Please rename your folders and re-add them.", "Failed To Read Some Songs", popUp: true, autoTimeOutTime: 7.5f);
+        NotificationManager.RequestNotification(visuals);
+    }
+#endif
 
     public static async UniTask<SongInfo> GetSingleCustomSong(string fileLocation, CancellationToken token, string songID = null, float songScore = -1f)
     {
@@ -777,7 +831,7 @@ public class AssetManager : MonoBehaviour
     public static void GetAssetPathsFromAutoConvert(string[] extensions, List<string> listOfFiles)
     {
         var rootFolder = GetAutoConvertSongsPath();
-        if(!Directory.Exists(rootFolder))
+        if (!Directory.Exists(rootFolder))
         {
             Directory.CreateDirectory(rootFolder);
             return;
@@ -815,7 +869,7 @@ public class AssetManager : MonoBehaviour
 
         var directories = info.EnumerateDirectories();
         foreach (var directory in directories)
-        {            
+        {
             EnumerateDirectory(directory, extensions, listOfFiles);
         }
     }

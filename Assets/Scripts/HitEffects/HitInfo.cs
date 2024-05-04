@@ -6,11 +6,9 @@ using UnityEngine;
 [Serializable]
 public struct HitInfo
 {
-    [field:SerializeField]
+    [field: SerializeField]
     public float ImpactDotProduct { get; private set; }
 
-    [field: SerializeField]
-    public float HandDirectionDotProd { get; private set; }
     [field: SerializeField]
     public float DirectionDotProduct { get; private set; }
 
@@ -38,11 +36,11 @@ public struct HitInfo
     public HitQualityName QualityName { get; private set; }
 
     private const float FootInMeters = 0.3048f;
+    private const string PrecisionMode = "PrecisionMode";
 
-    public HitInfo(float impact, float direction, float handDir, Hand hand, float distance, float speed)
+    public HitInfo(float impact, float direction, Hand hand, float distance, float speed)
     {
         ImpactDotProduct = impact;
-        HandDirectionDotProd = handDir;
         DirectionDotProduct = direction;
         _rightHand = null;
         _leftHand = null;
@@ -64,11 +62,10 @@ public struct HitInfo
         QualityName = GetHitQualityName(HitQuality);
     }
 
-    public HitInfo(float impact, float direction, float handDir, Hand leftHand, Hand rightHand, float distance,
+    public HitInfo(float impact, float direction, Hand leftHand, Hand rightHand, float distance,
         float speed)
     {
         ImpactDotProduct = impact;
-        HandDirectionDotProd = handDir;
         DirectionDotProduct = direction;
 
         _rightHand = rightHand;
@@ -84,11 +81,23 @@ public struct HitInfo
 
     private static float GetModifierRange(float impact, float direction, float distance)
     {
-        var distanceValue = 1f - Mathf.Clamp(distance, 0, FootInMeters) * 3.333f;
-        var impactValue = Mathf.Clamp(impact, 0, 1);
-        var directionValue = Mathf.Clamp(direction, 0, 1);
-        var final = (distanceValue + impactValue + directionValue)* .333f;
-        return final;
+
+        var precisionMode = SettingsManager.GetCachedBool(PrecisionMode, false);
+        if (precisionMode)
+        {
+            var distanceValue = 1f - Mathf.Clamp(distance, 0, FootInMeters) * 3.333f;
+            var impactValue = Mathf.Clamp(impact, 0, 1);
+            var directionValue = Mathf.Clamp(direction, 0, 1);
+            var final = (distanceValue + impactValue + directionValue) * .333f;
+            return final;
+        }
+        else
+        {
+            var distanceValue = 1f - Mathf.Clamp(distance, 0, FootInMeters) * 3.333f;
+            var impactValue = Mathf.Clamp(impact, 0, 1);
+            var final = (distanceValue + impactValue) * .5f;
+            return final;
+        }
     }
 
     private static float GetMagnitudeBonus(float speed)

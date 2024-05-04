@@ -10,6 +10,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 public class ChoreographySequencer : MonoBehaviour
 {
@@ -85,9 +86,12 @@ public class ChoreographySequencer : MonoBehaviour
 
     [SerializeField]
     private Transform _optimalStrikePoint;
+    [SerializeField]
+    private Transform _optimalJabStrikePoint;
 
     private float _meterDistance;
     private float _optimalPointDistance;
+    private float _optimalJabPointDistance;
     private float _songStartTime;
     private float _delayStartTime;
     private float _pauseOffset;
@@ -167,6 +171,7 @@ public class ChoreographySequencer : MonoBehaviour
         var position = _formationStart.position;
         _meterDistance = Vector3.Distance(position, _formationEnd.position);
         _optimalPointDistance = Vector3.Distance(position, _optimalStrikePoint.position);
+        _optimalJabPointDistance = Vector3.Distance(position, _optimalJabStrikePoint.position);
 
         _sequenceUnstartedOrFinished = true;
     }
@@ -237,8 +242,10 @@ public class ChoreographySequencer : MonoBehaviour
 
         var tweenSpeed = SongInfoReader.Instance.NoteSpeed / _meterDistance * 10;
         var timeToPoint = _optimalPointDistance / tweenSpeed;
+        var timeToJabPoint = _optimalJabPointDistance / tweenSpeed;
 
         ChoreographyReader.Instance.TimeToPoint = timeToPoint;
+
         var formations = ChoreographyReader.Instance.GetOrderedFormations();
         if (formations == null || formations.Count <= 0)
         {
@@ -291,11 +298,22 @@ public class ChoreographySequencer : MonoBehaviour
                 {
                     note = note.SetCutDirection(ChoreographyNote.CutDirection.Jab);
                 }
-                formation = formation.SetNote(note);
+
+                var formations = ChoreographyReader.Instance.GetOrderedFormations();
+                var nextFormation = formations[nextFormationIndex];
+                if (formations.Count > nextFormationIndex && nextFormation.HasNote && nextFormation.Note.HitSideType == note.HitSideType)
+                {
+                    formation = formation.SetNote(new ChoreographyNote(), false);
+                }
+                else
+                {
+                    formation = formation.SetNote(note);
+                }
             }
         }
+        var strikePoint = formation.HasNote && formation.Note.IsJab ? _optimalJabStrikePoint.position : _optimalStrikePoint.position;
 
-        formationHolder.SetUp(this, formation, nextFormationIndex, _optimalStrikePoint.position, _currentRotation);
+        formationHolder.SetUp(this, formation, nextFormationIndex, strikePoint, _currentRotation);
 
 
         var tweenData = new SimpleTween.Data(formationTransform, formationHolder.OnStartCallback,
@@ -305,7 +323,8 @@ public class ChoreographySequencer : MonoBehaviour
 
         var beatsTime = 60 / SongInfoReader.Instance.BeatsPerMinute;
         var time = (Time.time - (_songStartTime + _pauseOffset));
-        var timeToPoint = _optimalPointDistance / tweenSpeed;
+
+        var timeToPoint = (formation.HasNote && formation.Note.IsJab ? _optimalJabPointDistance : _optimalPointDistance) / tweenSpeed;
 
         var delay = Mathf.Max(0, (formation.Time * beatsTime) - time - timeToPoint);
 

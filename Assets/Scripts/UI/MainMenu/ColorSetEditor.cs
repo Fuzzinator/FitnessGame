@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace UI
@@ -13,6 +10,9 @@ namespace UI
 
         [SerializeField]
         private Slider _RGBSlider;
+
+        [SerializeField]
+        private Slider _opacitySlider;
 
         [SerializeField]
         private TwoDSlider _HSVSlider;
@@ -93,7 +93,7 @@ namespace UI
             
             _RGBSlider.SetValueWithoutNotify(hue);
             _HSVSlider.SetValueWithoutNotify(new Vector2(sat, val));
-            
+            _opacitySlider.SetValueWithoutNotify(color.a);
             _RGBSliderHandle.color = color;
             _HSVSliderHandle.color = color;
         }
@@ -103,8 +103,18 @@ namespace UI
             var color = Color.HSVToRGB(_RGBSlider.value, _HSVSlider.normalizedValue.x, _HSVSlider.normalizedValue.y);
             _RGBSliderHandle.color = color;
             _HSVSliderHandle.color = color;
+            var alpha = _toggles[_activeColorIndex].targetGraphic.color.a;
+            color.a = alpha;
             _toggles[_activeColorIndex].targetGraphic.color = color;
             _HSVFill.color = Color.HSVToRGB(_RGBSlider.value, 1, 1);
+            UpdateColorSet(color);
+        }
+
+        public void OpacitySliderMoved(float opacity)
+        {
+            var color = _toggles[_activeColorIndex].targetGraphic.color;
+            color.a = opacity;
+            _toggles[_activeColorIndex].targetGraphic.color = color;
             UpdateColorSet(color);
         }
         

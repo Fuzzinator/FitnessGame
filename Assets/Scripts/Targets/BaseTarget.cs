@@ -84,10 +84,10 @@ public class BaseTarget : MonoBehaviour, IPoolable
         }
 
         var currentDistance = Vector3.Distance(transform.position, OptimalHitPoint);
-        if (IsValidDirection(other, hand, out var impactDotProduct, out var dirDotProduct, out var handDotProd, out ValidHit validHit))
+        if (IsValidDirection(other, hand, out var impactDotProduct, out var handDotProd, out ValidHit validHit))
         {
             _wasHit = true;
-            var hitInfo = new HitInfo(impactDotProduct, dirDotProduct, handDotProd, hand, currentDistance,
+            var hitInfo = new HitInfo(impactDotProduct, handDotProd, hand, currentDistance,
                 hand.MovementSpeed);
 
             foreach (var hitEffect in _validHitEffects)
@@ -98,7 +98,7 @@ public class BaseTarget : MonoBehaviour, IPoolable
         else
         {
             //var missInfo = new MissInfo();
-            var hitInfo = new HitInfo(impactDotProduct, dirDotProduct, handDotProd, hand, currentDistance,
+            var hitInfo = new HitInfo(impactDotProduct, handDotProd, hand, currentDistance,
                 hand.MovementSpeed);
             foreach (var hitEffect in _badHitEffects)
             {
@@ -163,18 +163,17 @@ public class BaseTarget : MonoBehaviour, IPoolable
         return hand.AssignedHand == _noteType;
     }
 
-    protected bool IsValidDirection(Collision other, Hand hand, out float impactDotProd, out float dirDotProd,
-        out float handDotProd, out ValidHit validHit)
+    protected bool IsValidDirection(Collision other, Hand hand, out float impactDotProd, out float handDotProd, out ValidHit validHit)
     {
         var precisionMode = SettingsManager.GetCachedBool(PrecisionMode, false);
         var handDirection = transform.InverseTransformDirection(hand.MovementDirection);
         var isSwinging = !precisionMode || hand.IsSwinging();
         impactDotProd = Vector3.Dot(-handDirection, _optimalHitDirection);
-        var collisionDirection = Vector3.Normalize(other.GetContact(0).point - transform.position);
-        dirDotProd = Vector3.Dot(collisionDirection, _optimalHitDirection);
-        handDotProd = Vector3.Dot(transform.TransformDirection(_optimalHitDirection), hand.ForwardDirection);
+        //var collisionDirection = Vector3.Normalize(other.GetContact(0).point - transform.position);
+        //dirDotProd = Vector3.Dot(collisionDirection, _optimalHitDirection);
+        handDotProd = precisionMode? -Vector3.Dot(transform.TransformDirection(_optimalHitDirection), hand.ForwardDirection) : 1f;
         var requiredSpeed = IsSuperNote ? _overrideHitSpeed : _minHitSpeed;
-        validHit = new ValidHit(isSwinging, impactDotProd > _minMaxAllowance.x, hand.MovementSpeed > requiredSpeed, !precisionMode || handDotProd < -.5f);
+        validHit = new ValidHit(isSwinging, impactDotProd > _minMaxAllowance.x, hand.MovementSpeed > requiredSpeed, !precisionMode || handDotProd > .5f);
 #if UNITY_EDITOR
         return true;
 #else
@@ -187,7 +186,8 @@ public class BaseTarget : MonoBehaviour, IPoolable
         _noteType = hitSideType;
         _wasHit = false;
         parentFormation = holder;
-        OptimalHitPoint = hitPoint;
+        var positionOffset = (transform.position - holder.transform.position);
+        OptimalHitPoint = hitPoint + positionOffset;
         _minHitSpeed = SettingsManager.GetMinHitSpeed(hitSideType);
         _overrideHitSpeed = overrideHitSpeed;
         foreach (var initializer in _targetInitializers)

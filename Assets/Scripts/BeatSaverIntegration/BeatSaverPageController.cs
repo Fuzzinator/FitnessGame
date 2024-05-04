@@ -386,7 +386,7 @@ public class BeatSaverPageController : MonoBehaviour
         await UpdateDataBackwards();
     }
 
-    private async UniTask SearchAsync(SearchTextFilterOption option, bool initializing = false)
+    private async UniTask SearchAsync(SearchTextFilterOption option, bool initializing = false) 
     {
         try
         {
@@ -428,6 +428,7 @@ public class BeatSaverPageController : MonoBehaviour
             }
             if (request == null)
             {
+                await ClearPage();
                 return;
             }
             _activePage = request;
@@ -619,6 +620,24 @@ public class BeatSaverPageController : MonoBehaviour
 
         ShowLoading(false);
         _scrollerController.SetBeatmaps(_activePage.Beatmaps).Forget();
+    }
+
+    private async UniTask ClearPage()
+    {
+
+        await UniTask.SwitchToMainThread(_cancellationTokenSource.Token);
+        if (_token.IsCancellationRequested)
+        {
+            return;
+        }
+        _cellView = null;
+
+        ShowLoading(false);
+        _allBeatmaps.Clear();
+
+        _scrollerController.SetBeatmaps(_allBeatmaps, resetPageIndex: true).Forget();
+        _scrollerController.Refresh();
+        _scroller.SetCanScroll(false);
     }
 
     private async UniTask UpdateDataForward()

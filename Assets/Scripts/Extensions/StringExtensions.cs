@@ -45,4 +45,26 @@ public static class StringExtensions
         }
         return sb.ToString();
     }
+
+    public static bool ContainsIllegalCharacters(this string str)
+    {
+        StringBuilder sb = new StringBuilder(str);
+        foreach (var character in _escapeCharacters)
+        {
+            if (!str.Contains(character))
+            {
+                continue;
+            }
+            return true;
+        }
+        foreach (var character in _illegalCharacters)
+        {
+            if (!str.Contains(character))
+            {
+                continue;
+            }
+            return true;
+        }
+        return false;
+    }
 }

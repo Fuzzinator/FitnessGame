@@ -6,6 +6,7 @@ using Cysharp.Text;
 using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UpdatePlayerHeightDisplay : MonoBehaviour, ISaver
 {
@@ -23,6 +24,8 @@ public class UpdatePlayerHeightDisplay : MonoBehaviour, ISaver
     private TextMeshProUGUI _buttonText;
     [SerializeField]
     private GameObject _calibratedTextDisplay;
+    [SerializeField]
+    private Button _nextButton;
     [SerializeField]
     protected bool _setSettingOnEnable = false;
     [SerializeField]
@@ -93,6 +96,10 @@ public class UpdatePlayerHeightDisplay : MonoBehaviour, ISaver
         _buttonText.SetText(RecalibrateText);
         _calibratedTextDisplay.SetActive(true);
         UpdateDisplay();
+        if (_nextButton != null)
+        {
+            _nextButton.interactable = true;
+        }
     }
 
     public void StartUpdating(float increment)
@@ -181,8 +188,12 @@ public class UpdatePlayerHeightDisplay : MonoBehaviour, ISaver
                 _setHeight = GlobalSettings.GetUserHeight(_profileEditor.ActiveProfile);
                 _heightOffset = GlobalSettings.GetUserHeightOffset(_profileEditor.ActiveProfile);
             }
-
-            if (_setHeight == -1)
+            var heightSet = _setHeight != -1;
+            if (_nextButton != null)
+            {
+                _nextButton.interactable = heightSet;
+            }
+            if (!heightSet)
             {
                 _setHeight = Head.Instance.transform.position.y;
                 _heightOffset = 0f;
