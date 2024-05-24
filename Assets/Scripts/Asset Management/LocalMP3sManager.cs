@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.Pool;
 using Cysharp;
 using System.Threading;
+using TagLib;
 
 public class LocalMP3sManager : MonoBehaviour
 {
@@ -62,7 +63,7 @@ public class LocalMP3sManager : MonoBehaviour
     {
         if (val == 1)
         {
-            File.Delete(AvailableMP3Paths[i]);
+            System.IO.File.Delete(AvailableMP3Paths[i]);
             AvailableMP3Paths.RemoveAt(i);
         }
     }
@@ -88,11 +89,23 @@ public class LocalMP3sManager : MonoBehaviour
         return path;
     }
 
-    public static TagLib.File GetMP3Info(int index)
+    public static bool TryGetMP3Info(int index, out TagLib.File file)
     {
-        var filePath = AvailableMP3Paths[index];
-        var file = TagLib.File.Create(filePath);
-        return file;
+        file = null;
+        try
+        {
+            var filePath = AvailableMP3Paths[index];
+            file = TagLib.File.Create(filePath);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            if(ex is not CorruptFileException)
+            {
+                Debug.LogError($"{ex.Message}\n{ex.StackTrace}");
+            }
+            return false;
+        }
     }
 
 

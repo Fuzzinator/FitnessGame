@@ -2,6 +2,7 @@ using Cysharp.Text;
 using EnhancedUI.EnhancedScroller;
 using System;
 using TMPro;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -31,6 +32,23 @@ namespace UI.Scrollers
             _controller = controller;
             SetText(name, tagFile);
             TrySetImage(tagFile);
+        }
+
+        public void SetFallbackData(string name, int index, AvailableLocalMp3sScrollerController controller)
+        {
+            _index = index;
+            _controller = controller;
+
+            using (var sb = ZString.CreateStringBuilder(true))
+            {
+                sb.AppendFormat(SONGINFOFORMAT,
+                    name,
+                    "Unknown Performer",
+                    "Unknown Length",
+                    "Unknown Album");
+
+                _songDetails.SetText(sb);
+            }
         }
 
         private void SetText(string name, TagLib.File tagFile)

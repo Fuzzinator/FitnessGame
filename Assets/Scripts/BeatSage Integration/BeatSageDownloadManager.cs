@@ -15,6 +15,7 @@ using Cysharp.Threading.Tasks;
 using System.IO;
 using static BeatSageDownloadManager;
 using UnityEngine.Events;
+using TagLib;
 
 public class BeatSageDownloadManager
 {
@@ -45,14 +46,14 @@ public class BeatSageDownloadManager
             NotificationManager.RequestNotification(visuals);
             return null;
         }
-        return AddDownload(filePath);
+        return AddDownload(songName, filePath);
     }
 
-    public static Download AddDownload(string filePath)
+    public static Download AddDownload(string songName, string filePath)
     {
         filePath = filePath.TrimEnd('\r', '\n');
 
-        var download = new Download(filePath);
+        var download = new Download(songName, filePath);
         Downloads.Add(download);
 
         HandleDownload(download).Forget();
@@ -95,41 +96,51 @@ public class BeatSageDownloadManager
         //Update displayed progress
         download.Progress = 0.1;
 
-        var tagFile = TagLib.File.Create(download.FilePath);
 
         var artistName = "Unknown";
-        var trackName = "Unknown";
         byte[] imageData = null;
-
-        var invalids = Path.GetInvalidFileNameChars();
-
-        if (tagFile.Tag.FirstPerformer != null)
+        try
         {
-            artistName = string.Join("_", tagFile.Tag.FirstPerformer.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
-        }
+            var tagFile = TagLib.File.Create(download.FilePath);
 
-        if (tagFile.Tag.Title != null)
-        {
-            trackName = string.Join("_", tagFile.Tag.Title.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
-        }
-        else
-        {
-            trackName = Path.GetFileNameWithoutExtension(download.FilePath);
-        }
 
-        if (tagFile.Tag.Pictures.Count() > 0)
-        {
-            if (tagFile.Tag.Pictures[0].Data.Data != null)
+            var invalids = Path.GetInvalidFileNameChars();
+
+            if (tagFile.Tag.FirstPerformer != null)
             {
-                imageData = tagFile.Tag.Pictures[0].Data.Data;
+                artistName = string.Join("_", tagFile.Tag.FirstPerformer.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
+            }
+
+            var trackName = "Unknown";
+            if (tagFile.Tag.Title != null)
+            {
+                trackName = string.Join("_", tagFile.Tag.Title.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
+            }
+            else
+            {
+                trackName = Path.GetFileNameWithoutExtension(download.FilePath);
+            }
+            download.Title = trackName;
+
+            if (tagFile.Tag.Pictures.Count() > 0)
+            {
+                if (tagFile.Tag.Pictures[0].Data.Data != null)
+                {
+                    imageData = tagFile.Tag.Pictures[0].Data.Data;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            if (ex is not CorruptFileException)
+            {
+                Debug.LogError($"{ex.Message}\n{ex.StackTrace}");
             }
         }
 
-
         download.Artist = artistName;
-        download.Title = trackName;
 
-        var bytes = File.ReadAllBytes(download.FilePath);
+        var bytes = System.IO.File.ReadAllBytes(download.FilePath);
 
         //Update displayed progress
         download.Progress = 0.2;
@@ -148,7 +159,7 @@ public class BeatSageDownloadManager
             content.Add(imageContent);
         }
 
-        content.Add(new StringContent(trackName), "audio_metadata_title");
+        content.Add(new StringContent(download.Title), "audio_metadata_title");
         content.Add(new StringContent(artistName), "audio_metadata_artist");
         content.Add(new StringContent(download.Difficulties), "difficulties");
         content.Add(new StringContent(download.GameModes), "modes");
@@ -167,7 +178,7 @@ public class BeatSageDownloadManager
 
         string levelID = (string)jsonString["id"];
 
-        await CheckDownload(levelID, trackName, artistName, download, cts);
+        await CheckDownload(levelID, download.Title, artistName, download, cts);
     }
 
     private static async UniTask CheckDownload(string levelId, string trackName, string artistName, Download download, CancellationTokenSource cts)
@@ -330,14 +341,14 @@ public class BeatSageDownloadManager
         }
         public UnityEvent<double> ProgressUpdated { get; }
 
-        public Download(string filePath)
+        public Download(string songName, string filePath)
         {
             Number = Downloads.Count + 1;
             YoutubeID = "";
-            Title = "???";
+            Title = songName;
             Artist = "???";
             Status = "Queued";
-            Difficulties = "Expert,ExpertPlus,Normal,Hard";
+            Difficulties = "Expert, Hard";
             GameModes = "Standard,90Degree,NoArrows,OneSaber";
             SongEvents = "DotBlocks,Obstacles,Bombs";
             FilePath = filePath;

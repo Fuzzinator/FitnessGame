@@ -18,7 +18,15 @@ namespace UI.Scrollers
             var mp3Name = LocalMP3sManager.GetMp3Name(dataIndex);
 
             var cellView = base.GetCellView(scroller, dataIndex, cellIndex) as LocalMP3CellView;
-            cellView.SetData(mp3Name, LocalMP3sManager.GetMP3Info(dataIndex), dataIndex, this);
+            if (LocalMP3sManager.TryGetMP3Info(dataIndex, out var file))
+            {
+
+                cellView.SetData(mp3Name, file, dataIndex, this);
+            }
+            else
+            {
+                cellView.SetFallbackData(mp3Name, dataIndex, this);
+            }
             return cellView;
         }
 
