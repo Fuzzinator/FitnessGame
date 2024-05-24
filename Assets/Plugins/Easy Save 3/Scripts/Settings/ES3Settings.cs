@@ -4,6 +4,11 @@ using ES3Internal;
 using UnityEditor;
 #endif
 
+#if UNITY_VISUAL_SCRIPTING
+[Unity.VisualScripting.IncludeInSettings(true)]
+#elif BOLT_VISUAL_SCRIPTING
+[Ludiq.IncludeInSettings(true)]
+#endif
 public class ES3Settings : System.ICloneable
 {
 
@@ -75,8 +80,6 @@ public class ES3Settings : System.ICloneable
             return _unencryptedUncompressedSettings;
         }
     }
-    
-    internal static string persistentDataPath;
 
     #endregion
 
@@ -118,9 +121,11 @@ public class ES3Settings : System.ICloneable
 	public System.Text.Encoding encoding = System.Text.Encoding.UTF8;
     // <summary>Whether we should serialise children when serialising a GameObject.</summary>
     public bool saveChildren = true;
-	
-	/// <summary>Whether we should check that the data we are loading from a file matches the method we are using to load it.</summary>
-	[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+    // <summary>Whether we should apply encryption and/or compression to raw cached data if they're specified in the cached data's settings.</summary>
+    public bool postprocessRawCachedData = false;
+
+    /// <summary>Whether we should check that the data we are loading from a file matches the method we are using to load it.</summary>
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
 	public bool typeChecking = true;
 
 	/// <summary>Enabling this ensures that only serialisable fields are serialised. Otherwise, possibly unsafe fields and properties will be serialised.</summary>
@@ -142,10 +147,10 @@ public class ES3Settings : System.ICloneable
 	public string[] assemblyNames = new string[] { "Assembly-CSharp-firstpass", "Assembly-CSharp"};
 
     /// <summary>Gets the full, absolute path which this ES3Settings object identifies.</summary>
-    public string FullPath()
+    public string FullPath
 	{
-		//get
-		//{
+		get
+		{
             if (path == null)
                 throw new System.NullReferenceException("The 'path' field of this ES3Settings is null, indicating that it was not possible to load the default settings from Resources. Please check that the ES3 Default Settings.prefab exists in Assets/Plugins/Resources/ES3/");
 
@@ -155,9 +160,9 @@ public class ES3Settings : System.ICloneable
 			if(location == ES3.Location.File)
 			{
 				if(directory == ES3.Directory.PersistentDataPath)
-					return $"{persistentDataPath}/{path}";
+					return ES3IO.persistentDataPath + "/" + path;
 				if(directory == ES3.Directory.DataPath)
-					return $"{Application.dataPath}/{path}";
+					return Application.dataPath + "/" + path;
 				throw new System.NotImplementedException("File directory \""+directory+"\" has not been implemented.");
 			}
 			if(location == ES3.Location.Resources)
@@ -182,7 +187,7 @@ public class ES3Settings : System.ICloneable
 				return resourcesPath;
 			}
 			return path;
-		//}
+		}
 	}
 
     #endregion
@@ -194,10 +199,6 @@ public class ES3Settings : System.ICloneable
     /// <param name="settings">The settings we want to use to override the default settings.</param>
     public ES3Settings(string path = null, ES3Settings settings = null) : this(true)
     {
-        if(string.IsNullOrWhiteSpace(persistentDataPath))
-        {
-            persistentDataPath = Application.persistentDataPath;
-        }
         // if there are settings to merge, merge them.
         if (settings != null)
             settings.CopyInto(this);
@@ -221,10 +222,6 @@ public class ES3Settings : System.ICloneable
     /// <param name="enums">Accepts an ES3.EncryptionType, ES3.CompressionType, ES3.Location, ES3.Directory or ES3.ReferenceMode.</param>
     public ES3Settings(params System.Enum[] enums) : this(true)
     {
-        if(string.IsNullOrWhiteSpace(persistentDataPath))
-        {
-            persistentDataPath = Application.persistentDataPath;
-        }
         foreach (var setting in enums)
         {
             if (setting is ES3.EncryptionType)
@@ -359,10 +356,12 @@ public class ES3Settings : System.ICloneable
         newSettings.encoding = encoding;
         newSettings.typeChecking = typeChecking;
         newSettings.safeReflection = safeReflection;
+        newSettings.referenceMode = referenceMode;
         newSettings.memberReferenceMode = memberReferenceMode;
         newSettings.assemblyNames = assemblyNames;
         newSettings.saveChildren = saveChildren;
         newSettings.serializationDepthLimit = serializationDepthLimit;
+        newSettings.postprocessRawCachedData = postprocessRawCachedData;
     }
 
     #endregion

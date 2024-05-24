@@ -8,8 +8,10 @@ namespace ES3Internal
     {
 #if UNITY_SWITCH
         internal static readonly string persistentDataPath = "";
+        internal static readonly string dataPath = "";
 #else
-        //internal static readonly string persistentDataPath = Application.persistentDataPath;
+        internal static readonly string persistentDataPath = Application.persistentDataPath;
+        internal static readonly string dataPath = Application.dataPath;
 #endif
 
         internal const string backupFileSuffix = ".bac";
@@ -55,6 +57,11 @@ namespace ES3Internal
             char slashChar = UsesForwardSlash(path) ? '/' : '\\';
 
             int slash = path.LastIndexOf(slashChar);
+
+            // If this path ends in a slash it is assumed to already be a path to a Directory.
+            if (slash == path.Length - 1)
+                return path;
+
             // Ignore trailing slash if necessary.
             if (slash == (path.Length - 1))
                 slash = path.Substring(0, slash).LastIndexOf(slashChar);
@@ -98,9 +105,11 @@ namespace ES3Internal
                 Directory.Delete(directoryPath, true);
         }
 
+        // Note: Paths not ending in a slash are assumed to be a path to a file. 
+        // In this case the Directory containing the file will be searched.
         public static string[] GetFiles(string path, bool getFullPaths = true)
         {
-            var paths = Directory.GetFiles(path);
+            var paths = Directory.GetFiles(GetDirectoryPath(path));
             if (!getFullPaths)
             {
                 for (int i = 0; i < paths.Length; i++)
@@ -123,30 +132,32 @@ namespace ES3Internal
         {
             ES3Debug.Log("Committing backup for " + settings.path + " to storage location " + settings.location);
 
-            var temporaryFilePath = settings.FullPath() + temporaryFileSuffix;
+            var temporaryFilePath = settings.FullPath + temporaryFileSuffix;
 
             if (settings.location == ES3.Location.File)
             {
-                var oldFileBackup = settings.FullPath() + temporaryFileSuffix + ".bak";
+                var oldFileBackup = settings.FullPath + temporaryFileSuffix + ".bak";
 
                 // If there's existing save data to overwrite ...
-                if (FileExists(settings.FullPath()))
+                if (FileExists(settings.FullPath))
                 {
                     // Delete any old backups.
                     DeleteFile(oldFileBackup);
                     // Rename the old file so we can restore it if it fails.
-                    MoveFile(settings.FullPath(), oldFileBackup);
+                    CopyFile(settings.FullPath, oldFileBackup);
 
                     try
                     {
+                        // Delete the old file so that we can move it.
+                        DeleteFile(settings.FullPath);
                         // Now rename the temporary file to the name of the save file.
-                        MoveFile(temporaryFilePath, settings.FullPath());
+                        MoveFile(temporaryFilePath, settings.FullPath);
                     }
                     catch (Exception e)
                     {
                         // If any exceptions occur, restore the original save file.
-                        try { DeleteFile(settings.FullPath()); } catch { }
-                        MoveFile(oldFileBackup, settings.FullPath());
+                        try { DeleteFile(settings.FullPath); } catch { }
+                        MoveFile(oldFileBackup, settings.FullPath);
                         throw e;
                     }
 
@@ -154,11 +165,11 @@ namespace ES3Internal
                 }
                 // Else just rename the temporary file to the main file.
                 else
-                    MoveFile(temporaryFilePath, settings.FullPath());
+                    MoveFile(temporaryFilePath, settings.FullPath);
             }
             else if (settings.location == ES3.Location.PlayerPrefs)
             {
-                PlayerPrefs.SetString(settings.FullPath(), PlayerPrefs.GetString(temporaryFilePath));
+                PlayerPrefs.SetString(settings.FullPath, PlayerPrefs.GetString(temporaryFilePath));
                 PlayerPrefs.DeleteKey(temporaryFilePath);
                 PlayerPrefs.Save();
             }

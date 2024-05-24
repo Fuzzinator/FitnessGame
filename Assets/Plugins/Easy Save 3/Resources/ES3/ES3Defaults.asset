@@ -23,36 +23,38 @@ MonoBehaviour:
     prettyPrint: 1
     bufferSize: 2048
     saveChildren: 1
+    postprocessRawCachedData: 0
     typeChecking: 1
     safeReflection: 1
     memberReferenceMode: 0
     referenceMode: 2
     serializationDepthLimit: 64
     assemblyNames:
-    - Oculus.Platform
-    - Assembly-CSharp-firstpass
-    - UniTask
     - Assembly-CSharp
-    - UniTask.Linq
+    - Assembly-CSharp-firstpass
     - Autodesk.Fbx
-    - Oculus.VR
     - Cinemachine
-    - UniTask.DOTween
-    - Superla.RadianceHDR
-    - ZString
-    - UniTask.Addressables
-    - UniTask.TextMeshPro
     - FbxBuildTestAssets
-    - PPv2URPConverters
-    - Oculus.Platform.Editor
-    - Oculus.VR.Scripts.Editor
-    - UniTask.Editor
-    - Oculus.VR.Editor
-    - Autodesk.Fbx.Editor
+    - Oculus.Platform
+    - Oculus.VR
+    - Superla.RadianceHDR
+    - UniTask
+    - UniTask.Addressables
+    - UniTask.DOTween
+    - UniTask.Linq
+    - UniTask.TextMeshPro
+    - Unity.XR.Hands.Samples.VisualizerSample
+    - ZString
     showAdvancedSettings: 0
   addMgrToSceneAutomatically: 0
   autoUpdateReferences: 1
   addAllPrefabsToManager: 1
+  collectDependenciesDepth: 4
+  collectDependenciesTimeout: 10
+  updateReferencesWhenSceneChanges: 1
+  updateReferencesWhenSceneIsSaved: 1
+  updateReferencesWhenSceneIsOpened: 1
+  referenceFolders: []
   logDebugInfo: 0
   logWarnings: 1
   logErrors: 1

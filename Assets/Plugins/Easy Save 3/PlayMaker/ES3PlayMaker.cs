@@ -70,33 +70,33 @@ namespace ES3PlayMaker
     {
         [ActionSection("Settings")]
         public FsmBool overrideDefaultSettings = false;
-        [HideIf("DefaultSettingsOverridden")]
+        [HutongGames.PlayMaker.HideIf("DefaultSettingsOverridden")]
         [Tooltip("The path this ES3Settings object points to, if any.")]
         public FsmString path;
-        [HideIf("DefaultSettingsOverridden")]
+        [HutongGames.PlayMaker.HideIf("DefaultSettingsOverridden")]
         [ObjectType(typeof(ES3.Location))]
         [Tooltip("The storage location where we wish to store data by default.")]
         public FsmEnum location;
-        [HideIf("DefaultSettingsOverridden")]
+        [HutongGames.PlayMaker.HideIf("DefaultSettingsOverridden")]
         [ObjectType(typeof(ES3.EncryptionType))]
         [Tooltip("The type of encryption to use when encrypting data, if any.")]
         public FsmEnum encryptionType;
-        [HideIf("DefaultSettingsOverridden")]
+        [HutongGames.PlayMaker.HideIf("DefaultSettingsOverridden")]
         [Tooltip("The password to use to encrypt the data if encryption is enabled.")]
         public FsmString encryptionPassword;
-        [HideIf("DefaultSettingsOverridden")]
+        [HutongGames.PlayMaker.HideIf("DefaultSettingsOverridden")]
         [ObjectType(typeof(ES3.CompressionType))]
         [Tooltip("The type of compression to use when compressing data, if any.")]
         public FsmEnum compressionType;
-        [HideIf("DefaultSettingsOverridden")]
+        [HutongGames.PlayMaker.HideIf("DefaultSettingsOverridden")]
         [ObjectType(typeof(ES3.Directory))]
         [Tooltip("The default directory in which to store files when using the File save location, and the location which relative paths should be relative to.")]
         public FsmEnum directory;
-        [HideIf("DefaultSettingsOverridden")]
+        [HutongGames.PlayMaker.HideIf("DefaultSettingsOverridden")]
         [ObjectType(typeof(ES3.Format))]
         [Tooltip("The format we should use when serializing and deserializing data.")]
         public FsmEnum format;
-        [HideIf("DefaultSettingsOverridden")]
+        [HutongGames.PlayMaker.HideIf("DefaultSettingsOverridden")]
         [Tooltip("Any stream buffers will be set to this length in bytes.")]
         public FsmInt bufferSize;
 
@@ -1636,6 +1636,35 @@ namespace ES3PlayMaker
         public override void Enter()
         {
             ES3.StoreCachedFile(filePath.Value, GetSettings());
+        }
+    }
+
+    #endregion
+
+    #region Misc actions
+
+    [ActionCategory("Easy Save 3")]
+    [Tooltip("Gets the Streaming Assets path (see https://docs.unity3d.com/Manual/StreamingAssets.html), and optionally appends onto it. It is strongly recommended to use Easy Save's default of Persistent Data Path instead as this works on all platforms.")]
+    public class GetStreamingAssetsPath : FsmStateAction
+    {
+        [Tooltip("The variable we want to output the Streaming Assets path to.")]
+        public FsmString output;
+        [Tooltip("[Optional] A string to append to the path, for example a filename. A forward slash is automatically added for you.")]
+        public FsmString append;
+
+        public override void Reset()
+        {
+            output = null;
+            append = null;
+        }
+
+        public override void OnEnter()
+        {
+            if (!string.IsNullOrEmpty(append.Value))
+                output.Value = Application.streamingAssetsPath + "/" + append.Value;
+            else
+                output.Value = Application.streamingAssetsPath;
+            Finish();
         }
     }
 

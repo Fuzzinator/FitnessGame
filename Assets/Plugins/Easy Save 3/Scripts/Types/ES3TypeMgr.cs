@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using ES3Types;
+using System.Linq;
 
 namespace ES3Internal
 {
@@ -80,20 +81,27 @@ namespace ES3Internal
 			else if(ES3Reflection.IsGenericType(type) && ES3Reflection.ImplementsInterface(type, typeof(IEnumerable)))
 			{
 				Type genericType = ES3Reflection.GetGenericTypeDefinition(type);
-				if(genericType == typeof(List<>))
-					es3Type = new ES3ListType(type);
-				else if(genericType == typeof(Dictionary<,>))
-					es3Type = new ES3DictionaryType(type);
-				else if(genericType == typeof(Queue<>))
-					es3Type = new ES3QueueType(type);
-				else if(genericType == typeof(Stack<>))
-					es3Type = new ES3StackType(type);
-				else if(genericType == typeof(HashSet<>))
-					es3Type = new ES3HashSetType(type);
-				else if(throwException)
-					throw new NotSupportedException("Generic type \""+type.ToString()+"\" is not supported by Easy Save.");
-				else
-					return null;
+                if (typeof(List<>).IsAssignableFrom(genericType))
+                    es3Type = new ES3ListType(type);
+                else if (typeof(Dictionary<,>).IsAssignableFrom(genericType))
+                    es3Type = new ES3DictionaryType(type);
+                else if (genericType == typeof(Queue<>))
+                    es3Type = new ES3QueueType(type);
+                else if (genericType == typeof(Stack<>))
+                    es3Type = new ES3StackType(type);
+                else if (genericType == typeof(HashSet<>))
+                    es3Type = new ES3HashSetType(type);
+                else if (genericType == typeof(Unity.Collections.NativeArray<>))
+                    es3Type = new ES3NativeArrayType(type);
+                // Else see if there is an ES3Type with the generic type definition.
+                else if((es3Type = GetES3Type(genericType)) != null)
+                {
+
+                }
+                else if (throwException)
+                    throw new NotSupportedException("Generic type \"" + type.ToString() + "\" is not supported by Easy Save.");
+                else
+                    return null;
 			}
 			else if(ES3Reflection.IsPrimitive(type)) // ERROR: We should not have to create an ES3Type for a primitive.
 			{
@@ -104,19 +112,23 @@ namespace ES3Internal
 			}
 			else
 			{
-				if(ES3Reflection.IsAssignableFrom(typeof(Component), type))
-					es3Type = new ES3ReflectedComponentType(type);
-				else if(ES3Reflection.IsValueType(type))
-					es3Type = new ES3ReflectedValueType(type);
-				else if(ES3Reflection.IsAssignableFrom(typeof(ScriptableObject), type))
-					es3Type = new ES3ReflectedScriptableObjectType(type);
-				else if(ES3Reflection.HasParameterlessConstructor(type) || ES3Reflection.IsAbstract(type) || ES3Reflection.IsInterface(type))
-					es3Type = new ES3ReflectedObjectType(type);
-				else if(throwException)
-					throw new NotSupportedException("Type of "+type+" is not supported as it does not have a parameterless constructor. Only value types, Components or ScriptableObjects are supportable without a parameterless constructor. However, you may be able to create an ES3Type script to add support for it.");
-				else
-					return null;
-			}
+                if (ES3Reflection.IsAssignableFrom(typeof(Component), type))
+                    es3Type = new ES3ReflectedComponentType(type);
+                else if (ES3Reflection.IsValueType(type))
+                    es3Type = new ES3ReflectedValueType(type);
+                else if (ES3Reflection.IsAssignableFrom(typeof(ScriptableObject), type))
+                    es3Type = new ES3ReflectedScriptableObjectType(type);
+                else if (ES3Reflection.IsAssignableFrom(typeof(UnityEngine.Object), type))
+                    es3Type = new ES3ReflectedUnityObjectType(type);
+                /*else if (ES3Reflection.HasParameterlessConstructor(type) || ES3Reflection.IsAbstract(type) || ES3Reflection.IsInterface(type))
+                    es3Type = new ES3ReflectedObjectType(type);*/
+                else if (type.Name.StartsWith("Tuple`"))
+                    es3Type = new ES3TupleType(type);
+                /*else if (throwException)
+                    throw new NotSupportedException("Type of " + type + " is not supported as it does not have a parameterless constructor. Only value types, Components or ScriptableObjects are supportable without a parameterless constructor. However, you may be able to create an ES3Type script to add support for it.");*/
+                else
+                    es3Type = new ES3ReflectedObjectType(type);
+            }
 
 			if(es3Type.type == null || es3Type.isUnsupported)
 			{
@@ -134,8 +146,11 @@ namespace ES3Internal
             lock (_lock)
             {
                 types = new Dictionary<Type, ES3Type>();
-                // ES3Types add themselves to the types Dictionary.
-                ES3Reflection.GetInstances<ES3Type>();
+                
+                var instances = ES3Reflection.GetInstances<ES3Type>(); // ES3Types add themselves to the manager when instantiated to ensure they don't cause cyclic references if they contain a field which is the same type as themselves.
+
+                /*foreach(var instance in instances)
+                    ES3TypeMgr.Add(instance.type, instance);*/
 
                 // Check that the type list was initialised correctly.
                 if (types == null || types.Count == 0)
