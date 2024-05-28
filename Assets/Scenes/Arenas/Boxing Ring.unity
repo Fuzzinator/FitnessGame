@@ -136,6 +136,7 @@ GameObject:
   - component: {fileID: 14844427}
   - component: {fileID: 14844426}
   - component: {fileID: 14844425}
+  - component: {fileID: 14844428}
   m_Layer: 0
   m_Name: SkyCube
   m_TagString: Untagged
@@ -208,6 +209,33 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &14844428
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 14844424}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 400238cf29e0ec346887c07c590ee552, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _platformColors:
+  - <TargetPlatform>k__BackingField: 1
+    <PropertyName>k__BackingField: _Tint
+    <TargetColor>k__BackingField: {r: 16, g: 16, b: 16, a: 1}
+  - <TargetPlatform>k__BackingField: 2
+    <PropertyName>k__BackingField: _Tint
+    <TargetColor>k__BackingField: {r: 4.237095, g: 4.237095, b: 4.237095, a: 1}
+  _platformFloats:
+  - <TargetPlatform>k__BackingField: 1
+    <PropertyName>k__BackingField: _Rotation
+    <TargetFloat>k__BackingField: 35.47
+  - <TargetPlatform>k__BackingField: 2
+    <PropertyName>k__BackingField: _Rotation
+    <TargetFloat>k__BackingField: 15
+  _renderer: {fileID: 14844425}
 --- !u!1001 &31008217
 PrefabInstance:
   m_ObjectHideFlags: 0
