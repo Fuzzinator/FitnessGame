@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public class EnvObstaclesSetter : EnvironmentAssetSetter
 {
     public override string GetPlaylistAssetName(Playlist playlist)
@@ -20,6 +16,7 @@ public class EnvObstaclesSetter : EnvironmentAssetSetter
         {
             return true;
         }
+
         var managerNull = PlaylistManager.Instance == null;
         var playlistNull = managerNull || PlaylistManager.Instance.CurrentPlaylist == null;
         var obstaclesNull = managerNull || playlistNull || PlaylistManager.Instance.CurrentPlaylist.Obstacles == null;
@@ -29,9 +26,8 @@ public class EnvObstaclesSetter : EnvironmentAssetSetter
 
     public override void SetAssetIndex(int index)
     {
-        var obstaclesName = EnvironmentControlManager.Instance.SetObstacleOverride(index);
+        var obstaclesName = EnvironmentControlManager.Instance.SetDefaultObstacleOverride(index);
         SetText(obstaclesName?.AssetName);
-        DisableOptionsDisplay();
     }
 
     protected override int GetAssetIndex()
@@ -52,19 +48,28 @@ public class EnvObstaclesSetter : EnvironmentAssetSetter
     protected override string GetAssetName(Playlist sourcePlaylist)
     {
         var assetName = GetPlaylistAssetName(sourcePlaylist);
-        if(sourcePlaylist == null)
+        if (sourcePlaylist == null)
         {
             return assetName;
         }
 
         if (EnvironmentControlManager.Instance != null && (sourcePlaylist.Obstacles == null || string.IsNullOrWhiteSpace(sourcePlaylist.Obstacles.AssetName)))
         {
-            if(!string.IsNullOrWhiteSpace(sourcePlaylist.TargetEnvName) && EnvironmentControlManager.Instance.TryGetEnvRefByName(sourcePlaylist.TargetEnvName, out var environment) && environment.Obstacles != null)
+            if (!string.IsNullOrWhiteSpace(sourcePlaylist.TargetEnvName) && EnvironmentControlManager.Instance.TryGetEnvRefByName(sourcePlaylist.TargetEnvName, out var environment) && environment.Obstacles != null)
             {
-                assetName = environment.ObstaclesName;
+                if (EnvironmentControlManager.Instance.ObstaclesOverride != null)
+                {
+                    assetName = EnvironmentControlManager.Instance.ObstaclesOverride.AssetName;
+                }
+                else
+                {
+                    assetName = environment.ObstaclesName;
+                }
                 return assetName;
             }
+
             var currentEnv = EnvironmentControlManager.Instance.ActiveEnvironmentContainer;
+
             if (currentEnv.Obstacles != null)
             {
                 assetName = currentEnv.Obstacles.ObstaclesName;
@@ -83,6 +88,7 @@ public class EnvObstaclesSetter : EnvironmentAssetSetter
         {
             return;
         }
+
         if (playlist.Obstacles != null)
         {
             EnvironmentControlManager.Instance.SetObstaclesOverride(playlist.Obstacles);
@@ -91,6 +97,35 @@ public class EnvObstaclesSetter : EnvironmentAssetSetter
 
     protected override void ResetOverrides()
     {
-        EnvironmentControlManager.Instance.SetObstaclesOverride(null);
+        EnvironmentControlManager.Instance.ResetObstacles();
+    }
+
+    protected override void GetAndSetText()
+    {
+        var obstacles = EnvironmentControlManager.Instance.ObstaclesOverride;
+        if (_ignorePlaylists && obstacles != null && !string.IsNullOrWhiteSpace(obstacles.AssetName))
+        {
+            SetText(obstacles.AssetName);
+        }
+        else
+        {
+            var targetEnv = EnvironmentControlManager.Instance.GetTargetEnvironment();
+            if (string.IsNullOrWhiteSpace(targetEnv.ObstaclesName))
+            {
+                targetEnv = EnvironmentControlManager.Instance.GetCustomEnvironment();
+            }
+            if (string.IsNullOrWhiteSpace(targetEnv.ObstaclesName))
+            {
+                base.GetAndSetText();
+                return;
+            }
+            SetText(targetEnv.ObstaclesName);
+        }
+    }
+
+    protected override bool CheckForOverrideName(out string overrideName)
+    {
+        overrideName = EnvironmentControlManager.Instance.ObstaclesOverride?.AssetName;
+        return !string.IsNullOrWhiteSpace(overrideName);
     }
 }

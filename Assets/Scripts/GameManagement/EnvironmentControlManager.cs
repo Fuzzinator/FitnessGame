@@ -46,7 +46,7 @@ public class EnvironmentControlManager : MonoBehaviour
 
     private int _targetEnvironmentIndex = 0;
 
-
+    public int TaregtEnvIndexOverride { get; private set; }
     public EnvAssetReference GlovesOverride { get; private set; }
     public EnvAssetReference TargetsOverride { get; private set; }
     public EnvAssetReference ObstaclesOverride { get; private set; }
@@ -66,6 +66,10 @@ public class EnvironmentControlManager : MonoBehaviour
     private const string EnvObstaclesLabel = "Environment Obstacles";
     private const string CustomSkyboxAlbedo = "_SkyboxColor";
     private const string CustomSkyboxExposure = "_SkyboxExposure";
+    private const string DefaultEnvSetting = "DefaultEnvironment";
+    private const string DefaultGloveOverrideSetting = "DefaultGloveOverride";
+    private const string DefaultTargetOverrideSetting = "DefaultTargetOverride";
+    private const string DefaultObstacleOverrideSetting = "DefaultObstacleOverride";
 
     private void Awake()
     {
@@ -82,6 +86,7 @@ public class EnvironmentControlManager : MonoBehaviour
     private void Start()
     {
         _cancellationToken = this.GetCancellationTokenOnDestroy();
+        ProfileManager.Instance.activeProfileUpdated.AddListener(UpdateEnvIndexByProfile);
         UpdateEnvironments().Forget();
     }
 
@@ -105,16 +110,50 @@ public class EnvironmentControlManager : MonoBehaviour
         _availableGloveReferences.Sort((x, y) => x.AssetName.CompareTo(y.AssetName));
         _availableTargetReferences.Sort((x, y) => x.AssetName.CompareTo(y.AssetName));
         _availableObstacleReferences.Sort((x, y) => x.AssetName.CompareTo(y.AssetName));
+
+        UpdateEnvIndexByProfile();
+
         availableReferencesUpdated.Invoke();
+    }
+
+    private void UpdateEnvIndexByProfile()
+    {
+        var targetEnvName = SettingsManager.GetSetting(DefaultEnvSetting, string.Empty);
+        if (string.IsNullOrWhiteSpace(targetEnvName))
+        {
+            SetTargetEnvironmentIndex(0);
+            return;
+        }
+
+        var index = _availableEnvironments.FindIndex((i) => i.Name == targetEnvName);
+        if (index < 0)
+        {
+            SetTargetEnvironmentIndex(0);
+            return;
+        }
+
+        if (index != _targetEnvironmentIndex)
+        {
+            SetTargetEnvironmentIndex(index);
+        }
     }
 
     public void SetTargetEnvironmentIndex(int index)
     {
+        if (index == _targetEnvironmentIndex)
+        {
+            return;
+        }
         _targetEnvironmentIndex = index;
         targetEnvironmentIndexChanged.Invoke(index);
+        if (index < _availableEnvironments.Count)
+        {
+            var envName = _availableEnvironments[index].Name;
+            SettingsManager.SetSetting(DefaultEnvSetting, envName, true);
+        }
     }
 
-    public EnvAssetReference SetGloveOverride(int index)
+    public EnvAssetReference SetDefaultGloveOverride(int index)
     {
         if (index < 0 || index >= _availableGloveReferences.Count)
         {
@@ -123,12 +162,15 @@ public class EnvironmentControlManager : MonoBehaviour
         else
         {
             GlovesOverride = new EnvAssetReference(_availableGloveReferences[index]);
+
+            var envName = _availableEnvironments[_targetEnvironmentIndex].Name;
+            SettingsManager.SetSetting($"{DefaultGloveOverrideSetting}-{envName}", new EnvOverrideSetting(envName, GlovesOverride.AssetName));
         }
 
         return GlovesOverride;
     }
 
-    public EnvAssetReference SetTargetOverride(int index)
+    public EnvAssetReference SetDefaultTargetOverride(int index)
     {
         if (index < 0 || index >= _availableTargetReferences.Count)
         {
@@ -137,12 +179,15 @@ public class EnvironmentControlManager : MonoBehaviour
         else
         {
             TargetsOverride = new EnvAssetReference(_availableTargetReferences[index]);
+
+            var envName = _availableEnvironments[_targetEnvironmentIndex].Name;
+            SettingsManager.SetSetting($"{DefaultTargetOverrideSetting}-{envName}", new EnvOverrideSetting(envName, TargetsOverride.AssetName));
         }
 
         return TargetsOverride;
     }
 
-    public EnvAssetReference SetObstacleOverride(int index)
+    public EnvAssetReference SetDefaultObstacleOverride(int index)
     {
         if (index < 0 || index >= _availableObstacleReferences.Count)
         {
@@ -151,6 +196,9 @@ public class EnvironmentControlManager : MonoBehaviour
         else
         {
             ObstaclesOverride = new EnvAssetReference(_availableObstacleReferences[index]);
+
+            var envName = _availableEnvironments[_targetEnvironmentIndex].Name;
+            SettingsManager.SetSetting($"{DefaultObstacleOverrideSetting}-{envName}", new EnvOverrideSetting(envName, ObstaclesOverride.AssetName));
         }
 
         return ObstaclesOverride;
@@ -169,6 +217,75 @@ public class EnvironmentControlManager : MonoBehaviour
     public void SetObstaclesOverride(EnvAssetReference obstacleOverride)
     {
         ObstaclesOverride = obstacleOverride;
+    }
+
+    public void ResetGloves()
+    {
+        var envName = _availableEnvironments[_targetEnvironmentIndex].Name;
+        var defaultGloves = SettingsManager.GetSetting($"{DefaultGloveOverrideSetting}-{envName}", new EnvOverrideSetting());
+
+        if (string.IsNullOrWhiteSpace(defaultGloves.EnvName) || !string.Equals(envName, defaultGloves.EnvName))
+        {
+            SetGloveOverride(null);
+        }
+        else
+        {
+            var index = _availableGloveReferences.FindIndex((i) => i.AssetName == defaultGloves.EnvAssetName);
+            if (index >= 0)
+            {
+                SetGloveOverride(new EnvAssetReference(_availableGloveReferences[index]));
+            }
+            else
+            {
+                SetGloveOverride(null);
+            }
+        }
+    }
+
+    public void ResetTargets()
+    {
+        var envName = _availableEnvironments[_targetEnvironmentIndex].Name;
+        var defaultTargets = SettingsManager.GetSetting($"{DefaultTargetOverrideSetting}-{envName}", new EnvOverrideSetting());
+
+        if (string.IsNullOrWhiteSpace(defaultTargets.EnvName) || !string.Equals(envName, defaultTargets.EnvName))
+        {
+            SetTargetOverride(null);
+        }
+        else
+        {
+            var index = _availableTargetReferences.FindIndex((i) => i.AssetName == defaultTargets.EnvAssetName);
+            if (index >= 0)
+            {
+                SetTargetOverride(new EnvAssetReference(_availableTargetReferences[index]));
+            }
+            else
+            {
+                SetTargetOverride(null);
+            }
+        }
+    }
+
+    public void ResetObstacles()
+    {
+        var envName = _availableEnvironments[_targetEnvironmentIndex].Name;
+        var defaultObstacles = SettingsManager.GetSetting($"{DefaultObstacleOverrideSetting}-{envName}", new EnvOverrideSetting());
+
+        if (string.IsNullOrWhiteSpace(defaultObstacles.EnvName) || !string.Equals(envName, defaultObstacles.EnvName))
+        {
+            SetObstaclesOverride(null);
+        }
+        else
+        {
+            var index = _availableObstacleReferences.FindIndex((i) => i.AssetName == defaultObstacles.EnvAssetName);
+            if (index >= 0)
+            {
+                SetObstaclesOverride(new EnvAssetReference(_availableObstacleReferences[index]));
+            }
+            else
+            {
+                SetObstaclesOverride(null);
+            }
+        }
     }
 
     public void LoadSelection()
@@ -199,7 +316,7 @@ public class EnvironmentControlManager : MonoBehaviour
         var index = 0;
         if (string.IsNullOrWhiteSpace(sceneName))
         {
-            sceneName = SettingsManager.GetSetting("DefaultEnvironment", string.Empty);
+            sceneName = GetDefaultEnvironmentName();
             if (string.IsNullOrWhiteSpace(sceneName))
             {
                 return index;
@@ -245,9 +362,13 @@ public class EnvironmentControlManager : MonoBehaviour
         return new EnvAssetReference(_availableObstacleReferences[index]);
     }
 
-    public string GetTargetEnvName()
+    public Environment GetTargetEnvironment()
     {
-        return _availableEnvironments[_targetEnvironmentIndex].Name;
+        return _availableEnvironments[_targetEnvironmentIndex];
+    }
+    public Environment GetCustomEnvironment()
+    {
+        return new Environment(_customEnvironment);
     }
 
     private void LoadEnvironmentData(int index)
@@ -546,6 +667,11 @@ public class EnvironmentControlManager : MonoBehaviour
         var env = _availableEnvironments[envIndex];
         _availableEnvironments[envIndex] = new Environment(env.CustomPath, customEnv);
     }
+
+    public static string GetDefaultEnvironmentName()
+    {
+        return SettingsManager.GetSetting(DefaultEnvSetting, string.Empty);
+    }
 }
 
 [Serializable]
@@ -572,4 +698,19 @@ public struct TextureSet
 
     public string Name => _textureName;
     public Texture2D Texture => _texture;
+}
+
+[Serializable]
+public struct EnvOverrideSetting
+{
+    [field: SerializeField]
+    public string EnvName { get; private set; }
+    [field: SerializeField]
+    public string EnvAssetName { get; private set; }
+
+    public EnvOverrideSetting(string envName, string assetRef)
+    {
+        EnvName = envName;
+        EnvAssetName = assetRef;
+    }
 }

@@ -62,7 +62,7 @@ namespace UI
         {
             if (string.IsNullOrWhiteSpace(optionName))
             {
-                optionName = SettingsManager.GetSetting("DefaultEnvironment", string.Empty);
+                optionName = EnvironmentControlManager.GetDefaultEnvironmentName();
                 if (string.IsNullOrWhiteSpace(optionName))
                 {
                     return 0;

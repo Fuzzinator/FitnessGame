@@ -17,7 +17,7 @@ namespace UI
 
         protected override int GetOptionIndex(string optionName)
         {
-            optionName = SettingsManager.GetSetting("DefaultEnvironment", string.Empty);
+            optionName = EnvironmentControlManager.GetDefaultEnvironmentName();
             return base.GetOptionIndex(optionName);
         }
     }

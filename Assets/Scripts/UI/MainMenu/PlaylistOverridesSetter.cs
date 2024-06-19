@@ -1,6 +1,4 @@
 using Cysharp.Threading.Tasks;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -34,7 +32,18 @@ public class PlaylistOverridesSetter : MonoBehaviour
 
     private void OnEnable()
     {
-        if (_referToPlaylist || _singleSong)
+        if(_singleSong)
+        {
+            var noObstacles = PlaylistManager.GetDefaultForceNoObstacles();
+            var oneHanded = PlaylistManager.GetDefaultForceOneHanded();
+            var jabsOnly = PlaylistManager.GetDefaultForceJabsOnly();
+            NoObstaclesSet(noObstacles);
+            OneHandedSet(oneHanded);
+            JabsOnlySet(jabsOnly);
+
+            SetToggles(noObstacles, oneHanded,jabsOnly);
+        }
+        else if (_referToPlaylist)
         {
             PlaylistManager.Instance.currentPlaylistUpdated.AddListener(UpdateFromPlaylist);
 
@@ -73,12 +82,14 @@ public class PlaylistOverridesSetter : MonoBehaviour
         {
             return;
         }
+        PlaylistMaker.Instance.RefreshOverrides();
         var noObstacles = PlaylistMaker.Instance.ForceNoObstacles;
         var oneHanded = PlaylistMaker.Instance.ForceOneHanded;
         var jabsOnly = PlaylistMaker.Instance.ForceJabsOnly;
-        NoObstaclesToggleSet(noObstacles);
-        OneHandedToggleSet(oneHanded);
-        JabsOnlyToggleSet(jabsOnly);
+
+        NoObstaclesSet(noObstacles);
+        OneHandedSet(oneHanded);
+        JabsOnlySet(jabsOnly);
     }
 
     private void UpdateFromPlaylist(Playlist playlist)
@@ -87,18 +98,47 @@ public class PlaylistOverridesSetter : MonoBehaviour
         {
             return;
         }
-        NoObstaclesToggleSet(playlist.ForceNoObstacles);
-        OneHandedToggleSet(playlist.ForceOneHanded);
-        JabsOnlyToggleSet(playlist.ForceJabsOnly);
 
-        _noObstaclesToggle.SetIsOnWithoutNotify(playlist.ForceNoObstacles);
-        _oneHandedToggle.SetIsOnWithoutNotify(playlist.ForceOneHanded);
-        _jabsOnlyToggle.SetIsOnWithoutNotify(playlist.ForceJabsOnly);
+        NoObstaclesSet(playlist.ForceNoObstacles);
+        OneHandedSet(playlist.ForceOneHanded);
+        JabsOnlySet(playlist.ForceJabsOnly);
+
+        SetToggles(playlist.ForceNoObstacles, playlist.ForceOneHanded, playlist.ForceJabsOnly);
+    }
+
+    private void SetToggles(bool noObstacles, bool oneHanded, bool jabsOnly)
+    {
+        _noObstaclesToggle.SetIsOnWithoutNotify(noObstacles);
+        _oneHandedToggle.SetIsOnWithoutNotify(oneHanded);
+        _jabsOnlyToggle.SetIsOnWithoutNotify(jabsOnly);
     }
 
     public void NoObstaclesToggleSet(bool isOn)
     {
+        PlaylistManager.SetDefaultForceNoObstacles(isOn);
+
+        NoObstaclesSet(isOn);
+    }
+
+    public void OneHandedToggleSet(bool isOn)
+    {
+        PlaylistManager.SetDefaultForceOneHanded(isOn);
+
+        OneHandedSet(isOn);
+    }
+
+    public void JabsOnlyToggleSet(bool isOn)
+    {
+        PlaylistManager.SetDefaultForceJabsOnly(isOn);
+
+        JabsOnlySet(isOn);
+    }
+    
+    public void NoObstaclesSet(bool isOn)
+    {
         _noObstaclesText.SetText(isOn ? ON : OFF);
+
+
         if (_newPlaylist || _singleSong)
         {
             PlaylistMaker.Instance.SetForceNoObstacles(isOn);
@@ -109,9 +149,10 @@ public class PlaylistOverridesSetter : MonoBehaviour
         }
     }
 
-    public void OneHandedToggleSet(bool isOn)
+    public void OneHandedSet(bool isOn)
     {
         _oneHandedText.SetText(isOn ? ON : OFF);
+
         if (_newPlaylist || _singleSong)
         {
             PlaylistMaker.Instance.SetForceOneHanded(isOn);
@@ -122,9 +163,10 @@ public class PlaylistOverridesSetter : MonoBehaviour
         }
     }
 
-    public void JabsOnlyToggleSet(bool isOn)
+    public void JabsOnlySet(bool isOn)
     {
         _jabsOnlyText.SetText(isOn ? ON : OFF);
+
         if (_newPlaylist || _singleSong)
         {
             PlaylistMaker.Instance.SetForceJabsOnly(isOn);

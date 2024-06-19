@@ -20,6 +20,7 @@ public class GameStateManager : MonoBehaviour
     private GameState _previousGameState = GameState.Entry;
     private CancellationTokenSource _tokenSource;
     private CancellationToken _onDestroyToken;
+    private bool _skipDelay = false;
 
     #region Const Strings
     private const string MenuButtonAll = "Menu Button All";
@@ -36,7 +37,7 @@ public class GameStateManager : MonoBehaviour
                 _previousGameState = _gameState;
                 _gameState = value;
                 gameStateChanged?.Invoke(_previousGameState, _gameState);
-                if(value == GameState.PreparingToPlay)
+                if (value == GameState.PreparingToPlay)
                 {
                     TransitionToPlaying().Forget();
                 }
@@ -59,7 +60,7 @@ public class GameStateManager : MonoBehaviour
             Destroy(this);
         }
     }
-    
+
 
     private void OnEnable()
     {
@@ -96,7 +97,7 @@ public class GameStateManager : MonoBehaviour
             return;
         }
 
-        switch(_gameState)
+        switch (_gameState)
         {
             case GameState.Paused:
                 CurrentGameState = GameState.PreparingToPlay;
@@ -112,8 +113,15 @@ public class GameStateManager : MonoBehaviour
 
     private async UniTask TransitionToPlaying()
     {
-        await UniTask.Delay(TimeSpan.FromSeconds(3), ignoreTimeScale: true, cancellationToken:_tokenSource.Token);
-        if(_tokenSource.IsCancellationRequested || _gameState != GameState.PreparingToPlay)
+        if (_skipDelay)
+        {
+            _skipDelay = false;
+        }
+        else
+        {
+            await UniTask.Delay(TimeSpan.FromSeconds(3), ignoreTimeScale: true, cancellationToken: _tokenSource.Token);
+        }
+        if (_tokenSource.IsCancellationRequested || _gameState != GameState.PreparingToPlay)
         {
             return;
         }
@@ -125,7 +133,7 @@ public class GameStateManager : MonoBehaviour
         if (!currentlyFocused)
         {
             CurrentGameState = GameState.Unfocused;
-        } 
+        }
         else if (_gameState == GameState.Unfocused)
         {
             CurrentGameState = GameState.Paused;
@@ -134,7 +142,7 @@ public class GameStateManager : MonoBehaviour
 
     public void SetState(GameState state)
     {
-        
+
         CurrentGameState = state;
     }
 
@@ -142,7 +150,7 @@ public class GameStateManager : MonoBehaviour
     {
 #if UNITY_ANDROID
         var headset = OVRPlugin.GetSystemHeadsetType();
-        switch(headset)
+        switch (headset)
         {
             case OVRPlugin.SystemHeadset.None:
                 return MenuButtonAll;
@@ -153,14 +161,18 @@ public class GameStateManager : MonoBehaviour
 #endif
     }
 
-    private async UniTaskVoid RefreshToken()
+    private void RefreshToken()
     {
-        await UniTask.DelayFrame(2);
-        if(_tokenSource != null && !_onDestroyToken.IsCancellationRequested)
+        if (_tokenSource != null && !_onDestroyToken.IsCancellationRequested)
         {
             _tokenSource.Dispose();
             _tokenSource = CancellationTokenSource.CreateLinkedTokenSource(_onDestroyToken);
         }
+    }
+
+    public void SkipDelay()
+    {
+        _skipDelay = true;
     }
 }
 [Serializable]

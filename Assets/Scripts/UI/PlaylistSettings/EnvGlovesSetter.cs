@@ -1,25 +1,22 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public class EnvGlovesSetter : EnvironmentAssetSetter
 {
     public override string GetPlaylistAssetName(Playlist playlist)
     {
-        return playlist != null ? playlist.TargetEnvGlovesName : null;
+        return playlist?.TargetEnvGlovesName;
     }
 
     public override string GetEnvAssetName(Environment environment)
     {
         return environment.GlovesName;
     }
+
     protected override bool ShouldUpdateFromEnv()
     {
         if (_ignorePlaylists)
         {
             return true;
         }
+
         var managerNull = PlaylistManager.Instance == null;
         var playlistNull = managerNull || PlaylistManager.Instance.CurrentPlaylist == null;
         var glovesNull = managerNull || playlistNull || PlaylistManager.Instance.CurrentPlaylist.Gloves == null;
@@ -29,9 +26,8 @@ public class EnvGlovesSetter : EnvironmentAssetSetter
 
     public override void SetAssetIndex(int index)
     {
-        var gloveName = EnvironmentControlManager.Instance.SetGloveOverride(index);
+        var gloveName = EnvironmentControlManager.Instance.SetDefaultGloveOverride(index);
         SetText(gloveName?.AssetName);
-        DisableOptionsDisplay();
     }
 
     protected override int GetAssetIndex()
@@ -48,6 +44,7 @@ public class EnvGlovesSetter : EnvironmentAssetSetter
     {
         return EnvironmentControlManager.Instance.GetGloveAtIndex(index);
     }
+
     protected override string GetAssetName(Playlist sourcePlaylist)
     {
         var assetName = GetPlaylistAssetName(sourcePlaylist);
@@ -60,7 +57,14 @@ public class EnvGlovesSetter : EnvironmentAssetSetter
         {
             if (!string.IsNullOrWhiteSpace(sourcePlaylist.TargetEnvName) && EnvironmentControlManager.Instance.TryGetEnvRefByName(sourcePlaylist.TargetEnvName, out var environment) && environment.Gloves != null)
             {
-                assetName = environment.GlovesName;
+                if (EnvironmentControlManager.Instance.GlovesOverride != null)
+                {
+                    assetName = EnvironmentControlManager.Instance.GlovesOverride.AssetName;
+                }
+                else
+                {
+                    assetName = environment.GlovesName;
+                }
                 return assetName;
             }
 
@@ -80,10 +84,11 @@ public class EnvGlovesSetter : EnvironmentAssetSetter
 
     protected override void TrySetAsset(Playlist playlist)
     {
-        if(playlist == null)
+        if (playlist == null)
         {
             return;
         }
+
         if (playlist.Gloves != null)
         {
             EnvironmentControlManager.Instance.SetGloveOverride(playlist.Gloves);
@@ -92,6 +97,35 @@ public class EnvGlovesSetter : EnvironmentAssetSetter
 
     protected override void ResetOverrides()
     {
-        EnvironmentControlManager.Instance.SetGloveOverride(null);
+        EnvironmentControlManager.Instance.ResetGloves();
+    }
+
+    protected override void GetAndSetText()
+    {
+        var gloves = EnvironmentControlManager.Instance.GlovesOverride;
+        if (_ignorePlaylists && gloves != null && !string.IsNullOrWhiteSpace(gloves.AssetName))
+        {
+            SetText(gloves.AssetName);
+        }
+        else
+        {
+            var targetEnv = EnvironmentControlManager.Instance.GetTargetEnvironment();
+            if (string.IsNullOrWhiteSpace(targetEnv.GlovesName))
+            {
+                targetEnv = EnvironmentControlManager.Instance.GetCustomEnvironment();
+            }
+            if (string.IsNullOrWhiteSpace(targetEnv.GlovesName))
+            {
+                base.GetAndSetText();
+                return;
+            }
+            SetText(targetEnv.GlovesName);
+        }
+    }
+
+    protected override bool CheckForOverrideName(out string overrideName)
+    {
+        overrideName = EnvironmentControlManager.Instance.GlovesOverride?.AssetName;
+        return !string.IsNullOrWhiteSpace(overrideName);
     }
 }

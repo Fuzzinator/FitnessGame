@@ -82,6 +82,7 @@ public class BeatSageDownloadManager
 
                 download.Progress = -1;
                 Downloads.Remove(download);
+                Debug.LogError($"{e.Message} {e.StackTrace}");
             }
 
             download.IsAlive = false;
@@ -220,6 +221,7 @@ public class BeatSageDownloadManager
             }
             catch (Exception e)
             {
+                Debug.LogError($"{e.Message} {e.StackTrace}");
                 break;
             }
 

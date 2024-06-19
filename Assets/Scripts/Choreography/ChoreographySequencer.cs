@@ -300,14 +300,17 @@ public class ChoreographySequencer : MonoBehaviour
                 }
 
                 var formations = ChoreographyReader.Instance.GetOrderedFormations();
-                var nextFormation = formations[nextFormationIndex];
-                if (formations.Count > nextFormationIndex && nextFormation.HasNote && nextFormation.Note.HitSideType == note.HitSideType)
+                if (nextFormationIndex < formations.Count)
                 {
-                    formation = formation.SetNote(new ChoreographyNote(), false);
-                }
-                else
-                {
-                    formation = formation.SetNote(note);
+                    var nextFormation = formations[nextFormationIndex];
+                    if (formations.Count > nextFormationIndex && nextFormation.HasNote && nextFormation.Note.HitSideType == note.HitSideType)
+                    {
+                        formation = formation.SetNote(new ChoreographyNote(), false);
+                    }
+                    else
+                    {
+                        formation = formation.SetNote(note);
+                    }
                 }
             }
         }

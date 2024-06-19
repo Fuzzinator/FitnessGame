@@ -70,6 +70,10 @@ public class PlaylistManager : MonoBehaviour
 
     public bool OverrideGameModes => _overrideGameModes;
 
+    private const string DefaultForceNoObstaclesSetting = "DefaultAllowObstacles";
+    private const string DefaultForceOneHandedSetting = "DefaultForceOneHanded";
+    private const string DefaultForceJabsOnlySetting = "DefaultForceJabsOnly";
+
     public GameMode TargetGameMode
     {
         get
@@ -184,7 +188,7 @@ public class PlaylistManager : MonoBehaviour
 
     public void SetTempSongPlaylist(PlaylistItem playlistItem, HitSideType forwardFootSide, bool noObstacles, bool oneHanded, bool jabsOnly)
     {
-        var targetEnvName = EnvironmentControlManager.Instance.GetTargetEnvName();
+        var targetEnvName = EnvironmentControlManager.Instance.GetTargetEnvironment().Name;
         var tempPlaylist = new Playlist(playlistItem, forwardFootSide, noObstacles, oneHanded, jabsOnly, targetEnvName);
         CurrentPlaylist = tempPlaylist;
         _activePlaylistIsTemp = true;
@@ -256,5 +260,35 @@ public class PlaylistManager : MonoBehaviour
     public async UniTask<SongRecord[]> TryGetRecords(CancellationToken token)
     {
         return await PlayerStatsFileManager.TryGetRecords(SongInfoReader.Instance.songInfo, TargetDifficulty, TargetGameMode, token);
+    }
+
+    public static void SetDefaultForceNoObstacles(bool isOn)
+    {
+        SettingsManager.SetSetting(DefaultForceNoObstaclesSetting, isOn);
+    }
+
+    public static void SetDefaultForceOneHanded(bool isOn)
+    {
+        SettingsManager.SetSetting(DefaultForceOneHandedSetting, isOn);
+    }
+
+    public static void SetDefaultForceJabsOnly(bool isOn)
+    {
+        SettingsManager.SetSetting(DefaultForceJabsOnlySetting, isOn);
+    }
+
+    public static bool GetDefaultForceNoObstacles()
+    {
+        return SettingsManager.GetSetting(DefaultForceNoObstaclesSetting, false);
+    }
+
+    public static bool GetDefaultForceOneHanded()
+    {
+        return SettingsManager.GetSetting(DefaultForceOneHandedSetting, false);
+    }
+
+    public static bool GetDefaultForceJabsOnly()
+    {
+        return SettingsManager.GetSetting(DefaultForceJabsOnlySetting, false);
     }
 }

@@ -27,6 +27,7 @@ public class SettingsManager : MonoBehaviour
 #elif UNITY_STANDALONE_WIN
     private static readonly Quaternion ViveWandRotation = new Quaternion(.615f, 0f, 0f, .8f);
     private static readonly Quaternion OculusTouchRotation = new Quaternion(0.7f, 0f, 0f, 0.71f);
+    private static readonly Quaternion IndexRotation = new Quaternion(0.707106829f, 0, 0, 0.707106829f);
 #endif
 
     public static UnityEvent<string, bool> CachedBoolSettingChanged { get; private set; } = new UnityEvent<string, bool>();
@@ -458,6 +459,11 @@ public class SettingsManager : MonoBehaviour
         if(string.Equals("Oculus Touch Controller OpenXR", controllerName))
         {
             return OculusTouchRotation;
+        }
+
+        if(controllerName.Contains(IndexController))
+        {
+            return IndexRotation;
         }
         return Quaternion.identity;
 #endif

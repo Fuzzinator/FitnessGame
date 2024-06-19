@@ -15,7 +15,6 @@ public class NonVRCameraRotator : MonoBehaviour
     [SerializeField]
     private Camera _camera;
     private float _rotationX = 0f;
-    private bool _pressed = false;
     // Start is called before the first frame update
     void Start()
     {

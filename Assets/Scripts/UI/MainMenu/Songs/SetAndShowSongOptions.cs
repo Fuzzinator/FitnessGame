@@ -76,6 +76,8 @@ public class SetAndShowSongOptions : MonoBehaviour
     private const string Preview = "Listen";
     private const string Loading = "Loading";
     private const string Stop = "Stop";
+    private const string DefaultGameModeSetting = "DefaultGameMode";
+    private const string DefaultDifficultySetting = "DefaultDifficulty";
     #endregion
 
     private void Start()
@@ -180,8 +182,10 @@ public class SetAndShowSongOptions : MonoBehaviour
         _typeDifficultyTexts[0].transform.parent.gameObject.SetActive(true);
         _stopAutoPlay = true;
 
-        _gameTypeToggles[lowest].SetIsOnWithoutNotify(true);
-        SetSelectedType(_gameTypeToggles[lowest]);
+        var defaultSetting = SettingsManager.GetSetting(DefaultGameModeSetting, lowest);
+
+        _gameTypeToggles[defaultSetting].SetIsOnWithoutNotify(true);
+        SetSelectedType(_gameTypeToggles[defaultSetting]);
     }
 
     private void UpdateAvailableDifficulties(bool setSelectedDifficulty)
@@ -201,7 +205,6 @@ public class SetAndShowSongOptions : MonoBehaviour
         }
 
         var lowest = 10;
-        var hasCurrentID = -1;
         for (var i = 0; i < _activeDifficultySet.DifficultyInfos.Length; i++)
         {
             var difficulty = (int)_activeDifficultySet.DifficultyInfos[i].DifficultyAsEnum - 1;
@@ -215,11 +218,6 @@ public class SetAndShowSongOptions : MonoBehaviour
                 lowest = difficulty;
             }
 
-            if (_activeDifficultySet.DifficultyInfos[i].DifficultyAsEnum == _difficultyEnum)
-            {
-                hasCurrentID = difficulty;
-            }
-
             _typeDifficultyToggles[difficulty].gameObject.SetActive(true);
             _typeDifficultyTexts[difficulty].gameObject.SetActive(true);
         }
@@ -229,20 +227,9 @@ public class SetAndShowSongOptions : MonoBehaviour
         _typeDifficultyTexts[0].transform.parent.gameObject.SetActive(true);
 
         _stopAutoPlay = true;
-        if (!setSelectedDifficulty)
-        {
-            return;
-        }
-        if (hasCurrentID > 0)
-        {
-            _typeDifficultyToggles[hasCurrentID].SetIsOnWithoutNotify(true);
-            SetSelectedDifficulty(_typeDifficultyToggles[hasCurrentID]);
-        }
-        else
-        {
-            _typeDifficultyToggles[lowest].SetIsOnWithoutNotify(true);
-            SetSelectedDifficulty(_typeDifficultyToggles[lowest]);
-        }
+        var defaultSetting = SettingsManager.GetSetting(DefaultDifficultySetting, lowest);
+        _typeDifficultyToggles[defaultSetting].SetIsOnWithoutNotify(true);
+        SetSelectedDifficulty(_typeDifficultyToggles[defaultSetting]);
     }
 
     public void SetSelectedType(Toggle toggle)
@@ -288,43 +275,14 @@ public class SetAndShowSongOptions : MonoBehaviour
         }
 
         _activeDifficultySet = _difficultySets[gameModeID];
+
+        SettingsManager.SetSetting(DefaultGameModeSetting, gameModeID);
         UpdateAvailableDifficulties(updateDisplay);
     }
 
     public void SetSelectedDifficulty(Toggle toggle)
     {
-        if (!toggle.isOn)
-        {
-            return;
-        }
-
-        var toggleID = _typeDifficultyToggles.GetToggleID(toggle);
-
-        if (toggleID < 0)
-        {
-            Debug.LogError("Song does not have matching toggle");
-            return;
-        }
-        var dificultyID = -1;
-        for (var i = 0; i < _activeDifficultySet.DifficultyInfos.Length; i++)
-        {
-            var difficulty = (int)_activeDifficultySet.DifficultyInfos[i].DifficultyAsEnum - 1;
-            if (difficulty == toggleID)
-            {
-                dificultyID = i;
-                break;
-            }
-        }
-
-        if (dificultyID < -0)
-        {
-            Debug.LogError("Song does not have matching difficulty");
-            return;
-        }
-
-        _selectedDifficulty = _activeDifficultySet.DifficultyInfos[dificultyID].Difficulty;
-        _difficultyEnum = _activeDifficultySet.DifficultyInfos[dificultyID].DifficultyAsEnum;
-        _songRecordsDisplay?.RefreshDisplay();
+        SetSelectedDifficulty(toggle, true);
     }
 
     private void SetSelectedDifficulty(Toggle toggle, bool updateDisplay)
@@ -360,6 +318,9 @@ public class SetAndShowSongOptions : MonoBehaviour
 
         _selectedDifficulty = _activeDifficultySet.DifficultyInfos[dificultyID].Difficulty;
         _difficultyEnum = _activeDifficultySet.DifficultyInfos[dificultyID].DifficultyAsEnum;
+
+        SettingsManager.SetSetting(DefaultDifficultySetting, dificultyID);
+
         if (!updateDisplay)
         {
             return;

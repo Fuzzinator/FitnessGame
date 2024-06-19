@@ -20,9 +20,11 @@ public class SetTargetForwardFoot : MonoBehaviour
 
 
     private const string LeftHanded = "LeftHanded";
+    private const string DefaultFootSetting = "DefaultForwardFoot";
 
     private void OnEnable()
     {
+
         if (_referToPlaylist)
         {
             PlaylistManager.Instance.currentPlaylistUpdated.AddListener(UpdateFromPlaylist);
@@ -41,6 +43,13 @@ public class SetTargetForwardFoot : MonoBehaviour
         {
             DelayUpdateDisplay().Forget();
         }
+    }
+
+    private void GetDefault()
+    {
+        var leftHanded = SettingsManager.GetSetting(LeftHanded, false);
+        var defaultFooting = SettingsManager.GetSetting(DefaultFootSetting, leftHanded ? 0 : 1);
+        SetActiveToggle(defaultFooting);
     }
 
     private void OnDisable()
@@ -82,9 +91,7 @@ public class SetTargetForwardFoot : MonoBehaviour
         {
             return;
         }
-
-        var leftHanded = SettingsManager.GetSetting(LeftHanded, false);
-        SetActiveToggle(leftHanded ? 0 : 1);
+        GetDefault();
     }
     private void UpdateFromPlaylist(Playlist playlist)
     {
@@ -127,5 +134,7 @@ public class SetTargetForwardFoot : MonoBehaviour
         {
             PlaylistManager.Instance.CurrentPlaylist.SetForwardFoot(TargetHitSideType);
         }
+
+        SettingsManager.SetSetting(DefaultFootSetting, toggleID);
     }
 }

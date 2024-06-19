@@ -152,10 +152,23 @@ public abstract class EnvironmentAssetSetter : MonoBehaviour, IEnvAssetScroller
         }
         var environment = GetAssetFromEnvIndex(index);
         var assetName = GetEnvAssetName(environment);
+        ResetOverrides();
+
+        if (CheckForOverrideName(out var overrideName))
+        {
+            assetName = overrideName;
+        }
+
         if (environment.IsCustom && string.IsNullOrWhiteSpace(assetName))
         {
             assetName = "Sci-Fi Arena";
         }
         SetText(assetName);
+    }
+
+    protected virtual bool CheckForOverrideName(out string overrideName)
+    {
+        overrideName = null;
+        return false;
     }
 }

@@ -67,7 +67,7 @@ namespace BeatSaverSharp
 
         }
 
-#region Beatmaps
+        #region Beatmaps
 
         public async UniTask<Beatmap?> Beatmap(string key, CancellationToken token = default, bool skipCacheCheck = false)
         {
@@ -100,9 +100,9 @@ namespace BeatSaverSharp
             return beatmap;
         }
 
-#endregion
+        #endregion
 
-#region Paged Beatmaps
+        #region Paged Beatmaps
 
         public async UniTask<Page?> LatestBeatmaps(UploadedFilterOptions? options = default, CancellationToken token = default, IProgress<double> progress = null)
         {
@@ -189,9 +189,9 @@ namespace BeatSaverSharp
             };
         }
 
-#endregion
+        #endregion
 
-#region Users
+        #region Users
 
         public async UniTask<User?> User(int id, CancellationToken token = default, bool skipCacheCheck = false)
         {
@@ -234,9 +234,9 @@ namespace BeatSaverSharp
             return user;
         }
 
-#endregion
+        #endregion
 
-#region Voting
+        #region Voting
 
         /// <summary>
         /// Submits a vote on a map.
@@ -271,11 +271,11 @@ namespace BeatSaverSharp
             return await response.ReadAsObjectAsync<VoteResponse>();//.ConfigureAwait(false);
         }
 
-#endregion
+        #endregion
 
-#region Byte Fetching
+        #region Byte Fetching
 
-        
+
 
         internal async UniTask<byte[]?> DownloadZIP(BeatmapVersion version, CancellationToken token = default, IProgress<double>? progress = null)
         {
@@ -300,16 +300,23 @@ namespace BeatSaverSharp
                 return null;
             return await response.ReadAsByteArrayAsync();//.ConfigureAwait(false);
         }
-        
+
         internal async UniTask<UnityEngine.AudioClip> GetPlayablePreview(BeatmapVersion version, CancellationToken token = default)
         {
-            var uwr = UnityEngine.Networking.UnityWebRequestMultimedia.GetAudioClip(version.PreviewURL, UnityEngine.AudioType.MPEG);
-            ((UnityEngine.Networking.DownloadHandlerAudioClip) uwr.downloadHandler).streamAudio = true;
-            await uwr.SendWebRequest().WithCancellation(token);
-
-            if (uwr.isDone && uwr.result == UnityEngine.Networking.UnityWebRequest.Result.Success)
+            try
             {
-                return UnityEngine.Networking.DownloadHandlerAudioClip.GetContent(uwr);
+                var uwr = UnityEngine.Networking.UnityWebRequestMultimedia.GetAudioClip(version.PreviewURL, UnityEngine.AudioType.MPEG);
+                ((UnityEngine.Networking.DownloadHandlerAudioClip)uwr.downloadHandler).streamAudio = true;
+                await uwr.SendWebRequest().WithCancellation(token);
+
+                if (uwr.isDone && uwr.result == UnityEngine.Networking.UnityWebRequest.Result.Success)
+                {
+                    return UnityEngine.Networking.DownloadHandlerAudioClip.GetContent(uwr);
+                }
+            }
+            catch
+            {
+                return null;
             }
 
             return null;

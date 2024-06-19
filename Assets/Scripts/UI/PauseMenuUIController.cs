@@ -39,9 +39,10 @@ public class PauseMenuUIController : BaseGameStateListener
     {
         if (_skipUI || !gameObject.activeInHierarchy)
         {
-            if (oldState == GameState.Unfocused && newState == GameState.Paused)
+            if ((oldState == GameState.Unfocused && newState == GameState.Paused) || (oldState == GameState.Paused && newState == GameState.PreparingToPlay))
             {
                 await UniTask.DelayFrame(1);
+                GameStateManager.Instance.SkipDelay();
                 ResumeGame();
             }
 

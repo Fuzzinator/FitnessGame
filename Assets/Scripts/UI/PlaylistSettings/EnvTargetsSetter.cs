@@ -1,8 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public class EnvTargetsSetter : EnvironmentAssetSetter
 {
     public override string GetPlaylistAssetName(Playlist playlist)
@@ -21,6 +16,7 @@ public class EnvTargetsSetter : EnvironmentAssetSetter
         {
             return true;
         }
+
         var managerNull = PlaylistManager.Instance == null;
         var playlistNull = managerNull || PlaylistManager.Instance.CurrentPlaylist == null;
         var targetsNull = managerNull || playlistNull || PlaylistManager.Instance.CurrentPlaylist.Targets == null;
@@ -30,7 +26,7 @@ public class EnvTargetsSetter : EnvironmentAssetSetter
 
     public override void SetAssetIndex(int index)
     {
-        var targetsName = EnvironmentControlManager.Instance.SetTargetOverride(index);
+        var targetsName = EnvironmentControlManager.Instance.SetDefaultTargetOverride(index);
         SetText(targetsName?.AssetName);
     }
 
@@ -61,10 +57,19 @@ public class EnvTargetsSetter : EnvironmentAssetSetter
         {
             if (!string.IsNullOrWhiteSpace(sourcePlaylist.TargetEnvName) && EnvironmentControlManager.Instance.TryGetEnvRefByName(sourcePlaylist.TargetEnvName, out var environment) && environment.Targets != null)
             {
-                assetName = environment.TargetsName;
+                if (EnvironmentControlManager.Instance.TargetsOverride != null)
+                {
+                    assetName = EnvironmentControlManager.Instance.TargetsOverride.AssetName;
+                }
+                else
+                {
+                    assetName = environment.TargetsName;
+                }
                 return assetName;
             }
+
             var currentEnv = EnvironmentControlManager.Instance.ActiveEnvironmentContainer;
+
             if (currentEnv.Targets != null)
             {
                 assetName = currentEnv.Targets.TargetsName;
@@ -83,6 +88,7 @@ public class EnvTargetsSetter : EnvironmentAssetSetter
         {
             return;
         }
+
         if (playlist.Targets != null)
         {
             EnvironmentControlManager.Instance.SetTargetOverride(playlist.Targets);
@@ -91,6 +97,35 @@ public class EnvTargetsSetter : EnvironmentAssetSetter
 
     protected override void ResetOverrides()
     {
-        EnvironmentControlManager.Instance.SetTargetOverride(null);
+        EnvironmentControlManager.Instance.ResetTargets();
+    }
+
+    protected override void GetAndSetText()
+    {
+        var targets = EnvironmentControlManager.Instance.TargetsOverride;
+        if (_ignorePlaylists && targets != null && !string.IsNullOrWhiteSpace(targets.AssetName))
+        {
+            SetText(targets.AssetName);
+        }
+        else
+        {
+            var targetEnv = EnvironmentControlManager.Instance.GetTargetEnvironment();
+            if (string.IsNullOrWhiteSpace(targetEnv.TargetsName))
+            {
+                targetEnv = EnvironmentControlManager.Instance.GetCustomEnvironment();
+            }
+            if (string.IsNullOrWhiteSpace(targetEnv.TargetsName))
+            {
+                base.GetAndSetText();
+                return;
+            }
+            SetText(targetEnv.TargetsName);
+        }
+    }
+
+    protected override bool CheckForOverrideName(out string overrideName)
+    {
+        overrideName = EnvironmentControlManager.Instance.TargetsOverride?.AssetName;
+        return !string.IsNullOrWhiteSpace(overrideName);
     }
 }

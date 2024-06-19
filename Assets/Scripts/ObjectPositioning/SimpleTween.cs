@@ -15,11 +15,11 @@ namespace SimpleTweens
         internal event OnReturnDelegate OnReturn;
 
         internal bool _isPooled = false;
-        
+
         internal bool _active = false;
 
         internal float _delayTime;
-        
+
         private CancellationToken _destroyedCancellationToken;
         private CancellationTokenSource _internalCancelTokenSource;
         public SimpleTween(Data data, CancellationToken token)
@@ -39,7 +39,7 @@ namespace SimpleTweens
             _delayTime = delay;
             _active = true;
         }
-        
+
         private async UniTask DelayTweenStartAsync()
         {
             while (!_internalCancelTokenSource.IsCancellationRequested)
@@ -65,13 +65,13 @@ namespace SimpleTweens
                         break;
                     }
                 }
-                
+
                 if (_internalCancelTokenSource.IsCancellationRequested)
                 {
                     InternalCancel();
                     continue;
                 }
-                
+
                 try
                 {
                     await UniTask.Delay(TimeSpan.FromSeconds(_delayTime),
@@ -83,14 +83,14 @@ namespace SimpleTweens
                     }
 
                     data.OnStart?.Invoke();
-                    
+
                     //This is the DoTween Method moved here because it reduces garbage?
-                    while (!_internalCancelTokenSource.Token.IsCancellationRequested &&
+                    while (!_internalCancelTokenSource.Token.IsCancellationRequested && data.MyTransform != null &&
                            Vector3.Distance(data.MyTransform.position, data.EndPosition) > .01f)
                     {
                         var time = Time.time;
                         await UniTask.DelayFrame(1, cancellationToken: _internalCancelTokenSource.Token);
-                        if (_internalCancelTokenSource.Token.IsCancellationRequested)
+                        if (_internalCancelTokenSource.Token.IsCancellationRequested || data.MyTransform == null)
                         {
                             InternalCancel();
                             continue;
@@ -99,7 +99,7 @@ namespace SimpleTweens
                         var step = data.Speed * (Time.time - time);
                         data.MyTransform.position = Vector3.MoveTowards(data.MyTransform.position, data.EndPosition, step);
                     }
-                    
+
                     //await DoTween();
                     if (_internalCancelTokenSource.Token.IsCancellationRequested)
                     {
@@ -132,12 +132,12 @@ namespace SimpleTweens
             data.OnComplete?.Invoke();
             Cancel();
         }
-        
+
         public void Cancel()
         {
             _active = false;
             _internalCancelTokenSource?.Cancel();
-            
+
             if (!_isPooled)
             {
                 OnReturn?.Invoke();

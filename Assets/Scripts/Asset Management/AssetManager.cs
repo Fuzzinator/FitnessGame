@@ -558,8 +558,16 @@ public class AssetManager : MonoBehaviour
                 continue;
             }
 #endif
+            SongInfo item = null;
+            try
+            {
+                item = await GetSingleCustomSong(dir, cancellationSource.Token);
+            }
+            catch(Exception ex)
+            {
+                Debug.LogError($"{ex.Message}-{ex.StackTrace}");
+            }
 
-            var item = await GetSingleCustomSong(dir, cancellationSource.Token);
             if (item != null)
             {
                 songLoaded?.Invoke(item);
@@ -874,7 +882,7 @@ public class AssetManager : MonoBehaviour
         }
     }
 
-    public static async UniTask<TagLib.File> GetTagLib(SongInfo info, CancellationToken cancellationToken)
+    public static TagLib.File GetTagLib(SongInfo info, CancellationToken cancellationToken)
     {
         if (!CheckPermissions())
         {

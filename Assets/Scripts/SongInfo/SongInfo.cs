@@ -254,6 +254,7 @@ public class SongInfo
         var rotation90Set = new DifficultySet();
         var rotation360Set = new DifficultySet();
         var hasNormal = false;
+
         foreach (var set in _difficultyBeatmapSets)
         {
             if (set.MapGameMode == GameMode.Normal)
@@ -283,6 +284,8 @@ public class SongInfo
                         {
                             break;
                         }
+                        _difficultyBeatmapSets[i].TryCreateMissingDifficulties();
+                        difficultySet = _difficultyBeatmapSets[i];
                         break;
                     case GameMode.OneHanded:
                         if (hasNormal)

@@ -36,8 +36,6 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     [SerializeField]
     private DifficultyInfo.DifficultyEnum _difficulty = DifficultyInfo.DifficultyEnum.Unset;
 
-    [SerializeField]
-    private HitSideType _startingSide = HitSideType.Right;
 
     [SerializeField]
     private Texture2D _emptyTexture;
@@ -45,12 +43,26 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     public List<PlaylistItem> PlaylistItems => _playlistItems;
 
     private bool _editMode = false;
+    private HitSideType _startingSide = HitSideType.Unused;
 
     public string PlaylistName => _playlistName;
     public GameMode TargetGameMode => _gameMode;
     public DifficultyInfo.DifficultyEnum Difficulty => _difficulty;
 
-    public HitSideType StartingSide => _startingSide;
+    public HitSideType StartingSide
+
+    {
+        get
+        {
+            if(_startingSide == HitSideType.Unused)
+            {
+                var leftHanded = SettingsManager.GetSetting(LeftHanded, false);
+                var defaultFooting = SettingsManager.GetSetting(DefaultFootSetting, leftHanded ? 0 : 1);
+                _startingSide = (HitSideType)defaultFooting;
+            }
+            return _startingSide;
+        }
+    }
 
     private string _playlistName;
     private string _originalName;
@@ -95,6 +107,8 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     private const int MINUTE = 60;
     private const string DIVIDER = ":";
 
+    private const string LeftHanded = "LeftHanded";
+    private const string DefaultFootSetting = "DefaultForwardFoot";
     #endregion
 
     private void Awake()
@@ -112,6 +126,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     private void Start()
     {
         _cancallationToken = this.GetCancellationTokenOnDestroy();
+        RefreshOverrides();
     }
 
     private void OnDestroy()
@@ -259,7 +274,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         var newPlaylist = new Playlist(_playlistItems, _gameMode, _difficulty, _startingSide, _playlistName, true, _targetEnv, sprite, Gloves, Targets, Obstacles);
         PlaylistManager.Instance.CurrentPlaylist = newPlaylist;
 
-        
+
         if (!Directory.Exists(AssetManager.PlaylistsPath))
         {
             Directory.CreateDirectory(AssetManager.PlaylistsPath);
@@ -508,6 +523,13 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     {
         CreatePlaylist();
         MainMenuUIController.Instance.SetActivePage(0);
+    }
+
+    public void RefreshOverrides()
+    {
+        _forceNoObstacles = PlaylistManager.GetDefaultForceNoObstacles();
+        _forceJabsOnly = PlaylistManager.GetDefaultForceJabsOnly();
+        _forceOneHanded = PlaylistManager.GetDefaultForceOneHanded();
     }
 
     /*private async UniTask<Texture2D> CombineTextures(Texture2D texture1,Texture2D texture2,Texture2D texture3,Texture2D texture4)
