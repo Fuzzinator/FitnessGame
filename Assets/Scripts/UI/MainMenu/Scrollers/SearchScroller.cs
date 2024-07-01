@@ -14,7 +14,11 @@ public class SearchScroller : MonoBehaviour
 
     [SerializeField]
     private ScrollerController _scrollerController;
-    
+
+#if UNITY_ANDROID
+    private TouchScreenKeyboard _keyboard;
+#endif
+
     private void OnEnable()
     {
         ResetSearch();
@@ -22,10 +26,25 @@ public class SearchScroller : MonoBehaviour
     
     public void StartEditTextField()
     {
-#if UNITY_STANDALONE_WIN
+#if UNITY_STANDALONE_WIN || UNITY_EDITOR
         KeyboardManager.Instance.ActivateKeyboard(_searchField, string.Empty);
+#elif UNITY_ANDROID
+        _keyboard = TouchScreenKeyboard.Open(_searchField.text, TouchScreenKeyboardType.Search);
+        FocusTracker.Instance.OnFocusChanged.AddListener(EditFieldCompleteFromFocus);
 #endif
     }
+
+#if UNITY_ANDROID
+    private void EditFieldCompleteFromFocus(bool focusState)
+    {
+        if (!focusState)
+        {
+            return;
+        }
+
+        _searchField.text = _keyboard.text;
+    }
+#endif
 
     public void ResetSearch()
     {

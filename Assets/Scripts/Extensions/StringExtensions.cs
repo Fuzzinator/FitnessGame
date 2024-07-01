@@ -5,9 +5,19 @@ using UnityEngine;
 
 public static class StringExtensions
 {
-    private static string[] _escapeCharacters = new[] { "\'", "\n", "\r", "\t", "\b", "\f", "\\uxxxx", "\u0041" };
-    private static string[] _illegalCharacters = new[] {":", "*", "?", "\"", "<", ">", "|", "/", ".", "”", "\\", "+"};
-    
+    private static string[] _escapeCharacters = new[] { "\'", "\n", "\r", "\t", "\b", "\f", "\\uxxxx"};
+    private static string[] _illegalCharacters = new[] { ":", "*", "?", "\"", "<", ">", "|", "/", ".", "”", "\\", "+" };
+    private static string[] _illegalFileCharacters = new[] { ":", "*", "?", "\"", "<", ">", "|", "/", "”", "\\", "+" };
+
+    public static string CleanFileName(this string fileName)
+    {
+        if(fileName.ContainsIllegalFileCharacters())
+        {
+            return fileName.RemoveIllegalFileIOCharacters();
+        }
+        return fileName;
+    }
+
     public static string RemoveIllegalIOCharacters(this string folderName)
     {
         var sb = new StringBuilder(folderName);
@@ -20,6 +30,7 @@ public static class StringExtensions
 
             sb.Replace(character, string.Empty);
         }
+
         folderName = sb.ToString();
         foreach (var character in _illegalCharacters)
         {
@@ -33,6 +44,34 @@ public static class StringExtensions
         folderName = sb.ToString();
         return folderName;
     }
+    
+    public static string RemoveIllegalFileIOCharacters(this string folderName)
+    {
+        var sb = new StringBuilder(folderName);
+        foreach (var character in _escapeCharacters)
+        {
+            if (!folderName.Contains(character))
+            {
+                continue;
+            }
+
+            sb.Replace(character, string.Empty);
+        }
+
+        folderName = sb.ToString();
+        foreach (var character in _illegalFileCharacters)
+        {
+            if (!folderName.Contains(character))
+            {
+                continue;
+            }
+
+            sb.Replace(character, string.Empty);
+        }
+        folderName = sb.ToString();
+        return folderName;
+    }
+
     public static string RemoveSpecialCharacters(this string str)
     {
         var sb = new StringBuilder();
@@ -48,7 +87,6 @@ public static class StringExtensions
 
     public static bool ContainsIllegalCharacters(this string str)
     {
-        StringBuilder sb = new StringBuilder(str);
         foreach (var character in _escapeCharacters)
         {
             if (!str.Contains(character))
@@ -58,6 +96,27 @@ public static class StringExtensions
             return true;
         }
         foreach (var character in _illegalCharacters)
+        {
+            if (!str.Contains(character))
+            {
+                continue;
+            }
+            return true;
+        }
+        return false;
+    }
+    
+    public static bool ContainsIllegalFileCharacters(this string str)
+    {
+        foreach (var character in _escapeCharacters)
+        {
+            if (!str.Contains(character))
+            {
+                continue;
+            }
+            return true;
+        }
+        foreach (var character in _illegalFileCharacters)
         {
             if (!str.Contains(character))
             {

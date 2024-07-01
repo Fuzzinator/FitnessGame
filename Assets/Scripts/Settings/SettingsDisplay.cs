@@ -155,6 +155,7 @@ public class SettingsDisplay : UIMenuController
     {
         switch (newState)
         {
+            case GameState.PreparingToPlay:
             case GameState.Playing:
             case GameState.InMainMenu:
                 if (oldState == GameState.Paused)

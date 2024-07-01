@@ -38,7 +38,7 @@ public class InputFieldController : MonoBehaviour
 
     protected virtual async UniTask EditTextField()
     {
-#if UNITY_STANDALONE_WIN
+#if UNITY_STANDALONE_WIN || UNITY_EDITOR
         var keyboard = KeyboardManager.Instance.ActivateKeyboard(_inputField, _defaultText);
         await UniTask.WaitWhile(() => keyboard.gameObject.activeInHierarchy);
         _editFieldCompleted?.Invoke(_inputField.text);

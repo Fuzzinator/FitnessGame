@@ -306,9 +306,8 @@ public class ProfileManager : MonoBehaviour
 
     private static async UniTask<Sprite> LoadCustomSprite(Profile profile)
     {
-        if (!AssetManager.CheckPermissions())
+        if (!await PermissionsRequester.Instance.HasReadAndWritePermissions())
         {
-            Debug.LogWarning("User did not give permissions cannot access custom files");
             return null;
         }
 

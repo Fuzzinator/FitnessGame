@@ -478,12 +478,12 @@ public class BeatSaverPageController : MonoBehaviour
             _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_token);
         }
         var audioClip = await targetBeatmap.LatestVersion.GetPlayablePreview(_cancellationTokenSource.Token);
-        if (audioClip == null)
+        /*if (audioClip == null)
         {
-            NotificationManager.RequestNotification(new Notification.NotificationVisuals("Unable to download the preview for ", "Preview failed.", autoTimeOutTime: 1f, popUp: true));
+            NotificationManager.RequestNotification(new Notification.NotificationVisuals($"Unable to play the preview for {targetBeatmap.Name}", "Preview failed.", autoTimeOutTime: 1f, popUp: true));
             Debug.LogError("Preview Failed");
             return;
-        }
+        }*/
 
         await UniTask.DelayFrame(1);
         if (_audioSource == null)

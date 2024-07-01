@@ -113,7 +113,7 @@ namespace SimpleTweens
                 {
                     if (e is not OperationCanceledException)
                     {
-                        Debug.LogError(e);
+                        Debug.LogError($"{e.Message}\n{e.StackTrace}");
                     }
                     InternalCancel();
                     continue;

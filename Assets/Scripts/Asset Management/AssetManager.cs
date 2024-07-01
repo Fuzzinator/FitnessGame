@@ -158,6 +158,35 @@ public class AssetManager : MonoBehaviour
 #endif
     }
 
+
+    /*public static async UniTask<bool> CheckPermissionsAsync()
+    {
+#if UNITY_ANDROID
+        var readPermission = Permission.HasUserAuthorizedPermission(Permission.ExternalStorageRead);
+        if (!readPermission)
+        {
+            Permission.RequestUserPermission(Permission.ExternalStorageRead);
+            await UniTask.NextFrame();
+            await UniTask.WaitWhile(() => !Application.isFocused);
+            readPermission = Permission.HasUserAuthorizedPermission(Permission.ExternalStorageRead);
+        }
+
+        var writePermission = Permission.HasUserAuthorizedPermission(Permission.ExternalStorageWrite);
+        if (!writePermission)
+        {
+            Permission.RequestUserPermission(Permission.ExternalStorageWrite);
+            await UniTask.NextFrame();
+            await UniTask.WaitWhile(() => !Application.isFocused);
+            writePermission = Permission.HasUserAuthorizedPermission(Permission.ExternalStorageRead);
+        }
+
+        return readPermission && writePermission;
+#else
+
+        return true;
+#endif
+    }*/
+
     public static async UniTask<AudioClip> LoadCustomSong(string path, CancellationToken cancellationToken, AudioType audioType, bool deleteFolder)
     {
         try
@@ -205,9 +234,8 @@ public class AssetManager : MonoBehaviour
     public static async UniTask<AudioClip> LoadCustomSong(string parentDirectory, SongInfo info,
         CancellationToken cancellationToken)
     {
-        if (!CheckPermissions())
+        if (!await PermissionsRequester.Instance.HasReadAndWritePermissions())
         {
-            Debug.LogWarning("User did not give permissions cannot access custom files");
             return null;
         }
 #if UNITY_EDITOR
@@ -259,9 +287,8 @@ public class AssetManager : MonoBehaviour
     public static async UniTask<Texture2D> LoadCustomSongImage(string parentDirectory, SongInfo info,
         CancellationToken cancellationToken)
     {
-        if (!CheckPermissions())
+        if (!await PermissionsRequester.Instance.HasReadAndWritePermissions())
         {
-            Debug.LogWarning("User did not give permissions cannot access custom files");
             return null;
         }
 
@@ -372,9 +399,8 @@ public class AssetManager : MonoBehaviour
 
     public static async UniTask GetCustomPlaylists(Action<Playlist> playlistLoaded, CancellationToken cancellationToken)
     {
-        if (!CheckPermissions())
+        if (!await PermissionsRequester.Instance.HasReadAndWritePermissions())
         {
-            Debug.LogWarning("User did not give permissions cannot access custom files");
             return;
         }
 
@@ -522,9 +548,8 @@ public class AssetManager : MonoBehaviour
 
     public static async UniTask GetCustomSongs(Action<SongInfo> songLoaded, CancellationTokenSource cancellationSource)
     {
-        if (!CheckPermissions())
+        if (!await PermissionsRequester.Instance.HasReadAndWritePermissions())
         {
-            Debug.LogWarning("User did not give permissions cannot access custom files");
             return;
         }
 
@@ -563,7 +588,7 @@ public class AssetManager : MonoBehaviour
             {
                 item = await GetSingleCustomSong(dir, cancellationSource.Token);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Debug.LogError($"{ex.Message}-{ex.StackTrace}");
             }
@@ -587,9 +612,8 @@ public class AssetManager : MonoBehaviour
 
     public static async UniTask<SongInfo> TryGetSingleCustomSong(string fileLocation, CancellationToken token, string songID = null, float songScore = -1f)
     {
-        if (!CheckPermissions())
+        if (!await PermissionsRequester.Instance.HasReadAndWritePermissions())
         {
-            Debug.LogWarning("User did not give permissions cannot access custom files");
             return null;
         }
 

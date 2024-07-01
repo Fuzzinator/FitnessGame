@@ -67,6 +67,7 @@ public class SongInfoFilesReader : MonoBehaviour
     {
         _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
         _destructionCancellationToken = this.GetCancellationTokenOnDestroy();
+        UpdateSongs().Forget();
     }
 
     private void OnDestroy()
@@ -82,12 +83,7 @@ public class SongInfoFilesReader : MonoBehaviour
         }
     }
 
-    private void OnEnable()
-    {
-        UpdateSongs().Forget();
-    }
-
-    public async UniTask UpdateSongs()
+    private async UniTask UpdateSongs()
     {
         _startSongsUpdate?.Invoke();
         await UpdateAvailableSongs();
@@ -112,6 +108,7 @@ public class SongInfoFilesReader : MonoBehaviour
         }
 
         await AssetManager.GetBuiltInSongs(_labelReference, AddSongs);
+
         await AssetManager.GetCustomSongs(AddCustomSongs, _cancellationSource);
         SortSongs();
         _songsUpdated?.Invoke();

@@ -76,6 +76,7 @@ public class Choreography
     private static async UniTask<Choreography> AsyncLoadCustomSong(string fileLocation, string fileName,
         string songName, CancellationToken token)
     {
+        fileName = fileName.CleanFileName();
         var path = $"{AssetManager.SongsPath}/{fileLocation}/{fileName}";
         try
         {
