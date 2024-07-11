@@ -62,6 +62,9 @@ public class BeatSaverPageController : MonoBehaviour
     [SerializeField]
     private EndlessEnhancedScroller _scroller;
 
+    [SerializeField]
+    private TMP_Dropdown_XRSupport _sortDropdown;
+
     private Page _activePage;
     private Page _nextPage;
 
@@ -70,6 +73,7 @@ public class BeatSaverPageController : MonoBehaviour
     private CancellationTokenSource _downloadsTokenSource;
     private BeatSaver _beatSaver;
     private LevelFileManagement _levelFileManagement;
+    private SearchBeatmapsTextFilterOption _currentSortOption;
 
     private Beatmap _activeBeatmap;
 
@@ -82,6 +86,11 @@ public class BeatSaverPageController : MonoBehaviour
     private List<Beatmap> _allBeatmaps = new List<Beatmap>();
 
     private const int MINUTE = 60;
+
+    private const int RatingSortMode = 0;
+    private const int RelevanceSortMode = 1;
+    private const int LatestSortMode = 2;
+    private const int CuratedSortMode = 3;
 
     private const string SONGINFOFORMAT =
         "<voffset=10>Song Name:           {0}\nSong Author:<line-indent=1>         {1}<line-indent=0>\nLevel Author:<line-indent=1>         {2}<line-indent=0>\nSong Length:         <line-indent=1>{3}:{4}<line-indent=0>\nSong Score:          <line-indent=1> {5}<line-indent=0>\nSong BPM:             <line-indent=0>{6}<line-indent=0>\nUpload Date:         <line-indent=2>{7}<line-indent=0>";
@@ -125,17 +134,17 @@ public class BeatSaverPageController : MonoBehaviour
     public void RequestFilterBy(int sortingOptions)
     {
         ShowLoading(true);
-        var search = ((SortingOptions)sortingOptions) switch
+        _currentSortOption = ((SortingOptions)sortingOptions) switch
         {
-            SortingOptions.Latest => SearchTextFilterOption.Latest,
-            SortingOptions.Relevance => SearchTextFilterOption.Relevance,
-            SortingOptions.Rating => SearchTextFilterOption.Rating,
-            SortingOptions.Curated => SearchTextFilterOption.Curated,
+            SortingOptions.Latest => SearchBeatmapsTextFilterOption.Latest,
+            SortingOptions.Relevance => SearchBeatmapsTextFilterOption.Relevance,
+            SortingOptions.Rating => SearchBeatmapsTextFilterOption.Rating,
+            SortingOptions.Curated => SearchBeatmapsTextFilterOption.Curated,
             _ => throw new ArgumentOutOfRangeException(nameof(sortingOptions), sortingOptions, null)
         };
-        search.Query = _inputField.text;
+        _currentSortOption.Query = _inputField.text;
 
-        SearchAsync(search).Forget();
+        SearchAsync(_currentSortOption).Forget();
     }
 
     public void GainedNetworkConnection()
@@ -157,50 +166,57 @@ public class BeatSaverPageController : MonoBehaviour
         }
     }
 
+
     #region Webcalls
 
     public void RequestCurated()
     {
         ShowLoading(true);
-        var alphabetical = SearchTextFilterOption.Curated;
-        alphabetical.Query = _inputField.text;
+        _currentSortOption = SearchBeatmapsTextFilterOption.Curated;
+        _currentSortOption.Query = _inputField.text;
 
-        SearchAsync(alphabetical).Forget();
+        SearchAsync(_currentSortOption).Forget();
+        _sortDropdown.SetValueWithoutNotify((int)SortingOptions.Curated);
     }
 
     public void RequestLatest()
     {
         ShowLoading(true);
-        var latest = SearchTextFilterOption.Latest;
-        latest.Query = _inputField.text;
-        SearchAsync(latest, true).Forget();
+        _currentSortOption = SearchBeatmapsTextFilterOption.Latest;
+        _currentSortOption.Query = _inputField.text;
+        SearchAsync(_currentSortOption, true).Forget();
+        _sortDropdown.SetValueWithoutNotify((int)SortingOptions.Latest);
         //RequestLatestAsync().Forget();
     }
 
     public void InitializeServerConnection()
     {
         ShowLoading(true);
-        var rating = SearchTextFilterOption.Rating;
-        rating.Query = _inputField.text;
+        _currentSortOption = SearchBeatmapsTextFilterOption.Rating;
+        _currentSortOption.Query = _inputField.text;
 
-        SearchAsync(rating, true).Forget();
+        SearchAsync(_currentSortOption, true).Forget();
+        _sortDropdown.SetValueWithoutNotify((int)SortingOptions.Rating);
     }
 
     public void RequestHighestRated()
     {
+        _sortDropdown.SetValueWithoutNotify(RatingSortMode);
         ShowLoading(true);
-        var rating = SearchTextFilterOption.Rating;
-        rating.Query = _inputField.text;
+        _currentSortOption = SearchBeatmapsTextFilterOption.Rating;
+        _currentSortOption.Query = _inputField.text;
 
-        SearchAsync(rating).Forget();
+        SearchAsync(_currentSortOption).Forget();
+        _sortDropdown.SetValueWithoutNotify((int)SortingOptions.Rating);
     }
 
     public void RequestMostRelevant()
     {
         ShowLoading(true);
-        var relevance = SearchTextFilterOption.Relevance;
-        relevance.Query = _inputField.text;
-        SearchAsync(relevance).Forget();
+        _currentSortOption = SearchBeatmapsTextFilterOption.Relevance;
+        _currentSortOption.Query = _inputField.text;
+        SearchAsync(_currentSortOption).Forget();
+        _sortDropdown.SetValueWithoutNotify((int)SortingOptions.Relevance);
     }
 
     public void RequestNextPage()
@@ -239,8 +255,8 @@ public class BeatSaverPageController : MonoBehaviour
         }
 
         ShowLoading(true);
-        var options = new SearchTextFilterOption(search);
-        SearchAsync(options).Forget();
+        _currentSortOption.Query = search;
+        SearchAsync(_currentSortOption).Forget();
     }
 
     public void RequestPlaySongAudio()
@@ -386,7 +402,7 @@ public class BeatSaverPageController : MonoBehaviour
         await UpdateDataBackwards();
     }
 
-    private async UniTask SearchAsync(SearchTextFilterOption option, bool initializing = false) 
+    private async UniTask SearchAsync(SearchBeatmapsTextFilterOption option, bool initializing = false) 
     {
         try
         {

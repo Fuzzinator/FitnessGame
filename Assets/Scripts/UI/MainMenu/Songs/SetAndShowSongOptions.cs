@@ -239,7 +239,7 @@ public class SetAndShowSongOptions : MonoBehaviour
 
     private void SetSelectedType(Toggle toggle, bool updateDisplay)
     {
-        if (!toggle.isOn)
+        if (!toggle.isOn || _difficultySets.Length == 0)
         {
             return;
         }
@@ -287,7 +287,7 @@ public class SetAndShowSongOptions : MonoBehaviour
 
     private void SetSelectedDifficulty(Toggle toggle, bool updateDisplay)
     {
-        if (!toggle.isOn)
+        if (!toggle.isOn || _activeDifficultySet.DifficultyInfos.Length == 0)
         {
             return;
         }
