@@ -177,7 +177,7 @@ public class BeatSageDownloadManager
 
         JObject jsonString = JObject.Parse(responseString);
 
-        string levelID = (string)jsonString["id"];
+        string levelID = (string)jsonString["ids"];
 
         await CheckDownload(levelID, download.Title, artistName, download, cts);
     }

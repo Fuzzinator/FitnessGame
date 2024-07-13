@@ -73,7 +73,7 @@ public class BeatSaverPageController : MonoBehaviour
     private CancellationTokenSource _downloadsTokenSource;
     private BeatSaver _beatSaver;
     private LevelFileManagement _levelFileManagement;
-    private SearchBeatmapsTextFilterOption _currentSortOption;
+    private SearchTextFilterOption _currentSortOption;
 
     private Beatmap _activeBeatmap;
 
@@ -136,10 +136,10 @@ public class BeatSaverPageController : MonoBehaviour
         ShowLoading(true);
         _currentSortOption = ((SortingOptions)sortingOptions) switch
         {
-            SortingOptions.Latest => SearchBeatmapsTextFilterOption.Latest,
-            SortingOptions.Relevance => SearchBeatmapsTextFilterOption.Relevance,
-            SortingOptions.Rating => SearchBeatmapsTextFilterOption.Rating,
-            SortingOptions.Curated => SearchBeatmapsTextFilterOption.Curated,
+            SortingOptions.Latest => SearchTextFilterOption.Latest,
+            SortingOptions.Relevance => SearchTextFilterOption.Relevance,
+            SortingOptions.Rating => SearchTextFilterOption.Rating,
+            SortingOptions.Curated => SearchTextFilterOption.Curated,
             _ => throw new ArgumentOutOfRangeException(nameof(sortingOptions), sortingOptions, null)
         };
         _currentSortOption.Query = _inputField.text;
@@ -172,7 +172,7 @@ public class BeatSaverPageController : MonoBehaviour
     public void RequestCurated()
     {
         ShowLoading(true);
-        _currentSortOption = SearchBeatmapsTextFilterOption.Curated;
+        _currentSortOption = SearchTextFilterOption.Curated;
         _currentSortOption.Query = _inputField.text;
 
         SearchAsync(_currentSortOption).Forget();
@@ -182,7 +182,7 @@ public class BeatSaverPageController : MonoBehaviour
     public void RequestLatest()
     {
         ShowLoading(true);
-        _currentSortOption = SearchBeatmapsTextFilterOption.Latest;
+        _currentSortOption = SearchTextFilterOption.Latest;
         _currentSortOption.Query = _inputField.text;
         SearchAsync(_currentSortOption, true).Forget();
         _sortDropdown.SetValueWithoutNotify((int)SortingOptions.Latest);
@@ -192,7 +192,7 @@ public class BeatSaverPageController : MonoBehaviour
     public void InitializeServerConnection()
     {
         ShowLoading(true);
-        _currentSortOption = SearchBeatmapsTextFilterOption.Rating;
+        _currentSortOption = SearchTextFilterOption.Rating;
         _currentSortOption.Query = _inputField.text;
 
         SearchAsync(_currentSortOption, true).Forget();
@@ -203,7 +203,7 @@ public class BeatSaverPageController : MonoBehaviour
     {
         _sortDropdown.SetValueWithoutNotify(RatingSortMode);
         ShowLoading(true);
-        _currentSortOption = SearchBeatmapsTextFilterOption.Rating;
+        _currentSortOption = SearchTextFilterOption.Rating;
         _currentSortOption.Query = _inputField.text;
 
         SearchAsync(_currentSortOption).Forget();
@@ -213,7 +213,7 @@ public class BeatSaverPageController : MonoBehaviour
     public void RequestMostRelevant()
     {
         ShowLoading(true);
-        _currentSortOption = SearchBeatmapsTextFilterOption.Relevance;
+        _currentSortOption = SearchTextFilterOption.Relevance;
         _currentSortOption.Query = _inputField.text;
         SearchAsync(_currentSortOption).Forget();
         _sortDropdown.SetValueWithoutNotify((int)SortingOptions.Relevance);
@@ -402,7 +402,7 @@ public class BeatSaverPageController : MonoBehaviour
         await UpdateDataBackwards();
     }
 
-    private async UniTask SearchAsync(SearchBeatmapsTextFilterOption option, bool initializing = false) 
+    private async UniTask SearchAsync(SearchTextFilterOption option, bool initializing = false) 
     {
         try
         {

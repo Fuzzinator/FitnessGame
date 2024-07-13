@@ -50,7 +50,7 @@ public class LocalMP3sManager : MonoBehaviour
             var songName = TryConvertSong(i, out var download);
             if (download != null)
             {
-                download.ProgressUpdated.AddListener((val) => DeleteWhenSongCompletes(i, val));
+                download.ProgressUpdated.AddListener((val) => DeleteWhenSongCompletes(AvailableMP3Paths[i], val));
             }
             if (i % 5 == 0)
             {
@@ -59,12 +59,12 @@ public class LocalMP3sManager : MonoBehaviour
         }
     }
 
-    private static void DeleteWhenSongCompletes(int i, double val)
+    private static void DeleteWhenSongCompletes(string toDelete, double val)
     {
         if (val == 1)
         {
-            System.IO.File.Delete(AvailableMP3Paths[i]);
-            AvailableMP3Paths.RemoveAt(i);
+            System.IO.File.Delete(toDelete);
+            AvailableMP3Paths.Remove(toDelete);
         }
     }
 

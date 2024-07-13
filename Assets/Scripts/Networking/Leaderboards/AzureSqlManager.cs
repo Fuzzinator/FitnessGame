@@ -235,7 +235,15 @@ public class AzureSqlManager : MonoBehaviour
         {
             return;
         }
-        SendErrorReport(errorLog, stackTrace).Forget();
+        var platform =
+#if UNITY_EDITOR
+        "Editor";
+#elif UNITY_ANDROID
+        "Android";
+#else
+        "Windows";
+#endif
+        SendErrorReport($"{platform}-{errorLog}", stackTrace).Forget();
     }
 
     private async UniTaskVoid SendErrorReport(string errorMessage, string stackTrace)
