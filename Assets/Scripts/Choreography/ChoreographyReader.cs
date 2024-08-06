@@ -322,7 +322,7 @@ public class ChoreographyReader : MonoBehaviour
         for (var i = 0; i < _sequenceables.Count; i++)
         {
             var sequenceable = _sequenceables[i];
-            if((sequenceable.Time * beatsTime) -TimeToPoint <= 0)
+            if ((sequenceable.Time * beatsTime) - TimeToPoint <= 0)
             {
                 continue;
             }
@@ -420,22 +420,32 @@ public class ChoreographyReader : MonoBehaviour
 
                     if (!shouldSkipNote)
                     {
+                        if (note.DirectionalDownCutRatio || note.DirectionalUpCutRatio)
+                        {
+                            if (PlaylistManager.Instance.TargetGameMode is not GameMode.JabsOnly)
+                            {
+                                note = note.SetHook();
+                            }
+                        }
+
                         if (lastSequence.HasObstacle && lastSequence.Obstacle.Type == ChoreographyObstacle.ObstacleType.Crouch)
                         {
-                            switch (note.LineLayer)
+                            if (!PlaylistManager.Instance.ForceJabsOnly)
                             {
-                                case LineLayerType.Low:
-                                    note = note.SetToBasicJab(); 
-                                    break;
-                                case LineLayerType.Middle:
-                                    note = note.SetCutDirection(CutDirection.Uppercut);
-                                    break;
-                                case LineLayerType.High:
-                                    note = note.SetLineLayer(LineLayerType.Middle);
-                                    note = note.SetCutDirection(CutDirection.Uppercut);
-                                    break;
+                                switch (note.LineLayer)
+                                {
+                                    case LineLayerType.Low:
+                                        note = note.SetToBasicJab();
+                                        break;
+                                    case LineLayerType.Middle:
+                                        note = note.SetCutDirection(CutDirection.Uppercut);
+                                        break;
+                                    case LineLayerType.High:
+                                        note = note.SetLineLayer(LineLayerType.Middle);
+                                        note = note.SetCutDirection(CutDirection.Uppercut);
+                                        break;
+                                }
                             }
-
                         }
 
                         if (CanSwitchHands)

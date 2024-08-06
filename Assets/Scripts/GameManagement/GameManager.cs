@@ -9,6 +9,9 @@ public class GameManager : MonoBehaviour
 
 
     [field: SerializeField]
+    public bool DebugMode { get; private set; }
+
+    [field: SerializeField]
     public bool DemoMode { get; private set; }
 
     [field: SerializeField]

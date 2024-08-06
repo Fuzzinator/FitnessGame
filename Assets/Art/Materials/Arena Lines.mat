@@ -27,7 +27,8 @@ Material:
   - _ALPHATEST_ON
   - _DITHERING
   - _USE_DISTANCE_DISSOLVE
-  m_InvalidKeywords: []
+  m_InvalidKeywords:
+  - _DISSOLVE_STYLE_A
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -114,10 +115,23 @@ Material:
     - _Cull: 0
     - _Cutoff: 0.5
     - _DARKENDISTANCE: 0
+    - _DISSOLVE_STYLE: 0
     - _DITHERING: 1
+    - _DIssolve_Pattern_Rotation: 0
     - _DetailNormalMapScale: 1
+    - _Dissolve: 0.12
+    - _Dissolve_Pattern_Offset: 2.5
+    - _Dissolve_Pattern_Tiling: 180
+    - _Dissolve_Rotation: 0
+    - _Dissolve_Treshold_Alpha_Clip: 0.1
     - _Distance: 5
     - _DstBlend: 0
+    - _EdgeLerpFeathering: 1
+    - _EdgeLerpHeight: 0.5
+    - _EdgeLerpTreshold: 0.1
+    - _EdgeWidth: 0.07
+    - _EdgeWidthMult: 0.1
+    - _Edge_Intensity: 1
     - _Float: -9.54
     - _GlossMapScale: 1
     - _Glossiness: 0.5
@@ -133,6 +147,7 @@ Material:
     - _Normal_Strength: 1
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _Parallax_Strength: 10
     - _QueueControl: 0
     - _QueueOffset: 10
     - _ReceiveShadows: 1
@@ -156,6 +171,11 @@ Material:
     m_Colors:
     - _BaseColor: {r: 0.15, g: 0.15, b: 0.15, a: 1}
     - _Color: {r: 0, g: 0.3764706, b: 32, a: 0}
+    - _Color2: {r: 1, g: 1, b: 1, a: 1}
+    - _Dissolve_Offset: {r: 0, g: 0, b: 0, a: 0}
+    - _Dissolve_Range: {r: -10, g: 10, b: 0, a: 0}
+    - _EdgeColour: {r: 0, g: 0.9179602, b: 1, a: 0}
+    - _EdgeLerpColour: {r: 0.335517, g: 0, b: 10.68063, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _GridLineColor: {r: 0, g: 0.28104162, b: 2, a: 1}
     - _MinMaxScale: {r: 0.65, g: 1, b: 0, a: 0}

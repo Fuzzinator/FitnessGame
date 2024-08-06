@@ -11,6 +11,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.UI;
+using static DifficultyInfo;
 using static UnityEngine.XR.Hands.XRHandSubsystemDescriptor;
 
 public class SetAndShowSongOptions : MonoBehaviour
@@ -270,7 +271,7 @@ public class SetAndShowSongOptions : MonoBehaviour
 
         if (gameModeID < 0)
         {
-            Debug.LogError("Song does not have matching Game Mode");
+            Debug.LogError($"{_songInfo.SongName} does not have Game Mode: {(GameMode)toggleID + 1}");
             return;
         }
 
@@ -312,8 +313,20 @@ public class SetAndShowSongOptions : MonoBehaviour
 
         if (dificultyID < -0)
         {
-            Debug.LogError("Song does not have matching difficulty");
-            return;
+            ErrorReporter.SetSuppressed(true);
+            var difficulty = (DifficultyEnum)(toggleID + 1);
+            Debug.LogError($"{_songInfo.SongName} does not have difficulty: {difficulty}");
+            ErrorReporter.SetSuppressed(false);
+            NotificationManager.RequestNotification(new Notification.NotificationVisuals($"{_songInfo.SongName} does not have maps for difficulty: {difficulty}. Lowest difficulty selected.",
+                                                                                            "Difficulty Unavailable",
+                                                                                            "Ignore", "Delete Song",
+                                                                                            disableUI: true,
+                                                                                            popUp: true), null, () =>
+                                                                                            {
+                                                                                                AssetManager.DeleteCustomSong(_songInfo);
+                                                                                                HideOptions();
+                                                                                            });
+            dificultyID = (int)_activeDifficultySet.DifficultyInfos[0].DifficultyAsEnum - 1;
         }
 
         _selectedDifficulty = _activeDifficultySet.DifficultyInfos[dificultyID].Difficulty;

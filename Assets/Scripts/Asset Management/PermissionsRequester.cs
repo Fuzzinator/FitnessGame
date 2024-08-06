@@ -142,6 +142,6 @@ public class PermissionsRequester : MonoBehaviour
         }
         var visuals = new Notification.NotificationVisuals("Shadow BoXR needs storage permissions to support custom songs. Please close Shadow BoXR and enable storage permissions in your settings under App Permissions.", "Can't Access Local Data", "Close Game", "Ignore");
 
-        var notification = NotificationManager.RequestNotification(visuals, Application.Quit, () => Debug.LogWarning("User did not give permissions cannot access custom files"));
+        NotificationManager.RequestNotification(visuals, Application.Quit, () => Debug.LogWarning("User did not give permissions cannot access custom files"));
     }
 }

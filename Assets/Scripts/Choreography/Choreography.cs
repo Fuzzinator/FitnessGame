@@ -57,8 +57,7 @@ public class Choreography
 
     private const string V1V1 = "version\":\"1.";
     private const string V2V1 = "version\":\"2.";
-
-    private const string V3V1 = "\"version\":\"3.";
+    private const string V3V1 = "version\":\"3.";
 
     #endregion
 
@@ -83,6 +82,7 @@ public class Choreography
             var streamReader = new StreamReader(path);
 
             var json = await streamReader.ReadToEndAsync().AsUniTask().AttachExternalCancellation(token);
+            streamReader.Close();
             return ReadJsonToChoreography(json, songName);
         }
         catch (Exception e) when (e is OperationCanceledException)
@@ -100,6 +100,7 @@ public class Choreography
             var streamReader = new StreamReader(path);
 
             var json = streamReader.ReadToEnd();
+            streamReader.Close();
             return ReadJsonToChoreography(json, songName);
         }
         catch (Exception e) when (e is OperationCanceledException)
@@ -109,7 +110,7 @@ public class Choreography
         return null;
     }
 
-    private static Choreography ReadJsonToChoreography(string json, string songName)
+    public static Choreography ReadJsonToChoreography(string json, string songName)
     {
         Choreography choreography = null;
 
@@ -305,6 +306,16 @@ public class Choreography
         obstacles.Dispose();
         notes.Dispose();
         return this;
+    }
+
+    public void SetEvents(ChoreographyEvent[] events)
+    {
+        _events = events;
+    }
+
+    public void SetObstacles(ChoreographyObstacle[] obstacles)
+    {
+        _obstacles = obstacles;
     }
 
     private struct SortISequenceable : IComparer<ChoreographyObstacle>

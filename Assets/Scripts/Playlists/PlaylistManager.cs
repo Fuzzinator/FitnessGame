@@ -130,7 +130,7 @@ public class PlaylistManager : MonoBehaviour
     {
         get
         {
-            return _currentPlaylist.ForceJabsOnly || _currentItem.ForceJabsOnly;
+            return _currentPlaylist.ForceJabsOnly || _currentItem.ForceJabsOnly || TargetGameMode == GameMode.JabsOnly;
         }
     }
 

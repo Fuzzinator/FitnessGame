@@ -28,7 +28,7 @@ public class TargetSFX : MonoBehaviour, IValidHit, IMissedHit
     
     public void TriggerMissEffect()
     {
-        if (string.IsNullOrWhiteSpace(_missSound))
+        if (string.IsNullOrWhiteSpace(_missSound) || GameManager.Instance == null || GameManager.Instance.DebugMode)
         {
             return;
         }

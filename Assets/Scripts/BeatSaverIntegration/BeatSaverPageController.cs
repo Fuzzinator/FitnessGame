@@ -848,7 +848,7 @@ public class BeatSaverPageController : MonoBehaviour
             var visuals = new Notification.NotificationVisuals(
                 $"The song {_activeBeatmap.Metadata.SongName} already exists on your device. Would you like to download and replace the song?",
                 "Song Already Exists", "Yes", "No");
-            var notification = NotificationManager.RequestNotification(visuals, () => shouldDownload = true,
+            var notification = await NotificationManager.RequestNotificationAsync(visuals, () => shouldDownload = true,
                 () => shouldDownload = false);
             await UniTask.WaitUntil(() => notification.IsPooled, cancellationToken: _cancellationTokenSource.Token);
 

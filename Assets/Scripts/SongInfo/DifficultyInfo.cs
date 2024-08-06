@@ -6,6 +6,15 @@ using UnityEngine;
 [Serializable]
 public struct DifficultyInfo
 {
+    public DifficultyInfo(string difficulty, int rank, string fileName, float noteSpeed)
+    {
+        _difficulty = difficulty;
+        _difficultyRank = rank;
+        _beatmapFilename = fileName;
+        _noteJumpMovementSpeed = noteSpeed;
+        _noteJumpStartBeatOffset = 0f;
+    }
+
     [SerializeField]
     private string _difficulty;
 

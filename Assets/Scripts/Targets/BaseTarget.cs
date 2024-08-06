@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -193,6 +194,25 @@ public class BaseTarget : MonoBehaviour, IPoolable
         foreach (var initializer in _targetInitializers)
         {
             initializer.Initialize(this);
+        }
+
+        if(GameManager.Instance.DebugMode)
+        {
+            WaitForOptimalHitPoint().Forget();
+        }
+    }
+
+    private async UniTaskVoid WaitForOptimalHitPoint()
+    {
+        await UniTask.WaitUntil(() => this == null || Vector3.Distance(transform.position, OptimalHitPoint) < .1f);
+        if(gameObject == null)
+        {
+            return;
+        }
+
+        if(TryGetComponent(out TargetSFX targetSFX))
+        {
+            targetSFX.TriggerHitEffect(new HitInfo());
         }
     }
 }

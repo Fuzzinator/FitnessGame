@@ -14,6 +14,9 @@ public struct ChoreographyNote// : ISequenceable
     public CutDirection CutDir => _cutDirection;
     public HitSideType HitSideType => _type;
 
+    public bool DirectionalDownCutRatio => _cutDirection is CutDirection.HookRightDown or CutDirection.HookLeftDown && _time % 3 == 0;
+    public bool DirectionalUpCutRatio => _cutDirection is CutDirection.UppercutLeft or CutDirection.UppercutRight && _time % 3 == 0;
+
     public bool IsSuperNote => _isSuperNote == 1;
 
     [SerializeField]
@@ -53,9 +56,9 @@ public struct ChoreographyNote// : ISequenceable
             switch (_cutDirection)
             {
                 case CutDirection.JabDown:
+                case CutDirection.Jab:
                 case CutDirection.HookLeftDown:
                 case CutDirection.HookRightDown:
-                case CutDirection.Jab:
                     return true;
                 default: return false;
             }
@@ -137,6 +140,19 @@ public struct ChoreographyNote// : ISequenceable
             HitSideType.Unused => HitSideType.Unused,
             HitSideType.Block => HitSideType.Block,
             _ => _type
+        };
+        return this;
+    }
+
+    public ChoreographyNote SetHook()
+    {
+        _cutDirection = _cutDirection switch
+        {
+            CutDirection.UppercutLeft => CutDirection.HookLeft,
+            CutDirection.UppercutRight => CutDirection.HookRight,
+            CutDirection.HookLeftDown => CutDirection.HookLeft,
+            CutDirection.HookRightDown => CutDirection.HookRight,
+            _ => _cutDirection
         };
         return this;
     }

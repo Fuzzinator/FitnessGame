@@ -286,11 +286,17 @@ public class ChoreographySequencer : MonoBehaviour
 
         var tweenSpeed = SongInfoReader.Instance.NoteSpeed / _meterDistance * 10;
 
-        if (_lastFormation.HasObstacle && _lastFormation.Obstacle.Type == ChoreographyObstacle.ObstacleType.Dodge)
+        if (PlaylistManager.Instance.ForceJabsOnly)
+        {
+            var note = formation.Note.SetToBasicJab();
+            formation = formation.SetNote(note);
+        }
+        else if (_lastFormation.HasObstacle && _lastFormation.Obstacle.Type == ChoreographyObstacle.ObstacleType.Dodge)
         {
             if (formation.HasNote && !formation.HasObstacle)
             {
                 var targetType = _currentStance == HitSideType.Left ? HitSideType.Right : HitSideType.Left;
+                
                 var note = formation.Note.SetType(targetType);
 
                 if (note.CutDir == ChoreographyNote.CutDirection.HookLeft && targetType == HitSideType.Left ||
@@ -314,6 +320,7 @@ public class ChoreographySequencer : MonoBehaviour
                 }
             }
         }
+
         var strikePoint = formation.HasNote && formation.Note.IsJab ? _optimalJabStrikePoint.position : _optimalStrikePoint.position;
 
         formationHolder.SetUp(this, formation, nextFormationIndex, strikePoint, _currentRotation);

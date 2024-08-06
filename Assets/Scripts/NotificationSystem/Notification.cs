@@ -47,6 +47,8 @@ public class Notification : MonoBehaviour, IPoolable
     private const float BASEHEIGHT = 720;
     private const float NOBUTTONHEIGHT = 530;
 
+    public Guid RequestID { get; private set; }
+
     public PoolManager MyPoolManager
     {
         get => _myPoolManager;
@@ -96,9 +98,10 @@ public class Notification : MonoBehaviour, IPoolable
         UIStateManager.Instance.RequestDisableInteraction(_canvas);
     }
 
-    public async void SetUpObject(NotificationVisuals visuals, Action button1Pressed = null,
+    public async void SetUpObject(NotificationVisuals visuals, Guid requestID, Action button1Pressed = null,
         Action button2Pressed = null, Action button3Pressed = null)
     {
+        RequestID = requestID;
         string fullMessage;
         if (!string.IsNullOrWhiteSpace(visuals.header))
         {
@@ -179,91 +182,6 @@ public class Notification : MonoBehaviour, IPoolable
         ReturnToPool();
     }
 
-    public async void SetUpObject(NotificationVisualInfo visuals, Action button1Pressed = null,
-        Action button2Pressed = null, Action button3Pressed = null)
-    {
-        ArraySegment<char> fullMessage;
-        if (!string.IsNullOrWhiteSpace(visuals.header))
-        {
-            using (var sb = ZString.CreateStringBuilder(true))
-            {
-                sb.AppendFormat(MESSAGEFORMAT, visuals.header, visuals.message);
-                fullMessage = sb.AsArraySegment();
-            }
-        }
-        else
-        {
-            using (var sb = ZString.CreateStringBuilder(true))
-            {
-                sb.Append(visuals.message);
-                fullMessage = sb.AsArraySegment();
-            }
-        }
-
-        _message.SetText(fullMessage.Array, fullMessage.Offset, fullMessage.Count);
-        var hasBttn1 = !string.IsNullOrWhiteSpace(visuals.button1Txt);
-        if (hasBttn1)
-        {
-            _button1Txt.SetTextZeroAlloc(visuals.button1Txt, true);
-            _button1.gameObject.SetActive(true);
-        }
-
-        var hasBttn2 = !string.IsNullOrWhiteSpace(visuals.button2Txt);
-        if (hasBttn2)
-        {
-            _button2Txt.SetTextZeroAlloc(visuals.button2Txt, true);
-            _button2.gameObject.SetActive(true);
-        }
-
-        var hasBttn3 = !string.IsNullOrWhiteSpace(visuals.button3Txt);
-        if (hasBttn3)
-        {
-            _button3Txt.SetTextZeroAlloc(visuals.button3Txt, true);
-            _button3.gameObject.SetActive(true);
-        }
-
-        _buttonsParent.SetActive(hasBttn1 || hasBttn2 || hasBttn3);
-
-        if (transform is RectTransform rectTransform)
-        {
-            if (!hasBttn1 && !hasBttn2 && !hasBttn3)
-            {
-                rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, NOBUTTONHEIGHT);
-            }
-            else
-            {
-                rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, BASEHEIGHT);
-            }
-        }
-
-        _disableUI = visuals.disableUI;
-        _autoTimeOutTime = visuals.autoTimeOutTime;
-        _button1Pressed = button1Pressed;
-        _button2Pressed = button2Pressed;
-        _button3Pressed = button3Pressed;
-
-        gameObject.SetActive(true);
-
-        if (_disableUI && MainMenuUIController.Instance)
-        {
-            MainMenuUIController.Instance.RequestDisableUI(this);
-        }
-
-        if (visuals.hideOnSceneChange)
-        {
-            SceneManager.activeSceneChanged += ReturnOnSceneChange;
-        }
-
-        if (_autoTimeOutTime <= 0)
-        {
-            return;
-        }
-
-        await UniTask.Delay(TimeSpan.FromSeconds(_autoTimeOutTime), cancellationToken: _cancellationToken)
-            .SuppressCancellationThrow();
-        ReturnToPool();
-    }
-
     private void ReturnOnSceneChange(Scene current, Scene newScene)
     {
         SceneManager.activeSceneChanged -= ReturnOnSceneChange;
@@ -302,6 +220,8 @@ public class Notification : MonoBehaviour, IPoolable
         _disableUI = true;
 
         gameObject.SetActive(false);
+
+        NotificationManager.Instance.TryGetNextNotification(RequestID);
 
         MyPoolManager.ReturnToPool(this);
     }
@@ -352,6 +272,20 @@ public class Notification : MonoBehaviour, IPoolable
             this.popUp = popUp;
             this.hideOnSceneChange = hideOnSceneChange;
             this.height = height;
+        }
+
+        public NotificationVisuals(NotificationVisualInfo info)
+        {
+            header = info.header;
+            message = info.message;
+            button1Txt = info.button1Txt;
+            button2Txt = info.button2Txt;
+            button3Txt = info.button3Txt;
+            disableUI = info.disableUI;
+            autoTimeOutTime = info.autoTimeOutTime;
+            popUp = info.popUp;
+            hideOnSceneChange= info.hideOnSceneChange;
+            height = info.height;
         }
     }
 

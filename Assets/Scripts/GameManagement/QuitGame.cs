@@ -13,7 +13,7 @@ public class QuitGame : MonoBehaviour
     {
         var display = new Notification.NotificationVisuals(CONFIRMMESSAGE,
             CONFIRMHEADER, CONFIRMBUTTON, CANCELBUTTON, disableUI: true);
-        var notification = NotificationManager.RequestNotification(display, Quit);
+        NotificationManager.RequestNotification(display, Quit);
     }
     
     

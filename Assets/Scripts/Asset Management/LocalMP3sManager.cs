@@ -63,6 +63,11 @@ public class LocalMP3sManager : MonoBehaviour
     {
         if (val == 1)
         {
+            if(!AvailableMP3Paths.Contains(toDelete))
+            {
+                return;
+            }
+
             System.IO.File.Delete(toDelete);
             AvailableMP3Paths.Remove(toDelete);
         }

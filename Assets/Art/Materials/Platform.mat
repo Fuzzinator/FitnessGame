@@ -25,7 +25,8 @@ Material:
     type: 3}
   m_ValidKeywords:
   - _USE_NOISE
-  m_InvalidKeywords: []
+  m_InvalidKeywords:
+  - _DISSOLVE_STYLE_A
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -65,7 +66,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: b717abbfaad54ef47b100d92d406a8e2, type: 2}
+        m_Texture: {fileID: 2800000, guid: 88a9bbe801683e14f9bd929dd5f7fca1, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -77,6 +78,14 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMapping_9d5bcff5a69d4910851b92783328fef9_Heightmap_1:
+        m_Texture: {fileID: 2800000, guid: 35045dbbe2c80d94d93c66425ee51d12, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Reflection:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -116,21 +125,35 @@ Material:
     - _Cull: 2
     - _Cutoff: 0.5
     - _DARKENDISTANCE: 0
+    - _DISSOLVE_STYLE: 0
     - _DITHERING: 0
+    - _DIssolve_Pattern_Rotation: 0
     - _DetailNormalMapScale: 1
+    - _Dissolve: 0.12
+    - _Dissolve_Pattern_Offset: 2.5
+    - _Dissolve_Pattern_Tiling: 180
+    - _Dissolve_Rotation: 0
+    - _Dissolve_Treshold_Alpha_Clip: 0.1
     - _Distance: 5
     - _DstBlend: 0
+    - _EdgeLerpFeathering: 1
+    - _EdgeLerpHeight: 0.5
+    - _EdgeLerpTreshold: 0.1
+    - _EdgeWidth: 0.07
+    - _EdgeWidthMult: 0.1
+    - _Edge_Intensity: 1
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossinessSource: 0
     - _GlossyReflections: 1
-    - _GridStrength: 0.5
-    - _GridTiling: 2
+    - _GridStrength: 1
+    - _GridTiling: 1
     - _Metallic: 0
     - _Mode: 0
     - _NoiseStrength: 0.5
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _Parallax_Strength: -0.25
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
@@ -153,6 +176,11 @@ Material:
     m_Colors:
     - _BaseColor: {r: 0.15, g: 0.15, b: 0.15, a: 1}
     - _Color: {r: 0.89411765, g: 1.4980392, b: 1.2156863, a: 1}
+    - _Color2: {r: 0, g: 0, b: 0.09803922, a: 1}
+    - _Dissolve_Offset: {r: 0, g: 0, b: 0, a: 0}
+    - _Dissolve_Range: {r: -10, g: 10, b: 0, a: 0}
+    - _EdgeColour: {r: 0, g: 0.9179602, b: 1, a: 0}
+    - _EdgeLerpColour: {r: 0.335517, g: 0, b: 10.68063, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _GridLineColor: {r: 0.89411765, g: 1.4980392, b: 1.2156863, a: 1}
     - _MinMaxScale: {r: 0.65, g: 1, b: 0, a: 0}

@@ -471,6 +471,11 @@ public class SongInfo
         _difficultyBeatmapSets = sets;
     }
 
+    public void SetBPS(int newBPS)
+    {
+        _beatsPerMinute = newBPS;
+    }
+
     private async UniTask<string> AsyncCreateNewDifficultyFile(DifficultyInfo info, GameMode mode,
         CancellationToken token)
     {
@@ -585,6 +590,38 @@ public class SongInfo
             _songArt = null;
         }
     }
+
+    public void ConvertFromBeatSage()
+    {
+        _levelAuthorName = "3Pupper Studios";
+        _songID = _songName;
+        foreach (var set in _difficultyBeatmapSets)
+        { 
+            for (var i = set.DifficultyInfos.Length-1; i >= 0 ; i--)
+            {
+                if(i == 0)
+                {
+                    set.DifficultyInfos[i] = new DifficultyInfo("Easy", 1, "Easy.dat", 7f);
+                }
+                else
+                {
+                    set.DifficultyInfos[i] = set.DifficultyInfos[i-1];
+                }
+            }
+        }
+    }
+    public void ConvertToLocal()
+    {
+        foreach (var set in _difficultyBeatmapSets)
+        {
+            for (var i = set.DifficultyInfos.Length - 1; i >= 0; i--)
+            {
+                var info = set.DifficultyInfos[i];
+                set.DifficultyInfos[i] = new DifficultyInfo(info.Difficulty, info.DifficultyRank, info.FileName.Replace(".dat", ".txt"), info.MovementSpeed);
+            }
+        }
+    }
+
     public async static UniTask<DifficultySet> TryCreateNormalFrom1Handed(SongInfo songInfo, DifficultyInfo[] difficultyBeatmaps, CancellationToken token)
     {
         if (difficultyBeatmaps == null)
