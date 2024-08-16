@@ -60,6 +60,9 @@ public class Playlist
     public bool isValid;
 
     [SerializeField]
+    private float _targetSpeedMod = 1f;
+
+    [SerializeField]
     private string _version;
 
     [SerializeField]
@@ -156,15 +159,17 @@ public class Playlist
     [field: SerializeField]
     public bool ForceJabsOnly { get; private set; }
 
+    public float TargetSpeedMod => _targetSpeedMod;
+
     public string Version => _version;
 
     public string GUID => _guid;
 
     private const int MINUTE = 60;
     private const string DIVIDER = ":";
-    private const string PLAYLISTVERSION = "0.0.4";
+    private const string PLAYLISTVERSION = "0.0.5";
 
-    public Playlist(List<PlaylistItem> items, GameMode gameMode, DifficultyInfo.DifficultyEnum difficulty, HitSideType startingSide,
+    public Playlist(List<PlaylistItem> items, GameMode gameMode, DifficultyInfo.DifficultyEnum difficulty, HitSideType startingSide, float targetSpeedMod,
         string playlistName = null, bool isCustomPlaylist = true, string targetEnvName = null, Texture2D image = null,
         EnvAssetReference gloves = null, EnvAssetReference targets = null, EnvAssetReference obstacles = null,
         bool forceNoObstacles = false, bool forceOneHanded = false, bool forceJabsOnly = false)
@@ -185,6 +190,7 @@ public class Playlist
         _targetEnvName = targetEnvName;
         _targetColors = ColorsManager.Instance.ActiveColorSet;
         SetIcon(image);
+        _targetSpeedMod = targetSpeedMod;
         _version = PLAYLISTVERSION;
         _guid = Guid.NewGuid().ToString();
         _startingSide = startingSide;
@@ -254,6 +260,7 @@ public class Playlist
         _targetColors = sourcePlaylist.TargetColors;
         _image = sourcePlaylist.PlaylistImage;
         _startingSide = sourcePlaylist.StartingSide;
+        _targetSpeedMod = sourcePlaylist.TargetSpeedMod;
         _version = sourcePlaylist.Version;
         _guid = sourcePlaylist.GUID;
         Gloves = sourcePlaylist.Gloves;
@@ -265,7 +272,7 @@ public class Playlist
         isValid = true;
     }
 
-    public Playlist(PlaylistItem singleSong, HitSideType startingSide, bool forceNoObstacles, bool forceOneHanded, bool forceJabsOnly, string targetEnvName = null, Sprite image = null)
+    public Playlist(PlaylistItem singleSong, HitSideType startingSide, bool forceNoObstacles, bool forceOneHanded, bool forceJabsOnly, float targetSpeedMod, string targetEnvName = null, Sprite image = null)
     {
         _playlistName = singleSong.SongName;
         _items = new[] { singleSong };
@@ -278,6 +285,7 @@ public class Playlist
         _startingSide = startingSide;
         _setStartingSide = true;
         _image = image;
+        _targetSpeedMod = targetSpeedMod;
         _version = PLAYLISTVERSION;
         ForceNoObstacles |= forceNoObstacles;
         ForceOneHanded = forceOneHanded;
@@ -342,6 +350,11 @@ public class Playlist
     public void SetForceJabsOnly(bool on)
     {
         ForceJabsOnly = on;
+    }
+
+    public void SetTargetSpeedMod(float speedMod)
+    {
+        _targetSpeedMod = speedMod;
     }
 
     public enum SortingMethod

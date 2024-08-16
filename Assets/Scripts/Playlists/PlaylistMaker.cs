@@ -36,6 +36,8 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     [SerializeField]
     private DifficultyInfo.DifficultyEnum _difficulty = DifficultyInfo.DifficultyEnum.Unset;
 
+    [SerializeField]
+    private float _targetSpeedMod = 1f;
 
     [SerializeField]
     private Texture2D _emptyTexture;
@@ -48,6 +50,8 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     public string PlaylistName => _playlistName;
     public GameMode TargetGameMode => _gameMode;
     public DifficultyInfo.DifficultyEnum Difficulty => _difficulty;
+
+    public float TargetSpeedMod => _targetSpeedMod;
 
     public HitSideType StartingSide
 
@@ -271,7 +275,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         }
 
         var sprite = await GetSprite();
-        var newPlaylist = new Playlist(_playlistItems, _gameMode, _difficulty, _startingSide, _playlistName, true, _targetEnv, sprite, Gloves, Targets, Obstacles);
+        var newPlaylist = new Playlist(_playlistItems, _gameMode, _difficulty, _startingSide, TargetSpeedMod , _playlistName, true, _targetEnv, sprite, Gloves, Targets, Obstacles);
         PlaylistManager.Instance.CurrentPlaylist = newPlaylist;
 
 
@@ -501,6 +505,11 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         _forceJabsOnly = on;
     }
 
+    public void SetTargetSpeedMod(float speed)
+    {
+        _targetSpeedMod = speed;
+    }
+
     public void Report(float value)
     {
         Debug.Log(value);
@@ -530,6 +539,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         _forceNoObstacles = PlaylistManager.GetDefaultForceNoObstacles();
         _forceJabsOnly = PlaylistManager.GetDefaultForceJabsOnly();
         _forceOneHanded = PlaylistManager.GetDefaultForceOneHanded();
+        _targetSpeedMod = PlaylistManager.GetDefaultTargetSpeedMod();
     }
 
     /*private async UniTask<Texture2D> CombineTextures(Texture2D texture1,Texture2D texture2,Texture2D texture3,Texture2D texture4)

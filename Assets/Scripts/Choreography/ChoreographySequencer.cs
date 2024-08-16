@@ -240,9 +240,8 @@ public class ChoreographySequencer : MonoBehaviour
             return;
         }
 
-        var tweenSpeed = SongInfoReader.Instance.NoteSpeed / _meterDistance * 10;
+        var tweenSpeed = PlaylistManager.Instance.TargetSpeedMod * SongInfoReader.Instance.NoteSpeed / _meterDistance * 10;
         var timeToPoint = _optimalPointDistance / tweenSpeed;
-        var timeToJabPoint = _optimalJabPointDistance / tweenSpeed;
 
         ChoreographyReader.Instance.TimeToPoint = timeToPoint;
 
@@ -284,7 +283,7 @@ public class ChoreographySequencer : MonoBehaviour
         formationTransform.position = _formationStart.position;
         formationTransform.rotation = _formationStart.rotation;
 
-        var tweenSpeed = SongInfoReader.Instance.NoteSpeed / _meterDistance * 10;
+        var tweenSpeed = PlaylistManager.Instance.TargetSpeedMod * SongInfoReader.Instance.NoteSpeed / _meterDistance * 10;
 
         if (PlaylistManager.Instance.ForceJabsOnly)
         {

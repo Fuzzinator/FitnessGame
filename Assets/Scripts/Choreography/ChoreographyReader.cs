@@ -508,24 +508,26 @@ public class ChoreographyReader : MonoBehaviour
 
                         if (thisSequence.HasObstacle)
                         {
-                            note = note.SetCutDirection(ChoreographyNote.CutDirection.Jab);
-                            note = note.SetLineLayer(ChoreographyNote.LineLayerType.Low);
-                            //note = note.SetType(HitSideType.Unused);
-
-                            switch (thisSequence.Obstacle.HitSideType)
+                            if (_difficultyInfo.DifficultyRank >= 5)
                             {
-                                case HitSideType.Block:
-                                    break;
-                                case HitSideType.Left:
-                                    note = note.SetLineIndex(2);
-                                    note = (note.HitSideType == HitSideType.Block ? note.SetType(HitSideType.Left) : note);
-                                    break;
-                                case HitSideType.Right:
-                                    note = note.SetLineIndex(1);
-                                    note = (note.HitSideType == HitSideType.Block ? note.SetType(HitSideType.Right) : note);
-                                    break;
-                                default:
-                                    continue;
+                                note = note.SetCutDirection(ChoreographyNote.CutDirection.Jab);
+                                note = note.SetLineLayer(ChoreographyNote.LineLayerType.Low);
+
+                                switch (thisSequence.Obstacle.HitSideType)
+                                {
+                                    case HitSideType.Block:
+                                        break;
+                                    case HitSideType.Left:
+                                        note = note.SetLineIndex(2);
+                                        note = (note.HitSideType == HitSideType.Block ? note.SetType(HitSideType.Left) : note);
+                                        break;
+                                    case HitSideType.Right:
+                                        note = note.SetLineIndex(1);
+                                        note = (note.HitSideType == HitSideType.Block ? note.SetType(HitSideType.Right) : note);
+                                        break;
+                                    default:
+                                        continue;
+                                }
                             }
                         }
 
@@ -544,7 +546,8 @@ public class ChoreographyReader : MonoBehaviour
                                 }
                                 else
                                 {
-                                    note = note.SetToBasicJab();
+                                    var targetLine = thisSequence.HasObstacle ? LineLayerType.Low : LineLayerType.Middle;
+                                    note = note.SetToBasicJab(targetLine);
                                 }
                             }
                         }
@@ -560,7 +563,8 @@ public class ChoreographyReader : MonoBehaviour
                                 }
                                 else
                                 {
-                                    note = note.SetToBasicJab();
+                                    var targetLine = thisSequence.HasObstacle ? LineLayerType.Low : LineLayerType.Middle;
+                                    note = note.SetToBasicJab(targetLine);
                                 }
                             }
                         }
@@ -572,19 +576,13 @@ public class ChoreographyReader : MonoBehaviour
                                 if (_difficultyInfo.DifficultyRank == 1 &&
                                     note.CutDir == ChoreographyNote.CutDirection.Jab && CanHaveBlock)
                                 {
-                                    if (CanHaveBlock)
-                                    {
-                                        note = note.SetToBlock();
-                                    }
-                                    else
-                                    {
-                                        note = note.SetToBasicJab();
-                                    }
+                                    note = note.SetToBlock();
                                 }
                                 else if (note.CutDir == ChoreographyNote.CutDirection.JabDown ||
                                          note.CutDir == ChoreographyNote.CutDirection.HookLeftDown ||
                                          note.CutDir == ChoreographyNote.CutDirection.HookRightDown || !CanHaveBlock)
                                 {
+                                    var targetLine = thisSequence.HasObstacle ? LineLayerType.Low : LineLayerType.Middle;
                                     note = note.SetToBasicJab();
                                 }
                             }
@@ -626,7 +624,10 @@ public class ChoreographyReader : MonoBehaviour
                                 rightSidePriority--;
                                 break;
                         }
-                        thisSequence = thisSequence.SetNote(note);
+                        if (_difficultyInfo.DifficultyRank >= 5 || !thisSequence.HasObstacle)
+                        {
+                            thisSequence = thisSequence.SetNote(note);
+                        }
                     }
                 }
                 else if (sequenceable.HasObstacle && !thisSequence.HasObstacle)
@@ -675,6 +676,10 @@ public class ChoreographyReader : MonoBehaviour
                     if (obstacle.Type == ChoreographyObstacle.ObstacleType.Dodge)
                     {
                         lastDodgeObstacleSide = obstacle.LineIndex;
+                    }
+                    if (_difficultyInfo.DifficultyRank < 5)
+                    {
+                        thisSequence.SetNote(new ChoreographyNote(), false);
                     }
                 }
                 else if (sequenceable.HasEvent && !thisSequence.HasEvent)

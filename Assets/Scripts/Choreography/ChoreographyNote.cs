@@ -83,7 +83,7 @@ public struct ChoreographyNote// : ISequenceable
         High = 2
     }
 
-    public ChoreographyNote SetToBasicJab()
+    public ChoreographyNote SetToBasicJab(LineLayerType lineLayerType = LineLayerType.Middle)
     {
         SetCutDirection(CutDirection.Jab);
         SetLineLayer(LineLayerType.Middle);

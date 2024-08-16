@@ -220,7 +220,6 @@ public class Notification : MonoBehaviour, IPoolable
         _disableUI = true;
 
         gameObject.SetActive(false);
-
         NotificationManager.Instance.TryGetNextNotification(RequestID);
 
         MyPoolManager.ReturnToPool(this);

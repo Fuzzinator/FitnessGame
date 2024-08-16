@@ -192,7 +192,7 @@ public class AssetManager : MonoBehaviour
         try
         {
             var uwr = UnityWebRequestMultimedia.GetAudioClip(path, audioType);
-            ((DownloadHandlerAudioClip)uwr.downloadHandler).streamAudio = false;
+            ((DownloadHandlerAudioClip)uwr.downloadHandler).streamAudio = true;
             var request = uwr.SendWebRequest();
             await request.ToUniTask(cancellationToken: cancellationToken);
 

@@ -205,7 +205,7 @@ public class BaseTarget : MonoBehaviour, IPoolable
     private async UniTaskVoid WaitForOptimalHitPoint()
     {
         await UniTask.WaitUntil(() => this == null || Vector3.Distance(transform.position, OptimalHitPoint) < .1f);
-        if(gameObject == null)
+        if(this == null || gameObject == null)
         {
             return;
         }

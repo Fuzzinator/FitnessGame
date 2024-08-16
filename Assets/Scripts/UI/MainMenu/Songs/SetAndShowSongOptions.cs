@@ -389,9 +389,10 @@ public class SetAndShowSongOptions : MonoBehaviour
             var oneHanded = PlaylistMaker.Instance.ForceOneHanded;
             var noObstacles = PlaylistMaker.Instance.ForceNoObstacles;
             var jabsOnly = PlaylistMaker.Instance.ForceJabsOnly;
+            var targetSpeedMod = PlaylistMaker.Instance.TargetSpeedMod;
             var playlistItem = new PlaylistItem(_songInfo, _selectedDifficulty, _difficultyEnum, _activeDifficultySet.MapGameMode, noObstacles, oneHanded, jabsOnly);
             var targetSideType = _forwardFootSetter?.TargetHitSideType ?? HitSideType.Right;
-            PlaylistManager.Instance.SetTempSongPlaylist(playlistItem, targetSideType, noObstacles, oneHanded, jabsOnly);
+            PlaylistManager.Instance.SetTempSongPlaylist(playlistItem, targetSideType, noObstacles, oneHanded, jabsOnly, targetSpeedMod);
             if (_autoPlayPreview)
             {
                 StopSongPreview();
