@@ -520,6 +520,73 @@ public class SongInfo
         return newFileName;
     }
 
+    public async UniTask AsyncAddObstacles(DifficultyInfo info, GameMode mode,
+        CancellationToken token)
+    {
+        var choreography = await Choreography.AsyncLoadFromSongInfo(this, info, token);
+        if (choreography == null)
+        {
+            return;
+        }
+        switch (mode)
+        {
+            case GameMode.Unset:
+                break;
+            case GameMode.Normal:
+            case GameMode.JabsOnly:
+            case GameMode.NoObstacles:
+            case GameMode.OneHanded:
+            case GameMode.Degrees90:
+            case GameMode.Degrees360:
+                choreography = await choreography.AddObstaclesAsync(this, 30);
+                await Choreography.AsyncSave(choreography, fileLocation, info.FileName, _songName, token);
+                break;
+            case GameMode.LightShow:
+                break;
+            case GameMode.LegDay:
+                choreography = await choreography.AddObstaclesAsync(this);
+                await Choreography.AsyncSave(choreography, fileLocation, info.FileName, _songName, token);
+                break;
+            case GameMode.Lawless:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
+        }
+    }
+
+    public async UniTask AsyncAddRotations(DifficultyInfo info, GameMode mode,
+        CancellationToken token)
+    {
+        var choreography = await Choreography.AsyncLoadFromSongInfo(this, info, token);
+        if (choreography == null)
+        {
+            return;
+        }
+        switch (mode)
+        {
+            case GameMode.Unset:
+            case GameMode.Normal:
+            case GameMode.JabsOnly:
+            case GameMode.NoObstacles:
+            case GameMode.OneHanded:
+                break;
+            case GameMode.Degrees90:
+            case GameMode.Degrees360:
+                choreography = await choreography.AddRotationEventsAsync();
+                await Choreography.AsyncSave(choreography, fileLocation, info.FileName, _songName, token);
+                break;
+            case GameMode.LightShow:
+            case GameMode.LegDay:
+            case GameMode.Lawless:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
+        }
+
+
+        return;
+    }
+
     public async UniTask<Sprite> LoadImage(CancellationToken token)
     {
         if (_songArt != null)

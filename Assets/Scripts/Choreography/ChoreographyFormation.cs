@@ -70,6 +70,12 @@ public struct ChoreographyFormation
         return this;
     }
 
+    public ChoreographyFormation SetTime(float time)
+    {
+        _time = time;
+        return this;
+    }
+
     public ChoreographyFormation(ChoreographyNote note)
     {
         _time = note.Time;

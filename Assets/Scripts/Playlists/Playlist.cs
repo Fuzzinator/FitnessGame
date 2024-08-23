@@ -159,7 +159,7 @@ public class Playlist
     [field: SerializeField]
     public bool ForceJabsOnly { get; private set; }
 
-    public float TargetSpeedMod => _targetSpeedMod;
+    public float TargetSpeedMod => _targetSpeedMod != 0 ? _targetSpeedMod : 1;
 
     public string Version => _version;
 

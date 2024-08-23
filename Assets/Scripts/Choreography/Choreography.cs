@@ -276,16 +276,16 @@ public class Choreography
         return this;
     }
 
-    public async UniTask<Choreography> AddObstaclesAsync(SongInfo info)
+    public async UniTask<Choreography> AddObstaclesAsync(SongInfo info, int interval = 10)
     {
-        var bps = info.BeatsPerMinute / 60;
-        var modifiedBPS = (bps / Mathf.Ceil(bps)) * 3;
+        //var beatsTime = 60 / info.BeatsPerMinute;
 
-        var beatCount = Mathf.FloorToInt(info.SongLength * modifiedBPS);
+        //var beatCount = Mathf.FloorToInt((info.SongLength / 60) * info.BeatsPerMinute));
+        var beatCount = _notes.Length / interval;
 
-        var obstacles = new NativeArray<ChoreographyObstacle>((_notes.Length / 5) + beatCount, Allocator.TempJob);
+        var obstacles = new NativeArray<ChoreographyObstacle>(beatCount, Allocator.TempJob);
         var notes = new NativeArray<ChoreographyNote>(_notes, Allocator.TempJob);
-        var jobHandle = new AddObstaclesJob(ref obstacles, notes.AsReadOnly(), modifiedBPS);
+        var jobHandle = new AddObstaclesJob(ref obstacles, notes.AsReadOnly(), interval);
         try
         {
             await jobHandle.Schedule(obstacles.Length, 8);
@@ -308,14 +308,19 @@ public class Choreography
         return this;
     }
 
-    public void SetEvents(ChoreographyEvent[] events)
+    public void SetNotes(ChoreographyNote[] notes)
     {
-        _events = events;
+        _notes = notes;
     }
 
     public void SetObstacles(ChoreographyObstacle[] obstacles)
     {
         _obstacles = obstacles;
+    }
+
+    public void SetEvents(ChoreographyEvent[] events)
+    {
+        _events = events;
     }
 
     private struct SortISequenceable : IComparer<ChoreographyObstacle>
@@ -608,9 +613,8 @@ public struct AddObstaclesJob : IJobParallelFor
     private readonly NativeArray<ChoreographyNote>.ReadOnly _notes;
 
     private uint _seed;
-    private readonly float _bps;
 
-    private const int INTERVAL = 15;
+    private readonly int _interval;
 
     [DeallocateOnJobCompletion]
     private readonly NativeArray<int> _obstacleOptions;
@@ -618,12 +622,11 @@ public struct AddObstaclesJob : IJobParallelFor
     private readonly NativeArray<int> _obstacleSideOptions;
 
     public AddObstaclesJob(ref NativeArray<ChoreographyObstacle> obstacles, NativeArray<ChoreographyNote>.ReadOnly sourceNotes,
-        float bps)
+        int interval)
     {
         _obstacles = obstacles;
         _notes = sourceNotes;
         _seed = 0 + 118 + 999 + 881 + 999 + 119 + 725;
-        _bps = bps;
         _obstacleOptions = new NativeArray<int>(15, Allocator.TempJob);
         for (var i = 0; i < _obstacleOptions.Length; i++)
         {
@@ -634,11 +637,12 @@ public struct AddObstaclesJob : IJobParallelFor
         {
             _obstacleSideOptions[i] = i % 2 == 0 ? 0 : 2;
         }
+        _interval = interval;
     }
 
     public void Execute(int index)
     {
-        var noteIndex = index * INTERVAL;
+        var noteIndex = index * _interval;
         ChoreographyObstacle newObstacle;
         if (noteIndex < _notes.Length)
         {
@@ -647,9 +651,8 @@ public struct AddObstaclesJob : IJobParallelFor
         }
         else
         {
-            var newIndex = index - (_notes.Length / INTERVAL);
             var type = GetObstacleType(index, out var lineIndex);
-            newObstacle = new ChoreographyObstacle(_bps * newIndex, 1, type, lineIndex, 1);
+            newObstacle = new ChoreographyObstacle(noteIndex, 1, type, lineIndex, 1);
         }
 
         _obstacles[index] = newObstacle;
@@ -665,7 +668,7 @@ public struct AddObstaclesJob : IJobParallelFor
         var random = new Unity.Mathematics.Random((uint)(_seed + index));
         var length = _obstacleOptions.Length - 1;
         var randValue = random.NextInt(0, length);
-        for (var i = 0; i < INTERVAL; i++)
+        for (var i = 0; i < _interval; i++)
         {
             randValue = random.NextInt(0, length);
         }

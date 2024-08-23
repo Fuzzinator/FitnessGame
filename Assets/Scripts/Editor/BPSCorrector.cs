@@ -138,43 +138,55 @@ public class BPSCorrector : EditorWindow
         foreach (var song in _customSongs)
         {
             EditorGUILayout.BeginHorizontal("Box");
-            EditorGUILayout.LabelField(song.Key, song.Value.BeatsPerMinute.ToString());
-            if (!_correctBPMs.ContainsKey(song.Key))
             {
-                _correctBPMs[song.Key] = 0;
-            }
-            _correctBPMs[song.Key] = EditorGUILayout.IntField("Target BPS", _correctBPMs[song.Key]);
+                EditorGUILayout.LabelField(song.Key, song.Value.BeatsPerMinute.ToString());
+                if (!_correctBPMs.ContainsKey(song.Key))
+                {
+                    _correctBPMs[song.Key] = 0;
+                }
+                _correctBPMs[song.Key] = EditorGUILayout.IntField("Target BPS", _correctBPMs[song.Key]);
 
-            /*if (GUILayout.Button("Get Correct BPS"))
-            {
-                GetCorrectBPS(song.Value).Forget();
-            }*/
-            EditorGUILayout.BeginVertical("Box");
-            EditorGUILayout.BeginHorizontal();
-            if (GUILayout.Button("Auto Generate Maps"))
-            {
-                GenerateMaps(song).Forget();
+                /*if (GUILayout.Button("Get Correct BPS"))
+                {
+                    GetCorrectBPS(song.Value).Forget();
+                }*/
+                EditorGUILayout.BeginVertical("Box");
+                {
+                    EditorGUILayout.BeginHorizontal();
+                    {
+                        if (GUILayout.Button("Auto Generate Maps"))
+                        {
+                            GenerateMaps(song).Forget();
+                        }
+                        if (GUILayout.Button("Convert From Beat Sage"))
+                        {
+                            RenameBeatmaps(song.Value).Forget();
+                        }
+                        if (GUILayout.Button("Set Correct BPS"))
+                        {
+                            CorrectBPS(song.Value).Forget();
+                        }
+                    }
+                    EditorGUILayout.EndHorizontal();
+                    EditorGUILayout.BeginHorizontal();
+                    {
+                        if (GUILayout.Button("Add Rotation Events"))
+                        {
+                            SetRotationEvents(song.Value).Forget();
+                        }
+                        if (GUILayout.Button("Add Obstacles"))
+                        {
+                            SetObstacles(song.Value).Forget();
+                        }
+                        if(GUILayout.Button("Clean Song"))
+                        {
+                            CleanMaps(song.Value).Forget();
+                        }
+                    }
+                    EditorGUILayout.EndHorizontal();
+                }
+                EditorGUILayout.EndVertical();
             }
-            if(GUILayout.Button("Convert From Beat Sage"))
-            {
-                RenameBeatmaps(song.Value).Forget();
-            }
-            if (GUILayout.Button("Set Correct BPS"))
-            {
-                CorrectBPS(song.Value).Forget();
-            }
-            EditorGUILayout.EndHorizontal();
-            EditorGUILayout.BeginHorizontal();
-            if (GUILayout.Button("Add Rotation Events"))
-            {
-                SetRotationEvents(song.Value).Forget();
-            }
-            if (GUILayout.Button("Add Obstacles"))
-            {
-                SetObstacles(song.Value).Forget();
-            }
-            EditorGUILayout.EndHorizontal();
-            EditorGUILayout.EndVertical();
             EditorGUILayout.EndHorizontal();
         }
         EditorGUILayout.EndScrollView();
@@ -308,6 +320,67 @@ public class BPSCorrector : EditorWindow
         Debug.Log($"{info.SongName} COMPLETE");
     }
 
+    private async UniTaskVoid CleanMaps(SongInfo info)
+    {
+        _fileNames.Clear();
+
+        for (var i = 0; i < info.DifficultySets.Length; i++)
+        {
+            var set = info.DifficultySets[i];
+            Array.Sort(set.DifficultyInfos, (x, y) => x.DifficultyRank.CompareTo(y.DifficultyRank));
+            for (var j = set.DifficultyInfos.Length - 1; j >= 0; j--)
+            {
+                var difInfo = set.DifficultyInfos[j];
+                if (_fileNames.Contains(difInfo.FileName))
+                {
+                    Debug.LogWarning($"Skipping:{info.SongFilename} Mode:{set.MapGameMode} Difficulty:{difInfo.Difficulty}, {difInfo.FileName} already updated.");
+                    continue;
+                }
+                _fileNames.Add(difInfo.FileName);
+                var choreography = Choreography.LoadFromSongInfo(info, difInfo);
+                await UniTask.Delay(TimeSpan.FromSeconds(1f));
+                if (choreography != null)
+                {
+                    var distinctNotes = new List<ChoreographyNote>();
+                    foreach (var note in choreography.Notes)
+                    {
+                        if(!distinctNotes.Exists((i) => i.Time == note.Time))
+                        {
+                            distinctNotes.Add(note);
+                        }
+                    }
+                    Debug.Log($"Original Notes: {choreography.Notes.Length}. New Notes: {distinctNotes.Count}");
+                    choreography.SetNotes(distinctNotes.ToArray());
+
+                    var distinctObstacles = new List<ChoreographyObstacle>();
+                    foreach (var obstacle in choreography.Obstacles)
+                    {
+                        if (!distinctObstacles.Exists((i) => i.Time == obstacle.Time))
+                        {
+                            distinctObstacles.Add(obstacle);
+                        }
+                    }
+                    Debug.Log($"Original Obstacles: {choreography.Obstacles.Length}. New Obstacles: {distinctObstacles.Count}");
+                    choreography.SetObstacles(distinctObstacles.ToArray());
+
+                    var distinctEvents = new List<ChoreographyEvent>();
+                    foreach (var e in choreography.Events)
+                    {
+                        if (!distinctEvents.Exists((i) => i.Time == e.Time))
+                        {
+                            distinctEvents.Add(e);
+                        }
+                    }
+                    Debug.Log($"Original Events: {choreography.Events.Length}. New Events: {distinctEvents.Count}");
+                    choreography.SetEvents(distinctEvents.ToArray());
+                }
+                await WriteCustomSong(info.fileLocation, difInfo.FileName, choreography);
+                Debug.Log($"{info.SongName} Mode:{set.MapGameMode} Difficulty:{difInfo.Difficulty} COMPLETE");
+            }
+        }
+        Debug.Log($"{info.SongName} COMPLETE");
+    }
+
     private async UniTaskVoid RenameBeatmaps(SongInfo info)
     {
         await AssetManager.ConvertFromBeatSage(info.fileLocation, new System.Threading.CancellationToken());
@@ -322,8 +395,9 @@ public class BPSCorrector : EditorWindow
             for (var j = set.DifficultyInfos.Length - 1; j >= 0; j--)
             {
                 var difInfo = set.DifficultyInfos[j];
+                await info.AsyncAddRotations(difInfo, set.MapGameMode, new System.Threading.CancellationToken());
+                /*var choreography = Choreography.LoadFromSongInfo(info, difInfo);
 
-                var choreography = Choreography.LoadFromSongInfo(info, difInfo);
                 await UniTask.Delay(TimeSpan.FromSeconds(1f));
 
                 if (set.MapGameMode == GameModeManagement.GameMode.Degrees90)
@@ -341,7 +415,7 @@ public class BPSCorrector : EditorWindow
                     }
                 }
 
-                await WriteCustomSong(info.fileLocation, difInfo.FileName, choreography);
+                await WriteCustomSong(info.fileLocation, difInfo.FileName, choreography);*/
                 Debug.Log($"{info.SongName} Mode:{set.MapGameMode} Difficulty:{difInfo.Difficulty} COMPLETE");
             }
         }
@@ -356,8 +430,9 @@ public class BPSCorrector : EditorWindow
             for (var j = set.DifficultyInfos.Length - 1; j >= 0; j--)
             {
                 var difInfo = set.DifficultyInfos[j];
+                await info.AsyncAddObstacles(difInfo, set.MapGameMode, new System.Threading.CancellationToken());
 
-                var choreography = Choreography.LoadFromSongInfo(info, difInfo);
+                /*var choreography = Choreography.LoadFromSongInfo(info, difInfo);
                 await UniTask.Delay(TimeSpan.FromSeconds(1f));
 
                 if (choreography != null)
@@ -365,7 +440,7 @@ public class BPSCorrector : EditorWindow
                     choreography.SetObstacles(GetObstacles(difInfo.DifficultyAsEnum));
                 }
 
-                await WriteCustomSong(info.fileLocation, difInfo.FileName, choreography);
+                await WriteCustomSong(info.fileLocation, difInfo.FileName, choreography);*/
                 Debug.Log($"{info.SongName} Mode:{set.MapGameMode} Difficulty:{difInfo.Difficulty} COMPLETE");
             }
         }

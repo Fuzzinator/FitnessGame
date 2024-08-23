@@ -25,6 +25,8 @@ public class ChoreographyReader : MonoBehaviour
     private List<ChoreographyFormation> _formations;
     private List<ChoreographyFormation> _formationsThisTime;
 
+    private int _formationObsCount = 0;
+
     public ChoreographyNote[] Notes => _choreography.Notes;
     public ChoreographyEvent[] Events => _choreography.Events;
     public ChoreographyObstacle[] Obstacles => _choreography.Obstacles;
@@ -126,7 +128,7 @@ public class ChoreographyReader : MonoBehaviour
         if (_formations == null || _formations.Count == 0)
         {
             GetChoreographSequenceables();
-
+            _formationObsCount = 0;
             UpdateFormation();
             _choreography = new Choreography();
         }
@@ -337,7 +339,11 @@ public class ChoreographyReader : MonoBehaviour
                 else
                 {
                     var minGap = minTargetDistance;
-                    if (sequenceable.HasNote)
+                    if (sequenceable.HasObstacle)
+                    {
+                        minGap *= 2;
+                    }
+                    else if (sequenceable.HasNote)
                     {
                         var note = sequenceable.Note;
                         if (note.CutDir != ChoreographyNote.CutDirection.Jab &&
@@ -345,10 +351,6 @@ public class ChoreographyReader : MonoBehaviour
                         {
                             minGap *= 1.5f;
                         }
-                    }
-                    else if (sequenceable.HasObstacle)
-                    {
-                        minGap *= 2;
                     }
                     else if (sequenceable.HasEvent)
                     {
@@ -375,19 +377,34 @@ public class ChoreographyReader : MonoBehaviour
                         }
                     }
 
-                    if (sequenceable.HasNote || sequenceable.HasObstacle)
+
+
+                    if ((sequenceable.HasNote || sequenceable.HasObstacle) && lastTime + minGap < sequenceable.Time)
                     {
-                        if (lastTime + minGap < sequenceable.Time)
-                        {
-                            lastTime = sequenceable.Time;
-                            _formationsThisTime.Add(sequenceable);
-                        }
-                        else
-                        {
-                            continue;
-                        }
+                        lastTime = sequenceable.Time;
+                        _formationsThisTime.Add(sequenceable);
                     }
-                    minGapToSwapObstacle = minGap * 3;
+                    else if (sequenceable.HasObstacle)
+                    {
+                        if (lastSequence.HasNote)
+                        {
+                            if (_formationsThisTime.Count > 0)
+                            {
+                                _formationsThisTime.RemoveAt(_formationsThisTime.Count - 1);
+                            }
+                            _formations.RemoveAt(_formations.Count - 1);
+                            var obstacle = new ChoreographyObstacle(lastSequence.Time, 1, sequenceable.Obstacle.Type, sequenceable.Obstacle.LineIndex, sequenceable.Obstacle.Width);
+                            sequenceable = sequenceable.SetObstacle(obstacle);
+
+                            thisSequence = new ChoreographyFormation(lastSequence.Note);
+                        }
+                        lastTime = sequenceable.Time;
+                        _formationsThisTime.Add(sequenceable);
+                    }
+                    else if (!sequenceable.HasEvent)
+                    {
+                        continue;
+                    }
                 }
             }
 
@@ -665,18 +682,8 @@ public class ChoreographyReader : MonoBehaviour
                         thisSequence = thisSequence.SetNote(note);
                     }
 
-                    if (sequenceable.Time > lastObstacle - minGapToSwapObstacle && lastDodgeObstacleSide == obstacle.LineIndex)
-                    {
-                        var newIndex = obstacle.LineIndex <= 1 ? 2 : 0;
-                        obstacle = new(obstacle.Time, obstacle.Duration, obstacle.Type, newIndex, obstacle.Width);
-                    }
-
                     thisSequence = thisSequence.SetObstacle(obstacle);
-                    lastObstacle = sequenceable.Time;
-                    if (obstacle.Type == ChoreographyObstacle.ObstacleType.Dodge)
-                    {
-                        lastDodgeObstacleSide = obstacle.LineIndex;
-                    }
+
                     if (_difficultyInfo.DifficultyRank < 5)
                     {
                         thisSequence.SetNote(new ChoreographyNote(), false);
@@ -743,6 +750,11 @@ public class ChoreographyReader : MonoBehaviour
                 }
 
                 _formations.Add(thisSequence);
+
+                if (thisSequence.HasObstacle)
+                {
+                    _formationObsCount++;
+                }
 
                 if (thisSequence.HasNote)
                 {

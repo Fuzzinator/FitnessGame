@@ -82,7 +82,10 @@ public class BeatSageDownloadManager
 
                 download.Progress = -1;
                 Downloads.Remove(download);
-                Debug.LogError($"{e.Message} {e.StackTrace}");
+                if (e is not OperationCanceledException)
+                {
+                    Debug.LogError($"{e.Message} {e.StackTrace}");
+                }
             }
 
             download.IsAlive = false;
@@ -133,7 +136,7 @@ public class BeatSageDownloadManager
         }
         catch (Exception ex)
         {
-            if (ex is not CorruptFileException)
+            if (ex is not OperationCanceledException)
             {
                 Debug.LogError($"{ex.Message}\n{ex.StackTrace}");
             }
@@ -221,8 +224,13 @@ public class BeatSageDownloadManager
             }
             catch (Exception e)
             {
-                Debug.LogError($"{e.Message} {e.StackTrace}");
+                download.downloadStatus = "FAILED";
+                if (e is not OperationCanceledException)
+                {
+                    Debug.LogError($"{e.Message} {e.StackTrace}");
+                }
                 break;
+
             }
 
         }
