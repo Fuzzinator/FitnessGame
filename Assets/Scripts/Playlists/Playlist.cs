@@ -63,13 +63,16 @@ public class Playlist
     private float _targetSpeedMod = 1f;
 
     [SerializeField]
+    private float _songSpeedMod = 1f;
+
+    [SerializeField]
     private string _version;
 
     [SerializeField]
     private string _guid;
 
     public bool IsCustomPlaylist => _isCustomPlaylist;
-    public float Length => _length;
+    public float Length => _length / SongSpeedMod;
     public string PlaylistName => _playlistName;
 
     public string TargetEnvName => _targetEnvName;
@@ -124,31 +127,29 @@ public class Playlist
     public ColorsManager.ColorSet TargetColors => _targetColors;
 
     public HitSideType StartingSide => _setStartingSide ? _startingSide : HitSideType.Left;
-    public string ReadableLength
+    public string GetReadableLength(float songSpeedMod)
     {
-        get
+        var length = _length / songSpeedMod;
+        var minutes = (int)Mathf.Floor(length / MINUTE);
+        var seconds = (int)Mathf.Floor(length % MINUTE);
+        using (var sb = ZString.CreateStringBuilder(true))
         {
-            var minutes = (int)Mathf.Floor(_length / MINUTE);
-            var seconds = (int)Mathf.Floor(_length % MINUTE);
-            using (var sb = ZString.CreateStringBuilder(true))
+            if (minutes < 10)
             {
-                if (minutes < 10)
-                {
-                    sb.Append(0);
-                }
-
-                sb.Append(minutes);
-                sb.Append(DIVIDER);
-                if (seconds < 10)
-                {
-                    sb.Append(0);
-                }
-
-                sb.Append(seconds);
-
-                //var buffer = sb.AsArraySegment();
-                return sb.ToString();
+                sb.Append(0);
             }
+
+            sb.Append(minutes);
+            sb.Append(DIVIDER);
+            if (seconds < 10)
+            {
+                sb.Append(0);
+            }
+
+            sb.Append(seconds);
+
+            //var buffer = sb.AsArraySegment();
+            return sb.ToString();
         }
     }
 
@@ -160,6 +161,7 @@ public class Playlist
     public bool ForceJabsOnly { get; private set; }
 
     public float TargetSpeedMod => _targetSpeedMod != 0 ? _targetSpeedMod : 1;
+    public float SongSpeedMod => _songSpeedMod != 0 ? _songSpeedMod : 1;
 
     public string Version => _version;
 
@@ -169,7 +171,8 @@ public class Playlist
     private const string DIVIDER = ":";
     private const string PLAYLISTVERSION = "0.0.5";
 
-    public Playlist(List<PlaylistItem> items, GameMode gameMode, DifficultyInfo.DifficultyEnum difficulty, HitSideType startingSide, float targetSpeedMod,
+    public Playlist(List<PlaylistItem> items, GameMode gameMode, DifficultyInfo.DifficultyEnum difficulty, HitSideType startingSide,
+        float targetSpeedMod, float songSpeedMod,
         string playlistName = null, bool isCustomPlaylist = true, string targetEnvName = null, Texture2D image = null,
         EnvAssetReference gloves = null, EnvAssetReference targets = null, EnvAssetReference obstacles = null,
         bool forceNoObstacles = false, bool forceOneHanded = false, bool forceJabsOnly = false)
@@ -191,6 +194,7 @@ public class Playlist
         _targetColors = ColorsManager.Instance.ActiveColorSet;
         SetIcon(image);
         _targetSpeedMod = targetSpeedMod;
+        _songSpeedMod = songSpeedMod;
         _version = PLAYLISTVERSION;
         _guid = Guid.NewGuid().ToString();
         _startingSide = startingSide;
@@ -261,6 +265,7 @@ public class Playlist
         _image = sourcePlaylist.PlaylistImage;
         _startingSide = sourcePlaylist.StartingSide;
         _targetSpeedMod = sourcePlaylist.TargetSpeedMod;
+        _songSpeedMod = sourcePlaylist.SongSpeedMod;
         _version = sourcePlaylist.Version;
         _guid = sourcePlaylist.GUID;
         Gloves = sourcePlaylist.Gloves;
@@ -272,7 +277,9 @@ public class Playlist
         isValid = true;
     }
 
-    public Playlist(PlaylistItem singleSong, HitSideType startingSide, bool forceNoObstacles, bool forceOneHanded, bool forceJabsOnly, float targetSpeedMod, string targetEnvName = null, Sprite image = null)
+    public Playlist(PlaylistItem singleSong, HitSideType startingSide, bool forceNoObstacles, bool forceOneHanded,
+        bool forceJabsOnly, float targetSpeedMod, float songSpeedMod,
+        string targetEnvName = null, Sprite image = null)
     {
         _playlistName = singleSong.SongName;
         _items = new[] { singleSong };
@@ -286,6 +293,7 @@ public class Playlist
         _setStartingSide = true;
         _image = image;
         _targetSpeedMod = targetSpeedMod;
+        _songSpeedMod = songSpeedMod;
         _version = PLAYLISTVERSION;
         ForceNoObstacles |= forceNoObstacles;
         ForceOneHanded = forceOneHanded;
@@ -355,6 +363,11 @@ public class Playlist
     public void SetTargetSpeedMod(float speedMod)
     {
         _targetSpeedMod = speedMod;
+    }
+
+    public void SetSongSpeedMod(float speedMod)
+    {
+        _songSpeedMod = speedMod;
     }
 
     public enum SortingMethod

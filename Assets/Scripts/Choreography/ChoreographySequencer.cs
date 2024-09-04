@@ -310,7 +310,7 @@ public class ChoreographySequencer : MonoBehaviour
                     var nextFormation = formations[nextFormationIndex];
                     if (formations.Count > nextFormationIndex && nextFormation.HasNote && nextFormation.Note.HitSideType == note.HitSideType)
                     {
-                        formation = formation.SetNote(new ChoreographyNote(), false);
+                        formation = formation.RemoveNote();
                     }
                     else
                     {
@@ -330,7 +330,7 @@ public class ChoreographySequencer : MonoBehaviour
         var tween = _tweenPool.GetNewTween(tweenData);
 
 
-        var beatsTime = 60 / SongInfoReader.Instance.BeatsPerMinute;
+        var beatsTime = (60 / SongInfoReader.Instance.BeatsPerMinute) / PlaylistManager.Instance.SongSpeedMod;
         var time = (Time.time - (_songStartTime + _pauseOffset));
 
         var timeToPoint = (formation.HasNote && formation.Note.IsJab ? _optimalJabPointDistance : _optimalPointDistance) / tweenSpeed;

@@ -320,11 +320,11 @@ public class ChoreographyReader : MonoBehaviour
         var minTargetDistance = _difficultyInfo.MinTargetSpace;
         var minGapToSwapObstacle = minTargetDistance;
 
-        var beatsTime = 60 / SongInfoReader.Instance.BeatsPerMinute;
+        var beatsTime = (60 / SongInfoReader.Instance.BeatsPerMinute);
         for (var i = 0; i < _sequenceables.Count; i++)
         {
             var sequenceable = _sequenceables[i];
-            if ((sequenceable.Time * beatsTime) - TimeToPoint <= 0)
+            if ((sequenceable.Time * beatsTime * PlaylistManager.Instance.SongSpeedMod) - TimeToPoint <= 0)
             {
                 continue;
             }
@@ -393,10 +393,14 @@ public class ChoreographyReader : MonoBehaviour
                                 _formationsThisTime.RemoveAt(_formationsThisTime.Count - 1);
                             }
                             _formations.RemoveAt(_formations.Count - 1);
+
                             var obstacle = new ChoreographyObstacle(lastSequence.Time, 1, sequenceable.Obstacle.Type, sequenceable.Obstacle.LineIndex, sequenceable.Obstacle.Width);
                             sequenceable = sequenceable.SetObstacle(obstacle);
 
-                            thisSequence = new ChoreographyFormation(lastSequence.Note);
+                            if (_difficultyInfo.DifficultyRank >= 5)
+                            {
+                                thisSequence = new ChoreographyFormation(lastSequence.Note);
+                            }
                         }
                         lastTime = sequenceable.Time;
                         _formationsThisTime.Add(sequenceable);
@@ -686,7 +690,7 @@ public class ChoreographyReader : MonoBehaviour
 
                     if (_difficultyInfo.DifficultyRank < 5)
                     {
-                        thisSequence.SetNote(new ChoreographyNote(), false);
+                        thisSequence.RemoveNote();
                     }
                 }
                 else if (sequenceable.HasEvent && !thisSequence.HasEvent)

@@ -74,6 +74,7 @@ public class PlaylistManager : MonoBehaviour
     private const string DefaultForceOneHandedSetting = "DefaultForceOneHanded";
     private const string DefaultForceJabsOnlySetting = "DefaultForceJabsOnly";
     private const string DefaultTargetSpeedModSetting = "DefaultTargetSpeedMod-";
+    private const string DefaultSongSpeedModSetting = "DefaultSongSpeedMod-";
 
     public GameMode TargetGameMode
     {
@@ -137,6 +138,8 @@ public class PlaylistManager : MonoBehaviour
 
     public float TargetSpeedMod => _currentPlaylist.TargetSpeedMod;
 
+    public float SongSpeedMod => _currentPlaylist.SongSpeedMod;
+
     private void Awake()
     {
         if (Instance == null)
@@ -189,10 +192,11 @@ public class PlaylistManager : MonoBehaviour
         SetOverrideGameMode(false);
     }
 
-    public void SetTempSongPlaylist(PlaylistItem playlistItem, HitSideType forwardFootSide, bool noObstacles, bool oneHanded, bool jabsOnly, float targetSpeedMod)
+    public void SetTempSongPlaylist(PlaylistItem playlistItem, HitSideType forwardFootSide, 
+        bool noObstacles, bool oneHanded, bool jabsOnly, float targetSpeedMod, float songSpeedMod)
     {
         var targetEnvName = EnvironmentControlManager.Instance.GetTargetEnvironment().Name;
-        var tempPlaylist = new Playlist(playlistItem, forwardFootSide, noObstacles, oneHanded, jabsOnly, targetSpeedMod, targetEnvName);
+        var tempPlaylist = new Playlist(playlistItem, forwardFootSide, noObstacles, oneHanded, jabsOnly, targetSpeedMod, songSpeedMod, targetEnvName);
         CurrentPlaylist = tempPlaylist;
         _activePlaylistIsTemp = true;
     }
@@ -285,6 +289,11 @@ public class PlaylistManager : MonoBehaviour
         SettingsManager.SetSetting(DefaultTargetSpeedModSetting, targetSpeedMod);
     }
 
+    public static void SetDefaultSongSpeedMod(float targetSpeedMod)
+    {
+        SettingsManager.SetSetting(DefaultSongSpeedModSetting, targetSpeedMod);
+    }
+
     public static bool GetDefaultForceNoObstacles()
     {
         return SettingsManager.GetSetting(DefaultForceNoObstaclesSetting, false);
@@ -303,5 +312,10 @@ public class PlaylistManager : MonoBehaviour
     public static float GetDefaultTargetSpeedMod()
     {
         return SettingsManager.GetSetting(DefaultTargetSpeedModSetting, 1f);
+    }
+
+    public static float GetDefaultSongSpeedMod()
+    {
+        return SettingsManager.GetSetting(DefaultSongSpeedModSetting, 1f);
     }
 }

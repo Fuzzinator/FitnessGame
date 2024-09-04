@@ -31,6 +31,7 @@ namespace UI.Scrollers.Playlists
         private SongInfo _songInfo;
         private AvailableSongInfoScrollerController _controller;
         private CancellationToken _cancellationToken;
+        private float _songSpeedModifier = 1f;
 
         private const string SONGINFOFORMAT =
             "<align=left>{0}</style>\n<size=50%>{1}<line-indent=15%>{2}<line-indent=15%>{3}</size></align>";
@@ -47,7 +48,7 @@ namespace UI.Scrollers.Playlists
         {
             _songInfo = info;
             _controller = controller;
-            var readableLength = info.ReadableLength;
+            var readableLength = info.GetReadableLength(_songSpeedModifier);
             using (var sb = ZString.CreateStringBuilder(true))
             {
                 sb.AppendFormat(SONGINFOFORMAT,

@@ -40,6 +40,9 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     private float _targetSpeedMod = 1f;
 
     [SerializeField]
+    private float _songSpeedMod = 1f;
+
+    [SerializeField]
     private Texture2D _emptyTexture;
 
     public List<PlaylistItem> PlaylistItems => _playlistItems;
@@ -52,13 +55,14 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
     public DifficultyInfo.DifficultyEnum Difficulty => _difficulty;
 
     public float TargetSpeedMod => _targetSpeedMod;
+    public float SongSpeedMod => _songSpeedMod;
 
     public HitSideType StartingSide
 
     {
         get
         {
-            if(_startingSide == HitSideType.Unused)
+            if (_startingSide == HitSideType.Unused)
             {
                 var leftHanded = SettingsManager.GetSetting(LeftHanded, false);
                 var defaultFooting = SettingsManager.GetSetting(DefaultFootSetting, leftHanded ? 0 : 1);
@@ -275,7 +279,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         }
 
         var sprite = await GetSprite();
-        var newPlaylist = new Playlist(_playlistItems, _gameMode, _difficulty, _startingSide, TargetSpeedMod , _playlistName, true, _targetEnv, sprite, Gloves, Targets, Obstacles);
+        var newPlaylist = new Playlist(_playlistItems, _gameMode, _difficulty, _startingSide, TargetSpeedMod, SongSpeedMod, _playlistName, true, _targetEnv, sprite, Gloves, Targets, Obstacles);
         PlaylistManager.Instance.CurrentPlaylist = newPlaylist;
 
 
@@ -386,9 +390,10 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         return length;
     }
 
-    public string GetReadableLength()
+    public string GetReadableLength(float songSpeedMod = 0)
     {
-        var length = GetLength();
+        songSpeedMod = songSpeedMod == 0 ? _songSpeedMod : songSpeedMod;
+        var length = GetLength() / songSpeedMod;
 
         var minutes = (int)Mathf.Floor(length / MINUTE);
         var seconds = (int)Mathf.Floor(length % MINUTE);
@@ -510,6 +515,11 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         _targetSpeedMod = speed;
     }
 
+    public void SetSongSpeedMod(float speed)
+    {
+        _songSpeedMod = speed;
+    }
+
     public void Report(float value)
     {
         Debug.Log(value);
@@ -540,6 +550,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         _forceJabsOnly = PlaylistManager.GetDefaultForceJabsOnly();
         _forceOneHanded = PlaylistManager.GetDefaultForceOneHanded();
         _targetSpeedMod = PlaylistManager.GetDefaultTargetSpeedMod();
+        _songSpeedMod = PlaylistManager.GetDefaultSongSpeedMod();
     }
 
     /*private async UniTask<Texture2D> CombineTextures(Texture2D texture1,Texture2D texture2,Texture2D texture3,Texture2D texture4)

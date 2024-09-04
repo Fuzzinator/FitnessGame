@@ -39,6 +39,8 @@ namespace UI.Scrollers.Playlists
 
         private CancellationToken _cancellationToken;
 
+        private float _songSpeedModifier = 1f;
+
         private void OnEnable()
         {
             PlaylistManager.Instance.currentPlaylistUpdated.AddListener(RequestShowInfo);
@@ -84,7 +86,7 @@ namespace UI.Scrollers.Playlists
             //_playlistTitleCard.interactable = currentPlaylist.isValid;
             _playlistTitle.text = currentPlaylist.PlaylistName;
             _playlistName.text = currentPlaylist.PlaylistName;
-            _playlistLength.text = currentPlaylist.ReadableLength;
+            _playlistLength.text = currentPlaylist.GetReadableLength(_songSpeedModifier);
             _playButton.interactable = currentPlaylist.isValid;
             _editButton.gameObject.SetActive(currentPlaylist.IsCustomPlaylist);
             _deleteButton.gameObject.SetActive(currentPlaylist.IsCustomPlaylist);
@@ -113,6 +115,12 @@ namespace UI.Scrollers.Playlists
                 _playlistRecordStreak.SetCharArray(buffer.Array, buffer.Offset, buffer.Count);
             }
         }
+        public void SongSpeedModValueChanged(float value)
+        {
+            _songSpeedModifier = SongSliderToPlaylistSpeedMod(value);
+
+            ShowInfo().Forget();
+        }
 
         private async UniTask<PlaylistRecord[]> GetPlaylistRecords()
         {
@@ -123,6 +131,25 @@ namespace UI.Scrollers.Playlists
                 return null;
             }
             return await PlayerStatsFileManager.TryGetPlaylistRecords(playlist, _cancellationToken);
+        }
+
+        private float SongSliderToPlaylistSpeedMod(float sliderValue)
+        {
+            switch ((int)sliderValue)
+            {
+                case 0:
+                    return .75f;
+                case 1:
+                    return .875f;
+                case 2:
+                    return 1;
+                case 3:
+                    return 1.125f;
+                case 4:
+                    return 1.25f;
+                default:
+                    return 1;
+            }
         }
     }
 }

@@ -130,6 +130,8 @@ public class MusicManager : BaseGameStateListener
             return;
         }
 
+        SetPitch(PlaylistManager.Instance.SongSpeedMod);
+
         SetNewMusic(audioClip);
 
         finishedLoadingSong?.Invoke();
@@ -143,6 +145,11 @@ public class MusicManager : BaseGameStateListener
     public void SetNewMusic(AudioClip song)
     {
         _musicAudioSource.clip = song;
+    }
+
+    private void SetPitch(float pitchMod)
+    {
+        _musicAudioSource.pitch = pitchMod;
     }
 
     public async void PlayMusic()

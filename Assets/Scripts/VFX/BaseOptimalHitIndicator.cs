@@ -1,4 +1,4 @@
- using UnityEngine;
+using UnityEngine;
 
 public class BaseOptimalHitIndicator : MonoBehaviour, IInitializer
 {
@@ -12,6 +12,7 @@ public class BaseOptimalHitIndicator : MonoBehaviour, IInitializer
     private string _propertyName;
 
     private int _propertyHash;
+    private const string ShowIndicator = "ShowTimingIndicator";
 
     public void Initialize(BaseTarget target)
     {
@@ -35,6 +36,10 @@ public class BaseOptimalHitIndicator : MonoBehaviour, IInitializer
         {
             return;
         }
+
+        var showIndicator = SettingsManager.GetCachedBool(ShowIndicator, true);
+
+        _renderer.gameObject.SetActive(showIndicator);
 
         _renderer.material.SetVector(_propertyHash, _baseTarget.OptimalHitPoint);
     }

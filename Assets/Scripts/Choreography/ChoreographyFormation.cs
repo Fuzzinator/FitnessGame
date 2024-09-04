@@ -42,6 +42,17 @@ public struct ChoreographyFormation
     public bool HasObstacle => _hasObstacle;
     public bool HasEvent => _hasEvent;
 
+    public ChoreographyFormation RemoveNote()
+    {
+        _note = new ChoreographyNote();
+        _hasNote = false;
+        if(!HasObstacle && !HasEvent)
+        {
+            _time = 0;
+            _isValid = false;
+        }
+        return this;
+    }
 
     public ChoreographyFormation SetNote(ChoreographyNote note, bool hasNote = true)
     {

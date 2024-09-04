@@ -71,6 +71,11 @@ public class SongMerger : EditorWindow
                             {
                                 MergeSongs(index).Forget();
                             }
+
+                            if(GUILayout.Button("Make Additive"))
+                            {
+                                MakeAdditive(index).Forget();
+                            }
                         }
                         EditorGUILayout.EndHorizontal();
                     }
@@ -125,6 +130,50 @@ public class SongMerger : EditorWindow
             }
         }
         Debug.Log($"{original.SongName} COMPLETE");
+    }
+
+    private async UniTaskVoid MakeAdditive(int index)
+    {
+        var current = _customSongs[index];
+
+        for (var i = 0; i < current.DifficultySets.Length; i++)
+        {
+            var set = current.DifficultySets[i];
+
+            for (var j = 1; j < set.DifficultyInfos.Length; j++)
+            {
+                var currentDifInfo = set.DifficultyInfos[j];
+                var prevDifInfo = set.DifficultyInfos[j - 1];
+
+                var currentChoreography = Choreography.LoadFromSongInfo(current, currentDifInfo);
+                var prevChoreography = Choreography.LoadFromSongInfo(current, prevDifInfo);
+
+                await UniTask.Delay(TimeSpan.FromSeconds(1f));
+
+                if (currentChoreography != null)
+                {
+                    var allNotes = new List<ChoreographyNote>();
+                    allNotes.AddRange(currentChoreography.Notes);
+                    var toAdd = new List<ChoreographyNote>();
+                    foreach (var note in prevChoreography.Notes)
+                    {
+                        if (allNotes.Exists((x) => x.Time == note.Time) || note.Time > allNotes[^1].Time)
+                        {
+                            continue;
+                        }
+                        toAdd.Add(note);
+                    }
+                    allNotes.AddRange(toAdd);
+                    allNotes.Sort((x, y) => x.Time.CompareTo(y.Time));
+
+                    Debug.Log($"{toAdd.Count} notes added.");
+                    currentChoreography.SetNotes(allNotes.ToArray());
+                }
+                await WriteCustomSong(current.fileLocation, currentDifInfo.FileName, currentChoreography);
+                Debug.Log($"{current.SongName} Mode:{set.MapGameMode} Difficulty:{currentDifInfo.Difficulty} COMPLETE");
+            }
+        }
+        Debug.Log($"{current.SongName} COMPLETE");
     }
     private static async UniTask WriteCustomSong(string fileLocation, string fileName, Choreography choreography)
     {

@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using static UnityEngine.XR.Hands.XRHandSubsystemDescriptor;
 
 namespace UI.Scrollers.Playlists
 {
@@ -39,6 +40,8 @@ namespace UI.Scrollers.Playlists
 
         private SongInfo _currentSongInfo;
 
+        private float _songSpeedModifier = 1f;
+
         public void RequestDisplay(SongInfo info)
         {
             if (_canvasGroup != null)
@@ -72,6 +75,14 @@ namespace UI.Scrollers.Playlists
         {
             ClearDisplayedInfo();
         }
+        public void SongSpeedModValueChanged(float value)
+        {
+            _songSpeedModifier = SongSliderToPlaylistSpeedMod(value);
+            if(_currentSongInfo != null)
+            {
+                UpdateDisplayedInfo(_currentSongInfo);
+            }
+        }
 
         private void UpdateDisplayedInfo(SongInfo info)
         {
@@ -79,8 +90,8 @@ namespace UI.Scrollers.Playlists
             _songName.SetTextZeroAlloc(info.SongName, true);
             _songAuthor.SetTextZeroAlloc(info.SongAuthorName, true);
             _levelAuthor.SetTextZeroAlloc(info.LevelAuthorName, true);
-            _songLength.SetTextZeroAlloc(info.ReadableLength, true);
-            _beatsPerMinute.SetTextZeroAlloc(info.BeatsPerMinute, true);
+            _songLength.SetTextZeroAlloc(info.GetReadableLength(_songSpeedModifier), true);
+            _beatsPerMinute.SetTextZeroAlloc(info.BeatsPerMinute * _songSpeedModifier, true);
 
             if (info.SongScore < 0)
             {
@@ -101,7 +112,7 @@ namespace UI.Scrollers.Playlists
 
         private void ClearDisplayedInfo()
         {
-            _currentSongInfo = new SongInfo();
+            _currentSongInfo = null;//new SongInfo();
             _songName.ClearText();
             _songAuthor.ClearText();
             _levelAuthor.ClearText();
@@ -120,6 +131,25 @@ namespace UI.Scrollers.Playlists
         public void ToggleSongPreview()
         {
             _songOptions.ToggleSongPreview();
+        }
+
+        private float SongSliderToPlaylistSpeedMod(float sliderValue)
+        {
+            switch ((int)sliderValue)
+            {
+                case 0:
+                    return .75f;
+                case 1:
+                    return .875f;
+                case 2:
+                    return 1;
+                case 3:
+                    return 1.125f;
+                case 4:
+                    return 1.25f;
+                default:
+                    return 1;
+            }
         }
     }
 }

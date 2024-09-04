@@ -39,35 +39,33 @@ public class SongInfo
 
     public float SongStartDelay => _songTimeOffset;
 
-    public float LengthInMinutes => _songLength / MINUTE;
+    public float LengthInMinutes => SongLength / MINUTE;
 
-    public string ReadableLength
+    public string GetReadableLength(float speedMod = 1f)
     {
-        get
+        var length = SongLength / speedMod;
+        var minutes = Mathf.Floor(length / MINUTE);
+        var seconds = Mathf.Floor(length % MINUTE);
+        using (var sb = ZString.CreateStringBuilder(true))
         {
-            var minutes = Mathf.Floor(SongLength / MINUTE);
-            var seconds = Mathf.Floor(SongLength % MINUTE);
-            using (var sb = ZString.CreateStringBuilder(true))
+            //sb.AppendFormat(LENGTHFORMAT, minutes, seconds);
+
+            if (minutes < 10)
             {
-                //sb.AppendFormat(LENGTHFORMAT, minutes, seconds);
-
-                if (minutes < 10)
-                {
-                    sb.Append(0);
-                }
-
-                sb.Append(minutes);
-                sb.Append(DIVIDER);
-                if (seconds < 10)
-                {
-                    sb.Append(0);
-                }
-
-                sb.Append(seconds);
-
-                //var buffer = sb.AsArraySegment();
-                return sb.ToString();
+                sb.Append(0);
             }
+
+            sb.Append(minutes);
+            sb.Append(DIVIDER);
+            if (seconds < 10)
+            {
+                sb.Append(0);
+            }
+
+            sb.Append(seconds);
+
+            //var buffer = sb.AsArraySegment();
+            return sb.ToString();
         }
     }
 
@@ -663,16 +661,16 @@ public class SongInfo
         _levelAuthorName = "3Pupper Studios";
         _songID = _songName;
         foreach (var set in _difficultyBeatmapSets)
-        { 
-            for (var i = set.DifficultyInfos.Length-1; i >= 0 ; i--)
+        {
+            for (var i = set.DifficultyInfos.Length - 1; i >= 0; i--)
             {
-                if(i == 0)
+                if (i == 0)
                 {
-                    set.DifficultyInfos[i] = new DifficultyInfo("Easy", 1, "Easy.dat", 7f);
+                    set.DifficultyInfos[i] = new DifficultyInfo("Easy", 1, set.DifficultyInfos[i].FileName.Replace("Normal", "Easy"), 7f);
                 }
                 else
                 {
-                    set.DifficultyInfos[i] = set.DifficultyInfos[i-1];
+                    set.DifficultyInfos[i] = set.DifficultyInfos[i - 1];
                 }
             }
         }
@@ -688,6 +686,7 @@ public class SongInfo
             }
         }
     }
+
 
     public async static UniTask<DifficultySet> TryCreateNormalFrom1Handed(SongInfo songInfo, DifficultyInfo[] difficultyBeatmaps, CancellationToken token)
     {

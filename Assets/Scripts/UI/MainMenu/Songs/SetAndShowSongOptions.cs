@@ -71,6 +71,8 @@ public class SetAndShowSongOptions : MonoBehaviour
 
     private bool _loadingSongPreview = false;
 
+    private float _songSpeedModifier = 1f;
+
     public bool Initialized => _cancellationSource != null;
 
     #region Const Strings
@@ -390,9 +392,10 @@ public class SetAndShowSongOptions : MonoBehaviour
             var noObstacles = PlaylistMaker.Instance.ForceNoObstacles;
             var jabsOnly = PlaylistMaker.Instance.ForceJabsOnly;
             var targetSpeedMod = PlaylistMaker.Instance.TargetSpeedMod;
+            var songSpeedMod = PlaylistMaker.Instance.SongSpeedMod;
             var playlistItem = new PlaylistItem(_songInfo, _selectedDifficulty, _difficultyEnum, _activeDifficultySet.MapGameMode, noObstacles, oneHanded, jabsOnly);
             var targetSideType = _forwardFootSetter?.TargetHitSideType ?? HitSideType.Right;
-            PlaylistManager.Instance.SetTempSongPlaylist(playlistItem, targetSideType, noObstacles, oneHanded, jabsOnly, targetSpeedMod);
+            PlaylistManager.Instance.SetTempSongPlaylist(playlistItem, targetSideType, noObstacles, oneHanded, jabsOnly, targetSpeedMod, songSpeedMod);
             if (_autoPlayPreview)
             {
                 StopSongPreview();
@@ -433,17 +436,24 @@ public class SetAndShowSongOptions : MonoBehaviour
         {
             StopSongPreview();
         }
+
         PlaySongAudioAsync().Forget();
     }
 
     public async void StopSongPreview()
     {
+        if(this == null)
+        {
+            return;
+        }
+
         _audioSource.Stop();
         _previewButtonText?.SetTextZeroAlloc(Preview, true);
         if (_currentSongRequestHandle.IsValid())
         {
             Addressables.Release(_currentSongRequestHandle);
         }
+
         if (_cancellationSource != null && _cancellationSource.IsCancellationRequested)
         {
             _cancellationSource.Dispose();
@@ -454,6 +464,7 @@ public class SetAndShowSongOptions : MonoBehaviour
         {
             RefreshTokenAsync().Forget();
         }
+
         _loadingSongPreview = false;
     }
 
@@ -560,6 +571,30 @@ public class SetAndShowSongOptions : MonoBehaviour
             }
 
             Debug.LogError($"failed to play song preview\n {e.Message}");
+        }
+    }
+    public void SongSpeedModValueChanged(float value)
+    {
+        _songSpeedModifier = SongSliderToPlaylistSpeedMod(value);
+        _audioSource.pitch = _songSpeedModifier;
+    }
+
+    private float SongSliderToPlaylistSpeedMod(float sliderValue)
+    {
+        switch ((int)sliderValue)
+        {
+            case 0:
+                return .75f;
+            case 1:
+                return .875f;
+            case 2:
+                return 1;
+            case 3:
+                return 1.125f;
+            case 4:
+                return 1.25f;
+            default:
+                return 1;
         }
     }
 }
