@@ -16,6 +16,7 @@ using System.IO;
 using static BeatSageDownloadManager;
 using UnityEngine.Events;
 using TagLib;
+using static UnityEngine.XR.Hands.XRHandSubsystemDescriptor;
 
 public class BeatSageDownloadManager
 {
@@ -239,7 +240,7 @@ public class BeatSageDownloadManager
         {
             //Update displayed progress
             download.Progress = 0.8;
-            await RetrieveDownload(levelId, trackName, artistName, download);
+            await RetrieveDownload(levelId, trackName, artistName, download, cts);
         }
         else if (download.downloadStatus == "FAILED")
         {
@@ -248,7 +249,7 @@ public class BeatSageDownloadManager
         }
     }
 
-    private static async UniTask RetrieveDownload(string levelId, string trackName, string artistName, Download download)
+    private static async UniTask RetrieveDownload(string levelId, string trackName, string artistName, Download download, CancellationTokenSource cts)
     {
         download.Status = "Downloading";
         //Update displayed progress
@@ -259,7 +260,7 @@ public class BeatSageDownloadManager
         var client = new WebClient();
         var uri = new Uri(url);
 
-        var fileName = "[BSD] " + trackName + " - " + artistName;
+        var fileName = $"{trackName} - {artistName}";
         fileName = fileName.RemoveIllegalIOCharacters();
         var songBytes = await client.DownloadDataTaskAsync(uri);
         var targetDir = $"{AssetManager.SongsPath}{fileName}";
@@ -289,7 +290,17 @@ public class BeatSageDownloadManager
         await UniTask.DelayFrame(1);
         if (SongInfoFilesReader.Instance != null)
         {
-            SongInfoFilesReader.Instance.LoadNewSong(fileName, "LOCAL", 0).Forget();
+            /*var path = $"{AssetManager.SongsPath}{fileName}/song.ogg";
+            var clip = await AssetManager.LoadCustomSong(fileName, cts.Token, AudioType.OGGVORBIS, false);
+            if(clip != null)
+            {
+                var bpm = await UniBpmAnalyzer.TryAnalyzeBpmWithJobs(clip);
+                if(bpm > -1)
+                {
+                    AssetManager.
+                }
+            }*/
+            var songInfo = await SongInfoFilesReader.Instance.LoadNewSong(fileName, "LOCAL", 0);
             PlaylistFilesReader.Instance.RefreshPlaylistsValidStates().Forget();
         }
         //Update displayed progress

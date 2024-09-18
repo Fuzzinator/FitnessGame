@@ -82,13 +82,13 @@ public class PlaylistCountdownClock : MonoBehaviour
 
     private void UpdateDisplay()
     {
-        var minutes = (int) Mathf.Floor(_timeRemaining / MINUTE);
-        var seconds = (int) Mathf.Floor(_timeRemaining % MINUTE);
+        var minutes = (int)Mathf.Floor(_timeRemaining / MINUTE);
+        var seconds = (int)Mathf.Floor(_timeRemaining % MINUTE);
 
         using (var sb = ZString.CreateStringBuilder(true))
         {
-            var format = minutes < 100? DOUBLEDIGITFORMAT: TRIPLEDIGITFORMAT;
-            
+            var format = minutes < 100 ? DOUBLEDIGITFORMAT : TRIPLEDIGITFORMAT;
+
             sb.AppendFormat(format, minutes, seconds);
 
             _minutesText.SetText(sb);
@@ -103,26 +103,44 @@ public class PlaylistCountdownClock : MonoBehaviour
 
     private async UniTask RunClock(CancellationToken token)
     {
-        var time = new Stopwatch();
+        var time = 0f;//new Stopwatch();
+        var paused = false;
         while (_clockEnabled)
         {
             try
             {
-                time.Restart();
-                await UniTask.DelayFrame(1, cancellationToken: token);
+                time = 0f;//.Restart();
+                await UniTask.NextFrame(cancellationToken: token);
                 if (token.IsCancellationRequested || !_clockEnabled)
                 {
                     break;
                 }
 
-                if (!_clockRunning || _clockPaused || _applicationPaused || _timeRemaining <= 0)
+                if (_clockPaused || _applicationPaused)
                 {
+                    if (!paused)
+                    {
+                        //time.Stop();
+                        paused = true;
+                    }
                     continue;
                 }
 
-                time.Stop();
-                var timeSpan = time.Elapsed;
-                _timeRemaining -= (float) timeSpan.TotalSeconds;
+                if(paused)
+                {
+                    paused = false;
+                    //time.Start();
+                }
+
+                if (!_clockRunning || _timeRemaining <= 0)
+                {
+
+                    continue;
+                }
+
+                //time.Stop();
+                //var timeSpan = time.Elapsed;
+                _timeRemaining -= Time.deltaTime;//(float)timeSpan.TotalSeconds;
             }
             catch (Exception e) when (e is OperationCanceledException)
             {

@@ -324,7 +324,8 @@ public class ChoreographyReader : MonoBehaviour
         for (var i = 0; i < _sequenceables.Count; i++)
         {
             var sequenceable = _sequenceables[i];
-            if ((sequenceable.Time * beatsTime * PlaylistManager.Instance.SongSpeedMod) - TimeToPoint <= 0)
+            var sequenceTime = sequenceable.Time * beatsTime * PlaylistManager.Instance.SongSpeedMod;
+            if (sequenceTime - TimeToPoint <= 0 || sequenceTime > PlaylistManager.Instance.CurrentSongLength)
             {
                 continue;
             }

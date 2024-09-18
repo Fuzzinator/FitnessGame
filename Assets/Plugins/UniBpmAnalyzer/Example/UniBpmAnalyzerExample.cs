@@ -5,20 +5,30 @@ This software is released under the MIT License.
 http://opensource.org/licenses/mit-license.php
 */
 
+using Cysharp.Threading.Tasks;
+using System;
 using UnityEngine;
 
 public class UniBpmAnalyzerExample : MonoBehaviour
 {
     [SerializeField]
-    private AudioClip targetClip;
+    private AudioClip[] targetClip;
 
-    private void Start()
+    private async void Start()
     {
-        int bpm = UniBpmAnalyzer.AnalyzeBpm(targetClip);
-        if (bpm < 0)
+        foreach (var clip in targetClip)
         {
-            Debug.LogError("AudioClip is null.");
-            return;
+            await UniTask.Delay(TimeSpan.FromSeconds(1));
+            var bpm = await /*UniBpmAnalyzer.TryAnalyzeBpm(clip);*/UniBpmAnalyzer.TryAnalyzeBpmWithJobs(clip);
+            if (bpm < 0)
+            {
+                Debug.LogError("AudioClip is null.");
+                return;
+            }
+            else
+            {
+                //Debug.Log(bpm.ToString());
+            }
         }
     }
 }

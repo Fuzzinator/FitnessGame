@@ -140,6 +140,8 @@ public class PlaylistManager : MonoBehaviour
 
     public float SongSpeedMod => _currentPlaylist.SongSpeedMod;
 
+    public float CurrentSongLength => _currentPlaylist.SongSpeedMod * CurrentItem.SongInfo.SongLength;
+
     private void Awake()
     {
         if (Instance == null)

@@ -1,15 +1,21 @@
-﻿/*
+/*
 UniBpmAnalyzer
 Copyright (c) 2016 WestHillApps (Hironari Nishioka)
 This software is released under the MIT License.
 http://opensource.org/licenses/mit-license.php
 */
 
+using Cysharp.Threading.Tasks;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using Unity.Burst;
+using Unity.Collections;
+using Unity.Jobs;
+using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Pool;
 
 public class UniBpmAnalyzer
 {
@@ -17,7 +23,7 @@ public class UniBpmAnalyzer
 
     // BPM search range
     private const int MIN_BPM = 60;
-    private const int MAX_BPM = 400;
+    private const int MAX_BPM = 250;
     // Base frequency (44.1kbps)
     private const int BASE_FREQUENCY = 44100;
     // Base channels (2ch)
@@ -35,48 +41,130 @@ public class UniBpmAnalyzer
 
     private static BpmMatchData[] bpmMatchDatas = new BpmMatchData[MAX_BPM - MIN_BPM + 1];
 
-    /// <summary>
-    /// Analyze BPM from an audio clip
-    /// </summary>
-    /// <param name="clip">target audio clip</param>
-    /// <returns>bpm</returns>
-    public static int AnalyzeBpm(AudioClip clip)
+    public static async UniTask<int> TryAnalyzeBpmWithJobs(AudioClip clip)
     {
         for (int i = 0; i < bpmMatchDatas.Length; i++)
         {
             bpmMatchDatas[i].match = 0f;
         }
+
         if (clip == null)
         {
+            await UniTask.DelayFrame(1);
             return -1;
         }
-        Debug.Log("AnalyzeBpm audioClipName : " + clip.name);
 
         int frequency = clip.frequency;
-        Debug.Log("Frequency : " + frequency);
-
         int channels = clip.channels;
-        Debug.Log("Channels : " + channels);
+        int splitFrameSize = Mathf.FloorToInt((frequency / (float)BASE_FREQUENCY) * (channels / (float)BASE_CHANNELS) * BASE_SPLIT_SAMPLE_SIZE);
 
-        int splitFrameSize = Mathf.FloorToInt(((float)frequency / (float)BASE_FREQUENCY) * ((float)channels / (float)BASE_CHANNELS) * (float)BASE_SPLIT_SAMPLE_SIZE);
+        var targetLength = clip.samples * channels;
+        float[] tempBuffer = new float[targetLength];
+        NativeArray<float> allSamples;
+
+        if (clip.GetData(tempBuffer, 0))
+        {
+            allSamples = new NativeArray<float>(tempBuffer, Allocator.TempJob);
+        }
+        else
+        {
+            Debug.Log("Failed to get data from clip.");
+            return -1;
+        }
+
+
+        int volumeArrLength = Mathf.CeilToInt((float)allSamples.Length / splitFrameSize);
+        var volumeArr = new NativeArray<float>(volumeArrLength, Allocator.TempJob);
+
+        var volumeArrayJob = new VolumeArrayJob
+        {
+            allSamples = allSamples,
+            volumeArr = volumeArr,
+            splitFrameSize = splitFrameSize
+        };
+
+        var volumeHandle = volumeArrayJob.Schedule(volumeArr.Length, 64);
+        await UniTask.WaitUntil(() => volumeHandle.IsCompleted);
+        volumeHandle.Complete();
+
+        var diffList = new NativeArray<float>(volumeArr.Length - 1, Allocator.TempJob);
+        for (int i = 1; i < volumeArr.Length; i++)
+        {
+            diffList[i - 1] = Mathf.Max(volumeArr[i] - volumeArr[i - 1], 0f);
+        }
+
+        var bpmMatchDataArray = new NativeArray<BpmMatchData>(bpmMatchDatas.Length, Allocator.TempJob);
+
+        // Using BpmAnalysisBatchJob to process BPM analysis in batches
+        var bpmAnalysisBatchJob = new BpmAnalysisBatchJob
+        {
+            diffList = diffList,
+            bpmMatchDatas = bpmMatchDataArray,
+            splitFrequency = frequency / (float)splitFrameSize
+        };
+
+        // Determine a batch size; adjust based on your system's capacity
+        int batchSize = 32;
+        var bpmHandle = bpmAnalysisBatchJob.ScheduleBatch(bpmMatchDataArray.Length, batchSize);
+        await UniTask.WaitUntil(() => bpmHandle.IsCompleted);
+        bpmHandle.Complete();
+
+        // Find the BPM with the highest match
+        int bpm = -1;
+        float maxMatch = 0;
+
+        for (int i = 0; i < bpmMatchDataArray.Length; i++)
+        {
+            if (bpmMatchDataArray[i].match > maxMatch)
+            {
+                maxMatch = bpmMatchDataArray[i].match;
+                bpm = bpmMatchDataArray[i].bpm;
+            }
+        }
+
+        // Dispose NativeArrays
+        allSamples.Dispose();
+        volumeArr.Dispose();
+        diffList.Dispose();
+        bpmMatchDataArray.Dispose();
+
+        return bpm;
+    }
+
+    /// <summary>
+    /// Analyze BPM from an audio clip
+    /// </summary>
+    /// <param name="clip">target audio clip</param>
+    /// <returns>bpm</returns>
+    public static async UniTask<int> TryAnalyzeBpm(AudioClip clip)
+    {
+        for (int i = 0; i < bpmMatchDatas.Length; i++)
+        {
+            bpmMatchDatas[i].match = 0f;
+        }
+
+        var bpm = -1;
+
+        if (clip == null)
+        {
+            await UniTask.DelayFrame(1);
+            return bpm;
+        }
+
+        int frequency = clip.frequency;
+        int channels = clip.channels;
+
+        int splitFrameSize = Mathf.FloorToInt((frequency / (float)BASE_FREQUENCY) * ((float)channels / (float)BASE_CHANNELS) * (float)BASE_SPLIT_SAMPLE_SIZE);
 
         // Get all sample data from audioclip
         var allSamples = new float[clip.samples * channels];
         clip.GetData(allSamples, 0);
 
         // Create volume array from all sample data
-        var volumeArr = CreateVolumeArray(allSamples, frequency, channels, splitFrameSize);
+        var volumeArr = await UniTask.RunOnThreadPool(() => CreateVolumeArray(allSamples, splitFrameSize));
 
         // Search bpm from volume array
-        int bpm = SearchBpm(volumeArr, frequency, splitFrameSize);
-        Debug.Log("Matched BPM : " + bpm);
-
-        var strBuilder = new StringBuilder("BPM Match Data List\n");
-        for (int i = 0; i < bpmMatchDatas.Length; i++)
-        {
-            strBuilder.Append("bpm : " + bpmMatchDatas[i].bpm + ", match : " + Mathf.FloorToInt(bpmMatchDatas[i].match * 10000f) + "\n");
-        }
-        Debug.Log(strBuilder.ToString());
+        bpm = await UniTask.RunOnThreadPool(() => SearchBpm(volumeArr, frequency, splitFrameSize));
 
         return bpm;
     }
@@ -84,43 +172,48 @@ public class UniBpmAnalyzer
     /// <summary>
     /// Create volume array from all sample data
     /// </summary>
-    private static float[] CreateVolumeArray(float[] allSamples, int frequency, int channels, int splitFrameSize)
+    private static float[] CreateVolumeArray(float[] allSamples, int splitFrameSize)
     {
-        // Initialize volume array
-        var volumeArr = new float[Mathf.CeilToInt((float)allSamples.Length / (float)splitFrameSize)];
-        int powerIndex = 0;
+        // Pre-calculate array length
+        int volumeArrLength = Mathf.CeilToInt((float)allSamples.Length / splitFrameSize);
+        var volumeArr = new float[volumeArrLength];
 
-        // Sample data analysis start
-        for (int sampleIndex = 0; sampleIndex < allSamples.Length; sampleIndex += splitFrameSize)
+        // For tracking the max volume during calculation
+        float maxVolume = 0f;
+
+        // Use Parallel.For for multithreading the sample analysis
+        Parallel.For(0, volumeArrLength, powerIndex =>
         {
+            int sampleIndex = powerIndex * splitFrameSize;
             float sum = 0f;
-            for (int frameIndex = sampleIndex; frameIndex < sampleIndex + splitFrameSize; frameIndex++)
-            {
-                if (allSamples.Length <= frameIndex)
-                {
-                    break;
-                }
-                // Use the absolute value, because left and right value is -1 to 1
-                float absValue = Mathf.Abs(allSamples[frameIndex]);
-                if (absValue > 1f)
-                {
-                    continue;
-                }
 
-                // Calculate the amplitude square sum
+            for (int frameIndex = sampleIndex; frameIndex < sampleIndex + splitFrameSize && frameIndex < allSamples.Length; frameIndex++)
+            {
+                float absValue = Mathf.Abs(allSamples[frameIndex]);
+                if (absValue > 1f) continue;
                 sum += (absValue * absValue);
             }
 
-            // Set volume value
-            volumeArr[powerIndex] = Mathf.Sqrt(sum / splitFrameSize);
-            powerIndex++;
-        }
+            float volumeValue = Mathf.Sqrt(sum / splitFrameSize);
+            volumeArr[powerIndex] = volumeValue;
 
-        // Representing a volume value from 0 to 1
-        float maxVolume = volumeArr.Max();
-        for (int i = 0; i < volumeArr.Length; i++)
+            // Track max volume
+            lock (volumeArr)
+            {
+                if (volumeValue > maxVolume)
+                {
+                    maxVolume = volumeValue;
+                }
+            }
+        });
+
+        // Normalize volumes
+        if (maxVolume > 0)
         {
-            volumeArr[i] = volumeArr[i] / maxVolume;
+            Parallel.For(0, volumeArrLength, i =>
+            {
+                volumeArr[i] /= maxVolume;
+            });
         }
 
         return volumeArr;
@@ -131,44 +224,123 @@ public class UniBpmAnalyzer
     /// </summary>
     private static int SearchBpm(float[] volumeArr, int frequency, int splitFrameSize)
     {
-        // Create volume diff list
-        var diffList = new List<float>();
+        // Pre-allocate diffList size
+        var diffList = ListPool<float>.Get();
+        diffList.Capacity = volumeArr.Length - 1;
+
+        // Calculate the differences in volume and add to diffList
         for (int i = 1; i < volumeArr.Length; i++)
         {
             diffList.Add(Mathf.Max(volumeArr[i] - volumeArr[i - 1], 0f));
         }
 
-        // Calculate the degree of coincidence in each BPM
-        int index = 0;
-        float splitFrequency = (float)frequency / (float)splitFrameSize;
-        for (int bpm = MIN_BPM; bpm <= MAX_BPM; bpm++)
+        float splitFrequency = frequency / (float)splitFrameSize;
+
+        // Parallelize the BPM matching process
+        Parallel.For(0, MAX_BPM - MIN_BPM + 1, index =>
         {
-            float sinMatch = 0f;
-            float cosMatch = 0f;
-            float bps = (float)bpm / 60f;
+            int bpm = MIN_BPM + index;
+            float bps = bpm / 60f;
+            float sinMatch = 0f, cosMatch = 0f;
 
-            if (diffList.Count > 0)
+            // Pre-calculate the angular frequency factor
+            float angularFactor = 2f * Mathf.PI * bps / splitFrequency;
+
+            // Use a more efficient loop for sin and cos match calculations
+            for (int i = 0; i < diffList.Count; i++)
             {
-                for (int i = 0; i < diffList.Count; i++)
-                {
-                    sinMatch += (diffList[i] * Mathf.Cos(i * 2f * Mathf.PI * bps / splitFrequency));
-                    cosMatch += (diffList[i] * Mathf.Sin(i * 2f * Mathf.PI * bps / splitFrequency));
-                }
-
-                sinMatch *= (1f / (float)diffList.Count);
-                cosMatch *= (1f / (float)diffList.Count);
+                float angle = i * angularFactor;
+                sinMatch += (diffList[i] * Mathf.Cos(angle));
+                cosMatch += (diffList[i] * Mathf.Sin(angle));
             }
+
+            sinMatch /= diffList.Count;
+            cosMatch /= diffList.Count;
 
             float match = Mathf.Sqrt((sinMatch * sinMatch) + (cosMatch * cosMatch));
 
             bpmMatchDatas[index].bpm = bpm;
             bpmMatchDatas[index].match = match;
-            index++;
-        }
+        });
 
-        // Returns a high degree of coincidence BPM
+        // Find the BPM with the highest match
         int matchIndex = Array.FindIndex(bpmMatchDatas, x => x.match == bpmMatchDatas.Max(y => y.match));
 
+        // Release memory from diffList
+        ListPool<float>.Release(diffList);
+
         return bpmMatchDatas[matchIndex].bpm;
+    }
+
+
+
+    [BurstCompile]
+    public struct VolumeArrayJob : IJobParallelFor
+    {
+        [ReadOnly] public NativeArray<float> allSamples;
+        public NativeArray<float> volumeArr;
+        public int splitFrameSize;
+
+        public void Execute(int powerIndex)
+        {
+            int sampleIndex = powerIndex * splitFrameSize;
+            float sum = 0f;
+
+            for (int frameIndex = sampleIndex; frameIndex < sampleIndex + splitFrameSize && frameIndex < allSamples.Length; frameIndex++)
+            {
+                float absValue = math.abs(allSamples[frameIndex]);
+                if (absValue > 1f) continue;
+                sum += (absValue * absValue);
+            }
+
+            var volumeValue = math.sqrt(sum / splitFrameSize);
+            volumeArr[powerIndex] = volumeValue;
+        }
+    }
+
+    [BurstCompile]
+    public struct MaxVolumeGetterJob : IJobParallelFor
+    {
+        public NativeArray<float> volumeArr;
+        public float maxVolume;
+
+        public void Execute(int index)
+        {
+            volumeArr[index] /= maxVolume;
+        }
+    }
+
+    [BurstCompile]
+    public struct BpmAnalysisBatchJob : IJobParallelForBatch
+    {
+        [ReadOnly] public NativeArray<float> diffList;
+        public NativeArray<BpmMatchData> bpmMatchDatas;
+        public float splitFrequency;
+
+        public void Execute(int startIndex, int count)
+        {
+            for (int i = startIndex; i < startIndex + count; i++)
+            {
+                int bpm = MIN_BPM + i;
+                float bps = bpm / 60f;
+                float sinMatch = 0f, cosMatch = 0f;
+
+                float angularFactor = 2f * Mathf.PI * bps / splitFrequency;
+
+                for (int j = 0; j < diffList.Length; j++)
+                {
+                    float angle = j * angularFactor;
+                    sinMatch += (diffList[j] * math.cos(angle));
+                    cosMatch += (diffList[j] * math.sin(angle));
+                }
+
+                sinMatch /= (float)diffList.Length;
+                cosMatch /= (float)diffList.Length;
+
+                float match = math.sqrt((sinMatch * sinMatch) + (cosMatch * cosMatch));
+
+                bpmMatchDatas[i] = new BpmMatchData { bpm = bpm, match = match };
+            }
+        }
     }
 }

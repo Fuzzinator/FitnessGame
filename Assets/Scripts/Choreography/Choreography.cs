@@ -116,7 +116,7 @@ public class Choreography
 
         if (!string.IsNullOrWhiteSpace(json))
         {
-            var max = json.Length < 150 ? json.Length -1 : 150;
+            var max = json.Length < 150 ? json.Length - 1 : 150;
             var first150 = json[..max].Replace(" ", "");
             if (first150.Contains(V3V1))
             {
@@ -219,59 +219,33 @@ public class Choreography
     public async UniTask<Choreography> AddRotationEventsAsync()
     {
         var eventTypes = GetOptionTypes();
-        if (_events == null || _events.Length == 0)
+
+        var targetLength = _notes.Length / 20;
+
+        var events = new NativeArray<ChoreographyEvent>(targetLength, Allocator.TempJob);
+        var notes = new NativeArray<ChoreographyNote>(_notes, Allocator.TempJob);
+        var jobHandle = new CreateNewRotationEventsJob(ref events, notes.AsReadOnly(), eventTypes.AsReadOnly());
+        try
         {
-            var targetLength = _notes.Length / 20;
-            var events = new NativeArray<ChoreographyEvent>(targetLength, Allocator.TempJob);
-            var notes = new NativeArray<ChoreographyNote>(_notes, Allocator.TempJob);
-            var jobHandle = new CreateNewRotationEventsJob(ref events, notes.AsReadOnly(), eventTypes.AsReadOnly());
-            try
-            {
-                await jobHandle.Schedule(events.Length, 8);
-            }
-            catch (Exception e)
-            {
-                eventTypes.Dispose();
-                events.Dispose();
-                notes.Dispose();
-                if (e is not OperationCanceledException)
-                {
-                    Debug.LogError(e);
-                }
-
-                return this;
-            }
-
-            _events = jobHandle.Events.ToArray();
+            await jobHandle.Schedule(events.Length, 8);
+        }
+        catch (Exception e)
+        {
             eventTypes.Dispose();
             events.Dispose();
             notes.Dispose();
-        }
-        else
-        {
-            var events = new NativeArray<ChoreographyEvent>(_events, Allocator.TempJob);
-            var jobHandle = new ReplaceRotationEventsJob(ref events, eventTypes);
-            try
+            if (e is not OperationCanceledException)
             {
-                await jobHandle.Schedule(events.Length, 8);
-            }
-            catch (Exception e)
-            {
-                eventTypes.Dispose();
-                events.Dispose();
-                if (e is not OperationCanceledException)
-                {
-                    Debug.LogError(e);
-                }
-
-                return this;
+                Debug.LogError(e);
             }
 
-            _events = jobHandle.Events.ToArray();
-
-            eventTypes.Dispose();
-            events.Dispose();
+            return this;
         }
+
+        _events = jobHandle.Events.ToArray();
+        eventTypes.Dispose();
+        events.Dispose();
+        notes.Dispose();
 
         return this;
     }

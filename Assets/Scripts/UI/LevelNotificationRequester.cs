@@ -65,7 +65,7 @@ public class LevelNotificationRequester : MonoBehaviour
         
         
         string message;
-        //ArraySegment<char> chars;
+        
         using (var sb = ZString.CreateStringBuilder(true))
         {
             sb.AppendFormat(ENDSONGSTATSFORMAT, SONGSCORE,score,GOODHITS,goodHits,MISSEDHITS,missedHits,HITOBSTACLES,hitObstacles);

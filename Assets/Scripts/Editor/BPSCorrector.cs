@@ -245,7 +245,8 @@ public class BPSCorrector : EditorWindow
     private async UniTaskVoid GetCorrectBPS(SongInfo info)
     {
         var song = await AssetManager.LoadCustomSong(info.fileLocation, info, new System.Threading.CancellationToken());
-        _correctBPMs[info.SongName] = UniBpmAnalyzer.AnalyzeBpm(song);
+        var bpm = await UniBpmAnalyzer.TryAnalyzeBpmWithJobs(song);
+        _correctBPMs[info.SongName] = bpm;
     }
 
     private async UniTaskVoid CorrectBPS(SongInfo info)

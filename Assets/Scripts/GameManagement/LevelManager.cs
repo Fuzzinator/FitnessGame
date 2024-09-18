@@ -181,7 +181,7 @@ public class LevelManager : MonoBehaviour
 
     public void SetChoreographyCompleted(bool completed)
     {
-        _choreographyCompleted = _choreographyLoaded;
+        _choreographyCompleted = completed;
         CheckIfCompleted();
     }
 

@@ -150,7 +150,7 @@ public class SongInfoFilesReader : MonoBehaviour
         MainMenuUIController.Instance.RequestEnableUI(this);
     }
 
-    public async UniTask LoadNewSong(string songFolderName, string songID, float songScore)
+    public async UniTask<SongInfo> LoadNewSong(string songFolderName, string songID, float songScore)
     {
         var songInfo = await AssetManager.TryGetSingleCustomSong(songFolderName, _cancellationSource.Token, songID, songScore);
         if (songInfo != null)
@@ -169,6 +169,7 @@ public class SongInfoFilesReader : MonoBehaviour
             SortSongs();
             _songsUpdated?.Invoke();
         }
+        return songInfo;
     }
 
     public void SetSortMethod(SongInfo.SortingMethod method)
