@@ -285,7 +285,7 @@ public class ChoreographySequencer : MonoBehaviour
 
         var tweenSpeed = PlaylistManager.Instance.TargetSpeedMod * SongInfoReader.Instance.NoteSpeed / _meterDistance * 10;
 
-        if (PlaylistManager.Instance.ForceJabsOnly)
+        if (formation.HasNote && PlaylistManager.Instance.ForceJabsOnly)
         {
             var note = formation.Note.SetToBasicJab();
             formation = formation.SetNote(note);

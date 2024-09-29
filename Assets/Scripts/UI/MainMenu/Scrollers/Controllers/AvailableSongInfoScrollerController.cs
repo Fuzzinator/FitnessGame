@@ -65,7 +65,15 @@ namespace UI.Scrollers.Playlists
             _songInfos.Clear();
             if (string.IsNullOrWhiteSpace(_searchKey))
             {
-                _songInfos.AddRange(SongInfoFilesReader.Instance.availableSongs);
+                foreach (var songInfo in SongInfoFilesReader.Instance.availableSongs)
+                {
+                    if (songInfo.IsHidden && !_showHiddenAssets)
+                    {
+                        continue;
+                    }
+
+                    _songInfos.Add(songInfo);
+                }
             }
             else
             {
@@ -77,6 +85,10 @@ namespace UI.Scrollers.Playlists
                         (string.Equals(_searchKey, "custom", StringComparison.InvariantCultureIgnoreCase) &&
                          songInfo.isCustomSong))
                     {
+                        if (songInfo.IsHidden && !_showHiddenAssets)
+                        {
+                            continue;
+                        }
                         _songInfos.Add(songInfo);
                     }
                 }

@@ -57,7 +57,7 @@ namespace UI.Scrollers.Playlists
                 foreach (var playlist in PlaylistFilesReader.Instance.availablePlaylists)
                 {
                     
-                    if (playlist is not {isValid: true})
+                    if (playlist is not {isValid: true} || (playlist.IsHidden && !_showHiddenAssets))
                     {
                         continue;
                     }
@@ -68,7 +68,7 @@ namespace UI.Scrollers.Playlists
             {
                 foreach (var playlist in PlaylistFilesReader.Instance.availablePlaylists)
                 {
-                    if (playlist is not {isValid: true})
+                    if (playlist is not {isValid: true } || (playlist.IsHidden && !_showHiddenAssets))
                     {
                         continue;
                     }

@@ -36,6 +36,11 @@ public class GameStateManager : MonoBehaviour
             {
                 _previousGameState = _gameState;
                 _gameState = value;
+                if(_previousGameState == GameState.InMainMenu && _gameState == GameState.Playing)
+                {
+                    _skipDelay = false;
+                }
+
                 gameStateChanged?.Invoke(_previousGameState, _gameState);
                 if (value == GameState.PreparingToPlay)
                 {
@@ -117,6 +122,7 @@ public class GameStateManager : MonoBehaviour
         {
             _skipDelay = false;
         }
+
         else
         {
             await UniTask.Delay(TimeSpan.FromSeconds(3), ignoreTimeScale: true, cancellationToken: _tokenSource.Token);

@@ -35,8 +35,15 @@ namespace UI.Scrollers.Playlists
 
         [SerializeField]
         private Button _deleteButton;
+
+        [SerializeField]
+        private Button _hideButton;
+
         [SerializeField]
         private TextMeshProUGUI _deleteButtonText;
+
+        [SerializeField]
+        private TextMeshProUGUI _hideButtonText;
 
         private SongInfo _currentSongInfo;
 
@@ -103,10 +110,17 @@ namespace UI.Scrollers.Playlists
             }
 
             _songOptions.UpdateDifficultyOptions(info, info.DifficultySets);
+
             if (_deleteButton != null)
             {
                 _deleteButton.gameObject.SetActive(info.isCustomSong);
                 _deleteButtonText.gameObject.SetActive(info.isCustomSong);
+            }
+
+            if (_hideButton != null)
+            {
+                _hideButton.gameObject.SetActive(!info.isCustomSong);
+                _hideButtonText.gameObject.SetActive(!info.isCustomSong);
             }
         }
 
@@ -125,6 +139,12 @@ namespace UI.Scrollers.Playlists
             {
                 _deleteButton.gameObject.SetActive(false);
                 _deleteButtonText.gameObject.SetActive(false);
+            }
+
+            if (_hideButton != null)
+            {
+                _hideButton.gameObject.SetActive(false);
+                _hideButtonText.gameObject.SetActive(false);
             }
         }
 

@@ -12,6 +12,9 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.Android;
 using static UnityEngine.XR.Hands.XRHandSubsystemDescriptor;
 using System.Security.AccessControl;
+using UnityEngine.InputSystem;
+using UnityEngine.ResourceManagement.ResourceLocations;
+using System.Runtime.InteropServices.ComTypes;
 //using System.Net.NetworkInformation;
 #endif
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
@@ -314,7 +317,6 @@ public class AssetManager : MonoBehaviour
         {
             if (!File.Exists(path))
             {
-                Debug.LogWarning($"No image found at\"{path}\"");
                 return null;
             }
 
@@ -343,15 +345,21 @@ public class AssetManager : MonoBehaviour
 
     public static async UniTask<Texture2DRequest> LoadBuiltInSongImage(SongInfo item, CancellationToken cancellationToken)
     {
-        AsyncOperationHandle requestHandle = new AsyncOperationHandle();
+        var fileName = item.ImageFilename;
+        var fileLocation = $"{LOCALSONGSFOLDER}{item.fileLocation}/{fileName}";
+
+        if (!AddressableExists(fileLocation))
+        {
+            return new Texture2DRequest();
+        }
+        AsyncOperationHandle<Texture2D> requestHandle = new AsyncOperationHandle<Texture2D>();
         try
         {
-            var fileName = item.ImageFilename;
-            var request = Addressables.LoadAssetAsync<Texture2D>($"{LOCALSONGSFOLDER}{item.fileLocation}/{fileName}");
-            requestHandle = request;
-            await request.ToUniTask(cancellationToken: cancellationToken);
+            requestHandle = Addressables.LoadAssetAsync<Texture2D>(fileLocation);
 
-            var texture = request.Result;
+            await requestHandle.ToUniTask(cancellationToken: cancellationToken);
+
+            var texture = requestHandle.Result;
             if (texture == null)
             {
                 Debug.LogError($"Failed to load local resource file for {item.SongName}");
@@ -365,15 +373,32 @@ public class AssetManager : MonoBehaviour
             texture.name = item.SongName;
             return new Texture2DRequest(texture, requestHandle);
         }
-        catch (Exception e) when (e is OperationCanceledException)
+        catch (Exception e)
         {
+            if (e is not OperationCanceledException or InvalidKeyException)
+            {
+                Debug.LogError($"{e.Message}\n{e.StackTrace}");
+            }
+
             if (requestHandle.IsValid())
             {
                 Addressables.Release(requestHandle);
             }
             return new Texture2DRequest();
         }
+
     }
+
+    private static bool AddressableExists(object key)
+    {
+        foreach (var item in Addressables.ResourceLocators)
+        {
+            IList<IResourceLocation> locs;
+            if (item.Locate(key, null, out locs)) return true;
+        }
+        return false;
+    }
+
 
     public static async UniTask<Texture2DRequest> LoadBuiltInPlaylistImage(string playlistName,
         CancellationToken cancellationToken)
@@ -730,7 +755,7 @@ public class AssetManager : MonoBehaviour
                     streamWriter.Close();
                 }
             }
-            else if(file.Extension.Equals(".dat", StringComparison.InvariantCultureIgnoreCase) && !file.Extension.Contains("-Expert"))
+            else if (file.Extension.Equals(".dat", StringComparison.InvariantCultureIgnoreCase) && !file.Extension.Contains("-Expert"))
             {
                 if (file.Name.Contains("ExpertPlus"))
                 {
@@ -1105,6 +1130,16 @@ public class AssetManager : MonoBehaviour
 #endif
 
         return TagLib.File.Create(path);
+    }
+
+    public static void HideSong(string songID)
+    {
+        HiddenAssetManager.HideSong(songID);
+    }
+
+    public static void HidePlaylist(string guid)
+    {
+        HiddenAssetManager.HidePlaylist(guid);
     }
 }
 

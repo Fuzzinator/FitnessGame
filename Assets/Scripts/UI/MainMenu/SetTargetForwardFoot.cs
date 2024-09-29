@@ -95,7 +95,7 @@ public class SetTargetForwardFoot : MonoBehaviour
     }
     private void UpdateFromPlaylist(Playlist playlist)
     {
-        if(playlist == null)
+        if (playlist == null)
         {
             return;
         }
@@ -132,7 +132,10 @@ public class SetTargetForwardFoot : MonoBehaviour
         }
         else if (_referToPlaylist)
         {
-            PlaylistManager.Instance.CurrentPlaylist.SetForwardFoot(TargetHitSideType);
+            if (PlaylistManager.Instance.CurrentPlaylist != null)
+            {
+                PlaylistManager.Instance.CurrentPlaylist.SetForwardFoot(TargetHitSideType);
+            }
         }
 
         SettingsManager.SetSetting(DefaultFootSetting, toggleID);

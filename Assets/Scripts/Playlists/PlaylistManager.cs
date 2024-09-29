@@ -266,6 +266,7 @@ public class PlaylistManager : MonoBehaviour
         return songID;
     }
 
+    
     public async UniTask<SongRecord[]> TryGetRecords(CancellationToken token)
     {
         return await PlayerStatsFileManager.TryGetRecords(SongInfoReader.Instance.songInfo, TargetDifficulty, TargetGameMode, token);

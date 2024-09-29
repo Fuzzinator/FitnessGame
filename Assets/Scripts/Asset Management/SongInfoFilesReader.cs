@@ -134,6 +134,21 @@ public class SongInfoFilesReader : MonoBehaviour
         NotificationManager.RequestNotification(deleteVisuals, () => ConfirmDeleteSong(targetSongInfo));
     }
 
+    public void TryHideSong()
+    {
+        var targetSongInfo = PlaylistMaker.Instance.DisplayedSongInfo;
+        if (targetSongInfo == null || targetSongInfo.isCustomSong)
+        {
+            return;
+        }
+
+        var hideVisuals = new Notification.NotificationVisuals(
+            $"Are you sure you would like to hide {targetSongInfo.SongName}?\nIt can be unhidden in the settings menu.",
+            "Hide Song?", "Confirm", "Cancel");
+
+        NotificationManager.RequestNotification(hideVisuals, () => ConfirmHideSong(targetSongInfo));
+    }
+
     private void ConfirmDeleteSong(SongInfo targetSongInfo)
     {
         MainMenuUIController.Instance.RequestDisableUI(this);
@@ -145,9 +160,28 @@ public class SongInfoFilesReader : MonoBehaviour
         _songsUpdated?.Invoke();
 
         AssetManager.DeleteCustomSong(targetSongInfo);
-        //_displaySongInfo.ClearDisplayedInfo();
+
         PlaylistMaker.Instance.SetActiveItem(new SongInfo());
         MainMenuUIController.Instance.RequestEnableUI(this);
+    }
+
+    private void ConfirmHideSong(SongInfo targetSongInfo)
+    {
+        MainMenuUIController.Instance.RequestDisableUI(this);
+
+        AssetManager.HideSong(targetSongInfo.SongID);
+
+        _songRemoved?.Invoke(targetSongInfo);
+        _songsUpdated?.Invoke();
+
+        
+        PlaylistMaker.Instance.SetActiveItem(new SongInfo());
+        MainMenuUIController.Instance.RequestEnableUI(this);
+    }
+
+    public void ResetHiddenSongs()
+    {
+        _songsUpdated?.Invoke();
     }
 
     public async UniTask<SongInfo> LoadNewSong(string songFolderName, string songID, float songScore)

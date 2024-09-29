@@ -128,8 +128,8 @@ public class PlaylistFilesReader : MonoBehaviour
         {
             return;
         }
-
-        availablePlaylists.Remove(playlist);
+        var index = availablePlaylists.FindIndex((i) => i.GUID.Equals(playlist.GUID));
+        availablePlaylists.RemoveAt(index);
         _playlistsUpdated?.Invoke();
     }
 
@@ -177,5 +177,34 @@ public class PlaylistFilesReader : MonoBehaviour
                 break;
             }
         }
+    }
+
+    public void TryHidePlaylist()
+    {
+        var currentPlaylist = PlaylistManager.Instance.CurrentPlaylist;
+        if (currentPlaylist == null)
+        {
+            return;
+        }
+
+        var playlist = currentPlaylist.PlaylistName;
+        var hideVisuals = new Notification.NotificationVisuals(
+            $"Are you sure you would like to hide {playlist}?\nIt can be unhidden in the settings menu.",
+            "Hide Workout?", "Confirm", "Cancel");
+
+        NotificationManager.RequestNotification(hideVisuals, () => HidePlaylist(currentPlaylist));
+    }
+
+    private void HidePlaylist(Playlist currentPlaylist)
+    {
+        AssetManager.HidePlaylist(currentPlaylist.GUID);
+        Instance.RemovePlaylist(currentPlaylist);
+
+        PlaylistManager.Instance.CurrentPlaylist = null;
+    }
+
+    public void ResetHiddenPlaylists()
+    {
+        _playlistsUpdated?.Invoke();
     }
 }

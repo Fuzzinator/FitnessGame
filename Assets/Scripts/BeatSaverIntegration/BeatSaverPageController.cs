@@ -494,12 +494,6 @@ public class BeatSaverPageController : MonoBehaviour
             _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_token);
         }
         var audioClip = await targetBeatmap.LatestVersion.GetPlayablePreview(_cancellationTokenSource.Token);
-        /*if (audioClip == null)
-        {
-            NotificationManager.RequestNotification(new Notification.NotificationVisuals($"Unable to play the preview for {targetBeatmap.Name}", "Preview failed.", autoTimeOutTime: 1f, popUp: true));
-            Debug.LogError("Preview Failed");
-            return;
-        }*/
 
         await UniTask.DelayFrame(1);
         if (_audioSource == null)
@@ -509,6 +503,16 @@ public class BeatSaverPageController : MonoBehaviour
         _audioSource.clip = audioClip;
         _audioSource.Play();
         await UniTask.WaitUntil(() => _audioSource == null || !_audioSource.isPlaying && FocusTracker.Instance.IsFocused);
+    }
+
+    public async UniTaskVoid TryDownloadSongByID(string songID)
+    {
+        if (_cancellationTokenSource == null)
+        {
+            _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_token);
+        }
+        var beatmap = await _beatSaver.Beatmap(songID, _cancellationTokenSource.Token);
+
     }
 
     private async UniTaskVoid DownloadSongAsync()
@@ -585,6 +589,68 @@ public class BeatSaverPageController : MonoBehaviour
         PlaylistFilesReader.Instance.RefreshPlaylistsValidStates().Forget();
         UpdateUI().Forget();
     }
+
+    /*private async UniTask DownloadBeatmapAsync(Beatmap targetBeatmap)
+    {
+        _downloadingIds.Add(targetBeatmap.ID);
+        var progress = new Progress<double>();
+        var songName = _activeBeatmap.Metadata?.SongName ?? _activeBeatmap.Name;
+        var loadingDisplay = _loadingDisplays.DisplayNewLoading(songName);
+        if (loadingDisplay != null)
+        {
+            progress.ProgressChanged += (sender, d) => loadingDisplay.UpdateLoadingBar(d);
+        }
+
+        if (_downloadsTokenSource == null || _downloadsTokenSource.IsCancellationRequested)
+        {
+            await RefreshDownloadsToken();
+        }
+        byte[] songBytes = await DownloadZip(progress, targetBeatmap, loadingDisplay, activeCell);
+
+        if (songBytes == null || _downloadsTokenSource.IsCancellationRequested)
+        {
+            var visuals = new Notification.NotificationVisuals($"Failed to download {targetBeatmap.Name}", "Download failed.", autoTimeOutTime: 1f, popUp: true);
+            NotificationManager.RequestNotification(visuals);
+            Debug.LogError("Download Failed");
+            return;
+        }
+
+        await UniTask.DelayFrame(1);
+        if (_cancellationTokenSource == null || _cancellationTokenSource.IsCancellationRequested)
+        {
+            return;
+        }
+        try
+        {
+            if (Directory.Exists(folderName))
+            {
+                Directory.Delete(folderName, true);
+            }
+            ZipFileManagement.ExtractAndSaveZippedSong(folderName, songBytes);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"{folderName} cant be saved might have illegal characters {ex.Message} -- {ex.StackTrace}");
+        }
+        await UniTask.DelayFrame(1);
+        await UniTask.SwitchToMainThread(_downloadsTokenSource.Token);
+        _downloadingIds.Remove(targetBeatmap.ID);
+        if (targetBeatmap.ID == _activeBeatmap.ID)
+        {
+            _downloadButton.interactable = true;
+        }
+
+        //TODO: Need to remove the existing song if a duplicate exists in the SongInfoFilesReader
+        var score = 0f;
+        if (targetBeatmap.Stats != null)
+        {
+            score = targetBeatmap.Stats.Score;
+        }
+        await SongInfoFilesReader.Instance.LoadNewSong(folderName, targetBeatmap.ID, score);
+
+        PlaylistFilesReader.Instance.RefreshPlaylistsValidStates().Forget();
+        UpdateUI().Forget();
+    }*/
 
     private async UniTask<byte[]> DownloadZip(Progress<double> progress, Beatmap targetBeatmap, LoadingDisplay loadingDisplay, BeatSaverSongCellView activeCell)
     {

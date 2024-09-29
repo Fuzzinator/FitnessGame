@@ -305,8 +305,6 @@ public class ChoreographyReader : MonoBehaviour
         ChoreographyFormation thisSequence = new ChoreographyFormation();
 
         float lastRotation = -1f;
-        float lastObstacle = -1f;
-        int lastDodgeObstacleSide = 0;
         ChoreographyNote lastNote = new ChoreographyNote();
         lastNote = lastNote.SetCutDirection(CutDirection.Jab);
         var leftSidePriority = 0;
@@ -318,7 +316,6 @@ public class ChoreographyReader : MonoBehaviour
         var superNotePriority = 0;
 
         var minTargetDistance = _difficultyInfo.MinTargetSpace;
-        var minGapToSwapObstacle = minTargetDistance;
 
         var beatsTime = (60 / SongInfoReader.Instance.BeatsPerMinute);
         for (var i = 0; i < _sequenceables.Count; i++)
@@ -398,9 +395,11 @@ public class ChoreographyReader : MonoBehaviour
                             var obstacle = new ChoreographyObstacle(lastSequence.Time, 1, sequenceable.Obstacle.Type, sequenceable.Obstacle.LineIndex, sequenceable.Obstacle.Width);
                             sequenceable = sequenceable.SetObstacle(obstacle);
 
-                            if (_difficultyInfo.DifficultyRank >= 5)
+                            thisSequence = new ChoreographyFormation(lastSequence.Note);
+
+                            if (_difficultyInfo.DifficultyRank < 5)
                             {
-                                thisSequence = new ChoreographyFormation(lastSequence.Note);
+                                thisSequence = thisSequence.RemoveNote();
                             }
                         }
                         lastTime = sequenceable.Time;
@@ -427,6 +426,7 @@ public class ChoreographyReader : MonoBehaviour
                     };
 
                     var shouldSkipNote = thisSequence.HasNote;
+
                     if (shouldSkipNote)
                     {
                         var currentNote = thisSequence.Note;
@@ -438,6 +438,11 @@ public class ChoreographyReader : MonoBehaviour
                             _ => 0
                         };
                         shouldSkipNote = notePriority <= currentPriority;
+                    }
+
+                    if (_difficultyInfo.DifficultyRank < 5)
+                    {
+                        shouldSkipNote = shouldSkipNote || thisSequence.HasObstacle;
                     }
 
                     if (!shouldSkipNote)
@@ -657,34 +662,41 @@ public class ChoreographyReader : MonoBehaviour
                     var obstacle = sequenceable.Obstacle;
                     if (thisSequence.HasNote)
                     {
-                        var note = thisSequence.Note;
-                        switch (note.HitSideType)
+                        if (_difficultyInfo.DifficultyRank < 5)
                         {
-                            case HitSideType.Block:
-                                break;
-                            case HitSideType.Left:
-                                if (obstacle.LineIndex < 2)
-                                {
-                                    note = note.SetLineIndex(2);
-                                    note = (note.HitSideType == HitSideType.Block ? note.SetType(HitSideType.Left) : note);
-                                }
-
-                                break;
-                            case HitSideType.Right:
-                                if (obstacle.LineIndex > 1)
-                                {
-                                    note = note.SetLineIndex(1);
-                                    note = (note.HitSideType == HitSideType.Block ? note.SetType(HitSideType.Right) : note);
-                                }
-
-                                break;
-                            default:
-                                continue;
+                            thisSequence = thisSequence.RemoveNote();
                         }
+                        else
+                        {
+                            var note = thisSequence.Note;
+                            switch (note.HitSideType)
+                            {
+                                case HitSideType.Block:
+                                    break;
+                                case HitSideType.Left:
+                                    if (obstacle.LineIndex < 2)
+                                    {
+                                        note = note.SetLineIndex(2);
+                                        note = (note.HitSideType == HitSideType.Block ? note.SetType(HitSideType.Left) : note);
+                                    }
 
-                        note = note.SetCutDirection(ChoreographyNote.CutDirection.Jab);
-                        note = note.SetLineLayer(ChoreographyNote.LineLayerType.Low);
-                        thisSequence = thisSequence.SetNote(note);
+                                    break;
+                                case HitSideType.Right:
+                                    if (obstacle.LineIndex > 1)
+                                    {
+                                        note = note.SetLineIndex(1);
+                                        note = (note.HitSideType == HitSideType.Block ? note.SetType(HitSideType.Right) : note);
+                                    }
+
+                                    break;
+                                default:
+                                    continue;
+                            }
+
+                            note = note.SetCutDirection(ChoreographyNote.CutDirection.Jab);
+                            note = note.SetLineLayer(ChoreographyNote.LineLayerType.Low);
+                            thisSequence = thisSequence.SetNote(note);
+                        }
                     }
 
                     thisSequence = thisSequence.SetObstacle(obstacle);

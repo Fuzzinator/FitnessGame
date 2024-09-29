@@ -21,6 +21,7 @@ namespace UI.Scrollers
         private float _cellViewSize = 100f;
 
         protected string _searchKey = string.Empty;
+        protected bool _showHiddenAssets = false;
 
         protected virtual void Start()
         {
@@ -82,6 +83,11 @@ namespace UI.Scrollers
         protected virtual void SetDataFromFilter()
         {
             
+        }
+
+        public void SetShowHiddenAssets(bool showHiddenAssets)
+        {
+            _showHiddenAssets = showHiddenAssets;
         }
     }
 }

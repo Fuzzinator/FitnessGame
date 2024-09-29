@@ -7,6 +7,7 @@ namespace UI.Scrollers.Playlists
     public class AvailablePlaylistsScrollerController : ScrollerController
     {
         protected List<Playlist> _playlists = new List<Playlist>();
+
         public override int GetNumberOfCells(EnhancedScroller scroller)
         {
             if (string.IsNullOrWhiteSpace(_searchKey) && _playlists.Count == 0 || _playlists.Count == 0)
@@ -35,17 +36,30 @@ namespace UI.Scrollers.Playlists
 
             if (string.IsNullOrWhiteSpace(_searchKey))
             {
-                _playlists.AddRange(PlaylistFilesReader.Instance.availablePlaylists);
+                foreach (var playlist in PlaylistFilesReader.Instance.availablePlaylists)
+                {
+                    if (playlist.IsHidden && !_showHiddenAssets)
+                    {
+                        continue;
+                    }
+
+                    _playlists.Add(playlist);
+                }
             }
             else
             {
-                foreach (var songInfo in PlaylistFilesReader.Instance.availablePlaylists)
+                foreach (var playlist in PlaylistFilesReader.Instance.availablePlaylists)
                 {
-                    if (songInfo.PlaylistName.Contains(_searchKey, StringComparison.InvariantCultureIgnoreCase) ||
+                    if (playlist.PlaylistName.Contains(_searchKey, StringComparison.InvariantCultureIgnoreCase) ||
                         (string.Equals(_searchKey, "custom", StringComparison.InvariantCultureIgnoreCase) &&
-                         songInfo.IsCustomPlaylist))
+                         playlist.IsCustomPlaylist))
                     {
-                        _playlists.Add(songInfo);
+                        if (playlist.IsHidden && !_showHiddenAssets)
+                        {
+                            continue;
+                        }
+
+                        _playlists.Add(playlist);
                     }
                 }
             }

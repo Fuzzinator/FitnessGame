@@ -79,6 +79,14 @@ public class SongInfo
 
     public float SongScore => _songScore;
 
+    public bool IsHidden
+    {
+        get
+        {
+            return HiddenAssetManager.IsHiddenSong(_songID);
+        }
+    }
+
     public DateTime DownloadedDate
     {
         get

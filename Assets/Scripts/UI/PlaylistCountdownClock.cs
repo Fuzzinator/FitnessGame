@@ -103,13 +103,11 @@ public class PlaylistCountdownClock : MonoBehaviour
 
     private async UniTask RunClock(CancellationToken token)
     {
-        var time = 0f;//new Stopwatch();
         var paused = false;
         while (_clockEnabled)
         {
             try
             {
-                time = 0f;//.Restart();
                 await UniTask.NextFrame(cancellationToken: token);
                 if (token.IsCancellationRequested || !_clockEnabled)
                 {
@@ -120,7 +118,6 @@ public class PlaylistCountdownClock : MonoBehaviour
                 {
                     if (!paused)
                     {
-                        //time.Stop();
                         paused = true;
                     }
                     continue;
@@ -129,7 +126,6 @@ public class PlaylistCountdownClock : MonoBehaviour
                 if(paused)
                 {
                     paused = false;
-                    //time.Start();
                 }
 
                 if (!_clockRunning || _timeRemaining <= 0)
@@ -138,9 +134,7 @@ public class PlaylistCountdownClock : MonoBehaviour
                     continue;
                 }
 
-                //time.Stop();
-                //var timeSpan = time.Elapsed;
-                _timeRemaining -= Time.deltaTime;//(float)timeSpan.TotalSeconds;
+                _timeRemaining -= Time.deltaTime;
             }
             catch (Exception e) when (e is OperationCanceledException)
             {

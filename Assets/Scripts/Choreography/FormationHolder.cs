@@ -12,6 +12,7 @@ public class FormationHolder : MonoBehaviour, IPoolable
     private ChoreographySequencer _sequencer;
     private ChoreographyFormation _formation;
     private int _nextFormationIndex;
+    private float _time;
 
     public float Rotation { get; private set; }
     public Vector3 StrikePoint { get; private set; }
@@ -79,6 +80,8 @@ public class FormationHolder : MonoBehaviour, IPoolable
         _sequencer = sequencer;
         _formation = formation;
         _nextFormationIndex = index;
+        _time = formation.Time;
+
         StrikePoint = strikePoint;
         Rotation = rotation;
     }

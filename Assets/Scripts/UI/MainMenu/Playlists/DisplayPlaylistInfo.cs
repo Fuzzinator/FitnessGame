@@ -27,15 +27,28 @@ namespace UI.Scrollers.Playlists
         [SerializeField]
         private TextMeshProUGUI _playlistRecordScore;
         [SerializeField]
-        TextMeshProUGUI _playlistRecordStreak;
+        private TextMeshProUGUI _playlistRecordStreak;
+        [SerializeField]
+        private TextMeshProUGUI _editButtonText;
+        [SerializeField]
+        private TextMeshProUGUI _deleteButtonText;
+        [SerializeField]
+        private TextMeshProUGUI _hideButtonText;
 
-        [SerializeField] private Button _playButton;
+        [SerializeField] 
+        private Button _playButton;
 
-        [SerializeField] private Button _editButton;
+        [SerializeField]
+        private Button _editButton;
 
-        [SerializeField] private Button _deleteButton;
+        [SerializeField]
+        private Button _deleteButton;
 
-        [SerializeField] private PlaylistSongScrollerController _scrollerController;
+        [SerializeField]
+        private Button _hideButton;
+
+        [SerializeField]
+        private PlaylistSongScrollerController _scrollerController;
 
         private CancellationToken _cancellationToken;
 
@@ -83,13 +96,22 @@ namespace UI.Scrollers.Playlists
             }
 
             _playlistTitleCard.interactable = true;
-            //_playlistTitleCard.interactable = currentPlaylist.isValid;
+
             _playlistTitle.text = currentPlaylist.PlaylistName;
             _playlistName.text = currentPlaylist.PlaylistName;
             _playlistLength.text = currentPlaylist.GetReadableLength(_songSpeedModifier);
             _playButton.interactable = currentPlaylist.isValid;
-            _editButton.gameObject.SetActive(currentPlaylist.IsCustomPlaylist);
-            _deleteButton.gameObject.SetActive(currentPlaylist.IsCustomPlaylist);
+
+            var isCustomPlaylist = currentPlaylist.IsCustomPlaylist;
+            _editButton.gameObject.SetActive(isCustomPlaylist);
+            _editButtonText.gameObject.SetActive(isCustomPlaylist);
+
+            _deleteButton.gameObject.SetActive(isCustomPlaylist);
+            _deleteButtonText.gameObject.SetActive(isCustomPlaylist);
+
+            _hideButton.gameObject.SetActive(!isCustomPlaylist);
+            _hideButtonText.gameObject.SetActive(!isCustomPlaylist);
+
             _scrollerController.ReloadScroller();
 
             var playlistRecords = await GetPlaylistRecords();

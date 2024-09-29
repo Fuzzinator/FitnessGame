@@ -120,6 +120,14 @@ public class Playlist
         }
     }
 
+    public bool IsHidden
+    {
+        get
+        {
+            return HiddenAssetManager.IsHiddenPlaylist(GUID);
+        }
+    }
+
     public GameMode TargetGameMode => _gameMode;
 
     public DifficultyInfo.DifficultyEnum DifficultyEnum => _difficulty;
@@ -274,7 +282,7 @@ public class Playlist
         ForceNoObstacles = sourcePlaylist.ForceNoObstacles;
         ForceOneHanded = sourcePlaylist.ForceOneHanded;
         ForceJabsOnly = sourcePlaylist.ForceJabsOnly;
-        isValid = true;
+        isValid = sourcePlaylist.isValid;
     }
 
     public Playlist(PlaylistItem singleSong, HitSideType startingSide, bool forceNoObstacles, bool forceOneHanded,

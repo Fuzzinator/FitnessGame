@@ -20,6 +20,7 @@ public class NotificationManager : MonoBehaviour
     private Transform _popUpPosition;
 
     private PoolManager _notificationPoolManager;
+    private PoolManager NotificationPoolManager => _notificationPoolManager ?? new PoolManager(_notificationPrefab, transform);
 
     private static Queue<NotificationRequest> _notificationsQueue = new Queue<NotificationRequest>();
     private static Notification _activeNotification;
@@ -38,7 +39,6 @@ public class NotificationManager : MonoBehaviour
 
     private void Start()
     {
-        _notificationPoolManager = new PoolManager(_notificationPrefab, transform);
         var headHeight = GlobalSettings.TotalHeight;
         if (headHeight > 0)
         {
@@ -82,7 +82,7 @@ public class NotificationManager : MonoBehaviour
         }
         var notification = _notificationsQueue.Dequeue();
 
-        var obj = Instance._notificationPoolManager.GetNewPoolable() as Notification;
+        var obj = Instance.NotificationPoolManager.GetNewPoolable() as Notification;
         if (obj == null)
         {
             Debug.LogError("Notification was null");
@@ -151,8 +151,9 @@ public class NotificationManager : MonoBehaviour
 
     public bool TryGetNextNotification(Guid notificationID)
     {
+        var requestID = _activeNotification?.RequestID;
         _activeNotification = null;
-        if (_activeNotification == null || _activeNotification.RequestID != notificationID || _notificationsQueue.Count == 0)
+        if (_activeNotification == null || requestID != notificationID || _notificationsQueue.Count == 0)
         {
             return false;
         }

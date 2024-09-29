@@ -9,6 +9,14 @@ using UnityEngine.AddressableAssets;
 
 public static class CustomSongsManager
 {
+    private const string CustomSongRecord = "CustomSongsRecord.dat";
+    private const string DownloadedSongs = "DownloadedSongs";
+
+    private static ES3Settings _songsRecordSettings;
+    private static List<string> _songsRecord = null;
+
+    public static ES3Settings SongsRecordSetting => _songsRecordSettings ?? new ES3Settings(CustomSongRecord);
+
     public static async UniTask<float> TryGetSongLength(SongInfo info,
         CancellationToken token, bool customSong = true)
     {
@@ -51,5 +59,31 @@ public static class CustomSongsManager
         
 
         return clipLength;
+    }
+
+    public static List<string> GetRecord()
+    {
+        _songsRecord = ES3.Load(DownloadedSongs, _songsRecord, SongsRecordSetting);
+        return _songsRecord;
+    }
+
+    public static void AddToRecord(string songID)
+    {
+        if(_songsRecord == null)
+        {
+            GetRecord();
+        }
+        _songsRecord.Add(songID);
+        ES3.Save(DownloadedSongs, _songsRecord, SongsRecordSetting);
+    }
+
+    public static void RemoveFromRecord(string songID)
+    {
+        if (_songsRecord == null)
+        {
+            GetRecord();
+        }
+        _songsRecord.Remove(songID);
+        ES3.Save(DownloadedSongs, _songsRecord, SongsRecordSetting);
     }
 }
