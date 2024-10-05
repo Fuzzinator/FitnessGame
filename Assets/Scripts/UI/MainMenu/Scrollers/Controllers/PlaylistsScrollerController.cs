@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using EnhancedUI.EnhancedScroller;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace UI.Scrollers.Playlists
 {
@@ -16,10 +17,19 @@ namespace UI.Scrollers.Playlists
 
         [SerializeField]
         private int _viewPlaylistPageIndex;
-        
+
+        [SerializeField]
+        private MultiColorButton _scrollUpButton;
+
+        [SerializeField]
+        private MultiColorButton _scrollDownButton;
+
+        private int _cachedCellCount = 0;
+
         public override int GetNumberOfCells(EnhancedScroller scroller)
         {
-            return Mathf.CeilToInt(base.GetNumberOfCells(scroller)*.5f);
+            _cachedCellCount = Mathf.CeilToInt(base.GetNumberOfCells(scroller)*.5f);
+            return _cachedCellCount;
         }
         
         public override EnhancedScrollerCellView GetCellView(EnhancedScroller scroller, int dataIndex, int cellIndex)
@@ -80,6 +90,13 @@ namespace UI.Scrollers.Playlists
                     }
                 }
             }
+        }
+
+        public void CheckScrollPosition(EnhancedScroller scroller)
+        {
+            _scrollUpButton.gameObject.SetActive(scroller.StartDataIndex != 0);
+            _scrollDownButton.gameObject.SetActive(scroller.EndDataIndex != _cachedCellCount-1);
+
         }
     }
 }

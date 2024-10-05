@@ -21,6 +21,9 @@ public class SettingsDisplay : UIMenuController
     private Button _saveButton;
 
     [SerializeField]
+    private Button _revertButton;
+
+    [SerializeField]
     private GameState _resumedState;
 
     private readonly List<ISaver> _activeSavers = new List<ISaver>();
@@ -33,6 +36,7 @@ public class SettingsDisplay : UIMenuController
         set
         {
             _saveButton.interactable = value;
+            _revertButton.interactable = value;
             _changeMade = value;
         }
     }

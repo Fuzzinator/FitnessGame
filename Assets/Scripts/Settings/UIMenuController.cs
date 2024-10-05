@@ -73,7 +73,8 @@ public class UIMenuController : MonoBehaviour
 
     public void SetActivePage(int pageNumber)
     {
-        if (pageNumber >= _settingsPages.Length || pageNumber < 0)
+        if (pageNumber >= _settingsPages.Length || pageNumber < 0 ||
+            _activePage == _settingsPages[pageNumber])
         {
             return;
         }

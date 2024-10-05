@@ -7,13 +7,13 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.ResourceManagement.ResourceLocations;
 
 #if UNITY_ANDROID
 using UnityEngine.Android;
 using static UnityEngine.XR.Hands.XRHandSubsystemDescriptor;
 using System.Security.AccessControl;
 using UnityEngine.InputSystem;
-using UnityEngine.ResourceManagement.ResourceLocations;
 using System.Runtime.InteropServices.ComTypes;
 //using System.Net.NetworkInformation;
 #endif
@@ -77,7 +77,8 @@ public class AssetManager : MonoBehaviour
 
     private const string SONGINFONAME = "Info.txt";
     private const string ALTSONGINFONAME = "Info.dat";
-    private const string LocalSongsFolderName = "/ShadowBoXR-Songs";
+
+    private const string LocalSongsFolderName = "/Auto-Convert Songs";
 
     #endregion
 
@@ -133,7 +134,7 @@ public class AssetManager : MonoBehaviour
 #if UNITY_EDITOR || UNITY_STANDALONE_WIN
         return $"{Application.dataPath}{LocalSongsFolderName}";
 #elif UNITY_ANDROID
-        return $"{RootFolder}{LocalSongsFolderName}";
+        return $"{DataPath}{LocalSongsFolderName}";
 #endif
     }
 
