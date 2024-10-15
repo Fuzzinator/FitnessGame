@@ -584,7 +584,7 @@ public class BeatSaverPageController : MonoBehaviour
         {
             score = targetBeatmap.Stats.Score;
         }
-        await SongInfoFilesReader.Instance.LoadNewSong(folderName, targetBeatmap.ID, score);
+        await SongInfoFilesReader.Instance.LoadNewSong(folderName, targetBeatmap.ID, score, false);
 
         PlaylistFilesReader.Instance.RefreshPlaylistsValidStates().Forget();
         UpdateUI().Forget();

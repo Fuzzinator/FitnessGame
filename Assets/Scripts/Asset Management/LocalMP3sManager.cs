@@ -47,7 +47,7 @@ public class LocalMP3sManager : MonoBehaviour
         await UniTask.DelayFrame(1, cancellationToken: _canecllationToken);
         for (int i = 0; i < AvailableMP3Paths.Count; i++)
         {
-            var songName = TryConvertSong(i, out var download);
+            var songName = ConvertSong(i, out var download);
             if (download != null)
             {
                 download.ProgressUpdated.AddListener((val) => DeleteWhenSongCompletes(AvailableMP3Paths[i], val));
@@ -114,8 +114,46 @@ public class LocalMP3sManager : MonoBehaviour
     }
 
 
-    public static string TryConvertSong(int index, out BeatSageDownloadManager.Download download)
+    public static void TryConvertSong(int index, Action<string, BeatSageDownloadManager.Download> onComplete)
     {
+        if (GameManager.Instance.DemoMode && BeatSageDownloadManager.Downloads.Count + SongInfoFilesReader.Instance.CustomSongsCount >= GameManager.DemoModeMaxCustomSongs)
+        {
+            var visuals = new Notification.NotificationVisuals(
+                        $"Cannot convert song. The maximum number of custom songs in this demo is {GameManager.DemoModeMaxCustomSongs}. To have more custom songs, please consider buying the full game.",
+                        "Demo Mode", autoTimeOutTime: 5f, button1Txt: "Okay");
+            NotificationManager.RequestNotification(visuals);
+            return;
+        }
+
+        var path = AvailableMP3Paths[index];
+        var songName = Path.GetFileName(path);
+
+        var notificationData = new Notification.NotificationVisuals(
+                               $"Are you sure you would like to convert {songName}?",
+                               "Convert Song?",
+                               "Convert",
+                               "Cancel",
+                               "Delete");
+
+        NotificationManager.RequestNotification(notificationData, () => 
+        { 
+            var download = BeatSageDownloadManager.TryAddDownload(songName, path);
+            onComplete(songName, download);
+        }, null,
+        () =>
+        {
+            var deleteVisuals = new Notification.NotificationVisuals(
+            $"Are you sure you would like to permanently delete {songName}?",
+            "Delete Song?", "Confirm", "Cancel");
+
+            NotificationManager.RequestNotification(deleteVisuals, () => DeleteWhenSongCompletes(path, 1.0));
+        }
+        );
+    }
+
+    public static string ConvertSong(int index, out BeatSageDownloadManager.Download download)
+    {
+
         if (GameManager.Instance.DemoMode && BeatSageDownloadManager.Downloads.Count + SongInfoFilesReader.Instance.CustomSongsCount >= GameManager.DemoModeMaxCustomSongs)
         {
             var visuals = new Notification.NotificationVisuals(
@@ -125,13 +163,11 @@ public class LocalMP3sManager : MonoBehaviour
             download = null;
             return null;
         }
+
         var path = AvailableMP3Paths[index];
         var songName = Path.GetFileName(path);
+
         download = BeatSageDownloadManager.TryAddDownload(songName, path);
-        if (download == null)
-        {
-            return songName;
-        }
         return songName;
     }
 }

@@ -9,8 +9,10 @@ using UnityEngine.Serialization;
 using DateTime = System.DateTime;
 using TimeSpan = System.TimeSpan;
 
-public class Clock : MonoBehaviour
+public class Clock : MonoBehaviour, IOrderedInitialize
 {
+    public bool Initialized { get; private set; }
+
     [SerializeField]
     private TextMeshProUGUI _timeText;
 
@@ -21,9 +23,15 @@ public class Clock : MonoBehaviour
     private const string AM = "AM";
     private const string PM = "PM";
     
-    private async void Start()
+    public void Initialize()
     {
-        await RunClock(this.GetCancellationTokenOnDestroy()).SuppressCancellationThrow();
+        if (Initialized)
+        {
+            return;
+        }
+
+        RunClock(this.GetCancellationTokenOnDestroy()).SuppressCancellationThrow().Forget();
+        Initialized = true;
     }
 
     private async UniTask RunClock(CancellationToken token)

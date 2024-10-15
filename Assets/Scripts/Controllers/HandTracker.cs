@@ -3,8 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HandTracker : MonoBehaviour
+public class HandTracker : MonoBehaviour, IOrderedInitialize
 {
+    public static HandTracker Instance { get; private set; }
+    public bool Initialized { get; private set; }
+
     [SerializeField]
     private bool _spawnGloves = false;
     [SerializeField]
@@ -23,7 +26,6 @@ public class HandTracker : MonoBehaviour
 #endif
     public static Hand LeftHand => Instance._leftHand;
     public static Hand RightHand => Instance._rightHand;
-    public static HandTracker Instance { get; private set; }
 
     private void Awake()
     {
@@ -37,8 +39,13 @@ public class HandTracker : MonoBehaviour
         }
     }
 
-    private void Start()
+    public void Initialize()
     {
+        if (Initialized)
+        {
+            return;
+        }
+
         if (!_spawnGloves || EnvironmentControlManager.Instance == null)
         {
             return;
@@ -51,6 +58,7 @@ public class HandTracker : MonoBehaviour
         _leftEditorHand.SetAndSpawnGlove(dataContainer.LeftGlove);
         _rightEditorHand.SetAndSpawnGlove(dataContainer.RightGlove);
 #endif
+        Initialized = true;
     }
 
     public static bool TryGetHand(Collider collider, out Hand hand)

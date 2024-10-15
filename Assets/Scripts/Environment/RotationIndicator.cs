@@ -5,8 +5,9 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-public class RotationIndicator : MonoBehaviour
+public class RotationIndicator : MonoBehaviour, IOrderedInitialize
 {
+    public bool Initialized { get; private set; }
     [SerializeField]
     private Transform _targetRotation;
 
@@ -23,12 +24,18 @@ public class RotationIndicator : MonoBehaviour
     private CancellationToken _token;
     
     
-    void Start()
+    public void Initialize()
     {
+        if (Initialized)
+        {
+            return;
+        }
+
         _token = this.GetCancellationTokenOnDestroy();
         _shaderPropID = Shader.PropertyToID(_shaderPropName);
         _material = _renderer.material;
         MonitorHeadRotation().Forget();
+        Initialized = true;
     }
 
     private void OnDestroy()

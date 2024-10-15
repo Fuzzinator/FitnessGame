@@ -1296,6 +1296,23 @@ public class ES3
         }
     }
 
+    /// <summary>Checks whether a key exists in a file.</summary>
+    /// <param name="key">The key we want to check the existence of.</param>
+    /// <param name="settings">The settings we want to use to override the default settings.</param>
+    /// <returns>True if the file exists, otherwise False.</returns>
+    public static async Cysharp.Threading.Tasks.UniTask<bool> KeyExistsAsync(string key, ES3Settings settings)
+    {
+        if (settings.location == Location.Cache)
+            return ES3File.KeyExists(key, settings);
+
+        using (var reader = ES3Reader.Create(settings))
+        {
+            if (reader == null)
+                return false;
+            return await reader.GotoAsync(key);
+        }
+    }
+
     /// <summary>Checks whether the default file exists.</summary>
     /// <param name="filePath">The relative or absolute path of the file we want to check the existence of.</param>
     /// <returns>True if the file exists, otherwise False.</returns>

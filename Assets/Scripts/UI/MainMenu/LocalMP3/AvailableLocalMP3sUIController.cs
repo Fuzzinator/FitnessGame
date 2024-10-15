@@ -53,13 +53,15 @@ public class AvailableLocalMP3sUIController : MonoBehaviour
 
     public void TryConvertSong(int index)
     {
-        var songName = LocalMP3sManager.TryConvertSong(index, out var download);
-        if(download == null)
+        LocalMP3sManager.TryConvertSong(index, (string songName, BeatSageDownloadManager.Download download) =>
         {
-            return;
-        }
-        var loadingDisplay = _loadingDisplays.DisplayNewLoading(songName);
-        loadingDisplay.SetUpBeatsageDownload(download);
+            if (download == null)
+            {
+                return;
+            }
+            var loadingDisplay = _loadingDisplays.DisplayNewLoading(songName);
+            loadingDisplay.SetUpBeatsageDownload(download);
+        });
     }
 
     public void ToggleIfSameSong(int index)

@@ -8,22 +8,22 @@ public class UpdateHitStats : MonoBehaviour, IValidHit, IMissedHit, IBadHit
     private bool _recordHitSpeed = true;
     public void TriggerHitEffect(HitInfo info)
     {
-        ScoringAndHitStatsManager.Instance.RegisterHitTarget(info);
+        ScoringAndHitStatsManager.Instance?.RegisterHitTarget(info);
         if(!_recordHitSpeed)
         {
             return;
         }
-        ScoringAndHitStatsManager.Instance.RecordHitSpeed(info);
+        ScoringAndHitStatsManager.Instance?.RecordHitSpeed(info);
     }
 
     public void TriggerMissEffect()
     {
-        ScoringAndHitStatsManager.Instance.RegisterMissedTarget();
+        ScoringAndHitStatsManager.Instance?.RegisterMissedTarget();
     }
 
     public void HitObstacle(Collider hitObstacle)
     {
-        ScoringAndHitStatsManager.Instance.RegisterHitObstacle();        
+        ScoringAndHitStatsManager.Instance?.RegisterHitObstacle();        
     }
 
     public void TriggerBadHitEffect(HitInfo info, ValidHit validHit)
@@ -32,6 +32,6 @@ public class UpdateHitStats : MonoBehaviour, IValidHit, IMissedHit, IBadHit
         {
             return;
         }
-        ScoringAndHitStatsManager.Instance.RecordHitSpeed(info);
+        ScoringAndHitStatsManager.Instance?.RecordHitSpeed(info);
     }
 }

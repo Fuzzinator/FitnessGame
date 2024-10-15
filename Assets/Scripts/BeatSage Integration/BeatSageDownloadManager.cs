@@ -300,7 +300,7 @@ public class BeatSageDownloadManager
                     AssetManager.
                 }
             }*/
-            var songInfo = await SongInfoFilesReader.Instance.LoadNewSong(fileName, "LOCAL", 0);
+            var songInfo = await SongInfoFilesReader.Instance.LoadNewSong(fileName, "LOCAL", 0, true);
             PlaylistFilesReader.Instance.RefreshPlaylistsValidStates().Forget();
         }
         //Update displayed progress

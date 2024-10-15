@@ -174,7 +174,7 @@ public class SongInfoFilesReader : MonoBehaviour
         _songRemoved?.Invoke(targetSongInfo);
         _songsUpdated?.Invoke();
 
-        
+
         PlaylistMaker.Instance.SetActiveItem(new SongInfo());
         MainMenuUIController.Instance.RequestEnableUI(this);
     }
@@ -184,12 +184,17 @@ public class SongInfoFilesReader : MonoBehaviour
         _songsUpdated?.Invoke();
     }
 
-    public async UniTask<SongInfo> LoadNewSong(string songFolderName, string songID, float songScore)
+    public async UniTask<SongInfo> LoadNewSong(string songFolderName, string songID, float songScore, bool correctBPM)
     {
         var songInfo = await AssetManager.TryGetSingleCustomSong(songFolderName, _cancellationSource.Token, songID, songScore);
         if (songInfo != null)
         {
-            var existingSong = availableSongs.Find((info) => (!string.Equals(songID, "LOCAL") && string.Equals(info.SongID, songID, StringComparison.InvariantCultureIgnoreCase))  ||
+            if (correctBPM)
+            {
+                await BPMCorrector.CorrectBPM(songInfo);
+                await BPMCorrector.MakeAdditive(songInfo);
+            }
+            var existingSong = availableSongs.Find((info) => (!string.Equals(songID, "LOCAL") && string.Equals(info.SongID, songID, StringComparison.InvariantCultureIgnoreCase)) ||
                                                              string.Equals(info.fileLocation, songInfo.fileLocation, StringComparison.InvariantCultureIgnoreCase));
             if (existingSong != null)
             {

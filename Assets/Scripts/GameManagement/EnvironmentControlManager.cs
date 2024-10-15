@@ -515,7 +515,12 @@ public class EnvironmentControlManager : MonoBehaviour
                                    useEnvTargets ? environment.Targets : new(_customEnvironment.Targets),
                                    useEnvObstacles ? environment.Obstacles : new(_customEnvironment.Obstacles));
 
-        await TryLoadEnvironmentData(assets);
+        var loaded = await TryLoadEnvironmentData(assets);
+        if(loaded)
+        {
+            await UniTask.NextFrame();
+            ChoreographyPoolManager.Instance.InitializePools();
+        }
         var env = await CustomEnvironmentsController.LoadCustomEnvironment(environment.CustomPath);
         if (!string.Equals(_customSkyboxPath, env.SkyboxPath))
         {
@@ -525,7 +530,7 @@ public class EnvironmentControlManager : MonoBehaviour
         Shader.SetGlobalTexture(CustomSkyboxAlbedo, _activeCustomSkybox);
         Shader.SetGlobalFloat(CustomSkyboxExposure, env.SkyboxBrightness);
 
-        SetTexturesAndMaterials();
+        await SetTexturesAndMaterials();
         LoadingEnvironmentContainer = false;
     }
 
@@ -537,7 +542,11 @@ public class EnvironmentControlManager : MonoBehaviour
         {
             return;
         }
-        SetTexturesAndMaterials();
+
+        await UniTask.NextFrame();
+
+        ChoreographyPoolManager.Instance.InitializePools();
+        await SetTexturesAndMaterials();
         LoadingEnvironmentContainer = false;
     }
 
@@ -580,7 +589,7 @@ public class EnvironmentControlManager : MonoBehaviour
         return true;
     }
 
-    private void SetTexturesAndMaterials()
+    private async UniTask SetTexturesAndMaterials()
     {
         if (ActiveEnvironmentContainer.GlobalTextureSets is { Length: > 0 }) //this is equal to is GlobalTextureSets != null && its length>0
         {
@@ -598,7 +607,7 @@ public class EnvironmentControlManager : MonoBehaviour
             }
         }
 
-        MaterialsManager.Instance.SetUpMaterials(ActiveEnvironmentContainer.TargetMaterial,
+        await MaterialsManager.Instance.SetUpMaterialsAsync(ActiveEnvironmentContainer.TargetMaterial,
             ActiveEnvironmentContainer.ObstacleMaterial, ActiveEnvironmentContainer.SuperTargetMaterial);
     }
 

@@ -138,7 +138,7 @@ public class BaseTarget : MonoBehaviour, IPoolable
             transform.SetParent(MyPoolManager.poolParent);
         }
 
-        ActiveTargetManager.Instance.RemoveActiveTarget(this);
+        ActiveTargetManager.Instance?.RemoveActiveTarget(this);
         MyPoolManager.ReturnToPool(this);
     }
 

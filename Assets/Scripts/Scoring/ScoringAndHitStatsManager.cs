@@ -1,11 +1,13 @@
+using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class ScoringAndHitStatsManager : MonoBehaviour
+public class ScoringAndHitStatsManager : MonoBehaviour, IOrderedInitialize
 {
     public static ScoringAndHitStatsManager Instance { get; private set; }
+    public bool Initialized { get; private set; }
 
     public uint CurrentScore
     {
@@ -110,10 +112,15 @@ public class ScoringAndHitStatsManager : MonoBehaviour
         _recordedOnEndScene = false;
     }
 
-    private void Start()
+    public void Initialize()
     {
+        if (Initialized)
+        {
+            return;
+        }
+
         FullReset();
-        GetAverageSpeedStats();
+        Initialized = true;
     }
 
     private void OnDisable()
@@ -142,7 +149,7 @@ public class ScoringAndHitStatsManager : MonoBehaviour
     public void FullReset()
     {
         ResetWorkoutStats();
-        ResetSongStats();
+        ResetSongStatsAsync().Forget();
     }
 
     private void ResetWorkoutStats()
@@ -160,17 +167,46 @@ public class ScoringAndHitStatsManager : MonoBehaviour
         WorkoutOkayHits = 0;
         WorkoutBadHits = 0;
     }
-    public void ResetSongStats()
+    public async UniTaskVoid ResetSongStatsAsync()
     {
-        StatsManager.Instance.RecordTargetsHit(SongHitTargets);
-        StatsManager.Instance.RecordObstaclesDodged(SongDodgedObstacles);
-        StatsManager.Instance.RecordLeftSpeedStats(_leftHitSpeeds, RollingTotalLeftHits, RollingTotalLeftHitSpeed);
-        StatsManager.Instance.RecordRightSpeedStats(_rightHitSpeeds, RollingTotalRightHits, RollingTotalRightHitSpeed);
+        if (SongHitTargets > 0)
+        {
+            StatsManager.Instance.RecordTargetsHit(SongHitTargets);
+            await UniTask.NextFrame();
+            SongHitTargets = 0;
+        }
+        if (SongDodgedObstacles > 0)
+        {
+            StatsManager.Instance.RecordObstaclesDodged(SongDodgedObstacles);
+            await UniTask.NextFrame();
+            SongDodgedObstacles = 0;
+        }
+
+        if (RollingTotalLeftHits > 1)
+        {
+            await StatsManager.Instance.RecordLeftSpeedStatsAsync(_leftHitSpeeds, RollingTotalLeftHits, RollingTotalLeftHitSpeed);
+        }
+        else
+        {
+            StatsManager.Instance.GetLeftHitSpeedStats(ref _leftHitSpeeds, out var totalLeftHits, out var rollingTotalLeftSpeed);
+            RollingTotalLeftHits = totalLeftHits;
+            RollingTotalLeftHitSpeed = rollingTotalLeftSpeed;
+        }
+
+        if (RollingTotalRightHits > 1)
+        {
+            await StatsManager.Instance.RecordRightSpeedStatsAsync(_rightHitSpeeds, RollingTotalRightHits, RollingTotalRightHitSpeed);
+        }
+        else
+        {
+            StatsManager.Instance.GetRightHitSpeedStats(ref _rightHitSpeeds, out var totalRightHits, out var rollingTotalRightSpeed);
+            RollingTotalRightHits = totalRightHits;
+            RollingTotalRightHitSpeed = rollingTotalRightSpeed;
+        }
+
         SongScore = 0;
 
-        SongHitTargets = 0;
         SongMissedTargets = 0;
-        SongDodgedObstacles = 0;
         SongHitObstacles = 0;
 
         SongPerfectHits = 0;
@@ -178,16 +214,6 @@ public class ScoringAndHitStatsManager : MonoBehaviour
         SongGoodHits = 0;
         SongOkayHits = 0;
         SongBadHits = 0;
-    }
-
-    private void GetAverageSpeedStats()
-    {
-        StatsManager.Instance.GetLeftHitSpeedStats(ref _leftHitSpeeds, out var totalLeftHits, out var rollingTotalLeftSpeed);
-        RollingTotalLeftHits = totalLeftHits;
-        RollingTotalLeftHitSpeed = rollingTotalLeftSpeed;
-        StatsManager.Instance.GetRightHitSpeedStats(ref _rightHitSpeeds, out var totalRightHits, out var rollingTotalRightSpeed);
-        RollingTotalRightHits = totalRightHits;
-        RollingTotalRightHitSpeed = rollingTotalRightSpeed;
     }
 
     public void AddToScore(float valueToAdd)

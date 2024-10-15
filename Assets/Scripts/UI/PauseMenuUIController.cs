@@ -5,7 +5,7 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PauseMenuUIController : BaseGameStateListener
+public class PauseMenuUIController : BaseGameStateListener, IOrderedInitialize
 {
     [SerializeField]
     private GameState _resumedState;
@@ -19,15 +19,16 @@ public class PauseMenuUIController : BaseGameStateListener
     [SerializeField]
     private TransitionController _transitionController;
 
-    private void Awake()
-    {
-        _useOnEnableDisable = false;
-    }
+    public bool Initialized { get; private set; }
 
-    private void Start()
+    public void Initialize()
     {
         AddListener();
     }
+
+    protected override void OnEnable() { }
+
+    protected override void OnDisable() { }
 
     private void OnDestroy()
     {

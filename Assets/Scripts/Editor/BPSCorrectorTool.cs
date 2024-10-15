@@ -9,9 +9,9 @@ using UnityEditor;
 using UnityEngine;
 using static ChoreographyEvent;
 
-public class BPSCorrector : EditorWindow
+public class BPSCorrectorTool : EditorWindow
 {
-    private static BPSCorrector s_BPSCorrectorWindow;
+    private static BPSCorrectorTool s_BPSCorrectorWindow;
 
     private bool _roundToInt;
     private bool _skipObstacles;
@@ -52,7 +52,7 @@ public class BPSCorrector : EditorWindow
     {
         if (s_BPSCorrectorWindow == null)
         {
-            s_BPSCorrectorWindow = GetWindow<BPSCorrector>();
+            s_BPSCorrectorWindow = GetWindow<BPSCorrectorTool>();
         }
     }
 
@@ -244,80 +244,13 @@ public class BPSCorrector : EditorWindow
 
     private async UniTaskVoid GetCorrectBPS(SongInfo info)
     {
-        var song = await AssetManager.LoadCustomSong(info.fileLocation, info, new System.Threading.CancellationToken());
-        var bpm = await UniBpmAnalyzer.TryAnalyzeBpmWithJobs(song);
-        _correctBPMs[info.SongName] = bpm;
+        _correctBPMs[info.SongName] = await BPMCorrector.GetCorrectBPM(info);
     }
 
     private async UniTaskVoid CorrectBPS(SongInfo info)
     {
         _fileNames.Clear();
-        var beatsTime = _correctBPMs[info.SongName] / info.BeatsPerMinute;
-
-        for (var i = 0; i < info.DifficultySets.Length; i++)
-        {
-            var set = info.DifficultySets[i];
-            Array.Sort(set.DifficultyInfos, (x, y) => x.DifficultyRank.CompareTo(y.DifficultyRank));
-            for (var j = set.DifficultyInfos.Length - 1; j >= 0; j--)
-            {
-                var difInfo = set.DifficultyInfos[j];
-                if (_fileNames.Contains(difInfo.FileName))
-                {
-                    Debug.LogWarning($"Skipping:{info.SongFilename} Mode:{set.MapGameMode} Difficulty:{difInfo.Difficulty}, {difInfo.FileName} already updated.");
-                    continue;
-                }
-                _fileNames.Add(difInfo.FileName);
-                var choreography = Choreography.LoadFromSongInfo(info, difInfo);
-                await UniTask.Delay(TimeSpan.FromSeconds(1f));
-                if (choreography != null)
-                {
-                    for (var k = 0; k < choreography.Notes.Length; k++)
-                    {
-                        var note = choreography.Notes[k];
-                        var time = note.Time * beatsTime;
-                        if (_roundToInt)
-                        {
-                            var previousTime = k > 0 ? choreography.Notes[k - 1].Time : 0;
-                            time = RoundTime(time, difInfo.DifficultyAsEnum, previousTime);
-                        }
-
-                        choreography.Notes[k] = new ChoreographyNote(time, note.LineIndex, note.LineLayer, note.HitSideType, note.CutDir, note.IsSuperNote);
-                    }
-
-                    if (!_skipObstacles)
-                    {
-
-                        for (var k = 0; k < choreography.Obstacles.Length; k++)
-                        {
-                            var obst = choreography.Obstacles[k];
-                            var time = obst.Time * beatsTime;
-                            if (_roundToInt)
-                            {
-                                var previousTime = k > 0 ? choreography.Obstacles[k - 1].Time : 0;
-                                time = RoundTime(time, difInfo.DifficultyAsEnum, previousTime);
-                            }
-                            choreography.Obstacles[k] = new ChoreographyObstacle(time, obst.Duration, obst.Type, obst.LineIndex, obst.Width);
-                        }
-                    }
-
-                    for (var k = 0; k < choreography.Events.Length; k++)
-                    {
-                        var even = choreography.Events[k];
-                        var time = even.Time * beatsTime;
-                        if (_roundToInt)
-                        {
-                            var previousTime = k > 0 ? choreography.Events[k - 1].Time : 0;
-                            time = RoundTime(time, difInfo.DifficultyAsEnum, previousTime);
-                        }
-                        choreography.Events[k] = new ChoreographyEvent(time, even.Type, (RotateEventValue)even.Value);
-                    }
-                }
-                await WriteCustomSong(info.fileLocation, difInfo.FileName, choreography);
-                Debug.Log($"{info.SongName} Mode:{set.MapGameMode} Difficulty:{difInfo.Difficulty} COMPLETE");
-            }
-        }
-        info.SetBPS(_correctBPMs[info.SongName]);
-        await WriteSongInfo(info);
+        await BPMCorrector.CorrectBPM(info, _correctBPMs[info.SongName], _roundToInt, skipObstacles: _skipObstacles);
         Debug.Log($"{info.SongName} COMPLETE");
     }
 
@@ -504,52 +437,6 @@ public class BPSCorrector : EditorWindow
         }
     }
 
-    private float RoundTime(float value, DifficultyInfo.DifficultyEnum difficulty, float previousTime)
-    {
-        switch (difficulty)
-        {
-            case DifficultyInfo.DifficultyEnum.Easy:
-                value = Mathf.RoundToInt(value);
-                break;
-            case DifficultyInfo.DifficultyEnum.Normal:
-            case DifficultyInfo.DifficultyEnum.Hard:
-                _:
-                {
-                    var time = 0.5f * Mathf.Round(value / 0.5f);
-                    if (time - previousTime > .6)
-                    {
-                        value = Mathf.RoundToInt(value);
-                    }
-                    else
-                    {
-                        value = time;
-                    }
-                    break;
-                }
-            case DifficultyInfo.DifficultyEnum.Expert:
-                {
-                    var time = 0.25f * Mathf.Round(value / 0.25f);
-                    if (time - previousTime > .3)
-                    {
-                        if (time - previousTime > .6)
-                        {
-                            value = Mathf.RoundToInt(value);
-                        }
-                        else
-                        {
-                            value = Mathf.RoundToInt(value);
-                        }
-                    }
-                    else
-                    {
-                        value = time;
-                    }
-                }
-                break;
-
-        }
-        return value;
-    }
 
     [Serializable]
     private struct Obs

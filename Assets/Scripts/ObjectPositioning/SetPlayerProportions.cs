@@ -5,15 +5,22 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class SetPlayerProportions : MonoBehaviour
+public class SetPlayerProportions : MonoBehaviour, IOrderedInitialize
 {
+    public bool Initialized { get; private set; }
+
     [SerializeField]
     private bool _resetOnStart;
     private const string RESETHEADSET = "Reset Headset";
 
-    // Start is called before the first frame update
-    private void Start()
+
+    public void Initialize()
     {
+        if (Initialized)
+        {
+            return;
+        }
+
         if (!_resetOnStart)
         {
             return;
@@ -24,6 +31,7 @@ public class SetPlayerProportions : MonoBehaviour
         {
             ResetHeadsetWithDelay().Forget();
         }
+        Initialized = true;
     }
 
     public void SetHeight()

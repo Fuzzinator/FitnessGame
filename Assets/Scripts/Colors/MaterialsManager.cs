@@ -1,6 +1,8 @@
+using Cysharp.Threading.Tasks;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -69,9 +71,10 @@ public class MaterialsManager : MonoBehaviour
         }
     }
 
-    public void SetUpMaterials(Material targetMaterial, Material obstacleMaterial, Material superMaterial)
+    public async UniTask SetUpMaterialsAsync(Material targetMaterial, Material obstacleMaterial, Material superMaterial)
     {
-        for (int i = 0; i <= _targetInstances; i++)//currently one for each HitSideType
+        var stopWatch = Stopwatch.StartNew();
+        for (var i = 0; i <= _targetInstances; i++)//currently one for each HitSideType
         {
             var type = (HitSideType)i;
 
@@ -142,27 +145,27 @@ public class MaterialsManager : MonoBehaviour
                     }
                     break;
             }
-        }
-        UpdateMaterialColors();
-    }
 
-
-    public void UpdateMaterialColors()
-    {
-        foreach (var set in _materialSets)
-        {
-            for (var i = 0; i < set.mats.Length; i++)
+            for (var j = 0; j < _materialSets[i].mats.Length; j++)
             {
-                var material = set.mats[i];
-                var color = ColorsManager.Instance.GetAppropriateColor(set.hitSideType, material.isNote);
+                var material = _materialSets[i].mats[j];
+                var color = ColorsManager.Instance.GetAppropriateColor(_materialSets[i].hitSideType, material.isNote);
                 material.material.color = color;
                 if (material.superNote)
                 {
-                    var complementary = new Color(1 - color.r, 1 - color.g, 1 - color.b)*10;
+                    var complementary = new Color(1 - color.r, 1 - color.g, 1 - color.b) * 10;
                     material.material.SetColor(_baseColor1ID, complementary);
                 }
             }
+
+            if (stopWatch.ElapsedMilliseconds < 5f)
+            {
+                continue;
+            }
+            await UniTask.NextFrame();
+            stopWatch.Restart();
         }
+        stopWatch.Stop();
     }
 
     public Material GetMaterial(int index, int subIndex)

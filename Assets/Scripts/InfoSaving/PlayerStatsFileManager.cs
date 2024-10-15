@@ -168,7 +168,7 @@ namespace InfoSaving
         {
             await UniTask.WaitWhile(() => _accessingPlaylistRecords, cancellationToken: token);
             _accessingPlaylistRecords = true;
-            var keyExists = KeyExists(key, PlaylistSettings);
+            var keyExists = await KeyExists(key, PlaylistSettings);
             _accessingPlaylistRecords = false;
             return keyExists;
         }
@@ -177,7 +177,7 @@ namespace InfoSaving
         {
             await UniTask.WaitWhile(() => _accessingSongRecords, cancellationToken: token);
             _accessingSongRecords = true;
-            var keyExists = KeyExists(key, SongSettings);
+            var keyExists = await  KeyExists(key, SongSettings);
             _accessingSongRecords = false;
             return keyExists;
         }
@@ -196,11 +196,11 @@ namespace InfoSaving
             return false;
         }
 
-        private static bool KeyExists(string key, ES3Settings settings)
+        private static async UniTask<bool> KeyExists(string key, ES3Settings settings)
         {
             try
             {
-                return ES3.KeyExists(key, settings); //UniTask.RunOnThreadPool(() => ES3.KeyExists(key, settings));
+                return await ES3.KeyExistsAsync(key, settings); //UniTask.RunOnThreadPool(() => ES3.KeyExists(key, settings));
             }
             catch (Exception e) when (e is OperationCanceledException)
             {

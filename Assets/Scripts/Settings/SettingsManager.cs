@@ -20,6 +20,8 @@ public class SettingsManager : MonoBehaviour
     private static Dictionary<string, bool> _boolSettings;
     private static Dictionary<string, float> _floatSettings;
     private static Dictionary<string, int> _intSettings;
+    private static Dictionary<string, Vector3> _vec3Settings;
+    private static Dictionary<string, Quaternion> _rotationSettings;
 
     //public static readonly Quaternion DEFAULTGLOVEROTATION =
 #if UNITY_ANDROID// && !UNITY_EDITOR //Oculus Quest 2
@@ -243,6 +245,18 @@ public class SettingsManager : MonoBehaviour
         _intSettings[settingName] = value;
     }
 
+    private static void CacheVector3(string settingName, Vector3 value)
+    {
+        _vec3Settings ??= new Dictionary<string, Vector3>();
+        _vec3Settings[settingName] = value;
+    }
+
+    private static void CacheQuaternion(string settingName, Quaternion value)
+    {
+        _vec3Settings ??= new Dictionary<string, Quaternion>();
+        _vec3Settings[settingName] = value;
+    }
+
     public static bool GetCachedBool(string settingName, bool defaultValue, Profile overrideProfile = null)
     {
         if (_boolSettings != null && _boolSettings.TryGetValue(settingName, out var cachedValue))
@@ -270,6 +284,18 @@ public class SettingsManager : MonoBehaviour
     public static int GetCachedInt(string settingName, int defaultValue, Profile overrideProfile = null)
     {
         if (_intSettings != null && _intSettings.TryGetValue(settingName, out var cachedValue))
+        {
+            return cachedValue;
+        }
+
+        var setting = GetSetting(settingName, defaultValue, true, overrideProfile);
+        CacheInt(settingName, setting);
+        return setting;
+    }
+
+    public static Vector3 GetCachedVector3(string settingName, Vector3 defaultValue, Profile overrideProfile = null)
+    {
+        if (_vec3Settings != null && _vec3Settings.TryGetValue(settingName, out var cachedValue))
         {
             return cachedValue;
         }

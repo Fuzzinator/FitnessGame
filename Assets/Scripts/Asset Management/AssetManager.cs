@@ -191,12 +191,12 @@ public class AssetManager : MonoBehaviour
 #endif
     }*/
 
-    public static async UniTask<AudioClip> LoadCustomSong(string path, CancellationToken cancellationToken, AudioType audioType, bool deleteFolder)
+    public static async UniTask<AudioClip> LoadCustomSong(string path, CancellationToken cancellationToken, AudioType audioType, bool deleteFolder, bool stream = true)
     {
         try
         {
             var uwr = UnityWebRequestMultimedia.GetAudioClip(path, audioType);
-            ((DownloadHandlerAudioClip)uwr.downloadHandler).streamAudio = true;
+            ((DownloadHandlerAudioClip)uwr.downloadHandler).streamAudio = stream;
             var request = uwr.SendWebRequest();
             await request.ToUniTask(cancellationToken: cancellationToken);
 
@@ -237,15 +237,20 @@ public class AssetManager : MonoBehaviour
         {
             return null;
         }
-        catch (Exception e) when (e is not OperationCanceledException)
+        catch (Exception e)
         {
-            Debug.LogError($"failed to get audio clip\n {e.Message}");
+            var directory = Path.GetDirectoryName(path);
+            if (!Directory.Exists(directory))
+            {
+                return null;
+            }
+            Debug.LogError($"failed to get audio clip\n {e.Message}, {e.StackTrace}");
             return null;
         }
     }
 
     public static async UniTask<AudioClip> LoadCustomSong(string parentDirectory, SongInfo info,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken, bool stream)
     {
 #if !UNITY_EDITOR
         if (!await PermissionsRequester.Instance.HasReadAndWritePermissions())
@@ -265,7 +270,7 @@ public class AssetManager : MonoBehaviour
 
 #endif
 
-        return await LoadCustomSong(path, cancellationToken, AudioType.OGGVORBIS, true);
+        return await LoadCustomSong(path, cancellationToken, AudioType.OGGVORBIS, true, stream);
     }
 
     public static async UniTask<AudioClipRequest> LoadBuiltInSong(SongInfo item, CancellationToken cancellationToken)

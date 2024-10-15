@@ -6,6 +6,8 @@ using System;
 using System.ComponentModel;
 using ES3Types;
 using ES3Internal;
+using System.Diagnostics;
+using Cysharp.Threading.Tasks;
 
 public abstract class ES3Reader : System.IDisposable
 {
@@ -56,6 +58,31 @@ public abstract class ES3Reader : System.IDisposable
                 return false;
             Skip();
         }
+        return true;
+    }
+
+    // Seeks to the given key. Note that the stream position will not be reset.
+    internal virtual async UniTask<bool> GotoAsync(string key)
+    {
+        if (key == null)
+            throw new ArgumentNullException("Key cannot be NULL when loading data.");
+
+        string currentKey;
+		var stopWatch = Stopwatch.StartNew();
+        while ((currentKey = ReadPropertyName()) != key)
+        {
+            if (currentKey == null)
+                return false;
+            Skip();
+
+            if (stopWatch.ElapsedMilliseconds < 5f)
+            {
+				continue;
+            }
+            await UniTask.NextFrame();
+			stopWatch.Restart();
+        }
+        stopWatch.Stop();
         return true;
     }
 

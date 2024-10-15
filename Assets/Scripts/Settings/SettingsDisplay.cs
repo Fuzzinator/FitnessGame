@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SettingsDisplay : UIMenuController
+public class SettingsDisplay : UIMenuController, IOrderedInitialize
 {
     public static SettingsDisplay Instance { get; private set; }
 
@@ -41,8 +41,15 @@ public class SettingsDisplay : UIMenuController
         }
     }
 
-    private void Awake()
+    public bool Initialized { get; private set; }
+
+    public void Initialize()
     {
+        if(Initialized)
+        {
+            return;
+        }
+
         if (Instance == null)
         {
             Instance = this;
@@ -51,12 +58,6 @@ public class SettingsDisplay : UIMenuController
         {
             Destroy(this);
         }
-    }
-
-    protected override void Start()
-    {
-        base.Start();
-        gameObject.SetActive(false);
     }
 
     protected new void OnEnable()

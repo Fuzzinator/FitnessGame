@@ -80,7 +80,7 @@ public class BaseObstacle : MonoBehaviour, IPoolable
     {
         if(!WasHit)
         {
-            ScoringAndHitStatsManager.Instance.RegisterDodgedObstacle();
+            ScoringAndHitStatsManager.Instance?.RegisterDodgedObstacle();
         }
 
         gameObject.SetActive(false);
@@ -88,7 +88,7 @@ public class BaseObstacle : MonoBehaviour, IPoolable
         {
             transform.SetParent(MyPoolManager.poolParent);
         }
-        ActiveTargetManager.Instance.RemoveActiveObstacle(this);
+        ActiveTargetManager.Instance?.RemoveActiveObstacle(this);
         MyPoolManager.ReturnToPool(this);
     }
 

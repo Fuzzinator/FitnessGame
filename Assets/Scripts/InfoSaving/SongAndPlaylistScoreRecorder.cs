@@ -11,8 +11,10 @@ using UnityEngine;
 using UnityEngine.Pool;
 using static UnityEngine.XR.Hands.XRHandSubsystemDescriptor;
 
-public class SongAndPlaylistScoreRecorder : MonoBehaviour
+public class SongAndPlaylistScoreRecorder : MonoBehaviour, IOrderedInitialize
 {
+    public bool Initialized { get; private set; }
+
     private bool _updatingSongRecord;
     private bool _updatingPlaylistRecord;
     private CancellationToken _cancellationToken;
@@ -31,9 +33,15 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
     private const string AllowOnlineLeaderboards = "AllowOnlineLeaderboards";
     private const string LocalSongIdentifier = "LOCAL";
 
-    private void Start()
+    public void Initialize()
     {
+        if (Initialized)
+        {
+            return;
+        }
+
         _cancellationToken = this.GetCancellationTokenOnDestroy();
+        Initialized = true;
     }
 
     public void SongStarted()
@@ -81,13 +89,13 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
         }
         else
         {
-            _profileBestScore = new ();
+            _profileBestScore = new();
         }
     }
 
     public async UniTaskVoid SaveSongStats()
     {
-        var songScore = ScoringAndHitStatsManager.Instance.SongScore;
+        var songScore = (int)ScoringAndHitStatsManager.Instance?.SongScore;
         var bestStreak = StreakManager.Instance.RecordCurrentSongStreak;
         TryPostToOnlineLeaderboard();
         while (_updatingSongRecord || _updatingPlaylistRecord)
@@ -191,7 +199,7 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
 
             if (!scoreExists && !streakExists)
             {
-                songScore = ScoringAndHitStatsManager.Instance.CurrentScore;
+                songScore = (ulong)ScoringAndHitStatsManager.Instance?.CurrentScore;
                 bestStreak = StreakManager.Instance.RecordStreak;
                 scoreIndex = 0;
             }
@@ -252,7 +260,7 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
         {
             return;
         }
-        var songScore = ScoringAndHitStatsManager.Instance.SongScore;
+        var songScore = (int)ScoringAndHitStatsManager.Instance?.SongScore;
         var songStreak = StreakManager.Instance.RecordCurrentSongStreak;
 
         if (_profileBestScore.Score >= songScore && _profileBestScore.Streak >= songStreak)
@@ -319,7 +327,7 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
 
     private static bool ShouldUpdateScoreFile(SongRecord oldRecord, out int songScore)
     {
-        songScore = ScoringAndHitStatsManager.Instance.SongScore;
+        songScore = (int)ScoringAndHitStatsManager.Instance?.SongScore;
 
         var newScoreHigher = oldRecord.Score < songScore;
 
@@ -327,7 +335,7 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour
     }
     private static bool ShouldUpdateScoreFile(PlaylistRecord oldRecord, out ulong songScore)
     {
-        songScore = ScoringAndHitStatsManager.Instance.CurrentScore;
+        songScore = (ulong)ScoringAndHitStatsManager.Instance?.CurrentScore;
 
         var newScoreHigher = oldRecord.Score < songScore;
 

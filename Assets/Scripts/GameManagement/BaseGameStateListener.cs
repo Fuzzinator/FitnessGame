@@ -4,21 +4,14 @@ using UnityEngine;
 
 public abstract class BaseGameStateListener : MonoBehaviour
 {
-    protected bool _useOnEnableDisable = true;
     protected virtual void OnEnable()
     {
-        if(_useOnEnableDisable)
-        {
-            AddListener();
-        }
+        AddListener();
     }
 
     protected virtual void OnDisable()
     {
-        if(_useOnEnableDisable)
-        {
-            RemoveListener();
-        }
+        RemoveListener();
     }
 
     protected virtual void AddListener()

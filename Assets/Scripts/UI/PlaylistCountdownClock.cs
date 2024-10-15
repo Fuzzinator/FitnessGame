@@ -8,8 +8,10 @@ using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 
-public class PlaylistCountdownClock : MonoBehaviour
+public class PlaylistCountdownClock : MonoBehaviour, IOrderedInitialize
 {
+    public bool Initialized { get; private set; }
+
     [SerializeField]
     private TextMeshProUGUI _minutesText;
 
@@ -41,9 +43,15 @@ public class PlaylistCountdownClock : MonoBehaviour
         GameStateManager.Instance.gameStateChanged.RemoveListener(GameStateListener);
     }
 
-    private void Start()
+    public void Initialize()
     {
+        if (Initialized)
+        {
+            return;
+        }
+
         InitializeClock();
+        Initialized = true;
     }
 
     private void OnApplicationPause(bool pauseStatus)

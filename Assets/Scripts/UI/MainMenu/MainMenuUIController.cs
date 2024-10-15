@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -53,6 +54,7 @@ public class MainMenuUIController : BaseGameStateListener
     protected new void OnDisable()
     {
         UIStateManager.Instance.RequestDisableInteraction(_activeMenuPage.TargetCanvas);
+        CleanUpUI().Forget();
     }
 
     private void OnDestroy()
@@ -61,6 +63,24 @@ public class MainMenuUIController : BaseGameStateListener
         {
             Instance = null;
         }
+    }
+
+    private async UniTaskVoid CleanUpUI()
+    {
+        var stopWatch = System.Diagnostics.Stopwatch.StartNew();
+        for (var i = 0; i < _menuPages.Length; i++)
+        {
+            var page = _menuPages[i];
+            Destroy(page.TargetCanvas.gameObject);
+            if (stopWatch.ElapsedMilliseconds < 1)
+            {
+                continue;
+            }
+
+            await UniTask.NextFrame();
+            stopWatch.Restart();
+        }
+        Destroy(gameObject);
     }
 
     public void SetActivePage(int targetPage)

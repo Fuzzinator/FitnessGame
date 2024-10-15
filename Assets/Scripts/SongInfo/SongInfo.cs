@@ -286,31 +286,33 @@ public class SongInfo
                         difficultySet = _difficultyBeatmapSets[i];
                         break;
                     case GameMode.JabsOnly:
-                        if (hasNormal)
-                        {
-                            break;
-                        }
                         _difficultyBeatmapSets[i].TryCreateMissingDifficulties();
-                        difficultySet = _difficultyBeatmapSets[i];
+                        if (!hasNormal)
+                        {
+                            difficultySet = _difficultyBeatmapSets[i];
+                        }
                         break;
                     case GameMode.OneHanded:
-                        if (hasNormal)
+                        _difficultyBeatmapSets[i].TryCreateMissingDifficulties();
+                        if (!hasNormal)
                         {
-                            break;
-                        }
-                        var result = await TryCreateNormalFrom1Handed(this, _difficultyBeatmapSets[i].DifficultyInfos, token);
-                        if (!string.IsNullOrWhiteSpace(result.BeatMapName))
-                        {
-                            difficultySet = result;
-                            hasNormal = true;
+
+                            var result = await TryCreateNormalFrom1Handed(this, _difficultyBeatmapSets[i].DifficultyInfos, token);
+                            if (!string.IsNullOrWhiteSpace(result.BeatMapName))
+                            {
+                                difficultySet = result;
+                                hasNormal = true;
+                            }
                         }
                         break;
                     case GameMode.Degrees90:
                         has90RotationSet = true;
+                        _difficultyBeatmapSets[i].TryCreateMissingDifficulties();
                         rotation90Set = _difficultyBeatmapSets[i];
                         break;
                     case GameMode.Degrees360:
                         has360RotationSet = true;
+                        _difficultyBeatmapSets[i].TryCreateMissingDifficulties();
                         rotation360Set = _difficultyBeatmapSets[i];
                         break;
                     case GameMode.LegDay:
@@ -477,7 +479,7 @@ public class SongInfo
         _difficultyBeatmapSets = sets;
     }
 
-    public void SetBPS(int newBPS)
+    public void SetBPM(int newBPS)
     {
         _beatsPerMinute = newBPS;
     }

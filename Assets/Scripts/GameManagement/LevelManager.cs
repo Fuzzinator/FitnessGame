@@ -7,9 +7,10 @@ using UnityEngine;
 using UnityEngine.Events;
 using Random = System.Random;
 
-public class LevelManager : MonoBehaviour
+public class LevelManager : MonoBehaviour, IOrderedInitialize
 {
     public static LevelManager Instance { get; private set; }
+    public bool Initialized { get; private set; }
 
     public UnityEvent startedLevelLoad = new UnityEvent();
     public UnityEvent<int> finishedLevelLoad = new UnityEvent<int>();
@@ -90,8 +91,13 @@ public class LevelManager : MonoBehaviour
         }
     }
 
-    private void Start()
+    public void Initialize()
     {
+        if (Initialized)
+        {
+            return;
+        }
+
         _cancellationToken = this.GetCancellationTokenOnDestroy();
         if (PlaylistManager.Instance != null)
         {
@@ -105,6 +111,7 @@ public class LevelManager : MonoBehaviour
             restartingLevel.AddListener(PlaylistManager.Instance.Restart);
         }
         LoadLevel();
+        Initialized = true;
     }
     
     private void OnDestroy()

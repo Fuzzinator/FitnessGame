@@ -6,9 +6,10 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
-public class MusicManager : BaseGameStateListener
+public class MusicManager : BaseGameStateListener, IOrderedInitialize
 {
     public static MusicManager Instance { get; private set; }
+    public bool Initialized { get; private set; }
 
     [SerializeField]
     private AudioSource _musicAudioSource;
@@ -66,10 +67,16 @@ public class MusicManager : BaseGameStateListener
         }
     }
 
-    private void Start()
+    public void Initialize()
     {
+        if (Initialized)
+        {
+            return;
+        }
+
         _cancellationToken = this.GetCancellationTokenOnDestroy();
         _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(_cancellationToken);
+        Initialized = true;
     }
 
     private void OnDestroy()
@@ -106,7 +113,7 @@ public class MusicManager : BaseGameStateListener
 
         if (item.IsCustomSong)
         {
-            audioClip = await AssetManager.LoadCustomSong(item.FileLocation, item.SongInfo, _cancellationSource.Token);
+            audioClip = await AssetManager.LoadCustomSong(item.FileLocation, item.SongInfo, _cancellationSource.Token, true);
         }
         else
         {

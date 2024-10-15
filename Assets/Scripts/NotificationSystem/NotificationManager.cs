@@ -152,11 +152,13 @@ public class NotificationManager : MonoBehaviour
     public bool TryGetNextNotification(Guid notificationID)
     {
         var requestID = _activeNotification?.RequestID;
-        _activeNotification = null;
         if (_activeNotification == null || requestID != notificationID || _notificationsQueue.Count == 0)
         {
+            _activeNotification = null;
             return false;
         }
+
+        _activeNotification = null;
 
         SpawnNextNotification();
 

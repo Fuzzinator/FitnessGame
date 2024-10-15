@@ -5,9 +5,11 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
-public class HitQualityDisplayManager : MonoBehaviour
+public class HitQualityDisplayManager : MonoBehaviour, IOrderedInitialize
 {
     public static HitQualityDisplayManager Instance { get; private set; }
+    public bool Initialized { get; private set; }
+
     [SerializeField]
     private Canvas _qualityDisplayCanvas;
 
@@ -38,11 +40,16 @@ public class HitQualityDisplayManager : MonoBehaviour
         }
     }
 
-    // Start is called before the first frame update
-    void Start()
+
+    public void Initialize()
     {
+        if (Initialized)
+        {
+            return;
+        }
         _qualityDisplayPool = new PoolManager(_qualityDisplay, _qualityDisplayCanvas.transform, 20);
         TrackActiveHitQualityDisplays(this.GetCancellationTokenOnDestroy()).Forget();
+        Initialized = true;
     }
 
     private async UniTaskVoid TrackActiveHitQualityDisplays(CancellationToken cancellationToken)

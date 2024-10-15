@@ -247,7 +247,7 @@ public class Hand : BaseGameStateListener
 
         GloveOffset = _assignedHand switch
         {
-            HitSideType.Left => SettingsManager.GetSetting(SettingsManager.LEFTGLOVEOFFSET, Vector3.zero),
+            HitSideType.Left => SettingsManager.GetCachedVector3(SettingsManager.LEFTGLOVEOFFSET, Vector3.zero),
             HitSideType.Right => SettingsManager.GetSetting(SettingsManager.RIGHTGLOVEOFFSET, Vector3.zero),
             _ => GloveOffset
         };

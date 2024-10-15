@@ -3,15 +3,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MatchPlayerHeight : MonoBehaviour
+public class MatchPlayerHeight : MonoBehaviour, IOrderedInitialize
 {
+    public bool Initialized { get; private set; }
+
     [SerializeField]
     private float _offset;
 
-    // Start is called before the first frame update
-    private void Start()
+
+    public void Initialize()
     {
+        if (Initialized)
+        {
+            return;
+        }
+
         UpdatePosition();
+        Initialized = true;
     }
 
     private void OnEnable()

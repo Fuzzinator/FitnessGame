@@ -14,59 +14,8 @@ using UnityEngine.Serialization;
 
 public class ChoreographySequencer : MonoBehaviour
 {
-    [Header("Targets")]
-    [SerializeField]
-    private FormationHolder _formationHolderPrefab;
-
-    private PoolManager _formationHolderPool;
-
-    [SerializeField]
-    private BaseTarget _jabTarget;
-
-    private PoolManager _jabPool;
-
-    [SerializeField]
-    private BaseTarget _leftHookTarget;
-
-    private PoolManager _leftHookPool;
-
-    [SerializeField]
-    private BaseTarget _rightHookTarget;
-
-    private PoolManager _rightHookPool;
-
-    [SerializeField]
-    private BaseTarget _uppercutTarget;
-
-    private PoolManager _uppercutPool;
-
-    [SerializeField]
-    private BlockTarget _baseBlockTarget;
-
-    private PoolManager _baseBlockPool;
-
-    [Header("Obstacles")]
-    [SerializeField]
-    private BaseObstacle _baseObstacle;
-
-    private PoolManager _baseObstaclePool;
-
-    [SerializeField]
-    private BaseObstacle _leftObstacle;
-
-    private PoolManager _leftObstaclePool;
-
-    [SerializeField]
-    private BaseObstacle _rightObstacle;
-
-    private PoolManager _rightObstaclePool;
-
     [SerializeField]
     private ActiveLaneIndicator _laneIndicator;
-
-    private PoolManager _laneIndicatorPool;
-
-    private SimpleTweenPool _tweenPool;
 
     [Header("Sequence Positioning")]
     [SerializeField]
@@ -100,8 +49,9 @@ public class ChoreographySequencer : MonoBehaviour
     private const float MAX90ROTATION = 45;
     private const string LEFTHANDED = "LeftHanded";
 
-    private CancellationToken _cancellationToken;
     private ChoreographyFormation _lastFormation;
+
+    private CancellationToken _cancellationToken;
 
     [SerializeField]
     private HitSideType _currentStance = HitSideType.Left;
@@ -130,43 +80,11 @@ public class ChoreographySequencer : MonoBehaviour
 
     private Dictionary<float, ActiveLaneIndicator> _laneIndicators = new Dictionary<float, ActiveLaneIndicator>(20);
     public bool SequenceRunning { get; private set; }
-    private BaseTarget GetTargetSwitch(ChoreographyNote.CutDirection cutDirection) => cutDirection switch
-    {
-        ChoreographyNote.CutDirection.Jab => _jabPool.GetNewPoolable(),
-        ChoreographyNote.CutDirection.JabDown => _jabPool.GetNewPoolable(),
-        ChoreographyNote.CutDirection.HookLeft => _leftHookPool.GetNewPoolable(),
-        ChoreographyNote.CutDirection.HookLeftDown => _jabPool.GetNewPoolable(),
-        ChoreographyNote.CutDirection.HookRight => _rightHookPool.GetNewPoolable(),
-        ChoreographyNote.CutDirection.HookRightDown => _jabPool.GetNewPoolable(),
-        ChoreographyNote.CutDirection.Uppercut => _uppercutPool.GetNewPoolable(),
-        ChoreographyNote.CutDirection.UppercutLeft => _uppercutPool.GetNewPoolable(),
-        ChoreographyNote.CutDirection.UppercutRight => _uppercutPool.GetNewPoolable(),
-        _ => null,
-    } as BaseTarget;
+    
 
     // Start is called before the first frame update
     void Start()
     {
-        if (EnvironmentControlManager.Instance != null)
-        {
-            UpdateTargetsAndObstacles();
-        }
-        var thisTransform = transform;
-        _formationHolderPool = new PoolManager(_formationHolderPrefab, thisTransform);
-        _jabPool = new PoolManager(_jabTarget, thisTransform);
-        _leftHookPool = new PoolManager(_leftHookTarget, thisTransform);
-        _rightHookPool = new PoolManager(_rightHookTarget, thisTransform);
-        _uppercutPool = new PoolManager(_uppercutTarget, thisTransform);
-        _baseBlockPool = new PoolManager(_baseBlockTarget, thisTransform);
-
-        _baseObstaclePool = new PoolManager(_baseObstacle, thisTransform);
-        _leftObstaclePool = new PoolManager(_leftObstacle, thisTransform);
-        _rightObstaclePool = new PoolManager(_rightObstacle, thisTransform);
-
-        _laneIndicatorPool = new PoolManager(_laneIndicator, thisTransform);
-
-        _cancellationToken = this.GetCancellationTokenOnDestroy();
-        _tweenPool = new SimpleTweenPool(20, _cancellationToken);
 
         var position = _formationStart.position;
         _meterDistance = Vector3.Distance(position, _formationEnd.position);
@@ -174,6 +92,7 @@ public class ChoreographySequencer : MonoBehaviour
         _optimalJabPointDistance = Vector3.Distance(position, _optimalJabStrikePoint.position);
 
         _sequenceUnstartedOrFinished = true;
+        _cancellationToken = this.GetCancellationTokenOnDestroy();
     }
 
     private void OnEnable()
@@ -185,24 +104,6 @@ public class ChoreographySequencer : MonoBehaviour
     private void OnDisable()
     {
         GameStateManager.Instance.gameStateChanged.RemoveListener(GameStateListener);
-    }
-
-    private void OnDestroy()
-    {
-        _tweenPool.CompleteAllActive();
-    }
-
-    private void UpdateTargetsAndObstacles()
-    {
-        var assets = EnvironmentControlManager.Instance.ActiveEnvironmentContainer;
-        _jabTarget = assets.JabTarget;
-        _leftHookTarget = assets.HookLeftTarget;
-        _rightHookTarget = assets.HookRightTarget;
-        _uppercutTarget = assets.UppercutTarget;
-        _baseBlockTarget = assets.BlockTarget;
-        _baseObstacle = assets.DuckObstacle;
-        _leftObstacle = assets.DodgeLeftObstacle;
-        _rightObstacle = assets.DodgeRightObstacle;
     }
 
     private void GameStateListener(GameState oldState, GameState newState)
@@ -271,7 +172,7 @@ public class ChoreographySequencer : MonoBehaviour
             }
         }
 
-        var formationHolder = _formationHolderPool.GetNewPoolable() as FormationHolder;
+        var formationHolder = ChoreographyPoolManager.Instance.GetNewFormationHolder();
         if (formationHolder == null)
         {
             throw new NullReferenceException();
@@ -327,7 +228,7 @@ public class ChoreographySequencer : MonoBehaviour
 
         var tweenData = new SimpleTween.Data(formationTransform, formationHolder.OnStartCallback,
             formationHolder.OnCompleteCallback, _formationEnd.position, tweenSpeed);
-        var tween = _tweenPool.GetNewTween(tweenData);
+        var tween = ChoreographyPoolManager.Instance.GetNewTween(tweenData);
 
 
         var beatsTime = (60 / SongInfoReader.Instance.BeatsPerMinute) / PlaylistManager.Instance.SongSpeedMod;
@@ -392,7 +293,7 @@ public class ChoreographySequencer : MonoBehaviour
             obstacleTransform.localRotation = quaternion.identity;
 
             obstacle.gameObject.SetActive(true);
-            ActiveTargetManager.Instance.AddActiveObstacle(obstacle);
+            ActiveTargetManager.Instance?.AddActiveObstacle(obstacle);
 
             if (formationHolder.children == null)
             {
@@ -434,7 +335,7 @@ public class ChoreographySequencer : MonoBehaviour
             target.SetUpTarget(targetSideType, formationHolder.StrikePoint, formationHolder, strikeSpeed);
 
             target.gameObject.SetActive(true);
-            ActiveTargetManager.Instance.AddActiveTarget(target);
+            ActiveTargetManager.Instance?.AddActiveTarget(target);
             if (formationHolder.children == null)
             {
                 formationHolder.children = new List<IPoolable>();
@@ -452,7 +353,7 @@ public class ChoreographySequencer : MonoBehaviour
             return;
         }
 
-        var indicator = _laneIndicatorPool.GetNewPoolable() as ActiveLaneIndicator;
+        var indicator = ChoreographyPoolManager.Instance.GetNewIndicator();
         indicator.SetUp(rotation, _playerCenter);
         indicator.AddFormation();
         _laneIndicators[rotation] = indicator;
@@ -476,44 +377,12 @@ public class ChoreographySequencer : MonoBehaviour
 
     protected BaseObstacle GetObstacle(ChoreographyObstacle obstacle)
     {
-        if (obstacle.Type == ChoreographyObstacle.ObstacleType.Crouch)
-        {
-            return _baseObstaclePool.GetNewPoolable() as BaseObstacle;
-        }
-        else if (obstacle.Type == ChoreographyObstacle.ObstacleType.Dodge)
-        {
-            if (_currentStance == HitSideType.Block)
-            {
-                return obstacle.HitSideType switch
-                {
-                    HitSideType.Left => _leftObstaclePool.GetNewPoolable(),
-                    HitSideType.Right => _rightObstaclePool.GetNewPoolable(),
-                    _ => _baseObstaclePool.GetNewPoolable()
-                } as BaseObstacle;
-            }
-            else
-            {
-                return (_currentStance == HitSideType.Left ?
-                    _leftObstaclePool.GetNewPoolable() :
-                    _rightObstaclePool.GetNewPoolable()) as BaseObstacle;
-            }
-        }
-        else
-        {
-            return _baseObstaclePool.GetNewPoolable() as BaseObstacle;
-        }
+        return ChoreographyPoolManager.Instance.GetObstacle(obstacle, _currentStance);
     }
 
     protected BaseTarget GetTarget(ChoreographyNote note)
     {
-        if (note.HitSideType == HitSideType.Block)
-        {
-            return _baseBlockPool.GetNewPoolable() as BaseTarget;
-        }
-        else
-        {
-            return GetTargetSwitch(note.CutDir);
-        }
+        return ChoreographyPoolManager.Instance.GetTarget(note);
     }
 
     private Vector3 GetTargetPosition(ChoreographyNote note, bool hasDodgeObstacle)
@@ -610,7 +479,7 @@ public class ChoreographySequencer : MonoBehaviour
 
     public void ResetChoreography()
     {
-        _tweenPool?.CompleteAllActive();
+        ChoreographyPoolManager.Instance.CompleteAllActive();
 
         _formationStart.RotateAround(_playerCenter.position, _playerCenter.up, -_currentRotation);
         _currentRotation = 0;

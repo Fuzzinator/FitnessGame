@@ -20,6 +20,11 @@ public class ObjectAndTargetMatReplacer : BaseGameStateListener
     protected override void AddListener()
     {
         base.AddListener();
+        if(ActiveTargetManager.Instance == null)
+        {
+            return;
+        }
+
         ActiveTargetManager.Instance.newActiveTarget.AddListener(AddRendererSet);
         ActiveTargetManager.Instance.newActiveObstacle.AddListener(AddRendererSet);
         ActiveTargetManager.Instance.targetDeactivated.AddListener(RemoveRendererSet);
@@ -29,6 +34,11 @@ public class ObjectAndTargetMatReplacer : BaseGameStateListener
     protected override void RemoveListener()
     {
         base.RemoveListener();
+        if (ActiveTargetManager.Instance == null)
+        {
+            return;
+        }
+
         ActiveTargetManager.Instance.newActiveTarget.RemoveListener(AddRendererSet);
         ActiveTargetManager.Instance.newActiveObstacle.RemoveListener(AddRendererSet);
         ActiveTargetManager.Instance.targetDeactivated.RemoveListener(RemoveRendererSet);

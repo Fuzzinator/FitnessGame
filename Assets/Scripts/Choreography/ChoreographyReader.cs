@@ -12,10 +12,10 @@ using UnityEngine.Events;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using static ChoreographyNote;
 
-public class ChoreographyReader : MonoBehaviour
+public class ChoreographyReader : MonoBehaviour, IOrderedInitialize
 {
     public static ChoreographyReader Instance { get; private set; }
-
+    public bool Initialized { get; private set; }
 
     [SerializeField] private Choreography _choreography;
 
@@ -65,13 +65,19 @@ public class ChoreographyReader : MonoBehaviour
         }
     }
 
-    private void Start()
+    public void Initialize()
     {
+        if (Initialized)
+        {
+            return;
+        }
+
         _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
 
         _sequenceables = new List<ChoreographyFormation>(5000);
         _formations = new List<ChoreographyFormation>(5000);
         _formationsThisTime = new List<ChoreographyFormation>(10);
+        Initialized = true;
     }
 
     private void OnDestroy()

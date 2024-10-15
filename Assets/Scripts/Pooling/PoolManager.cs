@@ -77,4 +77,20 @@ public class PoolManager
             tempPoolable.ReturnToPool();
         }
     }
+
+    public void CleanUp()
+    {
+        while(ActiveObjs.Count > 0)
+        {
+            var obj = ActiveObjs[0];
+            ReturnToPool(obj);
+        }
+
+        while(_pooledObjs.Count > 0)
+        {
+            var obj = _pooledObjs[0];
+            _pooledObjs.Remove(obj);
+            GameObject.Destroy(((MonoBehaviour)obj).gameObject);
+        }
+    }
 }

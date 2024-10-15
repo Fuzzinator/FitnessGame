@@ -457,7 +457,7 @@ public class SetAndShowSongOptions : MonoBehaviour
         if (_cancellationSource != null && _cancellationSource.IsCancellationRequested)
         {
             _cancellationSource.Dispose();
-            await UniTask.DelayFrame(1, cancellationToken: _cancellationToken);
+            await UniTask.DelayFrame(1, cancellationToken: _cancellationToken).SuppressCancellationThrow();
             _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(_cancellationToken);
         }
         else
@@ -497,7 +497,7 @@ public class SetAndShowSongOptions : MonoBehaviour
 
             if (_songInfo.isCustomSong)
             {
-                audioClip = await AssetManager.LoadCustomSong(_songInfo.fileLocation, _songInfo, _cancellationSource.Token);
+                audioClip = await AssetManager.LoadCustomSong(_songInfo.fileLocation, _songInfo, _cancellationSource.Token, true);
             }
             else
             {

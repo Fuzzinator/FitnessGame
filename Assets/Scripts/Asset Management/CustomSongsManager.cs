@@ -23,7 +23,7 @@ public static class CustomSongsManager
         float clipLength;
         if (customSong)
         {
-            var clipRequest = AssetManager.LoadCustomSong(info.fileLocation, info, token);
+            var clipRequest = AssetManager.LoadCustomSong(info.fileLocation, info, token, true);
             var audioClip = await clipRequest;
             if (audioClip == null)
             {

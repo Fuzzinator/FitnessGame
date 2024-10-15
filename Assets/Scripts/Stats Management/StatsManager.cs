@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -55,11 +56,11 @@ public class StatsManager : MonoBehaviour
         rollingTotalHits = SettingsManager.GetSetting(RollingTotalRightHits, 1);
         rollingTotalHitSpeed = SettingsManager.GetSetting(RollingTotalRightHitSpeed, SettingsManager.CurrentMinHitSpeed);
     }
-    
+
     public void RecordWorkoutTime(float timeInSeconds)
     {
         var previousTime = GetWorkoutTime();
-        SettingsManager.SetSetting(TotalWorkoutTime, previousTime+timeInSeconds);
+        SettingsManager.SetSetting(TotalWorkoutTime, previousTime + timeInSeconds);
     }
 
     public void RecordTargetsHit(uint targetsCount)
@@ -67,11 +68,11 @@ public class StatsManager : MonoBehaviour
         var previousTotal = GetTargetsHit();
         SettingsManager.SetSetting(TotalTargetsHit, previousTotal + targetsCount);
     }
-    
+
     public void RecordObstaclesDodged(uint obstacleCount)
     {
         var previousTotal = GetObstaclesDodged();
-        SettingsManager.SetSetting(TotalObstaclesDodged, previousTotal+obstacleCount);
+        SettingsManager.SetSetting(TotalObstaclesDodged, previousTotal + obstacleCount);
     }
 
     public void RecordLeftSpeedStats(List<float> hitSpeeds, int rollingTotalHits, float rollingTotalHitSpeed)
@@ -80,10 +81,39 @@ public class StatsManager : MonoBehaviour
         SettingsManager.SetSetting(RollingTotalLeftHits, rollingTotalHits);
         SettingsManager.SetSetting(RollingTotalLeftHitSpeed, rollingTotalHitSpeed);
     }
+
     public void RecordRightSpeedStats(List<float> hitSpeeds, int rollingTotalHits, float rollingTotalHitSpeed)
     {
         SettingsManager.SetSetting(RollingRightHitSpeeds, hitSpeeds);
         SettingsManager.SetSetting(RollingTotalRightHits, rollingTotalHits);
         SettingsManager.SetSetting(RollingTotalRightHitSpeed, rollingTotalHitSpeed);
+    }
+    public async UniTask RecordLeftSpeedStatsAsync(List<float> hitSpeeds, int rollingTotalHits, float rollingTotalHitSpeed)
+    {
+        SettingsManager.SetSetting(RollingLeftHitSpeeds, hitSpeeds);
+
+        await UniTask.NextFrame();
+
+        SettingsManager.SetSetting(RollingTotalLeftHits, rollingTotalHits);
+
+        await UniTask.NextFrame();
+
+        SettingsManager.SetSetting(RollingTotalLeftHitSpeed, rollingTotalHitSpeed);
+
+        await UniTask.NextFrame();
+    }
+    public async UniTask RecordRightSpeedStatsAsync(List<float> hitSpeeds, int rollingTotalHits, float rollingTotalHitSpeed)
+    {
+        SettingsManager.SetSetting(RollingRightHitSpeeds, hitSpeeds);
+        
+        await UniTask.NextFrame();
+
+        SettingsManager.SetSetting(RollingTotalRightHits, rollingTotalHits);
+        
+        await UniTask.NextFrame();
+
+        SettingsManager.SetSetting(RollingTotalRightHitSpeed, rollingTotalHitSpeed);
+        
+        await UniTask.NextFrame();
     }
 }

@@ -5,14 +5,17 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
-public class VFXManager : MonoBehaviour
+public class VFXManager : MonoBehaviour, IOrderedInitialize
 {
     public static VFXManager Instance { get; private set; }
+    public bool Initialized { get; private set; }
+
 
     [SerializeField]
     private BaseHitVFX _normalHitPrefab;
 
     private PoolManager _normalHitPool;
+
 
 
     private void Awake()
@@ -27,14 +30,19 @@ public class VFXManager : MonoBehaviour
         }
     }
 
-    private void Start()
+    public void Initialize()
     {
+        if(Initialized)
+        {
+            return;
+        }
+
         if (EnvironmentControlManager.Instance != null)
         {
             _normalHitPrefab = EnvironmentControlManager.Instance.ActiveEnvironmentContainer.BaseHitVFX;
         }
         _normalHitPool = new PoolManager(_normalHitPrefab, transform, 20);
-
+        Initialized = true;
     }
 
     private void OnDestroy()
