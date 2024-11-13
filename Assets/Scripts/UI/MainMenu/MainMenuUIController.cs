@@ -67,6 +67,12 @@ public class MainMenuUIController : BaseGameStateListener
 
     private async UniTaskVoid CleanUpUI()
     {
+        await UniTask.NextFrame();
+        if(this == null)
+        {
+            return;
+        }
+
         var stopWatch = System.Diagnostics.Stopwatch.StartNew();
         for (var i = 0; i < _menuPages.Length; i++)
         {

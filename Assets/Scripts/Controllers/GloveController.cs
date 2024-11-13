@@ -10,7 +10,9 @@ public class GloveController : MonoBehaviour
     
     [field:SerializeField]
     public Renderer[] Renderers { get; private set; }
-    
+    [field: SerializeField]
+    public Material[] Materials { get; private set; }
+
     private void OnValidate()
     {
         if(GloveCollider != null)
@@ -19,13 +21,26 @@ public class GloveController : MonoBehaviour
         }
         GloveCollider = GetComponent<Collider>();
         Renderers = GetComponentsInChildren<Renderer>();
+        if(Renderers != null)
+        {
+            var uniqueList = new List<Material>();
+            foreach(var r in Renderers)
+            {
+                if(uniqueList.Contains(r.sharedMaterial))
+                {
+                    continue;
+                }
+                uniqueList.Add(r.sharedMaterial);
+            }
+            Materials = uniqueList.ToArray();
+        }
     }
 
-    public void SetRendersColor(Color color)
+    public void SetGloveColor(Color color)
     {
-        foreach (var renderer in Renderers)
+        foreach (var material in Materials)
         {
-            renderer.sharedMaterial.color = color;
+            material.color = color;
         }
     }
 }

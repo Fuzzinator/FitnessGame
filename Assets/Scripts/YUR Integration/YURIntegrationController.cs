@@ -14,7 +14,7 @@ public sealed class YURIntegrationController : BaseGameStateListener
 
     private void Awake()
     {
-        if(GameManager.Instance != null && !GameManager.Instance.VRMode)
+        if (GameManager.Instance != null && !GameManager.Instance.VRMode)
         {
             Destroy(gameObject);
         }
@@ -23,20 +23,27 @@ public sealed class YURIntegrationController : BaseGameStateListener
     protected override void OnEnable()
     {
         base.OnEnable();
-        SettingsManager.CachedBoolSettingChanged.AddListener(CheckIfShouldUpdate);
+        
+        if (!SettingsManager.TrySubscribeToCachedBool(USEYUR, SetWatchState))
+        {
+            SettingsManager.CachedBoolSettingsChanged.AddListener(CheckIfShouldUpdate);
+        }
     }
 
     protected override void OnDisable()
     {
         base.OnDisable();
-        SettingsManager.CachedBoolSettingChanged.RemoveListener(CheckIfShouldUpdate);
+        SettingsManager.CachedBoolSettingsChanged.RemoveListener(CheckIfShouldUpdate);
     }
 
     private void CheckIfShouldUpdate(string settingName, bool value)
     {
-        if(settingName == USEYUR)
+        if (settingName == USEYUR)
         {
-            SetWatchState(value);
+            if(SettingsManager.TrySubscribeToCachedBool(USEYUR, SetWatchState))
+            {
+                SettingsManager.CachedBoolSettingsChanged.RemoveListener(CheckIfShouldUpdate);
+            }
         }
     }
 

@@ -135,6 +135,22 @@ public struct DifficultyInfo
         return this;
     }
 
+    public DifficultyInfo SetDifficulty(string difficultyName, int difficultyRank, string fileName)
+    {
+        _difficulty = difficultyName;
+        _difficultyRank = difficultyRank;
+        _beatmapFilename = fileName;
+        _noteJumpMovementSpeed = true switch
+        {
+            true when _difficultyRank <= EASY => MAXEASYSPEED,
+            true when _difficultyRank <= NORMAL =>  MAXNORMALSPEED,
+            true when _difficultyRank <= HARD => MAXHARDSPEED,
+            true when _difficultyRank <= EXPERT => MAXEXPERTSPEED,
+            _ => MINNORMALSPEED
+        };
+        return this;
+    }
+
     public static DifficultyInfo SetFileName( DifficultyInfo source, string fileName)
     {
         return new DifficultyInfo(source,fileName);

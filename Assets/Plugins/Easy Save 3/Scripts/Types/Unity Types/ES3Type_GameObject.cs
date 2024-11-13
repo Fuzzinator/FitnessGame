@@ -22,9 +22,11 @@ namespace ES3Types
                 return;
             var instance = (UnityEngine.GameObject)obj;
 
+            var mgr = ES3ReferenceMgrBase.GetManagerFromScene(instance.scene);
+
             if (mode != ES3.ReferenceMode.ByValue)
             {
-                writer.WriteRef(instance);
+                writer.WriteRef(instance, ES3ReferenceMgrBase.referencePropertyName, mgr);
 
                 if (mode == ES3.ReferenceMode.ByRef)
                     return;
@@ -34,7 +36,7 @@ namespace ES3Types
                     writer.WriteProperty(prefabPropertyName, es3Prefab, ES3Type_ES3PrefabInternal.Instance);
 
                 // Write the ID of this Transform so we can assign it's ID when we load.
-                writer.WriteProperty(transformPropertyName, ES3ReferenceMgrBase.Current.Add(instance.transform));
+                writer.WriteRef(instance.transform, transformPropertyName, mgr);
             }
 
             var es3AutoSave = instance.GetComponent<ES3AutoSave>();
@@ -59,10 +61,16 @@ namespace ES3Types
 
             // If there's an ES3AutoSave attached and Components are marked to be saved, save these.
             if (es3AutoSave != null)
+            {
+                es3AutoSave.componentsToSave.RemoveAll(c => c == null);
                 components = es3AutoSave.componentsToSave;
+            }
             // If there's an ES3GameObject attached, save these.
             else if (es3GameObject != null)
+            {
+                es3GameObject.components.RemoveAll(c => c == null);
                 components = es3GameObject.components;
+            }
             // Otherwise, only save explicitly-supported Components, /*or those explicitly marked as Serializable*/.
             else
             {

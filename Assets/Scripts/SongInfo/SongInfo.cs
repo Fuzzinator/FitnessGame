@@ -11,6 +11,7 @@ using Unity.Burst;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using static UnityEngine.XR.Hands.XRHandSubsystemDescriptor;
 
 [Serializable]
 public class SongInfo
@@ -19,6 +20,12 @@ public class SongInfo
 
     private const int MINUTE = 60;
     private const string DIVIDER = ":";
+
+    private const string ExpertPlus = "ExpertPlus";
+    private const string Expert = "Expert";
+    private const string Hard = "Hard";
+    private const string Normal = "Normal";
+    private const string Easy = "Easy";
 
     #endregion
 
@@ -528,10 +535,16 @@ public class SongInfo
         return newFileName;
     }
 
-    public async UniTask AsyncAddObstacles(DifficultyInfo info, GameMode mode,
+    public async UniTask AsyncAddObstacles(DifficultyInfo info, GameMode mode, bool autoSave,
         CancellationToken token)
     {
         var choreography = await Choreography.AsyncLoadFromSongInfo(this, info, token);
+        await AsyncAddObstacles(choreography, info.FileName, mode, autoSave, token);
+    }
+
+    public async UniTask AsyncAddObstacles(Choreography choreography, string fileName, GameMode mode, bool autoSave,
+        CancellationToken token)
+    {
         if (choreography == null)
         {
             return;
@@ -547,13 +560,19 @@ public class SongInfo
             case GameMode.Degrees90:
             case GameMode.Degrees360:
                 choreography = await choreography.AddObstaclesAsync(this, 30);
-                await Choreography.AsyncSave(choreography, fileLocation, info.FileName, _songName, token);
+                if (autoSave)
+                {
+                    await Choreography.AsyncSave(choreography, fileLocation, fileName, _songName, token);
+                }
                 break;
             case GameMode.LightShow:
                 break;
             case GameMode.LegDay:
                 choreography = await choreography.AddObstaclesAsync(this);
-                await Choreography.AsyncSave(choreography, fileLocation, info.FileName, _songName, token);
+                if (autoSave)
+                {
+                    await Choreography.AsyncSave(choreography, fileLocation, fileName, _songName, token);
+                }
                 break;
             case GameMode.Lawless:
                 break;
@@ -562,10 +581,16 @@ public class SongInfo
         }
     }
 
-    public async UniTask AsyncAddRotations(DifficultyInfo info, GameMode mode,
+    public async UniTask AsyncAddRotations(DifficultyInfo info, GameMode mode, bool autoSave,
         CancellationToken token)
     {
         var choreography = await Choreography.AsyncLoadFromSongInfo(this, info, token);
+        await AsyncAddRotations(choreography, info.FileName, mode, autoSave, token);
+    }
+
+    public async UniTask AsyncAddRotations(Choreography choreography, string fileName, GameMode mode, bool autoSave,
+        CancellationToken token)
+    {
         if (choreography == null)
         {
             return;
@@ -581,7 +606,10 @@ public class SongInfo
             case GameMode.Degrees90:
             case GameMode.Degrees360:
                 choreography = await choreography.AddRotationEventsAsync();
-                await Choreography.AsyncSave(choreography, fileLocation, info.FileName, _songName, token);
+                if (autoSave)
+                {
+                    await Choreography.AsyncSave(choreography, fileLocation, fileName, _songName, token);
+                }
                 break;
             case GameMode.LightShow:
             case GameMode.LegDay:
@@ -590,8 +618,6 @@ public class SongInfo
             default:
                 throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
         }
-
-
         return;
     }
 
@@ -668,21 +694,38 @@ public class SongInfo
 
     public void ConvertFromBeatSage()
     {
-        _levelAuthorName = "3Pupper Studios";
+        _levelAuthorName = "Beat Sage & Shadow BoXR";
         _songID = _songName;
-        foreach (var set in _difficultyBeatmapSets)
+        for(var x =  0; x < _difficultyBeatmapSets.Length; x++)
         {
+            var set = _difficultyBeatmapSets[x];
+
             for (var i = set.DifficultyInfos.Length - 1; i >= 0; i--)
             {
-                if (i == 0)
+                var difInfo = set.DifficultyInfos[i];
+
+                if (difInfo.FileName.Contains(ExpertPlus))
                 {
-                    set.DifficultyInfos[i] = new DifficultyInfo("Easy", 1, set.DifficultyInfos[i].FileName.Replace("Normal", "Easy"), 7f);
+                    var newName = difInfo.FileName.Replace(ExpertPlus, Expert);
+                    set.DifficultyInfos[i] = difInfo.SetDifficulty(Expert, DifficultyInfo.EXPERT, newName);
                 }
-                else
+                else if (difInfo.FileName.Contains(Expert))
                 {
-                    set.DifficultyInfos[i] = set.DifficultyInfos[i - 1];
+                    var newName = difInfo.FileName.Replace(Expert, Hard);
+                    set.DifficultyInfos[i] = difInfo.SetDifficulty(Hard, DifficultyInfo.HARD, newName);
+                }
+                else if (difInfo.FileName.Contains(Hard))
+                {
+                    var newName = difInfo.FileName.Replace(Hard, Normal);
+                    set.DifficultyInfos[i] = difInfo.SetDifficulty(Normal, DifficultyInfo.NORMAL, newName);
+                }
+                else if (difInfo.FileName.Contains(Normal))
+                {
+                    var newName = difInfo.FileName.Replace(Normal, Easy);
+                    set.DifficultyInfos[i] = difInfo.SetDifficulty(Easy, DifficultyInfo.EASY, newName);
                 }
             }
+            _difficultyBeatmapSets[x] = set;
         }
     }
     public void ConvertToLocal()

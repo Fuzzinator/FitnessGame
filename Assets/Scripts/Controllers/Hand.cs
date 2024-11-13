@@ -18,9 +18,6 @@ public class Hand : BaseGameStateListener
     [SerializeField]
     private Transform _uiRaycaster;
 
-    [SerializeField]
-    private UnityEvent<Renderer[]> _gloveSetUp = new UnityEvent<Renderer[]>();
-
     public Collider MyCollider => _gloveController?.GloveCollider;
 
     public HitSideType AssignedHand => _assignedHand;
@@ -248,14 +245,14 @@ public class Hand : BaseGameStateListener
         GloveOffset = _assignedHand switch
         {
             HitSideType.Left => SettingsManager.GetCachedVector3(SettingsManager.LEFTGLOVEOFFSET, Vector3.zero),
-            HitSideType.Right => SettingsManager.GetSetting(SettingsManager.RIGHTGLOVEOFFSET, Vector3.zero),
+            HitSideType.Right => SettingsManager.GetCachedVector3(SettingsManager.RIGHTGLOVEOFFSET, Vector3.zero),
             _ => GloveOffset
         };
 
         GloveRotationOffset = _assignedHand switch
         {
-            HitSideType.Left => SettingsManager.GetSetting(SettingsManager.LEFTGLOVEROTOFFSET, DefaultRotation),
-            HitSideType.Right => SettingsManager.GetSetting(SettingsManager.RIGHTGLOVEROTOFFSET, DefaultRotation),
+            HitSideType.Left => SettingsManager.GetCachedQuaternion(SettingsManager.LEFTGLOVEROTOFFSET, DefaultRotation),
+            HitSideType.Right => SettingsManager.GetCachedQuaternion(SettingsManager.RIGHTGLOVEROTOFFSET, DefaultRotation),
             _ => GloveRotationOffset
         };
     }
@@ -289,7 +286,6 @@ public class Hand : BaseGameStateListener
         SetGloveColor();
         SetOffset();
         _glove?.gameObject.SetActive(true);
-        _gloveSetUp?.Invoke(_gloveController.Renderers);
     }
 
     public void HideGlove()
@@ -306,7 +302,7 @@ public class Hand : BaseGameStateListener
     private void SetGloveColor()
     {
         var color = ColorsManager.Instance.GetAppropriateColor(_assignedHand, true);
-        _gloveController.SetRendersColor(color);
+        _gloveController.SetGloveColor(color);
     }
 
     public void UnparentGlove()

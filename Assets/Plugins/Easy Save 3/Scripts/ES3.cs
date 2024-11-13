@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -102,7 +102,8 @@ public class ES3
     {
         if (settings.location == Location.Cache)
         {
-            ES3File.GetOrCreateCachedFile(settings).Save(key, value);
+            var file = ES3File.GetOrCreateCachedFile(settings);
+            file.Save(key, value);
             return;
         }
 
@@ -904,6 +905,8 @@ public class ES3
 
     #region Other ES3 Methods
 
+#if !DISABLE_ENCRYPTION
+
     public static byte[] EncryptBytes(byte[] bytes, string password=null)
     {
         if (string.IsNullOrEmpty(password))
@@ -927,6 +930,8 @@ public class ES3
     {
         return ES3Settings.defaultSettings.encoding.GetString(DecryptBytes(Convert.FromBase64String(str), password));
     }
+
+#endif
 
     public static byte[] CompressBytes(byte[] bytes)
     {

@@ -6,6 +6,7 @@ using UI.Scrollers.Playlists;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
+using static UnityEngine.XR.Hands.XRHandSubsystemDescriptor;
 using Random = UnityEngine.Random;
 
 public class SongInfoFilesReader : MonoBehaviour
@@ -186,13 +187,13 @@ public class SongInfoFilesReader : MonoBehaviour
 
     public async UniTask<SongInfo> LoadNewSong(string songFolderName, string songID, float songScore, bool correctBPM)
     {
-        var songInfo = await AssetManager.TryGetSingleCustomSong(songFolderName, _cancellationSource.Token, songID, songScore);
+        var songInfo = await AssetManager.TryGetSingleCustomSong(songFolderName, _cancellationSource.Token, songID, songScore, correctBPM);
         if (songInfo != null)
         {
             if (correctBPM)
             {
-                await BPMCorrector.CorrectBPM(songInfo);
-                await BPMCorrector.MakeAdditive(songInfo);
+                var fileInfo = await BeatSageConverter.ConvertSong(songInfo, _destructionCancellationToken);
+                await AssetManager.UpdateMap(songInfo, fileInfo, true, songID, songScore, fileInfo.CreationTime, _cancellationSource.Token);
             }
             var existingSong = availableSongs.Find((info) => (!string.Equals(songID, "LOCAL") && string.Equals(info.SongID, songID, StringComparison.InvariantCultureIgnoreCase)) ||
                                                              string.Equals(info.fileLocation, songInfo.fileLocation, StringComparison.InvariantCultureIgnoreCase));

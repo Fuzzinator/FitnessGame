@@ -63,7 +63,7 @@ public class ES3ReferenceMgr : ES3ReferenceMgrBase
             var sceneWasOpen = loadedScenePaths.Contains(buildSettingsScene.path);
             var scene = EditorSceneManager.OpenScene(buildSettingsScene.path, OpenSceneMode.Additive);
 
-            var mgr = ES3ReferenceMgr.GetManagerFromScene(scene);
+            var mgr = ES3ReferenceMgr.GetManagerFromScene(scene, false);
 
             if (mgr != null)
             {

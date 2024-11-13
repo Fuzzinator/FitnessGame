@@ -50,7 +50,8 @@ public class LocalMP3sManager : MonoBehaviour
             var songName = ConvertSong(i, out var download);
             if (download != null)
             {
-                download.ProgressUpdated.AddListener((val) => DeleteWhenSongCompletes(AvailableMP3Paths[i], val));
+                var itemToDelete = AvailableMP3Paths[i];
+                download.ProgressUpdated.AddListener((val) => DeleteWhenSongCompletes(itemToDelete, val));
             }
             if (i % 5 == 0)
             {
@@ -89,6 +90,11 @@ public class LocalMP3sManager : MonoBehaviour
 
     public static string GetMp3Name(int index)
     {
+        if(index< 0 || index >=AvailableMP3Paths.Count)
+        {
+            return string.Empty;
+        }
+
         var filePath = AvailableMP3Paths[index];
         var path = Path.GetFileName(filePath);
         return path;
@@ -97,8 +103,13 @@ public class LocalMP3sManager : MonoBehaviour
     public static bool TryGetMP3Info(int index, out TagLib.File file)
     {
         file = null;
+        if (index < 0 || index >= AvailableMP3Paths.Count)
+        {
+            return false;
+        }
         try
         {
+
             var filePath = AvailableMP3Paths[index];
             file = TagLib.File.Create(filePath);
             return true;

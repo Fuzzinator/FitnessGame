@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using Cysharp.Threading.Tasks.Linq;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.Events;
@@ -17,11 +18,11 @@ public class SettingsManager : MonoBehaviour
 
     private static float[] _volumes = new float[5];
 
-    private static Dictionary<string, bool> _boolSettings;
-    private static Dictionary<string, float> _floatSettings;
-    private static Dictionary<string, int> _intSettings;
-    private static Dictionary<string, Vector3> _vec3Settings;
-    private static Dictionary<string, Quaternion> _rotationSettings;
+    private static Dictionary<string, AsyncReactiveProperty<bool>> _boolSettings;
+    private static Dictionary<string, AsyncReactiveProperty<float>> _floatSettings;
+    private static Dictionary<string, AsyncReactiveProperty<int>> _intSettings;
+    private static Dictionary<string, AsyncReactiveProperty<Vector3>> _vec3Settings;
+    private static Dictionary<string, AsyncReactiveProperty<Quaternion>> _quaternionSettings;
 
     //public static readonly Quaternion DEFAULTGLOVEROTATION =
 #if UNITY_ANDROID// && !UNITY_EDITOR //Oculus Quest 2
@@ -31,10 +32,11 @@ public class SettingsManager : MonoBehaviour
     private static readonly Quaternion OculusTouchRotation = new Quaternion(0.7f, 0f, 0f, 0.71f);
     private static readonly Quaternion IndexRotation = new Quaternion(0.707106829f, 0, 0, 0.707106829f);
 #endif
-
-    public static UnityEvent<string, bool> CachedBoolSettingChanged { get; private set; } = new UnityEvent<string, bool>();
-    public static UnityEvent<string, int> IntSettingChanged { get; private set; } = new UnityEvent<string, int>();
-    public static UnityEvent<string, float> CachedFloatSettingChanged { get; private set; } = new UnityEvent<string, float>();
+    public static UnityEvent<string, bool> CachedBoolSettingsChanged { get; private set; } = new UnityEvent<string, bool>();
+    public static UnityEvent<string, int> CachedIntSettingsChanged { get; private set; } = new UnityEvent<string, int>();
+    public static UnityEvent<string, float> CachedFloatSettingsChanged { get; private set; } = new UnityEvent<string, float>();
+    public static UnityEvent<string, Vector3> CachedVector3SettingsChanged { get; private set; } = new UnityEvent<string, Vector3>();
+    public static UnityEvent<string, Quaternion> CachedQuaternionSettingsChanged { get; private set; } = new UnityEvent<string, Quaternion>();
 
     #region Const Strings
 
@@ -112,9 +114,7 @@ public class SettingsManager : MonoBehaviour
 
     private void ProfileChanged()
     {
-        _boolSettings?.Clear();
-        _floatSettings?.Clear();
-        _intSettings?.Clear();
+        ClearCachedValues();
         SetInitialProfileSettings();
     }
 
@@ -199,62 +199,96 @@ public class SettingsManager : MonoBehaviour
 
     #endregion
 
+    public static void ClearCachedValues()
+    {
+        _boolSettings?.Clear();
+        _floatSettings?.Clear();
+        _intSettings?.Clear();
+        _vec3Settings?.Clear();
+        _quaternionSettings?.Clear();
+    }
+
     public static void SetCachedBool(string settingName, bool value, Profile overrideProfile = null)
     {
         CacheBool(settingName, value);
-        CachedBoolSettingChanged.Invoke(settingName, value);
         SetSetting(settingName, value, true, overrideProfile);
     }
 
     public static void SetCachedFloat(string settingName, float value, Profile overrideProfile = null)
     {
         CacheFloat(settingName, value);
-        CachedFloatSettingChanged.Invoke(settingName, value);
         SetSetting(settingName, value, true, overrideProfile);
     }
 
     public static void SetCachedInt(string settingName, int value, Profile overrideProfile = null)
     {
         CacheInt(settingName, value);
-        IntSettingChanged.Invoke(settingName, value);
         SetSetting(settingName, value, true, overrideProfile);
     }
-
-    public static void ClearCachedValues()
+    public static void SetCachedVector3(string settingName, Vector3 value, Profile overrideProfile = null)
     {
-        _boolSettings?.Clear();
-        _floatSettings?.Clear();
-        _intSettings?.Clear();
+        CacheVector3(settingName, value);
+        SetSetting(settingName, value, true, overrideProfile);
+    }
+    public static void SetCacheQuaternion(string settingName, Quaternion value, Profile overrideProfile = null)
+    {
+        CacheQuaternion(settingName, value);
+        SetSetting(settingName, value, true, overrideProfile);
     }
 
     private static void CacheBool(string settingName, bool value)
     {
-        _boolSettings ??= new Dictionary<string, bool>();
-        _boolSettings[settingName] = value;
+        _boolSettings ??= new Dictionary<string, AsyncReactiveProperty<bool>>();
+        if (!_boolSettings.ContainsKey(settingName))
+        {
+            _boolSettings[settingName] = new AsyncReactiveProperty<bool>(value);
+            CachedBoolSettingsChanged.Invoke(settingName, value);
+        }
+        _boolSettings[settingName].Value = value;
     }
 
     private static void CacheFloat(string settingName, float value)
     {
-        _floatSettings ??= new Dictionary<string, float>();
-        _floatSettings[settingName] = value;
+        _floatSettings ??= new Dictionary<string, AsyncReactiveProperty<float>>();
+        if (!_floatSettings.ContainsKey(settingName))
+        {
+            _floatSettings[settingName] = new AsyncReactiveProperty<float>(value);
+            CachedFloatSettingsChanged.Invoke(settingName, value);
+        }
+        _floatSettings[settingName].Value = value;
     }
 
     private static void CacheInt(string settingName, int value)
     {
-        _intSettings ??= new Dictionary<string, int>();
-        _intSettings[settingName] = value;
+        _intSettings ??= new Dictionary<string, AsyncReactiveProperty<int>>();
+        if (!_intSettings.ContainsKey(settingName))
+        {
+            _intSettings[settingName] = new AsyncReactiveProperty<int>(value);
+            CachedIntSettingsChanged.Invoke(settingName, value);
+        }
+        _intSettings[settingName].Value = value;
     }
 
     private static void CacheVector3(string settingName, Vector3 value)
     {
-        _vec3Settings ??= new Dictionary<string, Vector3>();
-        _vec3Settings[settingName] = value;
+        _vec3Settings ??= new Dictionary<string, AsyncReactiveProperty<Vector3>>();
+        if (!_vec3Settings.ContainsKey(settingName))
+        {
+            _vec3Settings[settingName] = new AsyncReactiveProperty<Vector3>(value);
+            CachedVector3SettingsChanged.Invoke(settingName, value);
+        }
+        _vec3Settings[settingName].Value = value;
     }
 
     private static void CacheQuaternion(string settingName, Quaternion value)
     {
-        _vec3Settings ??= new Dictionary<string, Quaternion>();
-        _vec3Settings[settingName] = value;
+        _quaternionSettings ??= new Dictionary<string, AsyncReactiveProperty<Quaternion>>();
+        if (!_quaternionSettings.ContainsKey(settingName))
+        {
+            _quaternionSettings[settingName] = new AsyncReactiveProperty<Quaternion>(value);
+            CachedQuaternionSettingsChanged.Invoke(settingName, value);
+        }
+        _quaternionSettings[settingName].Value = value;
     }
 
     public static bool GetCachedBool(string settingName, bool defaultValue, Profile overrideProfile = null)
@@ -301,8 +335,75 @@ public class SettingsManager : MonoBehaviour
         }
 
         var setting = GetSetting(settingName, defaultValue, true, overrideProfile);
-        CacheInt(settingName, setting);
+        CacheVector3(settingName, setting);
         return setting;
+    }
+
+    public static Quaternion GetCachedQuaternion(string settingName, Quaternion defaultValue, Profile overrideProfile = null)
+    {
+        if (_quaternionSettings != null && _quaternionSettings.TryGetValue(settingName, out var cachedValue))
+        {
+            return cachedValue;
+        }
+
+        var setting = GetSetting(settingName, defaultValue, true, overrideProfile);
+        CacheQuaternion(settingName, setting);
+        return setting;
+    }
+
+    public static bool TrySubscribeToCachedBool(string settingName, Action<bool> subscription)
+    {
+        if (_boolSettings == null || !_boolSettings.ContainsKey(settingName))
+        {
+            return false;
+        }
+
+        _boolSettings[settingName].Subscribe(subscription);
+        return true;
+    }
+
+    public static bool TrySubscribeToCachedfloat(string settingName, Action<float> subscription)
+    {
+        if (_floatSettings == null || !_floatSettings.ContainsKey(settingName))
+        {
+            return false;
+        }
+
+        _floatSettings[settingName].Subscribe(subscription);
+        return true;
+    }
+
+    public static bool TrySubscribeToCachedInt(string settingName, Action<int> subscription)
+    {
+        if (_intSettings == null || !_intSettings.ContainsKey(settingName))
+        {
+            return false;
+        }
+
+        _intSettings[settingName].Subscribe(subscription);
+        return true;
+    }
+
+    public static bool TrySubscribeToCachedVector3(string settingName, Action<Vector3> subscription)
+    {
+        if (_vec3Settings == null || !_vec3Settings.ContainsKey(settingName))
+        {
+            return false;
+        }
+
+        _vec3Settings[settingName].Subscribe(subscription);
+        return true;
+    }
+
+    public static bool TrySubscribeToCachedQuaternion(string settingName, Action<Quaternion> subscription)
+    {
+        if (_quaternionSettings == null || !_quaternionSettings.ContainsKey(settingName))
+        {
+            return false;
+        }
+
+        _quaternionSettings[settingName].Subscribe(subscription);
+        return true;
     }
 
     private static void SetTargetFPS(FPSSetting defaultValue = FPSSetting.Unset)
@@ -352,7 +453,15 @@ public class SettingsManager : MonoBehaviour
             {
                 if (overrideProfile != null)
                 {
-                    ES3.Save(settingName, value, ProfileManager.GetProfileSettings(overrideProfile));
+                    var settings = ProfileManager.GetProfileSettings(overrideProfile);
+                    if (settings == null)
+                    {
+                        return;
+                    }
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+                    settings.location = ES3.Location.File;
+#endif
+                    ES3.Save(settingName, value, settings);
                     return;
                 }
                 if (ProfileManager.Instance.ProfileSettings == null)
@@ -371,6 +480,11 @@ public class SettingsManager : MonoBehaviour
         }
         catch (Exception ex)
         {
+            if (ex is FormatException)
+            {
+                HandleFormatException(overrideProfile);
+                return;
+            }
             Debug.LogError($"Cant set:{settingName}--{ex.Message}--{ex.StackTrace}");
         }
     }
@@ -386,7 +500,13 @@ public class SettingsManager : MonoBehaviour
 
             if (overrideProfile != null)
             {
-                return ES3.Load(settingName, defaultValue, ProfileManager.GetProfileSettings(overrideProfile));
+                var settings = ProfileManager.GetProfileSettings(overrideProfile);
+                if(settings == null)
+                {
+                    return defaultValue;
+                }
+
+                return ES3.Load(settingName, defaultValue, settings);
             }
             if (ProfileManager.Instance.ProfileSettings == null)
             {
@@ -405,11 +525,22 @@ public class SettingsManager : MonoBehaviour
         }
         catch (Exception ex)
         {
+            if (ex is FormatException)
+            {
+                HandleFormatException(overrideProfile);
+                return defaultValue;
+            }
+
             Debug.LogError($"Cant get:{settingName}--{ex.Message}--{ex.StackTrace}");
             return defaultValue;
         }
     }
 
+    private static void HandleFormatException(Profile overrideProfile)
+    {
+        var visuals = new Notification.NotificationVisuals("It appears your profile has been corrupted. Selecting \"Confirm\" will delete your current profile and you will be prompted to make a new one.", "Profile Corrupted", "Confirm", "Cancel");
+        NotificationManager.RequestNotification(visuals, () => ProfileManager.Instance.CleanUpCorruptedProfile(overrideProfile));
+    }
 
     public static void DeleteSetting(string settingName, bool isProfileSetting = true, Profile overrideProfile = null)
     {
@@ -421,7 +552,13 @@ public class SettingsManager : MonoBehaviour
         {
             if (overrideProfile != null)
             {
-                ES3.DeleteKey(settingName, ProfileManager.GetProfileSettings(overrideProfile));
+                var settings = ProfileManager.GetProfileSettings(overrideProfile);
+                if (settings == null)
+                {
+                    return;
+                }
+
+                ES3.DeleteKey(settingName, settings);
                 return;
             }
             ES3.DeleteKey(settingName, ProfileManager.Instance.ProfileSettings);
@@ -443,7 +580,25 @@ public class SettingsManager : MonoBehaviour
 
         if (overrideProfile != null)
         {
-            return ES3.KeyExists(settingName, ProfileManager.GetProfileSettings(overrideProfile));
+            try
+            {
+                var settings = ProfileManager.GetProfileSettings(overrideProfile);
+                if (settings == null)
+                {
+                    return false;
+                }
+
+                return ES3.KeyExists(settingName, settings);
+            }
+            catch(Exception ex)
+            {
+                if (ex is FormatException)
+                {
+                    HandleFormatException(overrideProfile);
+                    throw ex;
+                }
+            }
+            return false;
         }
         if (ProfileManager.Instance.ProfileSettings == null)
         {

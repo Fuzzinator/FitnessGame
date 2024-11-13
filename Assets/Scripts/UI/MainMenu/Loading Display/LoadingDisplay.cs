@@ -46,8 +46,8 @@ public class LoadingDisplay : MonoBehaviour, IPoolable
             _beatSageDownload.ProgressUpdated.RemoveListener(HandleDownloadProgressChange);
             _beatSageDownload = null;
         }
-        gameObject.SetActive(false);
-        MyPoolManager.ReturnToPool(this);
+        gameObject?.SetActive(false);
+        MyPoolManager?.ReturnToPool(this);
     }
 
     public void UpdateLoadingBar(double value)

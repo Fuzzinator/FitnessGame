@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 using Cysharp.Threading.Tasks;
+using GameModeManagement;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -244,13 +245,14 @@ public class BPSCorrectorTool : EditorWindow
 
     private async UniTaskVoid GetCorrectBPS(SongInfo info)
     {
-        _correctBPMs[info.SongName] = await BPMCorrector.GetCorrectBPM(info);
+        _correctBPMs[info.SongName] = await BeatSageConverter.GetCorrectBPM(info);
     }
 
     private async UniTaskVoid CorrectBPS(SongInfo info)
     {
         _fileNames.Clear();
-        await BPMCorrector.CorrectBPM(info, _correctBPMs[info.SongName], _roundToInt, skipObstacles: _skipObstacles);
+        var choreographies = new Dictionary<string, BeatSageConverter.SimpleTuple<GameMode, Choreography>>();
+        await BeatSageConverter.CorrectBPM(info, _correctBPMs[info.SongName], choreographies, _roundToInt, skipObstacles: _skipObstacles);
         Debug.Log($"{info.SongName} COMPLETE");
     }
 
@@ -317,7 +319,14 @@ public class BPSCorrectorTool : EditorWindow
 
     private async UniTaskVoid RenameBeatmaps(SongInfo info)
     {
-        await AssetManager.ConvertFromBeatSage(info.fileLocation, new System.Threading.CancellationToken());
+        var easyFiles = new List<FileInfo>();
+        var normalFiles = new List<FileInfo>();
+        var hardFiles = new List<FileInfo>();
+        var expertFiles = new List<FileInfo>();
+        var expertPlusFiles = new List<FileInfo>();
+        await AssetManager.ConvertFromBeatSage(info, info.fileLocation, true,
+            easyFiles, normalFiles, hardFiles, expertFiles,expertPlusFiles,
+            new System.Threading.CancellationToken());
         Debug.Log($"{info.fileLocation} converted.");
     }
 
@@ -329,7 +338,7 @@ public class BPSCorrectorTool : EditorWindow
             for (var j = set.DifficultyInfos.Length - 1; j >= 0; j--)
             {
                 var difInfo = set.DifficultyInfos[j];
-                await info.AsyncAddRotations(difInfo, set.MapGameMode, new System.Threading.CancellationToken());
+                await info.AsyncAddRotations(difInfo, set.MapGameMode, true, new System.Threading.CancellationToken());
                 /*var choreography = Choreography.LoadFromSongInfo(info, difInfo);
 
                 await UniTask.Delay(TimeSpan.FromSeconds(1f));
@@ -364,7 +373,7 @@ public class BPSCorrectorTool : EditorWindow
             for (var j = set.DifficultyInfos.Length - 1; j >= 0; j--)
             {
                 var difInfo = set.DifficultyInfos[j];
-                await info.AsyncAddObstacles(difInfo, set.MapGameMode, new System.Threading.CancellationToken());
+                await info.AsyncAddObstacles(difInfo, set.MapGameMode, true, new System.Threading.CancellationToken());
 
                 /*var choreography = Choreography.LoadFromSongInfo(info, difInfo);
                 await UniTask.Delay(TimeSpan.FromSeconds(1f));

@@ -10,6 +10,8 @@ using UnityEngine.Events;
 
 public class TransitionController : MonoBehaviour
 {
+    public static TransitionController Instance {  get; private set; }
+
     [SerializeField]
     private float _transitionSpeed = 1;
 
@@ -36,6 +38,18 @@ public class TransitionController : MonoBehaviour
 
     private const string AnimatorChange = "Change";
     private const string AnimatorPassthrough = "Passthrough";
+    
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
+    }
 
     private void Start()
     {

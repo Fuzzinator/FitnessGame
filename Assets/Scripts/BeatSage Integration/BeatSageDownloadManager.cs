@@ -240,6 +240,7 @@ public class BeatSageDownloadManager
         {
             //Update displayed progress
             download.Progress = 0.8;
+            await UniTask.DelayFrame(1, cancellationToken: cts.Token);
             await RetrieveDownload(levelId, trackName, artistName, download, cts);
         }
         else if (download.downloadStatus == "FAILED")
@@ -249,7 +250,7 @@ public class BeatSageDownloadManager
         }
     }
 
-    private static async UniTask RetrieveDownload(string levelId, string trackName, string artistName, Download download, CancellationTokenSource cts)
+    private static async UniTask RetrieveDownload(string levelId, string trackName, string artistName, Download download, CancellationTokenSource cts, int attempts = 0)
     {
         download.Status = "Downloading";
         //Update displayed progress
@@ -262,7 +263,49 @@ public class BeatSageDownloadManager
 
         var fileName = $"{trackName} - {artistName}";
         fileName = fileName.RemoveIllegalIOCharacters();
-        var songBytes = await client.DownloadDataTaskAsync(uri);
+
+        byte[] songBytes = null;
+        try
+        {
+            songBytes = await client.DownloadDataTaskAsync(uri);
+        }
+        catch (Exception ex)
+        {
+            if (ex is WebException)
+            {
+                if (attempts < 5)
+                {
+                    await UniTask.Delay(TimeSpan.FromSeconds(1), cancellationToken: cts.Token);
+                    attempts++;
+                    await RetrieveDownload(levelId, trackName, artistName, download, cts, attempts);
+                    return;
+                }
+                else
+                {
+                    download.Status = "Unable To Create Level";
+
+                    download.Progress = -1;
+                    Downloads.Remove(download);
+                    return;
+                }
+            }
+            Debug.Log($"{ex.Message}\n{ex.StackTrace}");
+
+            download.Status = "Unable To Create Level";
+
+            download.Progress = -1;
+            Downloads.Remove(download);
+            return;
+        }
+        if (songBytes == null)
+        {
+            download.Status = "Unable To Create Level";
+
+            download.Progress = -1;
+            Downloads.Remove(download);
+            return;
+        }
+
         var targetDir = $"{AssetManager.SongsPath}{fileName}";
         if (Directory.Exists(targetDir))
         {
@@ -276,7 +319,22 @@ public class BeatSageDownloadManager
         }
         catch (Exception ex)
         {
-            Debug.LogError($"{fileName} cant be saved might have illegal characters {ex.Message} -- {ex.StackTrace}");
+            if (ex is InvalidDataException)
+            {
+                var inMainMenu = GameStateManager.Instance.CurrentGameState == GameState.InMainMenu;
+                var visuals = inMainMenu ?
+                    new Notification.NotificationVisuals($"Downloading {fileName} failed due to corrupted data. Please try again later.", "Download Failed", "Okay") :
+                    new Notification.NotificationVisuals($"Downloading {fileName} failed due to corrupted data. Please try again later.", "Download Failed", autoTimeOutTime: 5f, popUp: true);
+                NotificationManager.RequestNotification(visuals);
+
+            }
+            else
+            {
+                Debug.LogError($"{fileName} cant be saved might have illegal characters {ex.Message} -- {ex.StackTrace}");
+            }
+            download.Progress = -1;
+            Downloads.Remove(download);
+            return;
         }
 
         //Update displayed progress
@@ -369,7 +427,7 @@ public class BeatSageDownloadManager
             Title = songName;
             Artist = "???";
             Status = "Queued";
-            Difficulties = "Expert, Hard";
+            Difficulties = "ExpertPlus, Expert, Hard, Normal";
             GameModes = "Standard,90Degree,NoArrows,OneSaber";
             SongEvents = "DotBlocks,Obstacles,Bombs";
             FilePath = filePath;

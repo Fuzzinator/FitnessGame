@@ -54,6 +54,9 @@ public class GameStateManager : MonoBehaviour
             }
         }
     }
+
+    public GameState PreviousGameState => _previousGameState;
+
     private void Awake()
     {
         if (Instance == null)
@@ -80,6 +83,7 @@ public class GameStateManager : MonoBehaviour
         }
         _onDestroyToken = this.GetCancellationTokenOnDestroy();
         _tokenSource = CancellationTokenSource.CreateLinkedTokenSource(_onDestroyToken);
+        Application.quitting += HandleQuitting();
     }
 
     private void OnDisable()
@@ -93,6 +97,7 @@ public class GameStateManager : MonoBehaviour
                 FocusTracker.Instance.OnFocusChanged.RemoveListener(ManageFocusState);
             }
         }
+        Application.quitting -= HandleQuitting();
     }
 
     private void TryTogglePlayPauseState(InputAction.CallbackContext context)
@@ -180,6 +185,12 @@ public class GameStateManager : MonoBehaviour
     {
         _skipDelay = true;
     }
+
+    private Action HandleQuitting()
+    {
+        SetState(GameState.Quitting);
+        return null;
+    }
 }
 [Serializable]
 public enum GameState
@@ -193,4 +204,5 @@ public enum GameState
     PreparingToPlay = 6,
     TransitionBetweenSongs = 7,
     GameToMenuTransition = 8,
+    Quitting = 100
 }

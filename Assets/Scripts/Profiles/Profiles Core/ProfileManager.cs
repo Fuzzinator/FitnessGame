@@ -8,7 +8,9 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
 using UnityEngine.Profiling;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.SceneManagement;
 
 public class ProfileManager : MonoBehaviour
 {
@@ -77,8 +79,21 @@ public class ProfileManager : MonoBehaviour
         _cancellationToken = this.GetCancellationTokenOnDestroy();
     }
 
+    private void OnDestroy()
+    {
+        if (ActiveProfile == null)
+        {
+            return;
+        }
+        SaveCachedProfileSettings(ActiveProfile);
+    }
+
     public void ClearActiveProfile()
     {
+        if (ActiveProfile != null)
+        {
+            SaveCachedProfileSettings(ActiveProfile);
+        }
         _activeProfile = null;
     }
 
@@ -93,12 +108,20 @@ public class ProfileManager : MonoBehaviour
         }
 
         SaveProfiles();
+
+        if (profile == null)
+        {
+            return;
+        }
+
         DeleteSaveFile(profile);
     }
 
     public Profile CreateProfile(string profileName, string iconAddress, bool customImage)
     {
         var newProfile = new Profile(profileName, iconAddress, customImage);
+        SettingsManager.SetSetting("Creation Date", DateTime.Now.ToShortTimeString(), true, newProfile);
+
         AddProfile(newProfile);
         return newProfile;
     }
@@ -134,6 +157,10 @@ public class ProfileManager : MonoBehaviour
         _profiles.Sort((x, y) => string.Compare(x.ProfileName, y.ProfileName));
         profilesUpdated?.Invoke();
 
+#if !UNITY_EDITOR_WIN && !UNITY_STANDALONE_WIN
+        SaveCachedProfileSettings(profile);
+#endif
+
         SaveProfiles();
     }
 
@@ -141,7 +168,7 @@ public class ProfileManager : MonoBehaviour
     {
         SettingsManager.ClearCachedValues();
         _activeProfile = profile;
-        ProfileSettings = GetProfileSettings(profile);
+        ProfileSettings = GetNewProfileSettings(profile);
 
         activeProfileUpdated?.Invoke();
     }
@@ -165,6 +192,7 @@ public class ProfileManager : MonoBehaviour
 
         profile.SetIconAddress(address, isCustomIcon);
 
+        SaveCachedProfileSettings(profile);
         profilesUpdated?.Invoke();
         if (profile == _activeProfile)
         {
@@ -335,13 +363,78 @@ public class ProfileManager : MonoBehaviour
     private static void DeleteSaveFile(Profile profile)
     {
         var settings = GetProfileSettings(profile);
-
+        if (settings == null)
+        {
+            return;
+        }
         ES3.DeleteFile(settings);
+    }
+
+    public static ES3Settings GetNewProfileSettings(Profile profile)
+    {
+        var settingName = $"{PROFILESETTINGS}{profile.ProfileName}.{profile.GUID}.dat";
+        try
+        {
+            ES3.CacheFile(settingName);
+        }
+        catch (Exception ex)
+        {
+            if (ex is FormatException)
+            {
+                return null;
+            }
+
+            Debug.LogError($"Cant get:{settingName}--{ex.Message}--{ex.StackTrace}");
+            return null;
+        }
+
+        return new ES3Settings(settingName, ES3.Location.Cache);
     }
 
     public static ES3Settings GetProfileSettings(Profile profile)
     {
-        return new ES3Settings($"{PROFILESETTINGS}{profile.ProfileName}.{profile.GUID}.dat");
+        if (profile == Instance.ActiveProfile)
+        {
+            return Instance.ProfileSettings;
+        }
+        else
+        {
+            return GetNewProfileSettings(profile);
+        }
+    }
+
+    public void CleanUpCorruptedProfile(Profile overrideProfile)
+    {
+        if (overrideProfile != null)
+        {
+            DeleteProfile(overrideProfile);
+        }
+        else if (ActiveProfile != null)
+        {
+            DeleteProfile(ActiveProfile);
+        }
+
+        var currentScene = SceneManager.GetActiveScene();
+        if (currentScene.name != "Main Menu")
+        {
+            GameStateManager.Instance.SetState(GameState.Playing);
+            PlaylistManager.Instance.FullReset();
+
+            if (TransitionController.Instance != null)
+            {
+                TransitionController.Instance.RequestTransition();
+            }
+        }
+        else if (ProfileSelectionController.Instance != null)
+        {
+            ProfileSelectionController.Instance.DisplayProfileSelection();
+        }
+    }
+
+    public void SaveCachedProfileSettings(Profile profile)
+    {
+        var settingName = $"{PROFILESETTINGS}{profile.ProfileName}.{profile.GUID}.dat";
+        ES3.StoreCachedFile(settingName);
     }
 
     public struct ProfileIconInfo

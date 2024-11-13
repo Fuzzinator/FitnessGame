@@ -152,10 +152,10 @@ public class ControllerOffsetTracker : MonoBehaviour, ISaver
 
     public void Save(Profile overrideProfile = null)
     {
-        SettingsManager.SetSetting(SettingsManager.LEFTGLOVEOFFSET, _leftOffset);
-        SettingsManager.SetSetting(SettingsManager.RIGHTGLOVEOFFSET, _rightOffset);
-        SettingsManager.SetSetting(SettingsManager.LEFTGLOVEROTOFFSET, _leftRotationOffset);
-        SettingsManager.SetSetting(SettingsManager.RIGHTGLOVEROTOFFSET, _rightRotationOffset);
+        SettingsManager.SetCachedVector3(SettingsManager.LEFTGLOVEOFFSET, _leftOffset);
+        SettingsManager.SetCachedVector3(SettingsManager.RIGHTGLOVEOFFSET, _rightOffset);
+        SettingsManager.SetCacheQuaternion(SettingsManager.LEFTGLOVEROTOFFSET, _leftRotationOffset);
+        SettingsManager.SetCacheQuaternion(SettingsManager.RIGHTGLOVEROTOFFSET, _rightRotationOffset);
         SaveRequested = false;
     }
 
@@ -188,22 +188,22 @@ public class ControllerOffsetTracker : MonoBehaviour, ISaver
         {
             _leftOffset = hand.GloveOffset;
             _leftRotationOffset = hand.GloveRotationOffset;
-            SettingsManager.SetSetting(SettingsManager.LEFTGLOVEOFFSET, _leftOffset);
-            SettingsManager.SetSetting(SettingsManager.LEFTGLOVEROTOFFSET, _leftRotationOffset);
+            SettingsManager.SetCachedVector3(SettingsManager.LEFTGLOVEOFFSET, _leftOffset);
+            SettingsManager.SetCacheQuaternion(SettingsManager.LEFTGLOVEROTOFFSET, _leftRotationOffset);
         }
         else
         {
             _rightOffset = hand.GloveOffset;
             _rightRotationOffset = hand.GloveRotationOffset;
-            SettingsManager.SetSetting(SettingsManager.RIGHTGLOVEOFFSET, _rightOffset);
-            SettingsManager.SetSetting(SettingsManager.RIGHTGLOVEROTOFFSET, _rightRotationOffset);
+            SettingsManager.SetCachedVector3(SettingsManager.RIGHTGLOVEOFFSET, _rightOffset);
+            SettingsManager.SetCacheQuaternion(SettingsManager.RIGHTGLOVEROTOFFSET, _rightRotationOffset);
         }
     }
 
     public void Revert()
     {
-        _leftOffset = SettingsManager.GetSetting(SettingsManager.LEFTGLOVEOFFSET, Vector3.zero);
-        _rightOffset = SettingsManager.GetSetting(SettingsManager.RIGHTGLOVEOFFSET, Vector3.zero);
+        _leftOffset = SettingsManager.GetCachedVector3(SettingsManager.LEFTGLOVEOFFSET, Vector3.zero);
+        _rightOffset = SettingsManager.GetCachedVector3(SettingsManager.RIGHTGLOVEOFFSET, Vector3.zero);
 #if UNITY_EDITOR && UNITY_ANDROID
         HandTracker.LeftEditorHand.GloveOffset = _leftOffset;
         HandTracker.RightEditorHand.GloveOffset = _rightOffset;
@@ -212,8 +212,8 @@ public class ControllerOffsetTracker : MonoBehaviour, ISaver
         HandTracker.RightHand.GloveOffset = _rightOffset;
 #endif
         var defaultRotation = HandTracker.GetDefaultRotation();
-        _leftRotationOffset = SettingsManager.GetSetting(SettingsManager.LEFTGLOVEROTOFFSET, defaultRotation);
-        _rightRotationOffset = SettingsManager.GetSetting(SettingsManager.RIGHTGLOVEROTOFFSET, defaultRotation);
+        _leftRotationOffset = SettingsManager.GetCachedQuaternion(SettingsManager.LEFTGLOVEROTOFFSET, defaultRotation);
+        _rightRotationOffset = SettingsManager.GetCachedQuaternion(SettingsManager.RIGHTGLOVEROTOFFSET, defaultRotation);
 #if UNITY_EDITOR && UNITY_ANDROID
         HandTracker.LeftEditorHand.GloveRotationOffset = _leftRotationOffset;
         HandTracker.RightEditorHand.GloveRotationOffset = _rightRotationOffset;

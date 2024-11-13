@@ -681,7 +681,7 @@ namespace EnhancedUI.EnhancedScroller
         /// <param name="scrollPositionFactor">The percentage of the scroller to start at between 0 and 1, 0 being the start of the scroller</param>
         public void ReloadData(float scrollPositionFactor = 0)
         {
-            if(!_initialized)
+            if (!_initialized)
             {
                 return;
             }
@@ -1362,6 +1362,13 @@ namespace EnhancedUI.EnhancedScroller
             Last
         }
 
+        private bool applicationQuitting;
+        private Action HandleQuitting()
+        {
+            applicationQuitting = true;
+            return null;
+        }
+
         /// <summary>
         /// This function will create an internal list of sizes and offsets to be used in all calculations.
         /// It also sets up the loop triggers and positions and initializes the cell views.
@@ -1369,6 +1376,14 @@ namespace EnhancedUI.EnhancedScroller
         /// <param name="keepPosition">If true, then the scroller will try to go back to the position it was at before the resize</param>
         private void _Resize(bool keepPosition)
         {
+            if (this == null || _cellViewSizeArray == null)
+            {
+                if (!applicationQuitting)
+                {
+                    Debug.LogError($"EnhancedScroller: {this}. CellViewSizeArray: {_cellViewSizeArray}");
+                }
+                return;
+            }
             // cache the original position
             var originalScrollPosition = _scrollPosition;
 
@@ -1407,14 +1422,18 @@ namespace EnhancedUI.EnhancedScroller
             {
                 Debug.LogError("THis is null", gameObject);
             }
-            // set the size of the active cell view container based on the number of cell views there are and each of their sizes
-            if (scrollDirection == ScrollDirectionEnum.Vertical)
-                _container.sizeDelta = new Vector2(0, _cellViewOffsetArray.Last() + padding.top + padding.bottom);
             else
-                _container.sizeDelta = new Vector2(_cellViewOffsetArray.Last() + padding.left + padding.right, 0);
+            {
+
+                // set the size of the active cell view container based on the number of cell views there are and each of their sizes
+                if (scrollDirection == ScrollDirectionEnum.Vertical)
+                    _container.sizeDelta = new Vector2(0, _cellViewOffsetArray.Last() + padding.top + padding.bottom);
+                else
+                    _container.sizeDelta = new Vector2(_cellViewOffsetArray.Last() + padding.left + padding.right, 0);
 
 
-            _container.anchoredPosition = Vector2.zero;
+                _container.anchoredPosition = Vector2.zero;
+            }
 
             // if looping, set up the loop positions and triggers
             if (loop)
@@ -2039,12 +2058,14 @@ namespace EnhancedUI.EnhancedScroller
         {
             // when the scroller is enabled, add a listener to the onValueChanged handler
             _scrollRect.onValueChanged.AddListener(_ScrollRect_OnValueChanged);
+            Application.quitting += HandleQuitting();
         }
 
         void OnDisable()
         {
             // when the scroller is disabled, remove the listener
             _scrollRect.onValueChanged.RemoveListener(_ScrollRect_OnValueChanged);
+            Application.quitting -= HandleQuitting();
         }
 
         /// <summary>

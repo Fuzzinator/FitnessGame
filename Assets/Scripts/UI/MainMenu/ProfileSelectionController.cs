@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class ProfileSelectionController : MonoBehaviour
 {
+    public static ProfileSelectionController Instance { get; private set; }
+
+
     [SerializeField]
     private ProfileChoiceDisplay _displayObjectPrefab;
 
@@ -23,6 +26,9 @@ public class ProfileSelectionController : MonoBehaviour
     [SerializeField]
     private GameObject _noProfileDisplay;
 
+    [SerializeField]
+    private Canvas _mainCanvas;
+
     private PoolManager _choicesPoolManager;
     private bool _fogActive = false;
 
@@ -33,8 +39,41 @@ public class ProfileSelectionController : MonoBehaviour
     private const string FogOn = "FogOn";
     private const string Transition = "Transition";
 
+    private void Awake()
+    {
+        if(Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
+    }
+
     private void OnEnable()
     {
+        DisplayProfileSelection();
+    }
+
+    private void OnDisable()
+    {
+        if (_fogActive)
+        {
+            _fogActive = false;
+            _fogAnimator.SetBool(Transition, true);
+            _fogAnimator.SetBool(FogOn, false);
+        }
+
+        ProfileManager.Instance.UnloadProfileSprites();
+        HideProfileChoices();
+        ProfileManager.Instance.profilesUpdated.RemoveListener(ShowAvailableProfiles);
+    }
+
+    public void DisplayProfileSelection()
+    {
+        _mainCanvas.enabled = true;
+
         if (ProfileManager.Instance.ActiveProfile == null)
         {
             _fogActive = true;
@@ -52,20 +91,6 @@ public class ProfileSelectionController : MonoBehaviour
         ShowAvailableProfiles();
         ProfileManager.Instance.profilesUpdated.AddListener(ShowAvailableProfiles);
         _initialized = true;
-    }
-
-    private void OnDisable()
-    {
-        if (_fogActive)
-        {
-            _fogActive = false;
-            _fogAnimator.SetBool(Transition, true);
-            _fogAnimator.SetBool(FogOn, false);
-        }
-
-        ProfileManager.Instance.UnloadProfileSprites();
-        HideProfileChoices();
-        ProfileManager.Instance.profilesUpdated.RemoveListener(ShowAvailableProfiles);
     }
 
     public void ShowAvailableProfiles()
@@ -109,5 +134,10 @@ public class ProfileSelectionController : MonoBehaviour
     public void StartCreateProfile()
     {
         _profileEditor.StartCreateProfile();
+    }
+
+    public void DisableCanvas()
+    {
+        _mainCanvas.enabled = false;
     }
 }

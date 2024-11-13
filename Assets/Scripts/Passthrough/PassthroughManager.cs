@@ -28,7 +28,7 @@ public class PassthroughManager : MonoBehaviour
         else
         {
             Destroy(DynamicInstance);
-            DynamicInstance = this; 
+            DynamicInstance = this;
         }
 #endif
     }
@@ -43,7 +43,10 @@ public class PassthroughManager : MonoBehaviour
             return;
         }
         ProfileManager.Instance.activeProfileUpdated.AddListener(CheckOnProfileChange);
-        SettingsManager.CachedBoolSettingChanged.AddListener(UpdateFromSettingChange);
+        if (!SettingsManager.TrySubscribeToCachedBool(SettingsManager.PassthroughInMenu, OnPassthroughChanged))
+        {
+            SettingsManager.CachedBoolSettingsChanged.AddListener(UpdateFromSettingChange);
+        }
 
         if (ProfileManager.Instance.ActiveProfile != null)
         {
@@ -66,24 +69,42 @@ public class PassthroughManager : MonoBehaviour
             return;
         }
         ProfileManager.Instance.activeProfileUpdated.RemoveListener(CheckOnProfileChange);
-        SettingsManager.CachedBoolSettingChanged.RemoveListener(UpdateFromSettingChange);
+        SettingsManager.CachedBoolSettingsChanged.RemoveListener(UpdateFromSettingChange);
+    }
+
+    private void OnPassthroughChanged(bool value)
+    {
+        if (this == null || GameStateManager.Instance == null || GameStateManager.Instance.CurrentGameState == GameState.Quitting)
+        {
+            return;
+        }
+
+        isInsightPassthroughEnabled = value;
+
+        if (_animator == null)
+        {
+            Debug.LogError("Animator is null but the application isn't quitting? How?");
+        }
+        {
+            _animator?.SetBool(AnimatorPassthrough, value);
+        }
+
+        if (XRPassthroughController.Instance != null)
+        {
+            XRPassthroughController.Instance.PassthroughEnabled = isInsightPassthroughEnabled;
+        }
     }
 
     private void UpdateFromSettingChange(string settingName, bool value)
     {
-        if (!_mainMenu)
+        if (!_mainMenu || !string.Equals(SettingsManager.PassthroughInMenu, settingName))
         {
             return;
         }
-        if (string.Equals(SettingsManager.PassthroughInMenu, settingName))
-        {
-            isInsightPassthroughEnabled = value;
-            _animator.SetBool(AnimatorPassthrough, value);
 
-            if (XRPassthroughController.Instance != null)
-            {
-                XRPassthroughController.Instance.PassthroughEnabled = isInsightPassthroughEnabled;
-            }
+        if (SettingsManager.TrySubscribeToCachedBool(SettingsManager.PassthroughInMenu, OnPassthroughChanged))
+        {
+            SettingsManager.CachedBoolSettingsChanged.RemoveListener(UpdateFromSettingChange);
         }
     }
 

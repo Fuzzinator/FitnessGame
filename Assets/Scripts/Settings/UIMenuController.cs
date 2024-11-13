@@ -76,6 +76,8 @@ public class UIMenuController : MonoBehaviour
         if (pageNumber >= _settingsPages.Length || pageNumber < 0 ||
             _activePage == _settingsPages[pageNumber])
         {
+            _activePage.SetGroupState(1, true);
+            _activePage.gameObject.SetActive(true);
             return;
         }
 

@@ -79,7 +79,9 @@ public class ProfileEditor : UIMenuController
             }
             setting.Save(_profile);
         }
-
+#if !UNITY_STANDALONE_WIN && !UNITY_EDITOR_WIN
+        ProfileManager.Instance.SaveCachedProfileSettings(_profile);
+#endif
         _profile = null;
 
         ResetCreateNewProfile();
