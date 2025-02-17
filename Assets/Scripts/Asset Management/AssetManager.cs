@@ -455,7 +455,7 @@ public class AssetManager : MonoBehaviour
 
         var info = new DirectoryInfo(PlaylistsPath);
         var files = info.GetFiles();
-
+        var readSuccess = false;
         foreach (var file in files)
         {
             try
@@ -510,19 +510,24 @@ public class AssetManager : MonoBehaviour
 
                     #endregion
 
+                    readSuccess = true;
+
                     playlist.isValid = await PlaylistValidator.IsValid(playlist);
                     playlistLoaded?.Invoke(playlist);
                     await UniTask.DelayFrame(1, cancellationToken: cancellationToken);
-                    //if (playlist.isValid)
-                    //{
-                    //availablePlaylists.Add(playlist);
-                    //}
                 }
             }
             catch (Exception e)
             {
+                ErrorReporter.SetSuppressed(true);
                 Debug.LogError($"{e.Message}\n{e.StackTrace}");
-                throw;
+                ErrorReporter.SetSuppressed(false);
+
+                if (file.Extension == PLAYLISTEXTENSION)
+                {
+                    var visuals = new Notification.NotificationVisuals($"Failed to load playlist: {file.Name}. It may have been corrupted.", "Reading Playlist Failed", "Delete Playlist", "Ignore");
+                    NotificationManager.RequestNotification(visuals, () => File.Delete(file.FullName));
+                }
             }
         }
     }
@@ -770,7 +775,7 @@ public class AssetManager : MonoBehaviour
                 }
             }
         }
-        while(easyFiles.Count > 0)
+        while (easyFiles.Count > 0)
         {
             var file = easyFiles[0];
             easyFiles.RemoveAt(0);
@@ -951,8 +956,8 @@ public class AssetManager : MonoBehaviour
                     return songInfo;
                 }
 
-                 return await UpdateMap(songInfo, file, updatedMaps, songID, songScore, creationDate, token);
-                
+                return await UpdateMap(songInfo, file, updatedMaps, songID, songScore, creationDate, token);
+
             }
         }
 
@@ -1093,7 +1098,12 @@ public class AssetManager : MonoBehaviour
 
     public static void GetAssetPathsFromDownloads(string[] extensions, List<string> listOfFiles)
     {
-        EnumerateDirectory(new DirectoryInfo(DownloadsPath()), extensions, listOfFiles);
+        var path = DownloadsPath();
+        if (!Directory.Exists(path))
+        {
+            return;
+        }
+        EnumerateDirectory(new DirectoryInfo(path), extensions, listOfFiles);
     }
 
     private static void EnumerateDirectory(DirectoryInfo info, string[] extensions, List<string> listOfFiles)

@@ -87,6 +87,11 @@ public static class StringExtensions
 
     public static bool ContainsIllegalCharacters(this string str)
     {
+        if (string.IsNullOrWhiteSpace(str))
+        {
+            return false;
+        }
+
         foreach (var character in _escapeCharacters)
         {
             if (!str.Contains(character))
@@ -108,6 +113,11 @@ public static class StringExtensions
     
     public static bool ContainsIllegalFileCharacters(this string str)
     {
+        if(string.IsNullOrWhiteSpace(str))
+        {
+            return false;
+        }
+
         foreach (var character in _escapeCharacters)
         {
             if (!str.Contains(character))

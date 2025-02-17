@@ -71,7 +71,7 @@ namespace UI.Scrollers.Playlists
 
         public void CheckIfShouldClear()
         {
-            if (_currentSongInfo != null && SongInfoFilesReader.Instance.availableSongs.Exists((i) => i.fileLocation.Equals(_currentSongInfo.fileLocation, StringComparison.InvariantCultureIgnoreCase)))
+            if (_currentSongInfo != null && SongInfoFilesReader.Instance.filteredAvailableSongs.Exists((i) => i.fileLocation.Equals(_currentSongInfo.fileLocation, StringComparison.InvariantCultureIgnoreCase)))
             {
                 return;
             }

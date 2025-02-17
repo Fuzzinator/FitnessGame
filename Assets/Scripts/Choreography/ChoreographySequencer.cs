@@ -11,6 +11,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
+using UnityEngine.UIElements;
 
 public class ChoreographySequencer : MonoBehaviour
 {
@@ -32,6 +33,9 @@ public class ChoreographySequencer : MonoBehaviour
 
     [SerializeField]
     private Transform[] _sequenceEndPoses;
+
+    [SerializeField]
+    private OptimalStrikePositioning _optimalStrikePositioning;
 
     [SerializeField]
     private Transform _optimalStrikePoint;
@@ -88,11 +92,12 @@ public class ChoreographySequencer : MonoBehaviour
 
         var position = _formationStart.position;
         _meterDistance = Vector3.Distance(position, _formationEnd.position);
-        _optimalPointDistance = Vector3.Distance(position, _optimalStrikePoint.position);
-        _optimalJabPointDistance = Vector3.Distance(position, _optimalJabStrikePoint.position);
+        _optimalStrikePositioning.OnPositionChanged.AddListener(RepositionStrikes);
 
         _sequenceUnstartedOrFinished = true;
         _cancellationToken = this.GetCancellationTokenOnDestroy();
+
+
     }
 
     private void OnEnable()
@@ -104,6 +109,18 @@ public class ChoreographySequencer : MonoBehaviour
     private void OnDisable()
     {
         GameStateManager.Instance.gameStateChanged.RemoveListener(GameStateListener);
+    }
+
+    private void OnDestroy()
+    {
+        GameStateManager.Instance.gameStateChanged.RemoveListener(GameStateListener);
+    }
+
+    private void RepositionStrikes(float armLength)
+    {
+        var position = _formationStart.position;
+        _optimalPointDistance = Vector3.Distance(position, _optimalStrikePositioning.DirectionalStrikePoint);
+        _optimalJabPointDistance = Vector3.Distance(position, _optimalStrikePositioning.JabStrikePoint);
     }
 
     private void GameStateListener(GameState oldState, GameState newState)
@@ -221,7 +238,7 @@ public class ChoreographySequencer : MonoBehaviour
             }
         }
 
-        var strikePoint = formation.HasNote && formation.Note.IsJab ? _optimalJabStrikePoint.position : _optimalStrikePoint.position;
+        var strikePoint = formation.HasNote && formation.Note.IsJab ? _optimalStrikePositioning.JabStrikePoint : _optimalStrikePositioning.DirectionalStrikePoint;
 
         formationHolder.SetUp(this, formation, nextFormationIndex, strikePoint, _currentRotation);
 
@@ -230,6 +247,10 @@ public class ChoreographySequencer : MonoBehaviour
             formationHolder.OnCompleteCallback, _formationEnd.position, tweenSpeed);
         var tween = ChoreographyPoolManager.Instance.GetNewTween(tweenData);
 
+        if(tween == null)
+        {
+            return;
+        }
 
         var beatsTime = (60 / SongInfoReader.Instance.BeatsPerMinute) / PlaylistManager.Instance.SongSpeedMod;
         var time = (Time.time - (_songStartTime + _pauseOffset));

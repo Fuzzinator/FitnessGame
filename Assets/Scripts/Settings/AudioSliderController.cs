@@ -19,7 +19,7 @@ public class AudioSliderController : UISliderFloatSetting, ISaver
 
     protected override void OnEnable()
     {
-        _slider.value = SettingsManager.Instance.GetVolumeMixer(_mixerType);
+        _slider.SetValueWithoutNotify(SettingsManager.Instance.GetVolumeMixer(_mixerType));
         
         SaveRequested = false;
     }

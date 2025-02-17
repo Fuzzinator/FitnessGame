@@ -109,7 +109,6 @@ public class UIToggleGroupSetting : MonoBehaviour, ISaver
         {
             if(_toggles == null || _toggles[_currentValue] == null)
             {
-                Debug.LogError("Over Here", this);
                 return false;
             }
             if(_toggles[_currentValue].isOn)
@@ -128,7 +127,6 @@ public class UIToggleGroupSetting : MonoBehaviour, ISaver
         {
             if (_toggles == null || _toggles[_currentValue] == null)
             {
-                Debug.LogError("Over Here", this);
                 return false;
             }
             if (!_toggles[_currentValue].isOn)

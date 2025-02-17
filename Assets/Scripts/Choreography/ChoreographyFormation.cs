@@ -57,6 +57,7 @@ public struct ChoreographyFormation
     public ChoreographyFormation SetNote(ChoreographyNote note, bool hasNote = true)
     {
         _note = note;
+        _hitSideType = note.HitSideType;
         _hasNote = hasNote;
         _time = note.Time;
         _isValid = true;

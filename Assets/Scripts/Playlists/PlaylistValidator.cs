@@ -19,6 +19,10 @@ public static class PlaylistValidator
 
     public static async UniTask<bool> IsValid(Playlist playlist)
     {
+        if(playlist?.Items == null)
+        {
+            return false;
+        }
         for (var i = 0; i < playlist.Items.Length; i++)
         {
             var item = playlist.Items[i];
@@ -36,7 +40,7 @@ public static class PlaylistValidator
     {
         SongInfo songInfo = null; //await AsyncLoadSongInfo(item);
 
-        foreach (var info in SongInfoFilesReader.Instance.availableSongs)
+        foreach (var info in SongInfoFilesReader.Instance.allAvailableSongs)
         {
             if (info == item)
             {

@@ -397,6 +397,11 @@ public class ES3File
         return cachedFile;
     }
 
+    public static bool FileCached(string path)
+    {
+        return cachedFiles.ContainsKey(path);
+    }
+
     internal static void CacheFile(ES3Settings settings)
     {
         // If we're still using cached settings, set it to the default location.

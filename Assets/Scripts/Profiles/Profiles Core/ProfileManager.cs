@@ -157,10 +157,6 @@ public class ProfileManager : MonoBehaviour
         _profiles.Sort((x, y) => string.Compare(x.ProfileName, y.ProfileName));
         profilesUpdated?.Invoke();
 
-#if !UNITY_EDITOR_WIN && !UNITY_STANDALONE_WIN
-        SaveCachedProfileSettings(profile);
-#endif
-
         SaveProfiles();
     }
 
@@ -434,6 +430,10 @@ public class ProfileManager : MonoBehaviour
     public void SaveCachedProfileSettings(Profile profile)
     {
         var settingName = $"{PROFILESETTINGS}{profile.ProfileName}.{profile.GUID}.dat";
+        if(!ES3File.FileCached(settingName))
+        {
+            ES3.CacheFile(settingName);
+        }
         ES3.StoreCachedFile(settingName);
     }
 

@@ -9,6 +9,8 @@ using UnityEngine;
 
 public class SearchScroller : MonoBehaviour
 {
+    [SerializeField]
+    private string _searchName;
     [SerializeField] 
     private TMP_InputField _searchField;
 
@@ -21,7 +23,7 @@ public class SearchScroller : MonoBehaviour
 
     private void OnEnable()
     {
-        ResetSearch();
+        _searchField.text = SettingsManager.GetSearchFilter(_searchName);
     }
     
     public void StartEditTextField()
@@ -49,6 +51,7 @@ public class SearchScroller : MonoBehaviour
     public void ResetSearch()
     {
         _searchField.text = null;
+        SaveSearch(null);
     }
 
     public void FilterSearch(string searchKey)
@@ -59,5 +62,15 @@ public class SearchScroller : MonoBehaviour
     private void OnBecameVisible()
     {
         FilterSearch(string.Empty);
+    }
+
+    public void SaveSearch(string searchKey)
+    {
+        if(string.IsNullOrWhiteSpace(_searchName))
+        {
+            return;
+        }
+
+        SettingsManager.SaveSearchFilter(_searchName, searchKey);
     }
 }

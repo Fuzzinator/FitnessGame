@@ -15,6 +15,9 @@ public class SettingsDisplay : UIMenuController, IOrderedInitialize
     private CanvasGroup _popUpPage;
 
     [SerializeField]
+    private CanvasGroup _calibrateArmsPopUpPage;
+
+    [SerializeField]
     private CanvasGroup _confirmChangesPage;
 
     [SerializeField]
@@ -134,12 +137,25 @@ public class SettingsDisplay : UIMenuController, IOrderedInitialize
         _popUpPage.gameObject.SetActive(isOn);
     }
 
+    public void SetCalibrateArmPopUp(bool isOn)
+    {
+        _mainPages.SetGroupState(!isOn);
+
+        _confirmChangesPage.SetGroupState(false);
+        _confirmChangesPage.gameObject.SetActive(false);
+
+        _calibrateArmsPopUpPage.SetGroupState(isOn);
+        _calibrateArmsPopUpPage.gameObject.SetActive(isOn);
+    }
+
     public void SetSaveScreen(bool isOn)
     {
         _mainPages.SetGroupState(!isOn);
 
         _popUpPage.SetGroupState(false);
         _popUpPage.gameObject.SetActive(false);
+        _calibrateArmsPopUpPage.SetGroupState(false);
+        _calibrateArmsPopUpPage.gameObject.SetActive(false);
 
         _confirmChangesPage.SetGroupState(isOn);
         _confirmChangesPage.gameObject.SetActive(isOn);
@@ -167,6 +183,7 @@ public class SettingsDisplay : UIMenuController, IOrderedInitialize
                 {
                     DiscardChanges();
                     SetPopUp(false);
+                    SetCalibrateArmPopUp(false);
                     SetSaveScreen(false);
                     gameObject.SetActive(false);
                 }

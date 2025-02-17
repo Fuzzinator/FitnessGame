@@ -77,6 +77,11 @@ public class Choreography
     {
         fileName = fileName.CleanFileName();
         var path = $"{AssetManager.SongsPath}/{fileLocation}/{fileName}";
+        if(!File.Exists(path))
+        {
+            return null;
+        }
+
         try
         {
             var streamReader = new StreamReader(path);
@@ -160,6 +165,11 @@ public class Choreography
     {
         if (item.IsCustomSong)
         {
+            if(string.IsNullOrWhiteSpace(item.SongName))
+            {
+                return null;
+            }
+
             var result = await AsyncLoadCustomSong(item.FileLocation, difficultyInfo.FileName, item.SongName, token);
             return result;
         }

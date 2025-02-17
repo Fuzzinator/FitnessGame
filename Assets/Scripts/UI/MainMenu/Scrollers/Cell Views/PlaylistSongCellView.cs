@@ -71,7 +71,6 @@ namespace UI.Scrollers.Playlists
             }
 
             GetAndSetImage(playlistItem.SongInfo).Forget();
-            //UniTask.RunOnThreadPool(() =>  cancellationToken: CancellationToken);
         }
 
         public void SetHighlight(bool on)
@@ -82,7 +81,12 @@ namespace UI.Scrollers.Playlists
         public async UniTaskVoid GetAndSetImage(SongInfo info)
         {
              var sprite = await info.LoadImage(CancellationToken);
-            //await UniTask.SwitchToMainThread(CancellationToken);
+
+            if(this == null || _songImage == null || _songImage.material == null)
+            {
+                return;
+            }
+
             _songImage.sprite = sprite;
         }
     }

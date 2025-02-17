@@ -6,7 +6,7 @@ public class UIPostProcessingToggle : UIToggleBoolSetting
 {
     private void Awake()
     {
-        _defaultValue = PostProcessingManager.Instance.IsEnabledDefault;
+        _defaultValue = PostProcessingManager.Instance.IsQuest1;
     }
 
     public override void ToggleSet(bool isOn)

@@ -172,7 +172,7 @@ public class ChoreographyPoolManager : BaseGameStateListener
 
     public SimpleTween GetNewTween(SimpleTween.Data tweenData)
     {
-        return _tweenPool.GetNewTween(tweenData);
+        return _tweenPool?.GetNewTween(tweenData);
     }
 
     public ActiveLaneIndicator GetNewIndicator()

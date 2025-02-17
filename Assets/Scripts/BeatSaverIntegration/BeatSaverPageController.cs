@@ -531,11 +531,23 @@ public class BeatSaverPageController : MonoBehaviour
         var targetBeatmap = _activeBeatmap;
         _downloadingIds.Add(targetBeatmap.ID);
         var progress = new Progress<double>();
+        if(_activeBeatmap == null)
+        {
+            Debug.LogError("Attempting to download a song but _activeBeatmap is null.");
+            return;
+        }
         var songName = _activeBeatmap.Metadata?.SongName ?? _activeBeatmap.Name;
         var loadingDisplay = _loadingDisplays.DisplayNewLoading(songName);
         if (loadingDisplay != null)
         {
-            progress.ProgressChanged += (sender, d) => loadingDisplay.UpdateLoadingBar(d);
+            progress.ProgressChanged += (sender, d) =>
+            {
+                if (loadingDisplay == null)
+                {
+                    return;
+                }
+                loadingDisplay.UpdateLoadingBar(d);
+            };
         }
 
         if (_downloadsTokenSource == null || _downloadsTokenSource.IsCancellationRequested)
@@ -571,12 +583,12 @@ public class BeatSaverPageController : MonoBehaviour
         }
         await UniTask.DelayFrame(1);
         await UniTask.SwitchToMainThread(_downloadsTokenSource.Token);
-        _downloadingIds.Remove(targetBeatmap.ID);
+        _downloadingIds?.Remove(targetBeatmap.ID);
         if (targetBeatmap.ID == _activeBeatmap.ID)
         {
             _downloadButton.interactable = true;
         }
-        activeCell.SetDownloaded(true);
+        activeCell?.SetDownloaded(true);
 
         //TODO: Need to remove the existing song if a duplicate exists in the SongInfoFilesReader
         var score = 0f;

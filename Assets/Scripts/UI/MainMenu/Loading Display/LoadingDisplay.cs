@@ -63,11 +63,23 @@ public class LoadingDisplay : MonoBehaviour, IPoolable
 
     private async UniTaskVoid DisplayCompletedAsync()
     {
+        if (this == null)
+        {
+            return;
+        }
         _isCompleted = true;
         await UniTask.SwitchToMainThread();
+        if (this == null || _loadingBar == null || _textField == null)
+        {
+            return;
+        }
         _loadingBar.fillAmount = 1;
         _textField.text = $"{_textField.text} - COMPLETE";
         await UniTask.Delay(TimeSpan.FromSeconds(2.5));
+        if (this == null)
+        {
+            return;
+        }
         ReturnToPool();
     }
     public async UniTaskVoid DisplayFailedAsync(bool skipAwait = false)

@@ -47,6 +47,8 @@ public class SettingsManager : MonoBehaviour
     private const string MENUMUSICVOLUME = "MenuMusicVolume";
     private const string MENUSFXVOLUME = "MenuSFXVolume";
 
+    public const string AverageArmLength = "AverageArmLength";
+
     public const string LEFTGLOVEOFFSET = "LeftGloveOffset";
     public const string LEFTGLOVEROTOFFSET = "LeftGloveRotationOffset";
     public const string RIGHTGLOVEOFFSET = "RightGloveOffset";
@@ -66,6 +68,8 @@ public class SettingsManager : MonoBehaviour
     public const string MinHitSpeed = "MinHitSpeed";
 
     public const string PassthroughInMenu = "PassthroughInMainMenu";
+
+    public const string SearchFilter = "SearchFilter:";
 
     private static readonly string[] _volumeNames = new[] { MASTERVOLUME, MUSICVOLUME, SFXVOLUME, MENUMUSICVOLUME, MENUSFXVOLUME };
 
@@ -458,9 +462,8 @@ public class SettingsManager : MonoBehaviour
                     {
                         return;
                     }
-#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
                     settings.location = ES3.Location.File;
-#endif
+
                     ES3.Save(settingName, value, settings);
                     return;
                 }
@@ -688,6 +691,16 @@ public class SettingsManager : MonoBehaviour
         }
 
         return minSpeed;
+    }
+
+    public static void SaveSearchFilter(string searchName, string filter)
+    {
+        SetSetting($"{SearchFilter}{searchName}", filter);
+    }
+
+    public static string GetSearchFilter(string searchName)
+    {
+        return GetSetting($"{SearchFilter}{searchName}", string.Empty);
     }
 
     private struct CachedBoolSetting

@@ -65,7 +65,7 @@ namespace UI.Scrollers.Playlists
             _songInfos.Clear();
             if (string.IsNullOrWhiteSpace(_searchKey))
             {
-                foreach (var songInfo in SongInfoFilesReader.Instance.availableSongs)
+                foreach (var songInfo in SongInfoFilesReader.Instance.filteredAvailableSongs)
                 {
                     if (songInfo.IsHidden && !_showHiddenAssets)
                     {
@@ -77,7 +77,7 @@ namespace UI.Scrollers.Playlists
             }
             else
             {
-                foreach (var songInfo in SongInfoFilesReader.Instance.availableSongs)
+                foreach (var songInfo in SongInfoFilesReader.Instance.filteredAvailableSongs)
                 {
                     if (songInfo.SongName.Contains(_searchKey, StringComparison.InvariantCultureIgnoreCase) ||
                         songInfo.SongAuthorName.Contains(_searchKey, StringComparison.InvariantCultureIgnoreCase) ||
@@ -99,7 +99,7 @@ namespace UI.Scrollers.Playlists
         {
             if(_songInfos.Count == 0)
             {
-                _songInfos.AddRange(SongInfoFilesReader.Instance.availableSongs);
+                _songInfos.AddRange(SongInfoFilesReader.Instance.filteredAvailableSongs);
             }
             var dataIndex = _songInfos.IndexOf(info);
             if (dataIndex < 0)

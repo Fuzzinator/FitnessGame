@@ -71,7 +71,6 @@ public class SongInfo
 
             sb.Append(seconds);
 
-            //var buffer = sb.AsArraySegment();
             return sb.ToString();
         }
     }
@@ -85,6 +84,8 @@ public class SongInfo
     public string SongID => _songID;
 
     public float SongScore => _songScore;
+
+    public bool AutoConverted => _autoConverted;
 
     public bool IsHidden
     {
@@ -179,6 +180,9 @@ public class SongInfo
     private float _songScore = -1;
 
     [SerializeField]
+    private bool _autoConverted;
+
+    [SerializeField]
     private DifficultySet[] _difficultyBeatmapSets;
 
     private Sprite _songArt;
@@ -267,6 +271,11 @@ public class SongInfo
         var rotation90Set = new DifficultySet();
         var rotation360Set = new DifficultySet();
         var hasNormal = false;
+
+        if(_difficultyBeatmapSets == null)
+        {
+            return new UpdatedMaps();
+        }
 
         foreach (var set in _difficultyBeatmapSets)
         {
@@ -695,7 +704,10 @@ public class SongInfo
     public void ConvertFromBeatSage()
     {
         _levelAuthorName = "Beat Sage & Shadow BoXR";
+
         _songID = _songName;
+        _autoConverted = true;
+
         for(var x =  0; x < _difficultyBeatmapSets.Length; x++)
         {
             var set = _difficultyBeatmapSets[x];
@@ -989,6 +1001,16 @@ public class SongInfo
         InverseSongScore = 12,
         RecentlyDownloaded = 13,
         InverseRecentlyDownloaded = 14,
+    }
+
+    public enum FilterMethod
+    {
+        None = 0,
+        AllSongs = 1,
+        BuiltIn = 2,
+        AllCustom = 3,
+        Converted = 4,
+        Downloaded = 5
     }
 
     public static bool operator ==(SongInfo info, PlaylistItem item)

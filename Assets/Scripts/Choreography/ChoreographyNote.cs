@@ -19,6 +19,8 @@ public struct ChoreographyNote// : ISequenceable
 
     public bool IsSuperNote => _isSuperNote == 1;
 
+    public bool PreventSwitchingSides { get; private set; }
+
     [SerializeField]
     private float _time;
     [SerializeField]
@@ -74,6 +76,7 @@ public struct ChoreographyNote// : ISequenceable
         _type = hitSide;
         _cutDirection = cutDirection;
         _isSuperNote = isSuperNote ? 1 : 0;
+        PreventSwitchingSides = false;
     }
 
     public enum LineLayerType
@@ -130,6 +133,11 @@ public struct ChoreographyNote// : ISequenceable
         return this;
     }
 
+    public ChoreographyNote SetPreventSwitchingSides(bool preventSwitchingSides)
+    {
+        PreventSwitchingSides = preventSwitchingSides;
+        return this;
+    }
 
     public ChoreographyNote SwapSides()
     {

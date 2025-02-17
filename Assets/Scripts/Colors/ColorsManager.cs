@@ -139,7 +139,14 @@ public class ColorsManager : MonoBehaviour
         {
             return;
         }
-        _colorSets[index] = colorSet;
+        if(_colorSets.Count < index)
+        {
+            _colorSets[index] = colorSet;
+        }
+        else
+        {
+
+        }
         availableColorSetsUpdated?.Invoke();
         SaveColorSets();
     }

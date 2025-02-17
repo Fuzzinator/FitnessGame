@@ -15,8 +15,12 @@ public class SongInfoFilesReader : MonoBehaviour
 
     [SerializeField]
     private SongInfo.SortingMethod _sortingMethod = SongInfo.SortingMethod.SongName;
+    [SerializeField]
+    private SongInfo.FilterMethod _filterMethod = SongInfo.FilterMethod.AllSongs;
 
-    public List<SongInfo> availableSongs = new List<SongInfo>();
+    public List<SongInfo> allAvailableSongs = new List<SongInfo>();
+
+    public List<SongInfo> filteredAvailableSongs = new List<SongInfo>();
 
     [SerializeField]
     private AssetLabelReference _labelReference;
@@ -43,12 +47,16 @@ public class SongInfoFilesReader : MonoBehaviour
     private CancellationToken _destructionCancellationToken;
 
     public SongInfo.SortingMethod CurrentSortingMethod => _sortingMethod;
+    public SongInfo.FilterMethod CurrentFilterMethod => _filterMethod;
+
     public int CustomSongsCount { get; private set; }
 
     #region Const Strings
 
     private const string SONGINFONAME = "Info.txt";
     private const string ALTSONGINFONAME = "Info.dat";
+    private const string SortingMethod = "SortingMethod";
+    private const string FilterMethod = "FilterMethod";
 
     #endregion
 
@@ -62,6 +70,11 @@ public class SongInfoFilesReader : MonoBehaviour
         {
             Destroy(this);
         }
+    }
+
+    private void OnEnable()
+    {
+        WaitForProfile().Forget();
     }
 
     private void Start()
@@ -78,10 +91,23 @@ public class SongInfoFilesReader : MonoBehaviour
             Instance = null;
         }
 
-        foreach (var song in availableSongs)
+        foreach (var song in allAvailableSongs)
         {
             song.UnloadImage();
         }
+    }
+
+    private async UniTaskVoid WaitForProfile()
+    {
+        await UniTask.WaitWhile(() => ProfileManager.Instance != null && ProfileManager.Instance.ActiveProfile == null);
+
+        if (ProfileManager.Instance == null || ProfileManager.Instance.ActiveProfile == null)
+        {
+            return;
+        }
+
+        _filterMethod = SettingsManager.GetSetting(FilterMethod, SongInfo.FilterMethod.AllSongs);
+        _sortingMethod = SettingsManager.GetSetting(SortingMethod, SongInfo.SortingMethod.SongName);
     }
 
     private async UniTask UpdateSongs()
@@ -92,32 +118,36 @@ public class SongInfoFilesReader : MonoBehaviour
 
     private async UniTask UpdateAvailableSongs()
     {
-        availableSongs.Clear();
+        allAvailableSongs.Clear();
         CustomSongsCount = 0;
 
-        void AddSongs(SongInfo info)
-        {
-            availableSongs.Add(info);
-            _songAdded?.Invoke(info);
-        }
-
-        void AddCustomSongs(SongInfo info)
-        {
-            availableSongs.Add(info);
-            _songAdded?.Invoke(info);
-            CustomSongsCount++;
-        }
 
         await AssetManager.GetBuiltInSongs(_labelReference, AddSongs);
 
         await AssetManager.GetCustomSongs(AddCustomSongs, _cancellationSource);
+
+        FilterSongs();
         SortSongs();
+
         _songsUpdated?.Invoke();
+    }
+
+    private void AddSongs(SongInfo info)
+    {
+        allAvailableSongs.Add(info);
+        _songAdded?.Invoke(info);
+    }
+
+    private void AddCustomSongs(SongInfo info)
+    {
+        allAvailableSongs.Add(info);
+        _songAdded?.Invoke(info);
+        CustomSongsCount++;
     }
 
     public SongInfo TryGetSongInfo(string folderName)
     {
-        return availableSongs.Find((i) => string.Equals(i.fileLocation, folderName));
+        return allAvailableSongs.Find((i) => string.Equals(i.fileLocation, folderName));
     }
 
     public void TryDeleteSong()
@@ -154,7 +184,12 @@ public class SongInfoFilesReader : MonoBehaviour
     {
         MainMenuUIController.Instance.RequestDisableUI(this);
 
-        availableSongs.Remove(targetSongInfo);
+        allAvailableSongs.Remove(targetSongInfo);
+        if (filteredAvailableSongs.Contains(targetSongInfo))
+        {
+            filteredAvailableSongs.Remove(targetSongInfo);
+        }
+
         CustomSongsCount--;
 
         _songRemoved?.Invoke(targetSongInfo);
@@ -195,21 +230,84 @@ public class SongInfoFilesReader : MonoBehaviour
                 var fileInfo = await BeatSageConverter.ConvertSong(songInfo, _destructionCancellationToken);
                 await AssetManager.UpdateMap(songInfo, fileInfo, true, songID, songScore, fileInfo.CreationTime, _cancellationSource.Token);
             }
-            var existingSong = availableSongs.Find((info) => (!string.Equals(songID, "LOCAL") && string.Equals(info.SongID, songID, StringComparison.InvariantCultureIgnoreCase)) ||
+            var existingSong = allAvailableSongs.Find((info) => (!string.Equals(songID, "LOCAL") && string.Equals(info.SongID, songID, StringComparison.InvariantCultureIgnoreCase)) ||
                                                              string.Equals(info.fileLocation, songInfo.fileLocation, StringComparison.InvariantCultureIgnoreCase));
             if (existingSong != null)
             {
-                availableSongs.Remove(existingSong);
+                allAvailableSongs.Remove(existingSong);
+                if (filteredAvailableSongs.Contains(existingSong))
+                {
+                    filteredAvailableSongs.Remove(existingSong);
+                }
                 CustomSongsCount--;
             }
-            availableSongs.Add(songInfo);
+            allAvailableSongs.Add(songInfo);
             CustomSongsCount++;
 
             _songAdded?.Invoke(songInfo);
-            SortSongs();
+            TryAddToFiltered(songInfo);
             _songsUpdated?.Invoke();
         }
         return songInfo;
+    }
+
+    private void TryAddToFiltered(SongInfo song)
+    {
+        var added = false;
+        switch (_filterMethod)
+        {
+            case SongInfo.FilterMethod.None:
+            case SongInfo.FilterMethod.AllSongs:
+                filteredAvailableSongs.Add(song);
+                break;
+            case SongInfo.FilterMethod.BuiltIn:
+                if (song.isCustomSong)
+                {
+                    return;
+                }
+                filteredAvailableSongs.Add(song);
+                break;
+            case SongInfo.FilterMethod.AllCustom:
+                if (!song.isCustomSong)
+                {
+                    return;
+                }
+                filteredAvailableSongs.Add(song);
+                break;
+            case SongInfo.FilterMethod.Converted:
+                {
+                    if (!song.isCustomSong)
+                    {
+                        return;
+                    }
+
+                    var autoConverted = string.Equals(song.RecordableName, "LOCAL") || (song.SongName == song.SongID && song.SongScore == 0) || song.AutoConverted;
+
+                    if (!autoConverted)
+                    {
+                        return;
+                    }
+                    filteredAvailableSongs.Add(song);
+                }
+                break;
+            case SongInfo.FilterMethod.Downloaded:
+                {
+                    if (!song.isCustomSong)
+                    {
+                        return;
+                    }
+
+                    var autoConverted = string.Equals(song.RecordableName, "LOCAL") || (song.SongName == song.SongID && song.SongScore == 0) || song.AutoConverted;
+
+                    if (autoConverted)
+                    {
+                        return;
+                    }
+                    filteredAvailableSongs.Add(song);
+                }
+                break;
+        }
+        SortSongs();
     }
 
     public void SetSortMethod(SongInfo.SortingMethod method)
@@ -217,8 +315,88 @@ public class SongInfoFilesReader : MonoBehaviour
         if (_sortingMethod != method)
         {
             _sortingMethod = method;
+            SettingsManager.SetSetting(SortingMethod, method);
             SortSongs();
         }
+    }
+
+    public void SetFilterMethod(SongInfo.FilterMethod method)
+    {
+        if (_filterMethod != method)
+        {
+            _filterMethod = method;
+            SettingsManager.SetSetting(FilterMethod, method);
+            FilterSongs();
+        }
+    }
+
+    private void FilterSongs()
+    {
+        filteredAvailableSongs.Clear();
+
+        switch (_filterMethod)
+        {
+            case SongInfo.FilterMethod.None:
+            case SongInfo.FilterMethod.AllSongs:
+                filteredAvailableSongs.AddRange(allAvailableSongs);
+                break;
+            case SongInfo.FilterMethod.BuiltIn:
+                foreach (var song in allAvailableSongs)
+                {
+                    if (song.isCustomSong)
+                    {
+                        continue;
+                    }
+                    filteredAvailableSongs.Add(song);
+                }
+                break;
+            case SongInfo.FilterMethod.AllCustom:
+                foreach (var song in allAvailableSongs)
+                {
+                    if (!song.isCustomSong)
+                    {
+                        continue;
+                    }
+                    filteredAvailableSongs.Add(song);
+                }
+                break;
+            case SongInfo.FilterMethod.Converted:
+                foreach (var song in allAvailableSongs)
+                {
+                    if (!song.isCustomSong)
+                    {
+                        continue;
+                    }
+
+                    var autoConverted = string.Equals(song.RecordableName, "LOCAL") || (song.SongName == song.SongID && song.SongScore == 0) || song.AutoConverted;
+
+                    if (!autoConverted)
+                    {
+                        continue;
+                    }
+                    filteredAvailableSongs.Add(song);
+                }
+                break;
+            case SongInfo.FilterMethod.Downloaded:
+                foreach (var song in allAvailableSongs)
+                {
+                    if (!song.isCustomSong)
+                    {
+                        continue;
+                    }
+
+                    var autoConverted = string.Equals(song.RecordableName, "LOCAL") || (song.SongName == song.SongID && song.SongScore == 0) || song.AutoConverted;
+
+                    if (autoConverted)
+                    {
+                        continue;
+                    }
+                    filteredAvailableSongs.Add(song);
+                }
+                break;
+        }
+
+        SortSongs();
     }
 
     private void SortSongs()
@@ -226,55 +404,55 @@ public class SongInfoFilesReader : MonoBehaviour
         switch (_sortingMethod)
         {
             case SongInfo.SortingMethod.None:
-                availableSongs.Sort((x, y) => Random.Range(-1, 1));
+                filteredAvailableSongs.Sort((x, y) => Random.Range(-1, 1));
                 return;
             case SongInfo.SortingMethod.SongName:
-                availableSongs.Sort((x, y) =>
+                filteredAvailableSongs.Sort((x, y) =>
                     string.Compare(x.SongName, y.SongName, StringComparison.InvariantCulture));
                 break;
             case SongInfo.SortingMethod.InverseSongName:
-                availableSongs.Sort((x, y) =>
+                filteredAvailableSongs.Sort((x, y) =>
                     string.Compare(y.SongName, x.SongName, StringComparison.InvariantCulture));
                 break;
             case SongInfo.SortingMethod.AuthorName:
-                availableSongs.Sort((x, y) =>
+                filteredAvailableSongs.Sort((x, y) =>
                     string.Compare(x.SongAuthorName, y.SongAuthorName, StringComparison.InvariantCulture));
                 break;
             case SongInfo.SortingMethod.InverseAuthorName:
-                availableSongs.Sort((x, y) =>
+                filteredAvailableSongs.Sort((x, y) =>
                     string.Compare(y.SongAuthorName, x.SongAuthorName, StringComparison.InvariantCulture));
                 break;
             case SongInfo.SortingMethod.SongLength:
-                availableSongs.Sort((x, y) => x.SongLength.CompareTo(y.SongLength));
+                filteredAvailableSongs.Sort((x, y) => x.SongLength.CompareTo(y.SongLength));
                 break;
             case SongInfo.SortingMethod.InverseSongLength:
-                availableSongs.Sort((x, y) => y.SongLength.CompareTo(x.SongLength));
+                filteredAvailableSongs.Sort((x, y) => y.SongLength.CompareTo(x.SongLength));
                 break;
             case SongInfo.SortingMethod.LevelAuthorName:
-                availableSongs.Sort((x, y) =>
+                filteredAvailableSongs.Sort((x, y) =>
                     string.Compare(x.LevelAuthorName, y.LevelAuthorName, StringComparison.InvariantCulture));
                 break;
             case SongInfo.SortingMethod.InverseLevelAuthorName:
-                availableSongs.Sort((x, y) =>
+                filteredAvailableSongs.Sort((x, y) =>
                     string.Compare(y.LevelAuthorName, x.LevelAuthorName, StringComparison.InvariantCulture));
                 break;
             case SongInfo.SortingMethod.BPM:
-                availableSongs.Sort((x, y) => x.BeatsPerMinute.CompareTo(y.BeatsPerMinute));
+                filteredAvailableSongs.Sort((x, y) => x.BeatsPerMinute.CompareTo(y.BeatsPerMinute));
                 break;
             case SongInfo.SortingMethod.InverseBPM:
-                availableSongs.Sort((x, y) => y.BeatsPerMinute.CompareTo(x.BeatsPerMinute));
+                filteredAvailableSongs.Sort((x, y) => y.BeatsPerMinute.CompareTo(x.BeatsPerMinute));
                 break;
             case SongInfo.SortingMethod.RecentlyDownloaded:
-                availableSongs.Sort((x, y) => x.DownloadedDate.CompareTo(y.DownloadedDate));
+                filteredAvailableSongs.Sort((x, y) => x.DownloadedDate.CompareTo(y.DownloadedDate));
                 break;
             case SongInfo.SortingMethod.InverseRecentlyDownloaded:
-                availableSongs.Sort((x, y) => y.DownloadedDate.CompareTo(x.DownloadedDate));
+                filteredAvailableSongs.Sort((x, y) => y.DownloadedDate.CompareTo(x.DownloadedDate));
                 break;
             case SongInfo.SortingMethod.SongScore:
-                availableSongs.Sort((x, y) => x.SongScore.CompareTo(y.SongScore));
+                filteredAvailableSongs.Sort((x, y) => x.SongScore.CompareTo(y.SongScore));
                 break;
             case SongInfo.SortingMethod.InverseSongScore:
-                availableSongs.Sort((x, y) => y.SongScore.CompareTo(x.SongScore));
+                filteredAvailableSongs.Sort((x, y) => y.SongScore.CompareTo(x.SongScore));
                 break;
         }
     }
