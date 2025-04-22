@@ -88,6 +88,26 @@ public class PlaylistCountdownClock : MonoBehaviour, IOrderedInitialize
         _clockRunning = false;
     }
 
+    public void RestartSong()
+    {
+        _timeRemaining += PlaylistManager.Instance.CurrentSongLength;
+        UpdateDisplay();
+    }
+
+    public void SkipSong()
+    {
+        var remainingTime = PlaylistManager.Instance.RemainingTime;
+        var currentSongTime = PlaylistManager.Instance.CurrentSongLength;
+        var passedSongTime = remainingTime - _timeRemaining;
+        var remainingSongTime = currentSongTime - passedSongTime;
+        _timeRemaining -= remainingSongTime;
+        if (_timeRemaining <= 0)
+        {
+            _timeRemaining = 0;
+        }
+        UpdateDisplay();
+    }
+
     private void UpdateDisplay()
     {
         var minutes = (int)Mathf.Floor(_timeRemaining / MINUTE);
@@ -105,7 +125,8 @@ public class PlaylistCountdownClock : MonoBehaviour, IOrderedInitialize
 
     public void SongFailedToLoad()
     {
-        _timeRemaining -= PlaylistManager.Instance.CurrentItem.SongInfo.SongLength;
+        var songLength = PlaylistManager.Instance.CurrentSongLength;
+        _timeRemaining -= songLength;
         UpdateDisplay();
     }
 
@@ -131,7 +152,7 @@ public class PlaylistCountdownClock : MonoBehaviour, IOrderedInitialize
                     continue;
                 }
 
-                if(paused)
+                if (paused)
                 {
                     paused = false;
                 }

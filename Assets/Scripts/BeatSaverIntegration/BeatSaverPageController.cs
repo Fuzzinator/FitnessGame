@@ -493,10 +493,22 @@ public class BeatSaverPageController : MonoBehaviour
         {
             _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_token);
         }
-        var audioClip = await targetBeatmap.LatestVersion.GetPlayablePreview(_cancellationTokenSource.Token);
+        AudioClip audioClip = null;
+        try
+        {
+            audioClip = await targetBeatmap.LatestVersion.GetPlayablePreview(_cancellationTokenSource.Token);
+        }
+        catch (Exception ex)
+        {
+
+        }
 
         await UniTask.DelayFrame(1);
         if (_audioSource == null)
+        {
+            return;
+        }
+        if(audioClip == null)
         {
             return;
         }
@@ -505,35 +517,36 @@ public class BeatSaverPageController : MonoBehaviour
         await UniTask.WaitUntil(() => _audioSource == null || !_audioSource.isPlaying && FocusTracker.Instance.IsFocused);
     }
 
-    public async UniTaskVoid TryDownloadSongByID(string songID)
-    {
-        if (_cancellationTokenSource == null)
-        {
-            _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_token);
-        }
-        var beatmap = await _beatSaver.Beatmap(songID, _cancellationTokenSource.Token);
-
-    }
-
     private async UniTaskVoid DownloadSongAsync()
     {
         var activeCell = _cellView;
+        var targetBeatmap = _activeBeatmap;
         var folderName = GetFolderName();
 
         _downloadButton.interactable = false;
         var shouldContinue = await VerifyShouldDownload(folderName);
         if (!shouldContinue)
         {
-            _downloadButton.interactable = true;
+            _downloadingIds?.Remove(targetBeatmap.ID);
+            activeCell?.SetDownloaded(false);
+            if (targetBeatmap.ID == _activeBeatmap.ID)
+            {
+                _downloadButton.interactable = true;
+            }
             Debug.Log("Will Not Download");
             return;
         }
-        var targetBeatmap = _activeBeatmap;
         _downloadingIds.Add(targetBeatmap.ID);
         var progress = new Progress<double>();
         if(_activeBeatmap == null)
         {
             Debug.LogError("Attempting to download a song but _activeBeatmap is null.");
+            _downloadingIds?.Remove(targetBeatmap.ID);
+            activeCell?.SetDownloaded(false);
+            if (targetBeatmap.ID == _activeBeatmap.ID)
+            {
+                _downloadButton.interactable = true;
+            }
             return;
         }
         var songName = _activeBeatmap.Metadata?.SongName ?? _activeBeatmap.Name;
@@ -561,12 +574,25 @@ public class BeatSaverPageController : MonoBehaviour
             var visuals = new Notification.NotificationVisuals($"Failed to download {targetBeatmap.Name}", "Download failed.", autoTimeOutTime: 1f, popUp: true);
             NotificationManager.RequestNotification(visuals);
             Debug.LogError("Download Failed");
+
+            _downloadingIds?.Remove(targetBeatmap.ID);
+            activeCell?.SetDownloaded(false);
+            if (targetBeatmap.ID == _activeBeatmap.ID)
+            {
+                _downloadButton.interactable = true;
+            }
             return;
         }
 
         await UniTask.DelayFrame(1);
         if (_cancellationTokenSource == null || _cancellationTokenSource.IsCancellationRequested)
         {
+            _downloadingIds?.Remove(targetBeatmap.ID);
+            activeCell?.SetDownloaded(false);
+            if (targetBeatmap.ID == _activeBeatmap.ID)
+            {
+                _downloadButton.interactable = true;
+            }
             return;
         }
         try

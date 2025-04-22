@@ -6,7 +6,6 @@ using UI.Scrollers.Playlists;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
-using static UnityEngine.XR.Hands.XRHandSubsystemDescriptor;
 using Random = UnityEngine.Random;
 
 public class SongInfoFilesReader : MonoBehaviour
@@ -18,7 +17,7 @@ public class SongInfoFilesReader : MonoBehaviour
     [SerializeField]
     private SongInfo.FilterMethod _filterMethod = SongInfo.FilterMethod.AllSongs;
 
-    public List<SongInfo> allAvailableSongs = new List<SongInfo>();
+    private List<SongInfo> _allAvailableSongs = new List<SongInfo>();
 
     public List<SongInfo> filteredAvailableSongs = new List<SongInfo>();
 
@@ -39,6 +38,8 @@ public class SongInfoFilesReader : MonoBehaviour
 
     public UnityEvent<SongInfo> SongAdded => _songAdded;
 
+    public IReadOnlyCollection<SongInfo> AvailableSongs => _allAvailableSongs;
+
     [Header("UI Thingy")]
     [SerializeField]
     private DisplaySongInfo _displaySongInfo;
@@ -57,6 +58,7 @@ public class SongInfoFilesReader : MonoBehaviour
     private const string ALTSONGINFONAME = "Info.dat";
     private const string SortingMethod = "SortingMethod";
     private const string FilterMethod = "FilterMethod";
+    private const string AutoGetSongs = "AutoDownloadSongs";
 
     #endregion
 
@@ -91,7 +93,7 @@ public class SongInfoFilesReader : MonoBehaviour
             Instance = null;
         }
 
-        foreach (var song in allAvailableSongs)
+        foreach (var song in _allAvailableSongs)
         {
             song.UnloadImage();
         }
@@ -118,13 +120,19 @@ public class SongInfoFilesReader : MonoBehaviour
 
     private async UniTask UpdateAvailableSongs()
     {
-        allAvailableSongs.Clear();
+        _allAvailableSongs.Clear();
         CustomSongsCount = 0;
 
 
         await AssetManager.GetBuiltInSongs(_labelReference, AddSongs);
 
         await AssetManager.GetCustomSongs(AddCustomSongs, _cancellationSource);
+
+        var autoGetMissingSongs = SettingsManager.GetSetting(AutoGetSongs, true);
+        if (autoGetMissingSongs)
+        {
+            CustomSongsManager.ConfirmHasAllSongInRecord();
+        }
 
         FilterSongs();
         SortSongs();
@@ -134,35 +142,40 @@ public class SongInfoFilesReader : MonoBehaviour
 
     private void AddSongs(SongInfo info)
     {
-        allAvailableSongs.Add(info);
+        _allAvailableSongs.Add(info);
         _songAdded?.Invoke(info);
     }
 
     private void AddCustomSongs(SongInfo info)
     {
-        allAvailableSongs.Add(info);
+        _allAvailableSongs.Add(info);
         _songAdded?.Invoke(info);
         CustomSongsCount++;
     }
 
     public SongInfo TryGetSongInfo(string folderName)
     {
-        return allAvailableSongs.Find((i) => string.Equals(i.fileLocation, folderName));
+        return _allAvailableSongs.Find((i) => string.Equals(i.fileLocation, folderName));
     }
 
     public void TryDeleteSong()
     {
         var targetSongInfo = PlaylistMaker.Instance.DisplayedSongInfo;
-        if (!targetSongInfo.isCustomSong)
+        TryDeleteSong(targetSongInfo);
+    }
+
+    public void TryDeleteSong(SongInfo info)
+    {
+        if (!info.isCustomSong)
         {
             return;
         }
 
         var deleteVisuals = new Notification.NotificationVisuals(
-            $"Are you sure you would like to permanently delete {targetSongInfo.SongName}?",
+            $"Are you sure you would like to permanently delete {info.SongName}?",
             "Delete Song?", "Confirm", "Cancel");
 
-        NotificationManager.RequestNotification(deleteVisuals, () => ConfirmDeleteSong(targetSongInfo));
+        NotificationManager.RequestNotification(deleteVisuals, () => ConfirmDeleteSong(info));
     }
 
     public void TryHideSong()
@@ -184,7 +197,7 @@ public class SongInfoFilesReader : MonoBehaviour
     {
         MainMenuUIController.Instance.RequestDisableUI(this);
 
-        allAvailableSongs.Remove(targetSongInfo);
+        _allAvailableSongs.Remove(targetSongInfo);
         if (filteredAvailableSongs.Contains(targetSongInfo))
         {
             filteredAvailableSongs.Remove(targetSongInfo);
@@ -196,6 +209,11 @@ public class SongInfoFilesReader : MonoBehaviour
         _songsUpdated?.Invoke();
 
         AssetManager.DeleteCustomSong(targetSongInfo);
+
+        if (!string.IsNullOrWhiteSpace(targetSongInfo.SongID))
+        {
+            CustomSongsManager.RemoveFromRecord(targetSongInfo.SongID);
+        }
 
         PlaylistMaker.Instance.SetActiveItem(new SongInfo());
         MainMenuUIController.Instance.RequestEnableUI(this);
@@ -230,18 +248,18 @@ public class SongInfoFilesReader : MonoBehaviour
                 var fileInfo = await BeatSageConverter.ConvertSong(songInfo, _destructionCancellationToken);
                 await AssetManager.UpdateMap(songInfo, fileInfo, true, songID, songScore, fileInfo.CreationTime, _cancellationSource.Token);
             }
-            var existingSong = allAvailableSongs.Find((info) => (!string.Equals(songID, "LOCAL") && string.Equals(info.SongID, songID, StringComparison.InvariantCultureIgnoreCase)) ||
+            var existingSong = _allAvailableSongs.Find((info) => (!string.Equals(songID, "LOCAL") && string.Equals(info.SongID, songID, StringComparison.InvariantCultureIgnoreCase)) ||
                                                              string.Equals(info.fileLocation, songInfo.fileLocation, StringComparison.InvariantCultureIgnoreCase));
             if (existingSong != null)
             {
-                allAvailableSongs.Remove(existingSong);
+                _allAvailableSongs.Remove(existingSong);
                 if (filteredAvailableSongs.Contains(existingSong))
                 {
                     filteredAvailableSongs.Remove(existingSong);
                 }
                 CustomSongsCount--;
             }
-            allAvailableSongs.Add(songInfo);
+            _allAvailableSongs.Add(songInfo);
             CustomSongsCount++;
 
             _songAdded?.Invoke(songInfo);
@@ -338,10 +356,10 @@ public class SongInfoFilesReader : MonoBehaviour
         {
             case SongInfo.FilterMethod.None:
             case SongInfo.FilterMethod.AllSongs:
-                filteredAvailableSongs.AddRange(allAvailableSongs);
+                filteredAvailableSongs.AddRange(_allAvailableSongs);
                 break;
             case SongInfo.FilterMethod.BuiltIn:
-                foreach (var song in allAvailableSongs)
+                foreach (var song in _allAvailableSongs)
                 {
                     if (song.isCustomSong)
                     {
@@ -351,7 +369,7 @@ public class SongInfoFilesReader : MonoBehaviour
                 }
                 break;
             case SongInfo.FilterMethod.AllCustom:
-                foreach (var song in allAvailableSongs)
+                foreach (var song in _allAvailableSongs)
                 {
                     if (!song.isCustomSong)
                     {
@@ -361,7 +379,7 @@ public class SongInfoFilesReader : MonoBehaviour
                 }
                 break;
             case SongInfo.FilterMethod.Converted:
-                foreach (var song in allAvailableSongs)
+                foreach (var song in _allAvailableSongs)
                 {
                     if (!song.isCustomSong)
                     {
@@ -378,7 +396,7 @@ public class SongInfoFilesReader : MonoBehaviour
                 }
                 break;
             case SongInfo.FilterMethod.Downloaded:
-                foreach (var song in allAvailableSongs)
+                foreach (var song in _allAvailableSongs)
                 {
                     if (!song.isCustomSong)
                     {

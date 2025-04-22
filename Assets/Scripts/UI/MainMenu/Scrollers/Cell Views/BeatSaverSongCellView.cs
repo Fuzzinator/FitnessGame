@@ -62,7 +62,16 @@ namespace UI.Scrollers.BeatsaverIntegraton
 
         private void SetDownloadedMarker()
         {
-            var alreadyDownloaded = SongInfoFilesReader.Instance.allAvailableSongs.Exists((song) => song == _beatmap);
+            var alreadyDownloaded = false;
+            foreach (var song in SongInfoFilesReader.Instance.AvailableSongs)
+            {
+                if(song == _beatmap)
+                {
+                    alreadyDownloaded = true;
+                    break;
+                }
+            }
+
             _downloadedMarker.enabled = alreadyDownloaded;
         }
 

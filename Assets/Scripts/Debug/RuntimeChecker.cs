@@ -4,8 +4,6 @@ using UnityEngine.XR.Management;
 using UnityEngine.XR.OpenXR;
 using UnityEngine.XR.OpenXR.Features;
 
-using System;
-using UnityEngine;
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
 using Microsoft.Win32;
 #endif

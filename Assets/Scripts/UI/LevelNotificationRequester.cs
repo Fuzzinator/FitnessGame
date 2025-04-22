@@ -44,6 +44,11 @@ public class LevelNotificationRequester : MonoBehaviour
         {
             return;
         }
+
+        if(LevelManager.Instance == null || LevelManager.Instance.SkippingSong)
+        {
+            return;
+        }
         
         /*if (PlaylistManager.Instance.CurrentIndex == PlaylistManager.Instance.CurrentPlaylist.Items.Length - 1)
         {

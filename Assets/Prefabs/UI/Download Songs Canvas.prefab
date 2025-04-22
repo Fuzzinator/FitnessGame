@@ -1837,7 +1837,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: a6d84244acd176640b2aceceba96f81f, type: 2}
+  m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -1845,7 +1845,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 3acfe44eafc9a6f4698ab3e64842a32b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 83bed3948f6593047b86f7c0b6b4d558, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2532,15 +2532,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 50dfd1c7b68a8a9408efa3ff626f7808, type: 2}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.5882353}
+  m_Material: {fileID: 2100000, guid: 62b6405c862b6334e85c6be29ac6a255, type: 2}
+  m_Color: {r: 0.39215687, g: 1, b: 0.54901963, a: 0.5882353}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a33281b5e459dd04a81b5c599e607267, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ce7ddaf963e40c9448624df91dbcd08d, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2684,15 +2684,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 50dfd1c7b68a8a9408efa3ff626f7808, type: 2}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.5882353}
+  m_Material: {fileID: 2100000, guid: 62b6405c862b6334e85c6be29ac6a255, type: 2}
+  m_Color: {r: 0.39215687, g: 1, b: 0.54901963, a: 0.5882353}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a33281b5e459dd04a81b5c599e607267, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ce7ddaf963e40c9448624df91dbcd08d, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2967,15 +2967,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 50dfd1c7b68a8a9408efa3ff626f7808, type: 2}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.5882353}
+  m_Material: {fileID: 2100000, guid: 62b6405c862b6334e85c6be29ac6a255, type: 2}
+  m_Color: {r: 0.39215687, g: 1, b: 0.54901963, a: 0.5882353}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a33281b5e459dd04a81b5c599e607267, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ce7ddaf963e40c9448624df91dbcd08d, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3094,6 +3094,7 @@ GameObject:
   - component: {fileID: 130662936739838249}
   - component: {fileID: 1504078172128093793}
   - component: {fileID: 7810524953636521220}
+  - component: {fileID: 1573276036564439974}
   m_Layer: 5
   m_Name: Expert Mode Toggle
   m_TagString: Untagged
@@ -3181,6 +3182,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1573276036564439974}
+        m_TargetAssemblyTypeName: ToggleHighlighter, Assembly-CSharp
+        m_MethodName: OnValueChanged
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
   m_IsOn: 0
 --- !u!222 &1504078172128093793
 CanvasRenderer:
@@ -3202,15 +3215,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 5e9bf8293b99ca64784c41fb19c49410, type: 2}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Material: {fileID: 2100000, guid: 62b6405c862b6334e85c6be29ac6a255, type: 2}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.5019608}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a33281b5e459dd04a81b5c599e607267, type: 3}
+  m_Sprite: {fileID: 21300000, guid: bd5db671ce688bc42b82397b0b9133b5, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3220,6 +3233,21 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 3.4133334
+--- !u!114 &1573276036564439974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 558195761742525351}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9792bb9382d42e741b86fcfa1fba3fd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _image: {fileID: 7810524953636521220}
+  _onColor: {r: 1, g: 1, b: 1, a: 1}
+  _offColor: {r: 1, g: 1, b: 1, a: 0.5019608}
 --- !u!1 &715365431924956039
 GameObject:
   m_ObjectHideFlags: 0
@@ -3232,6 +3260,7 @@ GameObject:
   - component: {fileID: 1955039337031153195}
   - component: {fileID: 2377995740719645559}
   - component: {fileID: 8954520735815676391}
+  - component: {fileID: 1576242669184200902}
   m_Layer: 5
   m_Name: "90\xB0 Mode Toggle"
   m_TagString: Untagged
@@ -3319,6 +3348,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1576242669184200902}
+        m_TargetAssemblyTypeName: ToggleHighlighter, Assembly-CSharp
+        m_MethodName: OnValueChanged
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
   m_IsOn: 0
 --- !u!222 &2377995740719645559
 CanvasRenderer:
@@ -3340,15 +3381,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 5e9bf8293b99ca64784c41fb19c49410, type: 2}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Material: {fileID: 2100000, guid: 62b6405c862b6334e85c6be29ac6a255, type: 2}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.5019608}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a33281b5e459dd04a81b5c599e607267, type: 3}
+  m_Sprite: {fileID: 21300000, guid: bd5db671ce688bc42b82397b0b9133b5, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3358,6 +3399,21 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 3.4133334
+--- !u!114 &1576242669184200902
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 715365431924956039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9792bb9382d42e741b86fcfa1fba3fd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _image: {fileID: 8954520735815676391}
+  _onColor: {r: 1, g: 1, b: 1, a: 1}
+  _offColor: {r: 1, g: 1, b: 1, a: 0.5019608}
 --- !u!1 &748214738761425642
 GameObject:
   m_ObjectHideFlags: 0
@@ -5170,15 +5226,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 50dfd1c7b68a8a9408efa3ff626f7808, type: 2}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.5882353}
+  m_Material: {fileID: 2100000, guid: 62b6405c862b6334e85c6be29ac6a255, type: 2}
+  m_Color: {r: 0.39215687, g: 1, b: 0.54901963, a: 0.5882353}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a33281b5e459dd04a81b5c599e607267, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ce7ddaf963e40c9448624df91dbcd08d, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -5564,6 +5620,7 @@ GameObject:
   - component: {fileID: 6673619297880193094}
   - component: {fileID: 2197181298065024493}
   - component: {fileID: 7876054221978721650}
+  - component: {fileID: 4594897962256552335}
   m_Layer: 5
   m_Name: Jabs Only Mode Toggle
   m_TagString: Untagged
@@ -5651,6 +5708,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 4594897962256552335}
+        m_TargetAssemblyTypeName: ToggleHighlighter, Assembly-CSharp
+        m_MethodName: OnValueChanged
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
   m_IsOn: 0
 --- !u!222 &2197181298065024493
 CanvasRenderer:
@@ -5672,15 +5741,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 5e9bf8293b99ca64784c41fb19c49410, type: 2}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Material: {fileID: 2100000, guid: 62b6405c862b6334e85c6be29ac6a255, type: 2}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.5019608}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a33281b5e459dd04a81b5c599e607267, type: 3}
+  m_Sprite: {fileID: 21300000, guid: bd5db671ce688bc42b82397b0b9133b5, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -5690,6 +5759,21 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 3.4133334
+--- !u!114 &4594897962256552335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2634430615527909457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9792bb9382d42e741b86fcfa1fba3fd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _image: {fileID: 7876054221978721650}
+  _onColor: {r: 1, g: 1, b: 1, a: 1}
+  _offColor: {r: 1, g: 1, b: 1, a: 0.5019608}
 --- !u!1 &2680410551097406535
 GameObject:
   m_ObjectHideFlags: 0
@@ -5748,7 +5832,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: a6d84244acd176640b2aceceba96f81f, type: 2}
+  m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -5756,7 +5840,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f58087e81b11d104ca1826640896c29b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 83bed3948f6593047b86f7c0b6b4d558, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -5900,15 +5984,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 50dfd1c7b68a8a9408efa3ff626f7808, type: 2}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.5882353}
+  m_Material: {fileID: 2100000, guid: 62b6405c862b6334e85c6be29ac6a255, type: 2}
+  m_Color: {r: 0.39215687, g: 1, b: 0.54901963, a: 0.5882353}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a33281b5e459dd04a81b5c599e607267, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ce7ddaf963e40c9448624df91dbcd08d, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -6128,15 +6212,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 50dfd1c7b68a8a9408efa3ff626f7808, type: 2}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.5882353}
+  m_Material: {fileID: 2100000, guid: 62b6405c862b6334e85c6be29ac6a255, type: 2}
+  m_Color: {r: 0.39215687, g: 1, b: 0.54901963, a: 0.5882353}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a33281b5e459dd04a81b5c599e607267, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ce7ddaf963e40c9448624df91dbcd08d, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -7567,7 +7651,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: a6d84244acd176640b2aceceba96f81f, type: 2}
+  m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -7575,7 +7659,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f58087e81b11d104ca1826640896c29b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 83bed3948f6593047b86f7c0b6b4d558, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -8523,6 +8607,7 @@ GameObject:
   - component: {fileID: 8524285346687316538}
   - component: {fileID: 4462427479744788485}
   - component: {fileID: 5348936167883098821}
+  - component: {fileID: 7752220086607204482}
   m_Layer: 5
   m_Name: Hard Mode Toggle
   m_TagString: Untagged
@@ -8610,6 +8695,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 7752220086607204482}
+        m_TargetAssemblyTypeName: ToggleHighlighter, Assembly-CSharp
+        m_MethodName: OnValueChanged
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
   m_IsOn: 0
 --- !u!222 &4462427479744788485
 CanvasRenderer:
@@ -8631,15 +8728,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 5e9bf8293b99ca64784c41fb19c49410, type: 2}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Material: {fileID: 2100000, guid: 62b6405c862b6334e85c6be29ac6a255, type: 2}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.5019608}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a33281b5e459dd04a81b5c599e607267, type: 3}
+  m_Sprite: {fileID: 21300000, guid: bd5db671ce688bc42b82397b0b9133b5, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -8649,6 +8746,21 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 3.4133334
+--- !u!114 &7752220086607204482
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4110391261970978446}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9792bb9382d42e741b86fcfa1fba3fd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _image: {fileID: 5348936167883098821}
+  _onColor: {r: 1, g: 1, b: 1, a: 1}
+  _offColor: {r: 1, g: 1, b: 1, a: 0.5019608}
 --- !u!1 &4456242201694329464
 GameObject:
   m_ObjectHideFlags: 0
@@ -9007,15 +9119,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 50dfd1c7b68a8a9408efa3ff626f7808, type: 2}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.5882353}
+  m_Material: {fileID: 2100000, guid: 62b6405c862b6334e85c6be29ac6a255, type: 2}
+  m_Color: {r: 0.39215687, g: 1, b: 0.54901963, a: 0.5882353}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a33281b5e459dd04a81b5c599e607267, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ce7ddaf963e40c9448624df91dbcd08d, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -9163,7 +9275,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: a6d84244acd176640b2aceceba96f81f, type: 2}
+  m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -9171,7 +9283,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f58087e81b11d104ca1826640896c29b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 83bed3948f6593047b86f7c0b6b4d558, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -10045,7 +10157,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: a6d84244acd176640b2aceceba96f81f, type: 2}
+  m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -10053,7 +10165,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f58087e81b11d104ca1826640896c29b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 83bed3948f6593047b86f7c0b6b4d558, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -10881,7 +10993,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: a6d84244acd176640b2aceceba96f81f, type: 2}
+  m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -10889,7 +11001,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a33281b5e459dd04a81b5c599e607267, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 83bed3948f6593047b86f7c0b6b4d558, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -10961,7 +11073,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: a6d84244acd176640b2aceceba96f81f, type: 2}
+  m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -10969,7 +11081,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f58087e81b11d104ca1826640896c29b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 83bed3948f6593047b86f7c0b6b4d558, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -12754,6 +12866,7 @@ GameObject:
   - component: {fileID: 1036934952782962656}
   - component: {fileID: 6667055368171439216}
   - component: {fileID: 3800030045056847321}
+  - component: {fileID: 5778552704319911057}
   m_Layer: 5
   m_Name: One Hand Mode Toggle
   m_TagString: Untagged
@@ -12841,6 +12954,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 5778552704319911057}
+        m_TargetAssemblyTypeName: ToggleHighlighter, Assembly-CSharp
+        m_MethodName: OnValueChanged
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
   m_IsOn: 0
 --- !u!222 &6667055368171439216
 CanvasRenderer:
@@ -12862,15 +12987,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 5e9bf8293b99ca64784c41fb19c49410, type: 2}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Material: {fileID: 2100000, guid: 62b6405c862b6334e85c6be29ac6a255, type: 2}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.5019608}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a33281b5e459dd04a81b5c599e607267, type: 3}
+  m_Sprite: {fileID: 21300000, guid: bd5db671ce688bc42b82397b0b9133b5, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -12880,6 +13005,21 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 3.4133334
+--- !u!114 &5778552704319911057
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5340710382026925634}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9792bb9382d42e741b86fcfa1fba3fd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _image: {fileID: 3800030045056847321}
+  _onColor: {r: 1, g: 1, b: 1, a: 1}
+  _offColor: {r: 1, g: 1, b: 1, a: 0.5019608}
 --- !u!1 &5376041066126632951
 GameObject:
   m_ObjectHideFlags: 0
@@ -12956,7 +13096,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: a6d84244acd176640b2aceceba96f81f, type: 2}
+  m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -12964,7 +13104,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f58087e81b11d104ca1826640896c29b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 83bed3948f6593047b86f7c0b6b4d558, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -13275,15 +13415,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 5e9bf8293b99ca64784c41fb19c49410, type: 2}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Material: {fileID: 2100000, guid: 62b6405c862b6334e85c6be29ac6a255, type: 2}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.5019608}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a33281b5e459dd04a81b5c599e607267, type: 3}
+  m_Sprite: {fileID: 21300000, guid: bd5db671ce688bc42b82397b0b9133b5, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -13292,7 +13432,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 4
+  m_PixelsPerUnitMultiplier: 3.4133334
 --- !u!114 &6047742014411516909
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13765,15 +13905,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 50dfd1c7b68a8a9408efa3ff626f7808, type: 2}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.5882353}
+  m_Material: {fileID: 2100000, guid: 62b6405c862b6334e85c6be29ac6a255, type: 2}
+  m_Color: {r: 0.39215687, g: 1, b: 0.54901963, a: 0.5882353}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a33281b5e459dd04a81b5c599e607267, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ce7ddaf963e40c9448624df91dbcd08d, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -14109,15 +14249,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 50dfd1c7b68a8a9408efa3ff626f7808, type: 2}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.5882353}
+  m_Material: {fileID: 2100000, guid: 62b6405c862b6334e85c6be29ac6a255, type: 2}
+  m_Color: {r: 0.39215687, g: 1, b: 0.54901963, a: 0.5882353}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a33281b5e459dd04a81b5c599e607267, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ce7ddaf963e40c9448624df91dbcd08d, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -14948,6 +15088,7 @@ GameObject:
   - component: {fileID: 9144390062180901516}
   - component: {fileID: 1189244834668529336}
   - component: {fileID: 1509277371415606293}
+  - component: {fileID: 7284609478146830940}
   m_Layer: 5
   m_Name: Leg Day Mode Toggle
   m_TagString: Untagged
@@ -15035,6 +15176,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 7284609478146830940}
+        m_TargetAssemblyTypeName: ToggleHighlighter, Assembly-CSharp
+        m_MethodName: OnValueChanged
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
   m_IsOn: 0
 --- !u!222 &1189244834668529336
 CanvasRenderer:
@@ -15056,15 +15209,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 5e9bf8293b99ca64784c41fb19c49410, type: 2}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Material: {fileID: 2100000, guid: 62b6405c862b6334e85c6be29ac6a255, type: 2}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.5019608}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a33281b5e459dd04a81b5c599e607267, type: 3}
+  m_Sprite: {fileID: 21300000, guid: bd5db671ce688bc42b82397b0b9133b5, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -15074,6 +15227,21 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 3.4133334
+--- !u!114 &7284609478146830940
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6971775848082039381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9792bb9382d42e741b86fcfa1fba3fd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _image: {fileID: 1509277371415606293}
+  _onColor: {r: 1, g: 1, b: 1, a: 1}
+  _offColor: {r: 1, g: 1, b: 1, a: 0.5019608}
 --- !u!1 &7151860973415610397
 GameObject:
   m_ObjectHideFlags: 0
@@ -16183,6 +16351,7 @@ GameObject:
   - component: {fileID: 3164329200443091765}
   - component: {fileID: 8061631206760559}
   - component: {fileID: 3227709924089229436}
+  - component: {fileID: 1347288086656167460}
   m_Layer: 5
   m_Name: No Obstacles Mode Toggle
   m_TagString: Untagged
@@ -16270,6 +16439,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1347288086656167460}
+        m_TargetAssemblyTypeName: ToggleHighlighter, Assembly-CSharp
+        m_MethodName: OnValueChanged
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
   m_IsOn: 0
 --- !u!222 &8061631206760559
 CanvasRenderer:
@@ -16291,15 +16472,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 5e9bf8293b99ca64784c41fb19c49410, type: 2}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Material: {fileID: 2100000, guid: 62b6405c862b6334e85c6be29ac6a255, type: 2}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.5019608}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a33281b5e459dd04a81b5c599e607267, type: 3}
+  m_Sprite: {fileID: 21300000, guid: bd5db671ce688bc42b82397b0b9133b5, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -16309,6 +16490,21 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 3.4133334
+--- !u!114 &1347288086656167460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7608838317106327186}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9792bb9382d42e741b86fcfa1fba3fd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _image: {fileID: 3227709924089229436}
+  _onColor: {r: 1, g: 1, b: 1, a: 1}
+  _offColor: {r: 1, g: 1, b: 1, a: 0.5019608}
 --- !u!1 &7619752915152547484
 GameObject:
   m_ObjectHideFlags: 0
@@ -16405,15 +16601,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 5e9bf8293b99ca64784c41fb19c49410, type: 2}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Material: {fileID: 2100000, guid: 62b6405c862b6334e85c6be29ac6a255, type: 2}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.5019608}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a33281b5e459dd04a81b5c599e607267, type: 3}
+  m_Sprite: {fileID: 21300000, guid: bd5db671ce688bc42b82397b0b9133b5, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -16422,7 +16618,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 5.5
+  m_PixelsPerUnitMultiplier: 3.4133334
 --- !u!114 &7841602837798320369
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16491,6 +16687,7 @@ GameObject:
   - component: {fileID: 2961865163401781778}
   - component: {fileID: 1108393676988105555}
   - component: {fileID: 4614452056790242259}
+  - component: {fileID: 7222891742975968559}
   m_Layer: 5
   m_Name: "360\xB0 Mode Toggle"
   m_TagString: Untagged
@@ -16578,6 +16775,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 7222891742975968559}
+        m_TargetAssemblyTypeName: ToggleHighlighter, Assembly-CSharp
+        m_MethodName: OnValueChanged
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
   m_IsOn: 0
 --- !u!222 &1108393676988105555
 CanvasRenderer:
@@ -16599,15 +16808,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 5e9bf8293b99ca64784c41fb19c49410, type: 2}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Material: {fileID: 2100000, guid: 62b6405c862b6334e85c6be29ac6a255, type: 2}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.5019608}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a33281b5e459dd04a81b5c599e607267, type: 3}
+  m_Sprite: {fileID: 21300000, guid: bd5db671ce688bc42b82397b0b9133b5, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -16617,6 +16826,21 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 3.4133334
+--- !u!114 &7222891742975968559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7702804722738609970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9792bb9382d42e741b86fcfa1fba3fd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _image: {fileID: 4614452056790242259}
+  _onColor: {r: 1, g: 1, b: 1, a: 1}
+  _offColor: {r: 1, g: 1, b: 1, a: 0.5019608}
 --- !u!1 &7820138177715357129
 GameObject:
   m_ObjectHideFlags: 0
@@ -16629,6 +16853,7 @@ GameObject:
   - component: {fileID: 3082865459657707216}
   - component: {fileID: 4766402332658355995}
   - component: {fileID: 7555255536041751972}
+  - component: {fileID: 4650778998304949344}
   m_Layer: 5
   m_Name: Normal Mode Toggle
   m_TagString: Untagged
@@ -16716,6 +16941,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 4650778998304949344}
+        m_TargetAssemblyTypeName: ToggleHighlighter, Assembly-CSharp
+        m_MethodName: OnValueChanged
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
   m_IsOn: 0
 --- !u!222 &4766402332658355995
 CanvasRenderer:
@@ -16737,15 +16974,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 5e9bf8293b99ca64784c41fb19c49410, type: 2}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Material: {fileID: 2100000, guid: 62b6405c862b6334e85c6be29ac6a255, type: 2}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.5019608}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a33281b5e459dd04a81b5c599e607267, type: 3}
+  m_Sprite: {fileID: 21300000, guid: bd5db671ce688bc42b82397b0b9133b5, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -16755,6 +16992,21 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 3.4133334
+--- !u!114 &4650778998304949344
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7820138177715357129}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9792bb9382d42e741b86fcfa1fba3fd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _image: {fileID: 7555255536041751972}
+  _onColor: {r: 1, g: 1, b: 1, a: 1}
+  _offColor: {r: 1, g: 1, b: 1, a: 0.5019608}
 --- !u!1 &7890330685432898811
 GameObject:
   m_ObjectHideFlags: 0
@@ -17055,6 +17307,7 @@ GameObject:
   - component: {fileID: 8864486661856503022}
   - component: {fileID: 3980037253920253178}
   - component: {fileID: 4916221644293710772}
+  - component: {fileID: 4859488025362953468}
   m_Layer: 5
   m_Name: Easy Mode Toggle
   m_TagString: Untagged
@@ -17142,6 +17395,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 4859488025362953468}
+        m_TargetAssemblyTypeName: ToggleHighlighter, Assembly-CSharp
+        m_MethodName: OnValueChanged
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
   m_IsOn: 1
 --- !u!222 &3980037253920253178
 CanvasRenderer:
@@ -17163,7 +17428,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 5e9bf8293b99ca64784c41fb19c49410, type: 2}
+  m_Material: {fileID: 2100000, guid: 62b6405c862b6334e85c6be29ac6a255, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -17171,7 +17436,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a33281b5e459dd04a81b5c599e607267, type: 3}
+  m_Sprite: {fileID: 21300000, guid: bd5db671ce688bc42b82397b0b9133b5, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -17181,6 +17446,21 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 3.4133334
+--- !u!114 &4859488025362953468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8069552519208670855}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9792bb9382d42e741b86fcfa1fba3fd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _image: {fileID: 4916221644293710772}
+  _onColor: {r: 1, g: 1, b: 1, a: 1}
+  _offColor: {r: 1, g: 1, b: 1, a: 0.5019608}
 --- !u!1 &8148681049933851976
 GameObject:
   m_ObjectHideFlags: 0
@@ -18177,15 +18457,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 50dfd1c7b68a8a9408efa3ff626f7808, type: 2}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.5882353}
+  m_Material: {fileID: 2100000, guid: 62b6405c862b6334e85c6be29ac6a255, type: 2}
+  m_Color: {r: 0.39215687, g: 1, b: 0.54901963, a: 0.5882353}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a33281b5e459dd04a81b5c599e607267, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ce7ddaf963e40c9448624df91dbcd08d, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -18577,7 +18857,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: a6d84244acd176640b2aceceba96f81f, type: 2}
+  m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -18585,7 +18865,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f58087e81b11d104ca1826640896c29b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 83bed3948f6593047b86f7c0b6b4d558, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -18820,7 +19100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: a6d84244acd176640b2aceceba96f81f, type: 2}
+  m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -18828,7 +19108,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f58087e81b11d104ca1826640896c29b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 83bed3948f6593047b86f7c0b6b4d558, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -18850,6 +19130,7 @@ GameObject:
   - component: {fileID: 4575909342704644895}
   - component: {fileID: 5040283935463026104}
   - component: {fileID: 6697863046181655486}
+  - component: {fileID: 191462003048968262}
   m_Layer: 5
   m_Name: Normal Mode Toggle
   m_TagString: Untagged
@@ -18937,6 +19218,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 191462003048968262}
+        m_TargetAssemblyTypeName: ToggleHighlighter, Assembly-CSharp
+        m_MethodName: OnValueChanged
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
   m_IsOn: 1
 --- !u!222 &5040283935463026104
 CanvasRenderer:
@@ -18958,7 +19251,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 5e9bf8293b99ca64784c41fb19c49410, type: 2}
+  m_Material: {fileID: 2100000, guid: 62b6405c862b6334e85c6be29ac6a255, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -18966,7 +19259,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a33281b5e459dd04a81b5c599e607267, type: 3}
+  m_Sprite: {fileID: 21300000, guid: bd5db671ce688bc42b82397b0b9133b5, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -18976,6 +19269,21 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 3.4133334
+--- !u!114 &191462003048968262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9020687919487793937}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9792bb9382d42e741b86fcfa1fba3fd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _image: {fileID: 6697863046181655486}
+  _onColor: {r: 1, g: 1, b: 1, a: 1}
+  _offColor: {r: 1, g: 1, b: 1, a: 0.5019608}
 --- !u!1 &9047155775932938444
 GameObject:
   m_ObjectHideFlags: 0
@@ -19405,15 +19713,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 50dfd1c7b68a8a9408efa3ff626f7808, type: 2}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.5882353}
+  m_Material: {fileID: 2100000, guid: 62b6405c862b6334e85c6be29ac6a255, type: 2}
+  m_Color: {r: 0.39215687, g: 1, b: 0.54901963, a: 0.5882353}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a33281b5e459dd04a81b5c599e607267, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ce7ddaf963e40c9448624df91dbcd08d, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1

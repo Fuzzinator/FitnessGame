@@ -157,6 +157,7 @@ public class ChoreographySequencer : MonoBehaviour
             Debug.LogError("No ChoreographyReader");
             return;
         }
+        RepositionStrikes(0f);
 
         var tweenSpeed = PlaylistManager.Instance.TargetSpeedMod * SongInfoReader.Instance.NoteSpeed / _meterDistance * 10;
         var timeToPoint = _optimalPointDistance / tweenSpeed;

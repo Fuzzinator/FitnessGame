@@ -86,9 +86,21 @@ public class PauseMenuUIController : BaseGameStateListener, IOrderedInitialize
         GameStateManager.Instance.SetState(_resumedState);
     }
 
+    public void SkipSong()
+    {
+        LevelManager.Instance.SkipSong();
+        ResumeGame();
+    }
+
     public void Restart()
     {
         LevelManager.Instance.Restart();
+        ResumeGame();
+    }
+
+    public void RestartSong()
+    {
+        LevelManager.Instance.RestartSong();
         ResumeGame();
     }
 

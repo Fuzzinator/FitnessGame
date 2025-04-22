@@ -167,8 +167,32 @@ public class ScoringAndHitStatsManager : MonoBehaviour, IOrderedInitialize
         WorkoutOkayHits = 0;
         WorkoutBadHits = 0;
     }
+
+    public void ResetSongStats()
+    {
+        ResetSongStatsAsync().Forget();
+    }
+
     public async UniTaskVoid ResetSongStatsAsync()
     {
+        if(LevelManager.Instance == null || LevelManager.Instance.SkippingSong)
+        {
+            CurrentScore -= (uint)SongScore;
+
+            SongHitTargets = 0;
+            SongDodgedObstacles = 0;
+
+            SongScore = 0;
+
+            SongMissedTargets = 0;
+            SongHitObstacles = 0;
+
+            SongPerfectHits = 0;
+            SongGreatHits = 0;
+            SongGoodHits = 0;
+            SongOkayHits = 0;
+            SongBadHits = 0;
+        }
         if (SongHitTargets > 0)
         {
             StatsManager.Instance.RecordTargetsHit(SongHitTargets);

@@ -15,6 +15,8 @@ namespace UI.Scrollers
         private PlaylistDisplayObject _displayObject2;
 
         private PlaylistsScrollerController _controller;
+        public PlaylistDisplayItemHolder Holder1 => _displayObject1 != null ? _displayObject1.ItemHolder : null;
+        public PlaylistDisplayItemHolder Holder2 => _displayObject2 != null ? _displayObject2.ItemHolder : null;
 
         public void SetData(Playlist playlist1, Playlist playlist2, PlaylistsScrollerController controller)
         {

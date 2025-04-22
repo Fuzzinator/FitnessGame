@@ -89,10 +89,10 @@ public struct DifficultyInfo
 
     #region Consts
 
-    private const float EASYDISTANCE = 1f;
-    private const float NORMALDISTANCE = .75f;
-    private const float HARDDISTANCE = .5f;
-    private const float EXPERTDISTANCE = .25f;
+    private const float EASYDISTANCE = .75f;
+    private const float NORMALDISTANCE = .5f;
+    private const float HARDDISTANCE = .25f;
+    private const float EXPERTDISTANCE = .15f;
 
     private const float MINEASYSPEED = 7;
     private const float MAXEASYSPEED = 9;

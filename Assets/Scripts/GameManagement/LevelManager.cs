@@ -20,8 +20,11 @@ public class LevelManager : MonoBehaviour, IOrderedInitialize
     public UnityEvent prepForNextSong = new UnityEvent();
     public UnityEvent levelLoadFailed = new UnityEvent();
 
+    public UnityEvent restartingSong = new UnityEvent();
     public UnityEvent restartingLevel = new UnityEvent();
     public UnityEvent levelCompleted = new UnityEvent();
+
+    public UnityEvent skippingSong = new UnityEvent();
 
     [SerializeField]
     private int _delayLength = 5;
@@ -79,6 +82,8 @@ public class LevelManager : MonoBehaviour, IOrderedInitialize
         }
     }
 
+    public bool SkippingSong { get; private set; }
+
     private void Awake()
     {
         if (Instance == null)
@@ -122,11 +127,42 @@ public class LevelManager : MonoBehaviour, IOrderedInitialize
         }
     }
 
+    public void SkipSong()
+    {
+        SkippingSong = true;
+
+        CancelLevelLoad();
+
+        skippingSong.Invoke();
+
+        _canComplete = false;
+
+        ResetForNextSong();
+
+        FireEndSongMessagesAsync().ContinueWith(() => SkippingSong = false).Forget();
+    }
+
     public void Restart()
     {
         CancelLevelLoad();
         restartingLevel?.Invoke();
         LoadLevel();
+    }
+
+    public void RestartSong()
+    {
+        SkippingSong = true;
+        CancelLevelLoad();
+
+        skippingSong.Invoke();
+        restartingSong.Invoke();
+        PlaylistManager.Instance.RestartSong();
+
+        _canComplete = false;
+
+        ResetForNextSong();
+
+        FireEndSongMessagesAsync().ContinueWith(() => SkippingSong = false).Forget();
     }
 
     public void LoadLevel()
@@ -217,7 +253,7 @@ public class LevelManager : MonoBehaviour, IOrderedInitialize
         }
     }
 
-    private async UniTaskVoid FireEndSongMessagesAsync()
+    private async UniTask FireEndSongMessagesAsync()
     {
         songCompleted?.Invoke();
         await UniTask.DelayFrame(1, cancellationToken:_cancellationTokenSource.Token);

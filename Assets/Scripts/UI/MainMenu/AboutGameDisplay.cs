@@ -27,7 +27,7 @@ public class AboutGameDisplay : MonoBehaviour
             
             sb.Append(_information);
 
-            foreach (var songInfo in SongInfoFilesReader.Instance.allAvailableSongs)
+            foreach (var songInfo in SongInfoFilesReader.Instance.AvailableSongs)
             {
                 if (songInfo.isCustomSong)
                 {

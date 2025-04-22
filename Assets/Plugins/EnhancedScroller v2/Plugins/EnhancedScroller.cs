@@ -552,7 +552,7 @@ namespace EnhancedUI.EnhancedScroller
         {
             get
             {
-                return _activeCellViewsStartIndex % NumberOfCells;
+                return NumberOfCells == 0? 0: _activeCellViewsStartIndex % NumberOfCells;
             }
         }
 

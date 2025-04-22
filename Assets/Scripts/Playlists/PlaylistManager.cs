@@ -58,6 +58,8 @@ public class PlaylistManager : MonoBehaviour
 
     private int _currentIndex = 0;
 
+    private float _timePassed;
+
     private bool _activePlaylistIsTemp = false;
 
     public bool ActivePlaylistIsTemp => _activePlaylistIsTemp;
@@ -69,6 +71,8 @@ public class PlaylistManager : MonoBehaviour
     public bool OverrideDifficulties => _overrideDifficulties;
 
     public bool OverrideGameModes => _overrideGameModes;
+
+    public float RemainingTime => _currentPlaylist.Length - _timePassed;
 
     private const string DefaultForceNoObstaclesSetting = "DefaultAllowObstacles";
     private const string DefaultForceOneHandedSetting = "DefaultForceOneHanded";
@@ -140,7 +144,8 @@ public class PlaylistManager : MonoBehaviour
 
     public float SongSpeedMod => _currentPlaylist.SongSpeedMod;
 
-    public float CurrentSongLength => _currentPlaylist.SongSpeedMod * CurrentItem.SongInfo.SongLength;
+    public float CurrentSongLength => CurrentItem.SongInfo.SongLength / _currentPlaylist.SongSpeedMod;
+
 
     private void Awake()
     {
@@ -157,6 +162,7 @@ public class PlaylistManager : MonoBehaviour
     public void SetFirstPlaylistItem()
 
     {
+        _timePassed = 0f;
         _currentIndex = 0;
         if (_currentPlaylist?.Items == null || _currentPlaylist.Items.Length <= _currentIndex)
         {
@@ -169,6 +175,8 @@ public class PlaylistManager : MonoBehaviour
 
     public void UpdateCurrentPlaylist()
     {
+        _timePassed += CurrentSongLength;
+
         _currentIndex++;
 
         if (_currentPlaylist?.Items == null || _currentPlaylist.Items.Length == 0 ||
@@ -178,6 +186,12 @@ public class PlaylistManager : MonoBehaviour
         }
 
         CurrentItem = _currentPlaylist.Items[_currentIndex];
+    }
+
+    public void RestartSong()
+    {
+        _timePassed -= CurrentSongLength;
+        _currentIndex--;
     }
 
     public void Restart()
@@ -271,6 +285,7 @@ public class PlaylistManager : MonoBehaviour
     {
         return await PlayerStatsFileManager.TryGetRecords(SongInfoReader.Instance.songInfo, TargetDifficulty, TargetGameMode, token);
     }
+
 
     public static void SetDefaultForceNoObstacles(bool isOn)
     {

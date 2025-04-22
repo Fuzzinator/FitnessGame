@@ -54,6 +54,11 @@ public class SongAndPlaylistScoreRecorder : MonoBehaviour, IOrderedInitialize
 
     public void SongCompleted()
     {
+        if(LevelManager.Instance == null || LevelManager.Instance.SkippingSong)
+        {
+            return;
+        }
+
         SaveSongStats().Forget();
         if (PlaylistManager.Instance.CurrentIndex >= PlaylistManager.Instance.CurrentPlaylist.Items.Length - 1)
         {

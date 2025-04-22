@@ -40,7 +40,7 @@ public static class PlaylistValidator
     {
         SongInfo songInfo = null; //await AsyncLoadSongInfo(item);
 
-        foreach (var info in SongInfoFilesReader.Instance.allAvailableSongs)
+        foreach (var info in SongInfoFilesReader.Instance.AvailableSongs)
         {
             if (info == item)
             {

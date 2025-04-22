@@ -646,6 +646,11 @@ public class AssetManager : MonoBehaviour
 
             if (item != null)
             {
+                if (!string.IsNullOrWhiteSpace(item.SongID))
+                {
+                    CustomSongsManager.AddToRecord(item.SongID);
+                }
+
                 songLoaded?.Invoke(item);
             }
             else
@@ -1005,6 +1010,7 @@ public class AssetManager : MonoBehaviour
         if (!string.IsNullOrWhiteSpace(songID) && string.IsNullOrWhiteSpace(songInfo.SongID))
         {
             songInfo.SetSongID(songID);
+            CustomSongsManager.AddToRecord(songID);
             updatedMaps = true;
         }
         if (songScore >= 0 && songInfo.SongScore <= 0)

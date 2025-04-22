@@ -1,7 +1,11 @@
 using Cysharp.Threading.Tasks;
 using EnhancedUI.EnhancedScroller;
+using System;
+using System.Threading;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class ScrollRectScroller : MonoBehaviour
@@ -13,11 +17,13 @@ public class ScrollRectScroller : MonoBehaviour
     private float _scrollSpeed = 2f;
 
     private bool _scroll = false;
+    private bool _sceneChanging = false;
 
     private int _subscriberCount = 0;
 
     private const string LEFTJOYSTICKMOVING = "Left Joystick";
     private const string RIGHTJOYSTICKMOVING = "Right Joystick";
+    private CancellationToken _token;
 
     public void ScrollY(float value)
     {
@@ -47,10 +53,17 @@ public class ScrollRectScroller : MonoBehaviour
         _scroll = false;
     }
 
+    private void Start()
+    {
+        _token = this.GetCancellationTokenOnDestroy();
+        SceneManager.activeSceneChanged += OnSceneChange;
+    }
+
     private void OnDestroy()
     {
         _scroll = false;
         TryUnsubscribeFromJoystick(true);
+        SceneManager.activeSceneChanged -= OnSceneChange;
     }
 
     public void SubscribeToJoystick()
@@ -115,7 +128,11 @@ public class ScrollRectScroller : MonoBehaviour
 
     private async UniTaskVoid DelayStopScroll()
     {
-        await UniTask.Yield(PlayerLoopTiming.PostLateUpdate);
+        await UniTask.Yield(PlayerLoopTiming.PostLateUpdate, cancellationToken: _token);
+        if (_token.IsCancellationRequested || _sceneChanging)
+        {
+            return;
+        }
         _scroll = false;
     }
 
@@ -126,7 +143,11 @@ public class ScrollRectScroller : MonoBehaviour
 
         while (_scroll)
         {
-            await UniTask.DelayFrame(1);
+            await UniTask.DelayFrame(1, cancellationToken: _token);
+            if (_token.IsCancellationRequested || _sceneChanging)
+            {
+                return;
+            }
             var position = Mathf.Clamp(_scrollRect.verticalNormalizedPosition - value, 0, 1);
             _scrollRect.verticalNormalizedPosition = position;
         }
@@ -139,9 +160,20 @@ public class ScrollRectScroller : MonoBehaviour
 
         while (_scroll)
         {
-            await UniTask.DelayFrame(1);
+            await UniTask.DelayFrame(1, cancellationToken: _token);
+            if (_token.IsCancellationRequested || _sceneChanging)
+            {
+                return;
+            }
+
             var position = Mathf.Clamp(_scrollRect.horizontalNormalizedPosition - value, 0, 1);
             _scrollRect.horizontalNormalizedPosition = position;
         }
+    }
+
+    private void OnSceneChange(Scene current, Scene newScene)
+    {
+        SceneManager.activeSceneChanged -= OnSceneChange;
+        _sceneChanging = true;
     }
 }

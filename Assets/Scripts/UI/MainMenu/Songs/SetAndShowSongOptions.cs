@@ -23,12 +23,18 @@ public class SetAndShowSongOptions : MonoBehaviour
     private Toggle[] _gameTypeToggles;
 
     [SerializeField]
+    private ToggleHighlighter[] _gameTypeHighlighters;
+
+    [SerializeField]
     private TextMeshProUGUI[] _gameTypeTexts;
 
     [SerializeField]
     private ToggleGroup _difficultyToggleGroup;
     [SerializeField]
     private Toggle[] _typeDifficultyToggles;
+
+    [SerializeField]
+    private ToggleHighlighter[] _typeDifficultyHighlighters;
 
     [SerializeField]
     private TextMeshProUGUI[] _typeDifficultyTexts;
@@ -86,6 +92,31 @@ public class SetAndShowSongOptions : MonoBehaviour
     private void Start()
     {
         Initialize();
+    }
+
+    private void OnValidate()
+    {
+        if (_gameTypeHighlighters == null || _gameTypeHighlighters.Length == 0)
+        {
+            _gameTypeHighlighters = new ToggleHighlighter[_gameTypeToggles.Length];
+
+            for (var i = 0; i < _gameTypeToggles.Length; i++)
+            {
+                var toggle = _gameTypeToggles[i];
+                toggle.TryGetComponent(out _gameTypeHighlighters[i]);
+            }
+        }
+
+        if (_typeDifficultyHighlighters == null || _typeDifficultyHighlighters.Length == 0)
+        {
+            _typeDifficultyHighlighters = new ToggleHighlighter[_typeDifficultyToggles.Length];
+
+            for (var i = 0; i < _typeDifficultyToggles.Length; i++)
+            {
+                var toggle = _typeDifficultyToggles[i];
+                toggle.TryGetComponent(out _typeDifficultyHighlighters[i]);
+            }
+        }
     }
 
     private void OnDisable()
@@ -178,16 +209,21 @@ public class SetAndShowSongOptions : MonoBehaviour
             }
             _gameTypeToggles[toggleID].gameObject.SetActive(true);
             _gameTypeTexts[toggleID].gameObject.SetActive(true);
+
+            _gameTypeHighlighters[toggleID].OnValueChanged(false);
         }
 
         gameObject.SetActive(true);
         _gameTypeTexts[0].transform.parent.gameObject.SetActive(true);
         _typeDifficultyTexts[0].transform.parent.gameObject.SetActive(true);
+
         _stopAutoPlay = true;
 
         var defaultSetting = SettingsManager.GetSetting(DefaultGameModeSetting, lowest);
 
         _gameTypeToggles[defaultSetting].SetIsOnWithoutNotify(true);
+        _gameTypeHighlighters[defaultSetting].OnValueChanged(true);
+
         SetSelectedType(_gameTypeToggles[defaultSetting]);
     }
 
@@ -223,6 +259,8 @@ public class SetAndShowSongOptions : MonoBehaviour
 
             _typeDifficultyToggles[difficulty].gameObject.SetActive(true);
             _typeDifficultyTexts[difficulty].gameObject.SetActive(true);
+
+            _typeDifficultyHighlighters[difficulty].OnValueChanged(false);
         }
 
         gameObject.SetActive(true);
@@ -231,7 +269,10 @@ public class SetAndShowSongOptions : MonoBehaviour
 
         _stopAutoPlay = true;
         var defaultSetting = SettingsManager.GetSetting(DefaultDifficultySetting, lowest);
+
         _typeDifficultyToggles[defaultSetting].SetIsOnWithoutNotify(true);
+        _typeDifficultyHighlighters[defaultSetting].OnValueChanged(true);
+
         SetSelectedDifficulty(_typeDifficultyToggles[defaultSetting]);
     }
 
@@ -442,7 +483,7 @@ public class SetAndShowSongOptions : MonoBehaviour
 
     public async void StopSongPreview()
     {
-        if(this == null)
+        if (this == null)
         {
             return;
         }

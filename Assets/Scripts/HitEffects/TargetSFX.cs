@@ -15,7 +15,7 @@ public class TargetSFX : MonoBehaviour, IValidHit, IMissedHit
     private string _missSound;
 
     [SerializeField]
-    private AudioMixerGroup _audioMixer;
+    private SoundManager.AudioType _audioMixer;
 
     public void TriggerHitEffect(HitInfo info)
     {
@@ -37,7 +37,7 @@ public class TargetSFX : MonoBehaviour, IValidHit, IMissedHit
 
     private void PlaySound(string sound)
     {
-        var soundSettings = new SoundManager.AudioSourceSettings(false, _audioMixer);
+        var soundSettings = new SoundManager.AudioSourceSettings(false, SoundManager.Instance.GetMixer(_audioMixer));
         SoundManager.PlaySound(sound, soundSettings);
     }
 }

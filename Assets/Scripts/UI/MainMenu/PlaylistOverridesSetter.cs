@@ -40,6 +40,17 @@ public class PlaylistOverridesSetter : MonoBehaviour
     private const string ON = "On";
     private const string OFF = "Off";
 
+    /*if (sliderValue <= 5)
+        {
+            return 0.5f + 0.1f * sliderValue;
+        }
+        else
+        {
+            return 1.2f + 0.2f * (sliderValue - 6f);
+        }*/
+
+    private readonly float[] TargetSpeeds = { .5f, .6f, .7f, .8f, .9f, 1f, 1.5f, 2f, 2.5f, 3f, 3.5f};
+
     private void OnEnable()
     {
         if (_singleSong)
@@ -180,7 +191,7 @@ public class PlaylistOverridesSetter : MonoBehaviour
         var value = _songSpeedModSlider.value;
         var playlistValue = SongSliderToPlaylistSpeedMod(value);
 
-        PlaylistManager.SetDefaultSongSpeedMod(SongSliderToPlaylistSpeedMod(value));
+        PlaylistManager.SetDefaultSongSpeedMod(playlistValue);
         SongSpeedModSet(playlistValue);
     }
 
@@ -240,14 +251,15 @@ public class PlaylistOverridesSetter : MonoBehaviour
 
     private float PlaylistToTargetSliderSpeedMod(float speed)
     {
-        if (speed <= 1.0)
+        for (int i = 0; i < TargetSpeeds.Length; i++)
         {
-            return ((speed - 0.5f) / 0.1f);
+            var thisSpeed = TargetSpeeds[i];
+            if(Mathf.Approximately(speed, thisSpeed))
+            {
+                return i;
+            }
         }
-        else
-        {
-            return 6 + ((speed - 1.2f) / 0.2f);
-        }
+        return 1f;
     }
 
     private float PlaylistToSongSliderSpeedMod(float speed)
@@ -277,14 +289,8 @@ public class PlaylistOverridesSetter : MonoBehaviour
 
     private float TargetSliderToPlaylistSpeedMod(float sliderValue)
     {
-        if (sliderValue <= 5)
-        {
-            return 0.5f + 0.1f * sliderValue;
-        }
-        else
-        {
-            return 1.2f + 0.2f * (sliderValue - 6f);
-        }
+        var index = Mathf.RoundToInt(sliderValue);
+        return TargetSpeeds[index];
     }
 
     private float SongSliderToPlaylistSpeedMod(float sliderValue)

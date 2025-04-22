@@ -20,6 +20,12 @@ using static UnityEngine.XR.Hands.XRHandSubsystemDescriptor;
 
 public class BeatSageDownloadManager
 {
+    private const string FailedToParse = "Unexpected character encountered while parsing value";
+    private const string FailedToParseHeader = "Unable to load song";
+    private const string FailedToParseMessage1 = "The song ";
+    private const string FailedToParseMessage2 = " failed to load. It may be incompatible or corrupted.";
+    private const string Delete = "Delete Song";
+    private const string Ignore = "Ignore";
     public static List<Download> Downloads { get; private set; } = new List<Download>();
 
     private static HttpClient _httpClient;
@@ -71,7 +77,14 @@ public class BeatSageDownloadManager
         {
             try
             {
-                await CreateCustomLevelFromFile(download, cts);
+                var success = await TryCreateCustomLevelFromFile(download, cts);
+                if(!success)
+                {
+                    download.Status = "Unable To Create Level";
+
+                    download.Progress = -1;
+                    Downloads.Remove(download);
+                }
                 if (download.Progress > 1)
                 {
                     download.Progress = 1;
@@ -95,7 +108,7 @@ public class BeatSageDownloadManager
         cts.Dispose();
     }
 
-    private static async UniTask CreateCustomLevelFromFile(Download download, CancellationTokenSource cts)
+    private static async UniTask<bool> TryCreateCustomLevelFromFile(Download download, CancellationTokenSource cts)
     {
         download.Status = "Uploading File";
         //Update displayed progress
@@ -139,7 +152,7 @@ public class BeatSageDownloadManager
         {
             if (ex is not OperationCanceledException)
             {
-                Debug.LogError($"{ex.Message}\n{ex.StackTrace}");
+                Debug.LogError($"{ex.GetType()}\n{ex.Message}\n{ex.StackTrace}");
             }
         }
 
@@ -178,12 +191,23 @@ public class BeatSageDownloadManager
         download.Progress = 0.25;
 
         var responseString = await response.Content.ReadAsStringAsync();
+        try
+        {
+            JObject jsonString = JObject.Parse(responseString);
 
-        JObject jsonString = JObject.Parse(responseString);
+            string levelID = (string)jsonString["id"];
 
-        string levelID = (string)jsonString["id"];
+            await CheckDownload(levelID, download.Title, artistName, download, cts);
+        }
+        catch (Exception ex)
+        {
+            if (ex.Message.Contains(FailedToParse))
+            {
+                return false;
+            }
+        }
 
-        await CheckDownload(levelID, download.Title, artistName, download, cts);
+        return true;
     }
 
     private static async UniTask CheckDownload(string levelId, string trackName, string artistName, Download download, CancellationTokenSource cts)

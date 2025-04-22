@@ -26,6 +26,9 @@ public class PlaylistDisplayObject : MonoBehaviour
     [SerializeField]
     private DualPlaylistDisplayCellView _cellView;
 
+    [field: SerializeField]
+    public PlaylistDisplayItemHolder ItemHolder { get; private set; }
+
     private Playlist _playlist;
     private bool _initialized = false;
     private CancellationToken _cancellationToken;

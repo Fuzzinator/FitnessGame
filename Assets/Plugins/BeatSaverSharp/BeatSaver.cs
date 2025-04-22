@@ -279,10 +279,10 @@ namespace BeatSaverSharp
 
         internal async UniTask<byte[]?> DownloadZIP(BeatmapVersion version, CancellationToken token = default, IProgress<double>? progress = null)
         {
-            var response = await _httpService.GetAsync(version.DownloadURL, token, progress);//.ConfigureAwait(false);
+            var response = await _httpService.GetAsync(version.DownloadURL, token, progress);
             if (!response.Successful)
                 return null;
-            return await response.ReadAsByteArrayAsync();//.ConfigureAwait(false);
+            return await response.ReadAsByteArrayAsync();
         }
 
         internal async UniTask<byte[]?> DownloadCoverImage(BeatmapVersion version, CancellationToken token = default, IProgress<double>? progress = null)

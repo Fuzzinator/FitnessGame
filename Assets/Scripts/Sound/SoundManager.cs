@@ -26,6 +26,8 @@ public class SoundManager : BaseGameStateListener
     [SerializeField]
     private List<AssetReference> _assetReferences = new List<AssetReference>();
 
+    [SerializeField]
+    private AudioMixerGroup[] _mixers = Array.Empty<AudioMixerGroup>();
 
     private Dictionary<string, AudioClip> _loadedAssets = new Dictionary<string, AudioClip>();
 
@@ -42,6 +44,16 @@ public class SoundManager : BaseGameStateListener
         }
     }
 #endif
+
+    public enum AudioType
+    {
+        Master = 0,
+        Music = 1,
+        SFX = 2,
+        MenuMusic = 3,
+        MenuSFX = 4,
+        SongPreview = 5
+    }
 
     private void Awake()
     {
@@ -181,6 +193,11 @@ public class SoundManager : BaseGameStateListener
                 soundObject.ToggleSound(false);
             }
         }
+    }
+
+    public AudioMixerGroup GetMixer(AudioType type)
+    {
+        return _mixers[(int)type];
     }
 
     public struct AudioSourceSettings
