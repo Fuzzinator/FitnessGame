@@ -306,10 +306,13 @@ public class BeatSageDownloadManager
                 }
                 else
                 {
-                    download.Status = "Unable To Create Level";
-
-                    download.Progress = -1;
-                    Downloads.Remove(download);
+                    var visuals = new Notification.NotificationVisuals($"Beat Sage Failed to convert {download.Title}. Would you like to try again?", "Conversion Failed", "Try Again", "Cancel");
+                    NotificationManager.RequestNotification(visuals, HandleDownload(download).Forget, () =>
+                    {
+                        download.Status = "Unable To Create Level";
+                        download.Progress = -1;
+                        Downloads.Remove(download);
+                    });
                     return;
                 }
             }

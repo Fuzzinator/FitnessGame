@@ -26,6 +26,7 @@ public class SongInfo
     private const string Hard = "Hard";
     private const string Normal = "Normal";
     private const string Easy = "Easy";
+    private const string ConvertedImageName = "ConvertedImage.jpg";
 
     #endregion
 
@@ -79,13 +80,16 @@ public class SongInfo
 
     public string Attribution => _attribution;
 
-    public string ImageFilename => _coverImageFilename;
+    public string ImageFilename => UseConvertedFileNames ? ConvertedImageName : _coverImageFilename;
 
     public string SongID => _songID;
 
     public float SongScore => _songScore;
 
     public bool AutoConverted => _autoConverted;
+
+    [field: SerializeField]
+    public bool UseConvertedFileNames { get; set; }
 
     public bool IsHidden
     {

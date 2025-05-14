@@ -197,6 +197,12 @@ public class SongInfoFilesReader : MonoBehaviour
     {
         MainMenuUIController.Instance.RequestDisableUI(this);
 
+        if(!AssetManager.TryDeleteCustomSong(targetSongInfo))
+        {
+            MainMenuUIController.Instance.RequestEnableUI(this);
+            return;
+        }
+
         _allAvailableSongs.Remove(targetSongInfo);
         if (filteredAvailableSongs.Contains(targetSongInfo))
         {
@@ -208,7 +214,6 @@ public class SongInfoFilesReader : MonoBehaviour
         _songRemoved?.Invoke(targetSongInfo);
         _songsUpdated?.Invoke();
 
-        AssetManager.DeleteCustomSong(targetSongInfo);
 
         if (!string.IsNullOrWhiteSpace(targetSongInfo.SongID))
         {

@@ -279,7 +279,7 @@ public class PlaylistMaker : MonoBehaviour, IProgress<float>
         }
 
         var sprite = await GetSprite();
-        var newPlaylist = new Playlist(_playlistItems, _gameMode, _difficulty, _startingSide, TargetSpeedMod, SongSpeedMod, _playlistName, true, _targetEnv, sprite, Gloves, Targets, Obstacles);
+        var newPlaylist = new Playlist(_playlistItems, _gameMode, _difficulty, _startingSide, TargetSpeedMod, SongSpeedMod, _playlistName, true, _targetEnv, sprite, Gloves, Targets, Obstacles, _forceNoObstacles, _forceOneHanded, _forceJabsOnly);
         PlaylistManager.Instance.CurrentPlaylist = newPlaylist;
 
 

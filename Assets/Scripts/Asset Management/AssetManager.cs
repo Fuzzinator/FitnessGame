@@ -78,6 +78,7 @@ public class AssetManager : MonoBehaviour
 
     private const string SONGINFONAME = "Info.txt";
     private const string ALTSONGINFONAME = "Info.dat";
+    private const string ConvertedAltSongInfoName = "ConvertedInfo.dat";
 
     private const string LocalSongsFolderName = "/Auto-Convert Songs";
 
@@ -648,7 +649,10 @@ public class AssetManager : MonoBehaviour
             {
                 if (!string.IsNullOrWhiteSpace(item.SongID))
                 {
-                    CustomSongsManager.AddToRecord(item.SongID);
+                    if (!item.AutoConverted)
+                    {
+                        CustomSongsManager.AddToRecord(item.SongID);
+                    }
                 }
 
                 songLoaded?.Invoke(item);
@@ -902,6 +906,10 @@ public class AssetManager : MonoBehaviour
         {
             info.Delete(true);
         }
+
+        FileInfo readOnlyFile = null;
+        FileInfo songFile = null;
+
         foreach (var file in files)
         {
             if (file == null)
@@ -910,68 +918,98 @@ public class AssetManager : MonoBehaviour
             }
 
             if (string.Equals(file.Name, SONGINFONAME, StringComparison.InvariantCultureIgnoreCase)
-                || string.Equals(file.Name, ALTSONGINFONAME, StringComparison.InvariantCultureIgnoreCase))
+                    || string.Equals(file.Name, ALTSONGINFONAME, StringComparison.InvariantCultureIgnoreCase)
+                    || string.Equals(file.Name, ConvertedAltSongInfoName, StringComparison.InvariantCultureIgnoreCase))
             {
-                var streamReader = new StreamReader(file.FullName);
-                var result = await streamReader.ReadToEndAsync().AsUniTask()
-                    .AttachExternalCancellation(token);
 
-                SongInfo songInfo = null;
-                try
+                if (file.IsReadOnly)
                 {
-                    songInfo = JsonUtility.FromJson<SongInfo>(result);
+                    readOnlyFile = file;
+                    continue;
                 }
-                catch (Exception ex)
+                songFile = file;
+                var songInfo = await TryProcessSong(fileLocation, creationDate, info, file, skipUpdating, songID, songScore, token);
+                fileCorrupted = songInfo == null;
+                if (fileCorrupted && readOnlyFile == null)
                 {
-                    ErrorReporter.SetSuppressed(true);
-                    Debug.LogError($"Failed to load song at {fileLocation}___{ex}");
-                    ErrorReporter.SetSuppressed(false);
-                    fileCorrupted = true;
-                    streamReader.Close();
-                    break;
+                    DeleteCorruptedFile(info).Forget();
                 }
-
-                streamReader.Close();
-                if (songInfo == null)
-                {
-                    Debug.LogWarning($"Failed to read song info in {info.Name}. It is likely corrupted");
-                    return null;
-                }
-
-                var updatedMaps = false;
-                if (file.Directory != null && string.IsNullOrWhiteSpace(songInfo.fileLocation))
-                {
-                    songInfo.fileLocation = file.Directory.Name;
-                    updatedMaps = true;
-                }
-
-                if (songInfo.SongLength < 1)
-                {
-                    var songLength = await CustomSongsManager.TryGetSongLength(songInfo, token);
-                    songInfo.SongLength = songLength;
-                    updatedMaps = true;
-                    if (songLength == 0)
-                    {
-                        return null;
-                    }
-                }
-
-                if (skipUpdating)
-                {
-                    return songInfo;
-                }
-
-                return await UpdateMap(songInfo, file, updatedMaps, songID, songScore, creationDate, token);
-
+                return songInfo;
             }
         }
 
-        if (fileCorrupted)
+        if (songFile == null && readOnlyFile != null)
+        {
+            var songInfo = await TryProcessSong(fileLocation, creationDate, info, readOnlyFile, skipUpdating, songID, songScore, token);
+            fileCorrupted = songInfo == null;
+            if (fileCorrupted && readOnlyFile == null)
+            {
+                DeleteCorruptedFile(info).Forget();
+            }
+
+            return songInfo;
+        }
+
+
+        if (fileCorrupted && readOnlyFile == null)
         {
             DeleteCorruptedFile(info).Forget();
         }
-
         return null;
+    }
+
+    private static async UniTask<SongInfo> TryProcessSong(string fileLocation, DateTime creationDate, DirectoryInfo dirInfo, FileInfo fileInfo,
+                                                        bool skipUpdating, string songID, float songScore, CancellationToken token)
+    {
+        var streamReader = new StreamReader(fileInfo.FullName);
+        var result = await streamReader.ReadToEndAsync().AsUniTask()
+            .AttachExternalCancellation(token);
+
+        SongInfo songInfo = null;
+        try
+        {
+            songInfo = JsonUtility.FromJson<SongInfo>(result);
+        }
+        catch (Exception ex)
+        {
+            ErrorReporter.SetSuppressed(true);
+            Debug.LogError($"Failed to load song at {fileLocation}___{ex}");
+            ErrorReporter.SetSuppressed(false);
+            streamReader.Close();
+            return null;
+        }
+
+        streamReader.Close();
+        if (songInfo == null)
+        {
+            Debug.LogWarning($"Failed to read song info in {dirInfo.Name}. It is likely corrupted");
+            return null;
+        }
+
+        var updatedMaps = false;
+        if (fileInfo.Directory != null && string.IsNullOrWhiteSpace(songInfo.fileLocation))
+        {
+            songInfo.fileLocation = fileInfo.Directory.Name;
+            updatedMaps = true;
+        }
+
+        if (songInfo.SongLength < 1)
+        {
+            var songLength = await CustomSongsManager.TryGetSongLength(songInfo, token);
+            songInfo.SongLength = songLength;
+            updatedMaps = true;
+            if (songLength == 0)
+            {
+                return null;
+            }
+        }
+
+        if (skipUpdating)
+        {
+            return songInfo;
+        }
+
+        return await UpdateMap(songInfo, fileInfo, updatedMaps, songID, songScore, creationDate, token);
     }
 
     public static async UniTask<SongInfo> UpdateMap(SongInfo songInfo, FileInfo file, bool updatedMaps, string songID, float songScore, DateTime creationDate, CancellationToken token)
@@ -982,13 +1020,43 @@ public class AssetManager : MonoBehaviour
             updatedMaps = true;
         }
 
-        var image = await songInfo.LoadImage(token);
+        Sprite image = null;
+        if (file.IsReadOnly)
+        {
+            songInfo.UseConvertedFileNames = true;
+            image = await songInfo.LoadImage(token);
+            if (image == null)
+            {
+                songInfo.UseConvertedFileNames = false;
+            }
+        }
+
+        if (image == null)
+        {
+            image = await songInfo.LoadImage(token);
+        }
+
         if (image != null && image.texture.width != TEXTURESIZE)
         {
             await UniTask.DelayFrame(1, cancellationToken: token);
             var tex = image.texture.ScaleTexture(TEXTURESIZE, TEXTURESIZE, TextureFormat.RGB24);
             var bytes = tex.EncodeToJPG();
-            await File.WriteAllBytesAsync($"{file.DirectoryName}/{songInfo.ImageFilename}", bytes, token);
+            if (file.IsReadOnly)
+            {
+                songInfo.UseConvertedFileNames = true;
+            }
+            try
+            {
+                await File.WriteAllBytesAsync($"{file.DirectoryName}/{songInfo.ImageFilename}", bytes, token);
+            }
+            catch (Exception ex)
+            {
+                if (ex is UnauthorizedAccessException)
+                {
+                    songInfo.UseConvertedFileNames = true;
+                    await File.WriteAllBytesAsync($"{file.DirectoryName}/{songInfo.ImageFilename}", bytes, token);
+                }
+            }
             songInfo.SetImage(tex);
         }
 
@@ -1010,7 +1078,10 @@ public class AssetManager : MonoBehaviour
         if (!string.IsNullOrWhiteSpace(songID) && string.IsNullOrWhiteSpace(songInfo.SongID))
         {
             songInfo.SetSongID(songID);
-            CustomSongsManager.AddToRecord(songID);
+            if (!songInfo.AutoConverted)
+            {
+                CustomSongsManager.AddToRecord(songID);
+            }
             updatedMaps = true;
         }
         if (songScore >= 0 && songInfo.SongScore <= 0)
@@ -1022,7 +1093,19 @@ public class AssetManager : MonoBehaviour
         if (updatedMaps)
         {
             await UniTask.DelayFrame(2, cancellationToken: token);
-            using (var streamWriter = new StreamWriter(file.FullName))
+
+            string writePath;
+            if (file.IsReadOnly)
+            {
+                var fileLocation = file.DirectoryName;
+                writePath = $"{fileLocation}/{ConvertedAltSongInfoName}";
+            }
+            else
+            {
+                writePath = file.FullName;
+            }
+
+            using (var streamWriter = new StreamWriter(writePath))
             {
                 await streamWriter.WriteAsync(JsonUtility.ToJson(songInfo));
                 streamWriter.Close();
@@ -1038,10 +1121,20 @@ public class AssetManager : MonoBehaviour
         dirInfo.Delete(true);
     }
 
-    public static void DeleteCustomSong(SongInfo info)
+    public static bool TryDeleteCustomSong(SongInfo info)
     {
+        if (info.UseConvertedFileNames)
+        {
+            var visuals = new Notification.NotificationVisuals(
+                $"Shadow BoXR lacks the necessary permissions to delete {info.SongName}. Songs added outside of Shadow BoXR have to be deleted the same way they were added.",
+                "Unable to Delete Song",
+                "Okay");
+            NotificationManager.RequestNotification(visuals);
+            return false;
+        }
         var path = $"{SongsPath}{info.fileLocation}";
         DeleteCustomSong(path);
+        return true;
     }
 
     public static void DeleteCustomSong(string path)

@@ -50,6 +50,8 @@ public struct PlaylistItem
     [field: SerializeField]
     public bool ForceJabsOnly { get; private set; }
 
+    [field: SerializeField]
+    public bool UseConvertedFileNames => _songInfo.UseConvertedFileNames;
     public SongInfo SongInfo
     {
         get => _songInfo;

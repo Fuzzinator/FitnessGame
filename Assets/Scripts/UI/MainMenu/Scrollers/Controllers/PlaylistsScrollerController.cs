@@ -84,8 +84,8 @@ namespace UI.Scrollers.Playlists
                 var playlist2 = targetIndex+1<_playlists.Count?_playlists[targetIndex+1]:null;
                 cellView.SetData(playlist1, playlist2, this);
 
-                GetItemHolders(cellView.Holder1);
-                GetItemHolders(cellView.Holder2);
+                //GetItemHolders(cellView.Holder1);
+                //GetItemHolders(cellView.Holder2);
 
                 return cellView;
             }
@@ -156,7 +156,7 @@ namespace UI.Scrollers.Playlists
                 return;
             }
 
-            SetUpContainers();
+            //SetUpContainers();
         }
 
         public void OnScrollPositionChanged(EnhancedScroller scroller)

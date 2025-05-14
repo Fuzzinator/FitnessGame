@@ -366,7 +366,7 @@ public class SetAndShowSongOptions : MonoBehaviour
                                                                                             disableUI: true,
                                                                                             popUp: true), null, () =>
                                                                                             {
-                                                                                                AssetManager.DeleteCustomSong(_songInfo);
+                                                                                                AssetManager.TryDeleteCustomSong(_songInfo);
                                                                                                 HideOptions();
                                                                                             });
             dificultyID = (int)_activeDifficultySet.DifficultyInfos[0].DifficultyAsEnum - 1;

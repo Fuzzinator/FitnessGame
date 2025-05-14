@@ -36,6 +36,7 @@ public class SongInfoReader : MonoBehaviour
     #region Const Strings
 
     private const string INFO = "/Info";
+    private const string ConvertedInfo = "/ConvertedInfo";
     private const string TXT = ".txt";
     private const string DAT = ".dat";
     private const string DASH = "-";
@@ -91,7 +92,8 @@ public class SongInfoReader : MonoBehaviour
         {
             if (item.IsCustomSong)
             {
-                var path = $"{AssetManager.SongsPath}{item.FileLocation}{INFO}{DAT}";
+                var infoName = item.UseConvertedFileNames ? ConvertedInfo : INFO;
+                var path = $"{AssetManager.SongsPath}{item.FileLocation}{infoName}{DAT}";
                 if (!File.Exists(path))
                 {
                     NotificationManager.ReportFailedToLoadInGame($"{item.SongName} does not exist on your device.");

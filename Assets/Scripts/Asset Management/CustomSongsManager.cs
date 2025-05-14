@@ -25,14 +25,13 @@ public static class CustomSongsManager
         float clipLength;
         if (customSong)
         {
-            var clipRequest = AssetManager.LoadCustomSong(info.fileLocation, info, token, true);
-            var audioClip = await clipRequest;
+            var audioClip = await AssetManager.LoadCustomSong(info.fileLocation, info, token, true);
             if (audioClip == null)
             {
                 if (!token.IsCancellationRequested)
                 {
                     ErrorReporter.SetSuppressed(true, true);
-                    Debug.LogError($"Failed to load {info.SongName}. SongID is: {info.SongID}. File location is {info.fileLocation}");
+                    Debug.LogError($"Failed to load {info.SongName}. SongID is: {info.SongID}.The song was{(info.AutoConverted ? string.Empty : "not")}. File location is {info.fileLocation}. Song file is {info.SongFilename}.");
                     ErrorReporter.SetSuppressed(false);
                 }
 
@@ -148,6 +147,42 @@ public static class CustomSongsManager
             return;
         }
 
+        ValidateIDs(songIDsToDownload).Forget();
+    }
+
+    private static async UniTask<bool> ValidateIDs(List<string> ids)
+    {
+        List<string> invalidIDs = null;
+        var cancellationTokenSource = new CancellationTokenSource();
+
+        await UniTask.SwitchToMainThread(cancellationTokenSource.Token);
+        var beatSaver = new BeatSaver(Application.productName, Version.Parse(Application.version));
+
+        for (var i = 0; i < ids.Count; i++)
+        {
+            var beatmap = await beatSaver.Beatmap(ids[i], cancellationTokenSource.Token);
+
+            if (beatmap == null)
+            {
+                if (invalidIDs == null)
+                {
+                    invalidIDs = new List<string>();
+                }
+                invalidIDs.Add(ids[i]);
+
+                ids.RemoveAt(i);
+                i--;
+            }
+        }
+
+        if (invalidIDs != null)
+        {
+            HandleRejectSongRecovery(invalidIDs);
+        }
+
+        await UniTask.DelayFrame(1);
+
+
         var visuals = new Notification.NotificationVisuals(
             "Some of your community content songs appear to be missing, would you like to re-download them?",
             "Missing Songs",
@@ -155,9 +190,11 @@ public static class CustomSongsManager
             "No",
             "Don't Ask Again");
         NotificationManager.RequestNotification(visuals,
-            () => HandleSongRecovery(songIDsToDownload.AsReadOnly()),
-            () => HandleRejectSongRecovery(songIDsToDownload),
+            () => HandleSongRecovery(ids.AsReadOnly()),
+            () => HandleRejectSongRecovery(ids),
             () => SettingsManager.SetSetting(AutoGetSongs, false));
+
+        return true;
     }
 
     private static void HandleSongRecovery(IReadOnlyCollection<string> songIDs)
@@ -180,6 +217,11 @@ public static class CustomSongsManager
     {
         var progress = new Progress<double>();
         var beatmap = await beatSaver.Beatmap(songID, cancellationTokenSource.Token);
+        if (beatmap == null)
+        {
+            return;
+        }
+
         byte[] songBytes = await DownloadZip(beatmap, progress, cancellationTokenSource.Token);
 
         if (songBytes == null || cancellationTokenSource.IsCancellationRequested)
