@@ -103,7 +103,7 @@ public static class MakeAdditiveProcessor
                     handle.Complete();
 
                     // Convert to array and set notes
-                    currentChoreography.SetNotes(allNotes.ToArray());
+                    currentChoreography.SetNotes(allNotes.ToArray(AllocatorManager.Persistent).ToArray());
 
                     // Dispose NativeList for current iteration
                     allNotes.Dispose();

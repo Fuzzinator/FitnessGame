@@ -10,10 +10,13 @@ Material:
   m_Name: Sci-Fi Jab Icon
   m_Shader: {fileID: -6465566751694194690, guid: 484375f57bc0ac74f86bba3b66c843ab,
     type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _ALPHATEST_ON
   - _SHOWNOTES
   - _TEXTURESET_TARGETS
+  - _USETARGETTEXTURES
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -21,7 +24,9 @@ Material:
   m_CustomRenderQueue: 2450
   stringTagMap:
     RenderType: TransparentCutout
-  disabledShaderPasses: []
+  disabledShaderPasses:
+  - MOTIONVECTORS
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -85,6 +90,7 @@ Material:
     m_Floats:
     - _AlphaClip: 1
     - _AlphaStrength: 1
+    - _AlphaToMask: 1
     - _Alpha_Clip: 0.5
     - _Appear_Distance: 12
     - _Base_Color_Strength: 1
@@ -116,15 +122,18 @@ Material:
     - _QueueOffset: 0
     - _Rotation: 0
     - _SHOWNOTES: 1
+    - _SUPERNOTE: 0
     - _SampleGI: 0
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
+    - _SuperNoteStrength: 20
     - _Surface: 0
     - _TEXTURESET: 0
     - _TextureIndex: 0
     - _USEDISTANCEDISSOLVE: 0
     - _USEDISTANCEOFFSET: 0
+    - _USETARGETTEXTURES: 1
     - _UVSec: 0
     - _ZTest: 4
     - _ZWrite: 1
@@ -141,6 +150,7 @@ Material:
     - _Rotation_Axis: {r: 1, g: 0, b: 0, a: 0}
     - _Tiling: {r: 1, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!114 &439703228717147782
 MonoBehaviour:
   m_ObjectHideFlags: 11
@@ -153,4 +163,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  version: 5
+  version: 9

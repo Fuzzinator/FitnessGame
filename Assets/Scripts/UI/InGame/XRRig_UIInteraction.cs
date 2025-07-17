@@ -1,16 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit;
+
 
 public class XRRig_UIInteraction : BaseGameStateListener
 {
     [SerializeField]
     private bool _rightHanded = true;
     [SerializeField]
-    private XRRayInteractor _rightInteractor;
+    private UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor _rightInteractor;
     [SerializeField]
-    private XRRayInteractor _leftInteractor;
+    private UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor _leftInteractor;
 
     [SerializeField]
     private LineRenderer _rightLineRenderer;
@@ -18,9 +18,9 @@ public class XRRig_UIInteraction : BaseGameStateListener
     private LineRenderer _leftLineRenderer;
 
     [SerializeField]
-    private XRInteractorLineVisual _rightLineVisual;
+    private UnityEngine.XR.Interaction.Toolkit.Interactors.Visuals.XRInteractorLineVisual _rightLineVisual;
     [SerializeField]
-    private XRInteractorLineVisual _leftLineVisual;
+    private UnityEngine.XR.Interaction.Toolkit.Interactors.Visuals.XRInteractorLineVisual _leftLineVisual;
     
     protected override void GameStateListener(GameState oldState, GameState newState)
     {

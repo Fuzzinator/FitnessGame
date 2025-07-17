@@ -2,19 +2,19 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using UnityEngine;
+//using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
-public class ActiveSceneManager : MonoBehaviour
+public class ActiveSceneManager : UnityEngine.MonoBehaviour
 {
-    [SerializeField]
+    [UnityEngine.SerializeField]
     private bool _trailer;
     public static ActiveSceneManager Instance { get; private set; }
     public UnityEvent newSceneLoaded = new UnityEvent();
 
-    private AsyncOperation _gameSceneLoader;
+    private UnityEngine.AsyncOperation _gameSceneLoader;
 
     private const string MAINMENUNAME = "Main Menu";
     private const string NonVRMAINMENUNAME = "Non VR Tool";
@@ -70,7 +70,7 @@ public class ActiveSceneManager : MonoBehaviour
         }
     }
 
-    public async void LoadBaseLevel()
+    public async UniTaskVoid LoadBaseLevel()
     {
         await SceneManager.UnloadSceneAsync(MAINMENUNAME);
         await LoadSceneAsync(_trailer ? BASELEVELTRAILERNAME : BASELEVELNAME, true);
@@ -81,7 +81,7 @@ public class ActiveSceneManager : MonoBehaviour
         _gameSceneLoader = SceneManager.LoadSceneAsync(newSceneName, additive ? LoadSceneMode.Additive : LoadSceneMode.Single);
         await _gameSceneLoader;
         newSceneLoaded?.Invoke();
-        await Resources.UnloadUnusedAssets();
+        await UnityEngine.Resources.UnloadUnusedAssets();
     }
 
     /*public void CompleteSceneLoad()

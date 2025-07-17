@@ -2,14 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.XR.Interaction.Toolkit;
+
 using YUR.Core;
 
 namespace YUR.Interaction.Gaze
 {
     public class YURGazeController : Singleton<MonoBehaviour>
     {
-        public XRRayInteractor rayInteractor;
+        public UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor rayInteractor;
         public Vector3 rayOffset = new Vector3(0, 0.05f, 0);
 
         public YURGazeReticule gazeReticule;

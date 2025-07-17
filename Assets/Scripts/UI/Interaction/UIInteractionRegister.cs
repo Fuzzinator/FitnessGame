@@ -4,18 +4,18 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit;
+
 
 public class UIInteractionRegister : MonoBehaviour
 {
     [SerializeField]
     private bool _isRightHand;
     [SerializeField]
-    private XRRayInteractor _rayInteractor;
+    private UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor _rayInteractor;
     [SerializeField]
     private LineRenderer _lineRenderer;
     [SerializeField]
-    private XRInteractorLineVisual _interactorLineVisual;
+    private UnityEngine.XR.Interaction.Toolkit.Interactors.Visuals.XRInteractorLineVisual _interactorLineVisual;
     [field: SerializeField]
     public bool IsEnabled { get; private set; }
     private bool _targetOnState;

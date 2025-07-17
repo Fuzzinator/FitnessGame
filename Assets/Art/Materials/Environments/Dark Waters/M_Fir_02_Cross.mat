@@ -9,6 +9,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: M_Fir_02_Cross
   m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _ALPHATEST_ON
   - _NORMALMAP
@@ -19,7 +21,9 @@ Material:
   m_CustomRenderQueue: 2450
   stringTagMap:
     RenderType: TransparentCutout
-  disabledShaderPasses: []
+  disabledShaderPasses:
+  - MOTIONVECTORS
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -104,11 +108,14 @@ Material:
     - _AO: 1
     - _AORemapMax: 1
     - _AORemapMin: 0
+    - _AddPrecomputedVelocity: 0
     - _AlphaClip: 1
     - _AlphaCutOut: 0.5
     - _AlphaCutoff: 0.65
+    - _AlphaToMask: 1
     - _AmbientOcclusionPower: 1
     - _Blend: 0
+    - _BlendModePreserveSpecular: 1
     - _Brightness: 4.79
     - _BumpScale: 1
     - _ClearCoatMask: 0
@@ -123,6 +130,7 @@ Material:
     - _DistanceBlend: 0
     - _Drag: 0.3
     - _DstBlend: 0
+    - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
     - _GlossMapScale: 1
     - _Glossiness: 0
@@ -152,6 +160,7 @@ Material:
     - _Specular: 0.1
     - _SpecularHighlights: 1
     - _SrcBlend: 1
+    - _SrcBlendAlpha: 1
     - _Stiffness: 1
     - _Surface: 0
     - _TransAmbient: 0
@@ -171,6 +180,7 @@ Material:
     - _WindVertexColorMainR: 1
     - _WindVertexColorMainRNoiseB: 0
     - _WorkflowMode: 1
+    - _XRMotionVectorsPass: 1
     - _ZWrite: 1
     - __dirty: 0
     m_Colors:
@@ -191,6 +201,7 @@ Material:
     - _WindColorInfluence: {r: 0, g: 0, b: 0, a: 0}
     - _WindColorMultiply: {r: 1, g: 1, b: 1, a: 0}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!114 &3500103104255491561
 MonoBehaviour:
   m_ObjectHideFlags: 11
@@ -203,4 +214,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  version: 5
+  version: 9
