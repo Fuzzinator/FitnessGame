@@ -341,7 +341,7 @@ public class ChoreographyReader : MonoBehaviour, IOrderedInitialize
                 continue;
             }
 
-            if (thisSequence.IsValid && thisSequence.Time < sequenceable.Time && (_formations.Count == 0 || !Mathf.Approximately(_formations[^1].Time, thisSequence.Time)))
+            if (thisSequence.IsValid && (!Mathf.Approximately(thisSequence.Time, sequenceable.Time) && thisSequence.Time < sequenceable.Time) && (_formations.Count == 0 || !Mathf.Approximately(_formations[^1].Time, thisSequence.Time)))
             {
                 _formations.Add(thisSequence);
                 lastSequence = thisSequence;
