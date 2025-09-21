@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 129228361}
   - component: {fileID: 129228363}
   - component: {fileID: 129228362}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Handle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -31,7 +31,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1361978466}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -86,7 +85,7 @@ GameObject:
   m_Component:
   - component: {fileID: 197390344}
   - component: {fileID: 197390345}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Header
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -108,7 +107,6 @@ RectTransform:
   - {fileID: 518794434}
   - {fileID: 2053015619}
   m_Father: {fileID: 4050134947087596576}
-  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -134,7 +132,7 @@ GameObject:
   - component: {fileID: 284642556}
   - component: {fileID: 284642558}
   - component: {fileID: 284642557}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Item Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -154,7 +152,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 577274505}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -210,7 +207,7 @@ GameObject:
   - component: {fileID: 352905096}
   - component: {fileID: 352905098}
   - component: {fileID: 352905097}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Relevant Songs Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -230,7 +227,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1228607721}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -309,15 +305,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -347,7 +345,7 @@ GameObject:
   - component: {fileID: 447021328}
   - component: {fileID: 447021327}
   - component: {fileID: 447021326}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Scrollbar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -368,7 +366,6 @@ RectTransform:
   m_Children:
   - {fileID: 1361978466}
   m_Father: {fileID: 1468201819}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -471,7 +468,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 509405032}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Content
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -492,7 +489,6 @@ RectTransform:
   m_Children:
   - {fileID: 577274505}
   m_Father: {fileID: 2109268099}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -510,7 +506,7 @@ GameObject:
   - component: {fileID: 518794434}
   - component: {fileID: 518794436}
   - component: {fileID: 518794435}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Header Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -530,7 +526,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 197390344}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -586,7 +581,7 @@ GameObject:
   - component: {fileID: 520049974}
   - component: {fileID: 520049976}
   - component: {fileID: 520049975}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Rating Songs Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -606,7 +601,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 957711855}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -685,15 +679,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -721,7 +717,7 @@ GameObject:
   m_Component:
   - component: {fileID: 577274505}
   - component: {fileID: 577274506}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Item
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -744,7 +740,6 @@ RectTransform:
   - {fileID: 811236286}
   - {fileID: 688042316}
   m_Father: {fileID: 509405032}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
@@ -810,7 +805,7 @@ GameObject:
   - component: {fileID: 688042316}
   - component: {fileID: 688042318}
   - component: {fileID: 688042317}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Item Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -830,7 +825,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 577274505}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -909,15 +903,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -946,7 +942,7 @@ GameObject:
   - component: {fileID: 811236286}
   - component: {fileID: 811236288}
   - component: {fileID: 811236287}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Item Checkmark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -966,7 +962,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 577274505}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
@@ -1022,7 +1017,7 @@ GameObject:
   - component: {fileID: 832065505}
   - component: {fileID: 832065507}
   - component: {fileID: 832065506}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Arrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1042,7 +1037,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1912648714}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
@@ -1098,7 +1092,7 @@ GameObject:
   - component: {fileID: 840485177}
   - component: {fileID: 840485179}
   - component: {fileID: 840485178}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Sort Mode Title
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1118,7 +1112,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5313518645104041752}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -1197,15 +1190,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 0
+  m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -1236,7 +1231,7 @@ GameObject:
   - component: {fileID: 957711858}
   - component: {fileID: 957711857}
   - component: {fileID: 957711856}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Rating Songs Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1257,7 +1252,6 @@ RectTransform:
   m_Children:
   - {fileID: 520049974}
   m_Father: {fileID: 4050134947087596576}
-  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -1386,7 +1380,7 @@ GameObject:
   - component: {fileID: 967328793}
   - component: {fileID: 967328796}
   - component: {fileID: 967328795}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1406,7 +1400,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8446298586063930715}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -1462,7 +1455,7 @@ GameObject:
   - component: {fileID: 1216803180}
   - component: {fileID: 1216803182}
   - component: {fileID: 1216803181}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1482,7 +1475,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1912648714}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -1561,15 +1553,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -1600,7 +1594,7 @@ GameObject:
   - component: {fileID: 1228607724}
   - component: {fileID: 1228607723}
   - component: {fileID: 1228607722}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Relevant Songs Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1621,7 +1615,6 @@ RectTransform:
   m_Children:
   - {fileID: 352905096}
   m_Father: {fileID: 4050134947087596576}
-  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -1748,7 +1741,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1361978466}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Sliding Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1769,7 +1762,6 @@ RectTransform:
   m_Children:
   - {fileID: 129228361}
   m_Father: {fileID: 447021325}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -1788,7 +1780,7 @@ GameObject:
   - component: {fileID: 1468201822}
   - component: {fileID: 1468201821}
   - component: {fileID: 1468201820}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Template
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1810,7 +1802,6 @@ RectTransform:
   - {fileID: 2109268099}
   - {fileID: 447021325}
   m_Father: {fileID: 1912648714}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -1896,7 +1887,7 @@ GameObject:
   - component: {fileID: 1802729877}
   - component: {fileID: 1802729879}
   - component: {fileID: 1802729878}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Playlist Song Scroll Rect Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1916,7 +1907,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4050134947087596576}
-  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -1975,7 +1965,7 @@ GameObject:
   - component: {fileID: 1912648716}
   - component: {fileID: 1912648715}
   - component: {fileID: 1912648719}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Sort Mode Dropdown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1998,7 +1988,6 @@ RectTransform:
   - {fileID: 832065505}
   - {fileID: 1468201819}
   m_Father: {fileID: 5313518645104041752}
-  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
@@ -2097,12 +2086,16 @@ MonoBehaviour:
     m_Options:
     - m_Text: Latest
       m_Image: {fileID: 0}
+      m_Color: {r: 1, g: 1, b: 1, a: 1}
     - m_Text: Relevance
       m_Image: {fileID: 0}
+      m_Color: {r: 1, g: 1, b: 1, a: 1}
     - m_Text: Rating
       m_Image: {fileID: 0}
+      m_Color: {r: 1, g: 1, b: 1, a: 1}
     - m_Text: Curated
       m_Image: {fileID: 0}
+      m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -2162,7 +2155,7 @@ GameObject:
   - component: {fileID: 2053015622}
   - component: {fileID: 2053015621}
   - component: {fileID: 2053015620}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Available Songs Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2182,7 +2175,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 197390344}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -2281,15 +2273,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 0
+  m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 1
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -2319,7 +2313,7 @@ GameObject:
   - component: {fileID: 2109268102}
   - component: {fileID: 2109268101}
   - component: {fileID: 2109268100}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Viewport
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2340,7 +2334,6 @@ RectTransform:
   m_Children:
   - {fileID: 509405032}
   m_Father: {fileID: 1468201819}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -2409,7 +2402,7 @@ GameObject:
   - component: {fileID: 1170129450424270898}
   - component: {fileID: 6151708951882366407}
   - component: {fileID: 3411939565665711036}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Up Button Highlight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2429,7 +2422,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8446298586063930715}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -2485,7 +2477,7 @@ GameObject:
   - component: {fileID: 3417968345267240709}
   - component: {fileID: 8979187535340894163}
   - component: {fileID: 10074694691834679}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Normal Mode Checkmark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2505,7 +2497,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3203605153712635610}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -2561,7 +2552,7 @@ GameObject:
   - component: {fileID: 8971580932223999761}
   - component: {fileID: 2101998627220248902}
   - component: {fileID: 8686919369253502176}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Header Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2581,7 +2572,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 625719133848935120}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -2637,7 +2627,7 @@ GameObject:
   - component: {fileID: 4644095089458738761}
   - component: {fileID: 8452017562472452326}
   - component: {fileID: 7439340704898521828}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Hard Mode Checkmark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2657,7 +2647,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3444381360238533156}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -2712,7 +2701,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2758414718695650345}
   - component: {fileID: 6531099930771533812}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Play Song Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2733,7 +2722,6 @@ RectTransform:
   m_Children:
   - {fileID: 7746659389625805811}
   m_Father: {fileID: 5313518644497656708}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 25, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2764,7 +2752,7 @@ GameObject:
   - component: {fileID: 3755022219397348479}
   - component: {fileID: 3050032118650541699}
   - component: {fileID: 6005573227040822788}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Available Songs Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2784,7 +2772,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 625719133848935120}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -2883,15 +2870,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 0
+  m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 1
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -2920,7 +2909,7 @@ GameObject:
   - component: {fileID: 4113610424015264511}
   - component: {fileID: 491331071922961542}
   - component: {fileID: 3701888717166556506}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Jabs Only Mode Checkmark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2940,7 +2929,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3688928304427497402}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -2997,7 +2985,7 @@ GameObject:
   - component: {fileID: 1744784540691556933}
   - component: {fileID: 1763944310942857743}
   - component: {fileID: 7244294601369417752}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Song Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3017,7 +3005,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4753082799715900432}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -3095,7 +3082,7 @@ GameObject:
   - component: {fileID: 1504078172128093793}
   - component: {fileID: 7810524953636521220}
   - component: {fileID: 1573276036564439974}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Expert Mode Toggle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3116,7 +3103,6 @@ RectTransform:
   m_Children:
   - {fileID: 2262346348663792265}
   m_Father: {fileID: 3435566358303740280}
-  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -3261,7 +3247,7 @@ GameObject:
   - component: {fileID: 2377995740719645559}
   - component: {fileID: 8954520735815676391}
   - component: {fileID: 1576242669184200902}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: "90\xB0 Mode Toggle"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3282,7 +3268,6 @@ RectTransform:
   m_Children:
   - {fileID: 9151502668590713790}
   m_Father: {fileID: 7410229232605048051}
-  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -3425,7 +3410,7 @@ GameObject:
   - component: {fileID: 2363728430085122028}
   - component: {fileID: 6324284938233554628}
   - component: {fileID: 2049204874516488412}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Expert Mode Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3445,7 +3430,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7750979372735220571}
-  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -3524,15 +3508,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 0
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -3561,7 +3547,7 @@ GameObject:
   - component: {fileID: 1267242477160507207}
   - component: {fileID: 8631192094217716301}
   - component: {fileID: 7783857545576286698}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Item Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3581,7 +3567,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1783739896559164221}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -3636,7 +3621,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7750979372735220571}
   - component: {fileID: 313118534955034608}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Map Difficulties Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3660,7 +3645,6 @@ RectTransform:
   - {fileID: 4535045891504032875}
   - {fileID: 2363728430085122028}
   m_Father: {fileID: 9083108995704928247}
-  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -3691,7 +3675,7 @@ GameObject:
   - component: {fileID: 9043960349152905975}
   - component: {fileID: 8819292291693306530}
   - component: {fileID: 3567863564292821111}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Preview Button Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3711,7 +3695,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 9083108995704928247}
-  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -3790,15 +3773,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 0
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -3827,7 +3812,7 @@ GameObject:
   - component: {fileID: 1384351808776658777}
   - component: {fileID: 5740433564862585666}
   - component: {fileID: 4209742953991256889}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Header Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3847,7 +3832,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3996917357629721336}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -3905,7 +3889,7 @@ GameObject:
   - component: {fileID: 3571062030775516010}
   - component: {fileID: 6921344443384403426}
   - component: {fileID: 8280483165869937549}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Clear Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3926,7 +3910,6 @@ RectTransform:
   m_Children:
   - {fileID: 790144872217477087}
   m_Father: {fileID: 4050134947087596576}
-  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -4053,7 +4036,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2498514193417989148}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Upload Date Info Card
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4075,7 +4058,6 @@ RectTransform:
   - {fileID: 5216589104745968887}
   - {fileID: 1641127753101060277}
   m_Father: {fileID: 5313518645219912405}
-  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -4091,7 +4073,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4753082799715900432}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Song Info
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4119,7 +4101,6 @@ RectTransform:
   - {fileID: 3887550830750547716}
   - {fileID: 6312919219952131378}
   m_Father: {fileID: 5313518644497656708}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -4136,7 +4117,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3435566358303740280}
   - component: {fileID: 1262771374257602221}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Map Difficulties
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4160,7 +4141,6 @@ RectTransform:
   - {fileID: 3444381360238533156}
   - {fileID: 8374793780979616075}
   m_Father: {fileID: 9083108995704928247}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -4189,7 +4169,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2394407381187854072}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Sliding Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4210,7 +4190,6 @@ RectTransform:
   m_Children:
   - {fileID: 8256794882365916710}
   m_Father: {fileID: 7551919934825610948}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -4228,7 +4207,7 @@ GameObject:
   - component: {fileID: 3825109910974462810}
   - component: {fileID: 9216248392375969986}
   - component: {fileID: 6697003622211425824}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Handle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4248,7 +4227,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 9213862077521001465}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -4304,7 +4282,7 @@ GameObject:
   - component: {fileID: 5551867559896995258}
   - component: {fileID: 8709083377004235739}
   - component: {fileID: 7001238642269973993}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4324,7 +4302,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3887550830750547716}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -4403,15 +4380,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -4438,7 +4417,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1076997558601655557}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Content
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4459,7 +4438,6 @@ RectTransform:
   m_Children:
   - {fileID: 3997464148515656081}
   m_Father: {fileID: 217215213549285322}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -4478,7 +4456,7 @@ GameObject:
   - component: {fileID: 2599509088669304761}
   - component: {fileID: 5348778361580598409}
   - component: {fileID: 1053406360842242212}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Scrollbar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4499,7 +4477,6 @@ RectTransform:
   m_Children:
   - {fileID: 2394407381187854072}
   m_Father: {fileID: 4262568904530129492}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -4604,7 +4581,7 @@ GameObject:
   - component: {fileID: 5580719695671013516}
   - component: {fileID: 6554491036268735959}
   - component: {fileID: 1475513694245075632}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Play Button Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4624,7 +4601,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 9083108995704928247}
-  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -4703,15 +4679,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 0
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -4743,7 +4721,7 @@ GameObject:
   - component: {fileID: 2948368398881534773}
   - component: {fileID: 684977356845217363}
   - component: {fileID: 2039460103171460367}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Preview Song Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4764,7 +4742,6 @@ RectTransform:
   m_Children:
   - {fileID: 7047965385918594293}
   m_Father: {fileID: 4753082799715900432}
-  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -4913,7 +4890,7 @@ GameObject:
   - component: {fileID: 3488731814524894189}
   - component: {fileID: 1705093856136857707}
   - component: {fileID: 9072041821962886746}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Difficulties Info Card
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4935,7 +4912,6 @@ RectTransform:
   - {fileID: 1668705719873040031}
   - {fileID: 6065347757843060656}
   m_Father: {fileID: 4753082799715900432}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
@@ -4994,7 +4970,7 @@ GameObject:
   - component: {fileID: 4353622374865406318}
   - component: {fileID: 2776921219909756460}
   - component: {fileID: 1718317823}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Up Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5014,7 +4990,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4050134947087596576}
-  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -5179,7 +5154,7 @@ GameObject:
   - component: {fileID: 6172484493924770803}
   - component: {fileID: 1358137769106326688}
   - component: {fileID: 7936580298083217975}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Easy Mode Checkmark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5199,7 +5174,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 77216375668188258}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -5255,7 +5229,7 @@ GameObject:
   - component: {fileID: 6065347757843060656}
   - component: {fileID: 6992001641173945012}
   - component: {fileID: 4362293899165905926}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Difficulties Field
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5275,7 +5249,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3488731814524894189}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -5354,15 +5327,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -5391,7 +5366,7 @@ GameObject:
   - component: {fileID: 6262644448294623545}
   - component: {fileID: 5555151243531574380}
   - component: {fileID: 4413465497390527603}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Item Checkmark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5411,7 +5386,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3997464148515656081}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
@@ -5467,7 +5441,7 @@ GameObject:
   - component: {fileID: 1100571750141080841}
   - component: {fileID: 7983667043038693225}
   - component: {fileID: 7352283671091260350}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Arrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5487,7 +5461,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5765406519056740939}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
@@ -5543,7 +5516,7 @@ GameObject:
   - component: {fileID: 2769401423601507716}
   - component: {fileID: 4713631051218035497}
   - component: {fileID: 7357117522912205566}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Loading Bar Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5563,7 +5536,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6351834691650400622}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -5621,7 +5593,7 @@ GameObject:
   - component: {fileID: 2197181298065024493}
   - component: {fileID: 7876054221978721650}
   - component: {fileID: 4594897962256552335}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Jabs Only Mode Toggle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5642,7 +5614,6 @@ RectTransform:
   m_Children:
   - {fileID: 4113610424015264511}
   m_Father: {fileID: 7410229232605048051}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -5785,7 +5756,7 @@ GameObject:
   - component: {fileID: 1950472793941555517}
   - component: {fileID: 789226867}
   - component: {fileID: 789226866}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Search Songs
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5805,7 +5776,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5313518646000652804}
-  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 70, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -5861,7 +5831,7 @@ GameObject:
   - component: {fileID: 4315274119326006363}
   - component: {fileID: 3041402477217448820}
   - component: {fileID: 1671770798929564773}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Up Button Highlight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5881,7 +5851,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5976851851098236149}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 180}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -5937,7 +5906,7 @@ GameObject:
   - component: {fileID: 1645336439492865472}
   - component: {fileID: 4932811745566144053}
   - component: {fileID: 249644531346707363}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: One Hand Mode Checkmark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5957,7 +5926,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2118735611700032451}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -6014,7 +5982,7 @@ GameObject:
   - component: {fileID: 7680565003672933443}
   - component: {fileID: 2903071941185846436}
   - component: {fileID: 9172361577183616807}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Songs Or Playlists Dropdown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6037,7 +6005,6 @@ RectTransform:
   - {fileID: 1100571750141080841}
   - {fileID: 4262568904530129492}
   m_Father: {fileID: 4050134947087596576}
-  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -6136,8 +6103,10 @@ MonoBehaviour:
     m_Options:
     - m_Text: 'Search For: Songs'
       m_Image: {fileID: 0}
+      m_Color: {r: 1, g: 1, b: 1, a: 1}
     - m_Text: 'Search For: Playlists'
       m_Image: {fileID: 0}
+      m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -6165,7 +6134,7 @@ GameObject:
   - component: {fileID: 9151502668590713790}
   - component: {fileID: 7067784519914566042}
   - component: {fileID: 45138049632831744}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: "90\xB0 Mode Checkmark"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6185,7 +6154,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4821889289816530487}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -6239,7 +6207,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3045023000984496354}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Pool Parent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6259,7 +6227,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5313518644306286494}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -6277,7 +6244,7 @@ GameObject:
   - component: {fileID: 6678910957541846920}
   - component: {fileID: 1713731920840594363}
   - component: {fileID: 8290138928202063400}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: One Hand Mode Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6297,7 +6264,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8466725643891127679}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -6376,15 +6342,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 0
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -6414,7 +6382,7 @@ GameObject:
   - component: {fileID: 8359823749272221281}
   - component: {fileID: 4563133275663146706}
   - component: {fileID: 132302949517813732}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Loading Bar Fill Mask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6435,7 +6403,6 @@ RectTransform:
   m_Children:
   - {fileID: 2769401423601507716}
   m_Father: {fileID: 3984407323820960943}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -6507,7 +6474,7 @@ GameObject:
   - component: {fileID: 3748608306665354717}
   - component: {fileID: 6979848434206105154}
   - component: {fileID: 1381631883131549253}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Play Song Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6528,7 +6495,6 @@ RectTransform:
   m_Children:
   - {fileID: 920429373360640160}
   m_Father: {fileID: 4753082799715900432}
-  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -6677,7 +6643,7 @@ GameObject:
   - component: {fileID: 920429373360640160}
   - component: {fileID: 8728131499114364453}
   - component: {fileID: 7623488236503004577}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6697,7 +6663,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8602005124324350659}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -6776,15 +6741,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -6813,7 +6780,7 @@ GameObject:
   - component: {fileID: 8215897795330474819}
   - component: {fileID: 5308138524346647208}
   - component: {fileID: 7868068717130282161}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6833,7 +6800,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5765406519056740939}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -6912,15 +6878,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -6949,7 +6917,7 @@ GameObject:
   - component: {fileID: 6876471648844027670}
   - component: {fileID: 2073681813077318009}
   - component: {fileID: 7745427365438992248}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Arrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6969,7 +6937,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8649687180669092956}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
@@ -7025,7 +6992,7 @@ GameObject:
   - component: {fileID: 7625610305612367814}
   - component: {fileID: 6864787767321651502}
   - component: {fileID: 5107122192275074733}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Search Button Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7045,7 +7012,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5007505866355294946}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -7124,15 +7090,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -7163,7 +7131,7 @@ GameObject:
   - component: {fileID: 7002353698677479555}
   - component: {fileID: 1755777648206310112}
   - component: {fileID: 8796214658798560545}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Next Page Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7184,7 +7152,6 @@ RectTransform:
   m_Children:
   - {fileID: 7625610305612367814}
   m_Father: {fileID: 5313518645104041752}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
@@ -7313,7 +7280,7 @@ GameObject:
   - component: {fileID: 3760678521064479434}
   - component: {fileID: 3760678521064479436}
   - component: {fileID: 3760678521064479437}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Home Button Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7333,7 +7300,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3760678521105926073}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -7412,15 +7378,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -7451,7 +7419,7 @@ GameObject:
   - component: {fileID: 3760678521105926075}
   - component: {fileID: 3760678521105926072}
   - component: {fileID: 9047155777136496169}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Home Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7472,7 +7440,6 @@ RectTransform:
   m_Children:
   - {fileID: 3760678521064479434}
   m_Father: {fileID: 5313518646000652804}
-  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -7601,7 +7568,7 @@ GameObject:
   - component: {fileID: 3760678521382343156}
   - component: {fileID: 3760678521382343145}
   - component: {fileID: 3760678521382343158}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Downloading Songs
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7615,8 +7582,8 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3760678521382343157}
-  m_LocalRotation: {x: 0, y: -0.21643952, z: 0, w: 0.97629607}
-  m_LocalPosition: {x: 0, y: 0, z: -95}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -7624,8 +7591,7 @@ RectTransform:
   - {fileID: 3760678522341793352}
   - {fileID: 675068089517833606}
   m_Father: {fileID: 5313518644875552462}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: -25, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -425, y: 30}
@@ -7680,7 +7646,7 @@ GameObject:
   - component: {fileID: 3760678521695620811}
   - component: {fileID: 3760678521695620813}
   - component: {fileID: 3760678521695620810}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7701,7 +7667,6 @@ RectTransform:
   m_Children:
   - {fileID: 3984407323820960943}
   m_Father: {fileID: 5313518644302306155}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -7757,7 +7722,7 @@ GameObject:
   - component: {fileID: 3760678522069963832}
   - component: {fileID: 3760678522069963834}
   - component: {fileID: 3760678522069963835}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7777,7 +7742,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5313518644302306155}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -7856,15 +7820,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -7894,7 +7860,7 @@ GameObject:
   - component: {fileID: 3760678522341793357}
   - component: {fileID: 3760678522341793354}
   - component: {fileID: 3760678522341793355}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Downloading Songs Mask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7915,7 +7881,6 @@ RectTransform:
   m_Children:
   - {fileID: 5313518644306286494}
   m_Father: {fileID: 3760678521382343156}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -7984,7 +7949,7 @@ GameObject:
   - component: {fileID: 3760678522632257190}
   - component: {fileID: 3760678522632257240}
   - component: {fileID: 3760678522632257241}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8004,7 +7969,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5313518645677660718}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -8083,15 +8047,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -8119,7 +8085,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1783739896559164221}
   - component: {fileID: 3957447755419489103}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Item
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8142,7 +8108,6 @@ RectTransform:
   - {fileID: 4939305175558598721}
   - {fileID: 439929887367669163}
   m_Father: {fileID: 2661059033909239670}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
@@ -8208,7 +8173,7 @@ GameObject:
   - component: {fileID: 3070847572354132581}
   - component: {fileID: 1209555577784599741}
   - component: {fileID: 8184347345850507801}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8228,7 +8193,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8649687180669092956}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -8307,15 +8271,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -8344,7 +8310,7 @@ GameObject:
   - component: {fileID: 7187560740711877247}
   - component: {fileID: 6875095982233849166}
   - component: {fileID: 2352838400868888406}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Handle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8364,7 +8330,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6399358420292694416}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0.81333363}
@@ -8419,7 +8384,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3996917357629721336}
   - component: {fileID: 7869619007177056972}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Header
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8441,7 +8406,6 @@ RectTransform:
   - {fileID: 1384351808776658777}
   - {fileID: 1245688031839976986}
   m_Father: {fileID: 5313518644497656708}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -8467,7 +8431,7 @@ GameObject:
   - component: {fileID: 9083108995704928247}
   - component: {fileID: 5315463561814390294}
   - component: {fileID: 3122888566992620324}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Play Song Options
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8495,7 +8459,6 @@ RectTransform:
   - {fileID: 5580719695671013516}
   - {fileID: 9043960349152905975}
   m_Father: {fileID: 7746659389625805811}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
@@ -8523,6 +8486,14 @@ MonoBehaviour:
   - {fileID: 2961865163401781778}
   - {fileID: 9144390062180901516}
   - {fileID: 3164329200443091765}
+  _gameTypeHighlighters:
+  - {fileID: 191462003048968262}
+  - {fileID: 4594897962256552335}
+  - {fileID: 5778552704319911057}
+  - {fileID: 1576242669184200902}
+  - {fileID: 7222891742975968559}
+  - {fileID: 7284609478146830940}
+  - {fileID: 1347288086656167460}
   _gameTypeTexts:
   - {fileID: 7247716530746262050}
   - {fileID: 2615695662832396925}
@@ -8537,6 +8508,11 @@ MonoBehaviour:
   - {fileID: 3082865459657707216}
   - {fileID: 8524285346687316538}
   - {fileID: 130662936739838249}
+  _typeDifficultyHighlighters:
+  - {fileID: 4859488025362953468}
+  - {fileID: 4650778998304949344}
+  - {fileID: 7752220086607204482}
+  - {fileID: 1573276036564439974}
   _typeDifficultyTexts:
   - {fileID: 5283375415504357303}
   - {fileID: 3038749780098167019}
@@ -8567,7 +8543,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6399358420292694416}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Sliding Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8588,7 +8564,6 @@ RectTransform:
   m_Children:
   - {fileID: 7187560740711877247}
   m_Father: {fileID: 5374600977997398056}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -8608,7 +8583,7 @@ GameObject:
   - component: {fileID: 4462427479744788485}
   - component: {fileID: 5348936167883098821}
   - component: {fileID: 7752220086607204482}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Hard Mode Toggle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8629,7 +8604,6 @@ RectTransform:
   m_Children:
   - {fileID: 4644095089458738761}
   m_Father: {fileID: 3435566358303740280}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -8772,7 +8746,7 @@ GameObject:
   - component: {fileID: 6178936336560861147}
   - component: {fileID: 6172138319103102031}
   - component: {fileID: 2615695662832396925}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Jabs Only Mode Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8792,7 +8766,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8466725643891127679}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -8871,15 +8844,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 0
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -8911,7 +8886,7 @@ GameObject:
   - component: {fileID: 2642430689312714272}
   - component: {fileID: 8179827724842089543}
   - component: {fileID: 6714315563912486341}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Cancel Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8931,7 +8906,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 9083108995704928247}
-  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
@@ -9072,7 +9046,7 @@ GameObject:
   - component: {fileID: 7101372371126545462}
   - component: {fileID: 5413291784724764923}
   - component: {fileID: 985617398748738706}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: No Obstacles Mode Checkmark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9092,7 +9066,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4249227906530237405}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -9148,7 +9121,7 @@ GameObject:
   - component: {fileID: 4939305175558598721}
   - component: {fileID: 6486962243270242080}
   - component: {fileID: 7931228839011397152}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Item Checkmark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9168,7 +9141,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1783739896559164221}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
@@ -9225,7 +9197,7 @@ GameObject:
   - component: {fileID: 8072389068985168402}
   - component: {fileID: 5135287696771307549}
   - component: {fileID: 1055404130764612691}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Dropdown Template
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9248,7 +9220,6 @@ RectTransform:
   - {fileID: 7551919934825610948}
   - {fileID: 9086728140993255747}
   m_Father: {fileID: 5765406519056740939}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
@@ -9339,7 +9310,7 @@ GameObject:
   - component: {fileID: 3577644116037417781}
   - component: {fileID: 4302666231407549471}
   - component: {fileID: 9047155776630783179}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: BeatSaver Songs Scroller
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9360,7 +9331,6 @@ RectTransform:
   m_Children:
   - {fileID: 5313518645977087390}
   m_Father: {fileID: 4050134947087596576}
-  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -9594,7 +9564,7 @@ GameObject:
   - component: {fileID: 5313518644302306155}
   - component: {fileID: 5313518644302306149}
   - component: {fileID: 5325888693104466465}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Loading Display
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9616,7 +9586,6 @@ RectTransform:
   - {fileID: 3760678521695620811}
   - {fileID: 3760678522069963832}
   m_Father: {fileID: 4050134947087596576}
-  m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -9656,7 +9625,7 @@ GameObject:
   - component: {fileID: 5313518644306286485}
   - component: {fileID: 4477981432332760724}
   - component: {fileID: 5556266127951581479}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Songs In Playlist Cards
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9677,7 +9646,6 @@ RectTransform:
   m_Children:
   - {fileID: 3045023000984496354}
   m_Father: {fileID: 3760678522341793352}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -9743,7 +9711,7 @@ GameObject:
   - component: {fileID: 5313518644348002397}
   - component: {fileID: 5313518644348002399}
   - component: {fileID: 5313518644348002396}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Length In Minutes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9763,7 +9731,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5313518645633239239}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
@@ -9842,15 +9809,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -9877,7 +9846,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5313518644377427820}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Song Author Info Card
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9899,7 +9868,6 @@ RectTransform:
   - {fileID: 5313518644776076621}
   - {fileID: 5313518644596948770}
   m_Father: {fileID: 5313518645219912405}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -9917,7 +9885,7 @@ GameObject:
   - component: {fileID: 5313518644412719371}
   - component: {fileID: 5313518644412719365}
   - component: {fileID: 5313518644412719370}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Song Name
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9937,7 +9905,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5313518644567958456}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
@@ -10016,15 +9983,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -10052,7 +10021,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5313518644418983011}
   - component: {fileID: 5313518644418983010}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Text Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10075,7 +10044,6 @@ RectTransform:
   - {fileID: 5313518645425960157}
   - {fileID: 5313518645423679823}
   m_Father: {fileID: 5313518645997525569}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -10107,7 +10075,7 @@ GameObject:
   - component: {fileID: 5313518644497656708}
   - component: {fileID: 5313518644497656705}
   - component: {fileID: 5313518644497656710}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Song Infos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10121,8 +10089,8 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5313518644497656709}
-  m_LocalRotation: {x: 0, y: 0.2164396, z: 0, w: 0.97629607}
-  m_LocalPosition: {x: 0, y: 0, z: -95}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -10130,8 +10098,7 @@ RectTransform:
   - {fileID: 4753082799715900432}
   - {fileID: 2758414718695650345}
   m_Father: {fileID: 5313518644875552462}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 25, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 425, y: 30}
@@ -10184,7 +10151,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5313518644567958456}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Song Name Info Card
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10205,7 +10172,6 @@ RectTransform:
   m_Children:
   - {fileID: 5313518644412719371}
   m_Father: {fileID: 5313518645219912405}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -10223,7 +10189,7 @@ GameObject:
   - component: {fileID: 5313518644592607165}
   - component: {fileID: 5313518644592607167}
   - component: {fileID: 5313518644592607164}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Song Name Field
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10243,7 +10209,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5313518645219912405}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -10325,15 +10290,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -10362,7 +10329,7 @@ GameObject:
   - component: {fileID: 5313518644596948770}
   - component: {fileID: 5313518644596948796}
   - component: {fileID: 5313518644596948797}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Song Author Field
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10382,7 +10349,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5313518644377427820}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
@@ -10461,15 +10427,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -10498,7 +10466,7 @@ GameObject:
   - component: {fileID: 5313518644616898078}
   - component: {fileID: 5313518644616898072}
   - component: {fileID: 5313518644616898073}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10518,7 +10486,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5313518645024231093}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -10597,15 +10564,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -10634,7 +10603,7 @@ GameObject:
   - component: {fileID: 5313518644776076621}
   - component: {fileID: 5313518644776076623}
   - component: {fileID: 5313518644776076620}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Song Author
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10654,7 +10623,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5313518644377427820}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
@@ -10733,15 +10701,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -10770,7 +10740,7 @@ GameObject:
   - component: {fileID: 5313518644795175393}
   - component: {fileID: 5313518644795175395}
   - component: {fileID: 5313518644795175392}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Level Author Field
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10790,7 +10760,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5313518645125184168}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
@@ -10869,15 +10838,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -10904,7 +10875,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5313518644875552462}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Horizontal Layout
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10927,7 +10898,6 @@ RectTransform:
   - {fileID: 5313518644497656708}
   - {fileID: 3760678521382343156}
   m_Father: {fileID: 5313518646000652804}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -10945,7 +10915,7 @@ GameObject:
   - component: {fileID: 5313518645024231093}
   - component: {fileID: 5313518645024231095}
   - component: {fileID: 5313518645024231092}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Title Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10966,7 +10936,6 @@ RectTransform:
   m_Children:
   - {fileID: 5313518644616898078}
   m_Father: {fileID: 5313518646000652804}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -11022,7 +10991,7 @@ GameObject:
   - component: {fileID: 5313518645104041752}
   - component: {fileID: 715156306}
   - component: {fileID: 715156305}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Options
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11046,7 +11015,6 @@ RectTransform:
   - {fileID: 840485177}
   - {fileID: 1912648714}
   m_Father: {fileID: 5313518646000652804}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 35, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -11100,7 +11068,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5313518645125184168}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Level Author Info Card
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11122,7 +11090,6 @@ RectTransform:
   - {fileID: 5313518646063275513}
   - {fileID: 5313518644795175393}
   m_Father: {fileID: 5313518645219912405}
-  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -11140,7 +11107,7 @@ GameObject:
   - component: {fileID: 5313518645219912405}
   - component: {fileID: 5313518645219912406}
   - component: {fileID: 5313518645219912407}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Info Cards
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11167,7 +11134,6 @@ RectTransform:
   - {fileID: 1016934433691122293}
   - {fileID: 2498514193417989148}
   m_Father: {fileID: 4753082799715900432}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -11223,7 +11189,7 @@ GameObject:
   - component: {fileID: 5313518645361873098}
   - component: {fileID: 5313518645361873092}
   - component: {fileID: 5313518645361873093}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Latest Songs Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11243,7 +11209,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5313518645520932557}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -11322,15 +11287,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -11359,7 +11326,7 @@ GameObject:
   - component: {fileID: 5313518645423679823}
   - component: {fileID: 5313518645423679817}
   - component: {fileID: 5313518645423679822}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11379,7 +11346,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5313518644418983011}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -11458,15 +11424,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 0
+  m_TextWrappingMode: 3
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 1
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -11496,7 +11464,7 @@ GameObject:
   - component: {fileID: 5313518645425960158}
   - component: {fileID: 5313518645425960159}
   - component: {fileID: 5313518645425960156}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Placeholder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11516,7 +11484,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5313518644418983011}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -11595,15 +11562,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 0
+  m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 1
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -11654,7 +11623,7 @@ GameObject:
   - component: {fileID: 5313518645520932559}
   - component: {fileID: 5313518645520932556}
   - component: {fileID: 1718317820}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Latest Songs Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11675,7 +11644,6 @@ RectTransform:
   m_Children:
   - {fileID: 5313518645361873098}
   m_Father: {fileID: 4050134947087596576}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -11802,7 +11770,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5313518645633239239}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Length Info Card
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11824,7 +11792,6 @@ RectTransform:
   - {fileID: 5313518644348002397}
   - {fileID: 5313518645843417568}
   m_Father: {fileID: 5313518645219912405}
-  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -11845,7 +11812,7 @@ GameObject:
   - component: {fileID: 5313518645677660713}
   - component: {fileID: 8709685457226524135}
   - component: {fileID: 963321806}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Download Song Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11866,7 +11833,6 @@ RectTransform:
   m_Children:
   - {fileID: 3760678522632257190}
   m_Father: {fileID: 4753082799715900432}
-  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -12015,7 +11981,7 @@ GameObject:
   - component: {fileID: 5313518645843417568}
   - component: {fileID: 5313518645843417570}
   - component: {fileID: 5313518645843417571}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Length In Minutes Field
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12035,7 +12001,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5313518645633239239}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
@@ -12114,15 +12079,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -12149,7 +12116,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5313518645977087390}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: temp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12169,7 +12136,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5313518644250520183}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -12189,7 +12155,7 @@ GameObject:
   - component: {fileID: 5313518645997525568}
   - component: {fileID: 8115997338121438005}
   - component: {fileID: 4334979362859277983}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Search InputField (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12210,7 +12176,6 @@ RectTransform:
   m_Children:
   - {fileID: 5313518644418983011}
   m_Father: {fileID: 4050134947087596576}
-  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -12319,10 +12284,13 @@ MonoBehaviour:
   m_GlobalFontAsset: {fileID: 11400000, guid: 1ddbc97ca8eda42749e1e1eb08026b42, type: 2}
   m_OnFocusSelectAll: 1
   m_ResetOnDeActivation: 1
+  m_KeepTextSelectionVisible: 0
   m_RestoreOriginalTextOnEscape: 1
   m_isRichTextEditingAllowed: 0
   m_LineLimit: 0
+  isAlert: 0
   m_InputValidator: {fileID: 0}
+  m_ShouldActivateOnSelect: 1
 --- !u!114 &8115997338121438005
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12381,7 +12349,8 @@ GameObject:
   - component: {fileID: 5197177870364612304}
   - component: {fileID: 5499376564910662142}
   - component: {fileID: 2309919182282995660}
-  m_Layer: 5
+  - component: {fileID: 5526833218531532171}
+  m_Layer: 3
   m_Name: Download Songs Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12406,7 +12375,6 @@ RectTransform:
   - {fileID: 1950472793941555517}
   - {fileID: 3760678521105926073}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -12471,7 +12439,9 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
+  m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
@@ -12630,6 +12600,44 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _settingName: AntiPiracyAcknowledgement
+--- !u!114 &5526833218531532171
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5313518646000652810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6edd96817051f649937a827ffbf7d64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _enableMipmapping: 0
+  _dynamicResolution: 0
+  _redrawResolutionThreshold: 2147483647
+  rectTransform: {fileID: 5313518646000652804}
+  maxTextureSize: 2048
+  manualRedraw: 0
+  renderInterval: 1
+  renderIntervalFrameOffset: 0
+  expensive: 0
+  layer: 5
+  opacity: 1
+  shape: 1
+  curveRadius: 3.088428
+  overlapMask: 0
+  overlayType: 1
+  _overlayEnabled: 0
+  _updateRequested: 0
+  _cameraPositionOffset: {x: 0, y: 0, z: 0}
+  _nearClipPlane: 0.99
+  _farClipPlane: 1.01
+  _meshRendererOffsetPosition: {x: 0, y: 0, z: 0}
+  _meshRendererRotation: {x: 0, y: 0, z: 0}
+  _renderingCamera: {fileID: 0}
+  _imposterMeshRenderer: {fileID: 0}
+  _showCameraInEditor: 0
+  _showMeshRendererInEditor: 0
 --- !u!1 &5313518646063275518
 GameObject:
   m_ObjectHideFlags: 0
@@ -12641,7 +12649,7 @@ GameObject:
   - component: {fileID: 5313518646063275513}
   - component: {fileID: 5313518646063275515}
   - component: {fileID: 5313518646063275512}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Level Author
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12661,7 +12669,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5313518645125184168}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
@@ -12740,15 +12747,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -12776,7 +12785,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3997464148515656081}
   - component: {fileID: 9218539419296043689}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Item
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12799,7 +12808,6 @@ RectTransform:
   - {fileID: 6262644448294623545}
   - {fileID: 3891492205775856916}
   m_Father: {fileID: 1076997558601655557}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
@@ -12867,7 +12875,7 @@ GameObject:
   - component: {fileID: 6667055368171439216}
   - component: {fileID: 3800030045056847321}
   - component: {fileID: 5778552704319911057}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: One Hand Mode Toggle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12888,7 +12896,6 @@ RectTransform:
   m_Children:
   - {fileID: 1645336439492865472}
   m_Father: {fileID: 7410229232605048051}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -13032,7 +13039,7 @@ GameObject:
   - component: {fileID: 878829440}
   - component: {fileID: 878829439}
   - component: {fileID: 1246645937226107082}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Available Songs
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13069,7 +13076,6 @@ RectTransform:
   - {fileID: 2177177148572955238}
   - {fileID: 5313518644302306155}
   m_Father: {fileID: 5313518644875552462}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -13138,7 +13144,7 @@ GameObject:
   - component: {fileID: 6064200081777454149}
   - component: {fileID: 6305279635697236846}
   - component: {fileID: 7596657557776738784}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Viewport
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13159,7 +13165,6 @@ RectTransform:
   m_Children:
   - {fileID: 1076997558601655557}
   m_Father: {fileID: 8447225288700337173}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -13228,7 +13233,7 @@ GameObject:
   - component: {fileID: 4486300945759160671}
   - component: {fileID: 6859834344015367304}
   - component: {fileID: 518062200596337883}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Song Score
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13248,7 +13253,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1016934433691122293}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
@@ -13327,15 +13331,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -13365,7 +13371,7 @@ GameObject:
   - component: {fileID: 2063012420004219073}
   - component: {fileID: 3118851929779517599}
   - component: {fileID: 6047742014411516909}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Sort Mode Dropdown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13388,7 +13394,6 @@ RectTransform:
   - {fileID: 6876471648844027670}
   - {fileID: 8447225288700337173}
   m_Father: {fileID: 4050134947087596576}
-  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -13487,12 +13492,16 @@ MonoBehaviour:
     m_Options:
     - m_Text: 'Sort Mode: Latest'
       m_Image: {fileID: 0}
+      m_Color: {r: 1, g: 1, b: 1, a: 1}
     - m_Text: 'Sort Mode: Relevance'
       m_Image: {fileID: 0}
+      m_Color: {r: 1, g: 1, b: 1, a: 1}
     - m_Text: 'Sort Mode: Rating'
       m_Image: {fileID: 0}
+      m_Color: {r: 1, g: 1, b: 1, a: 1}
     - m_Text: 'Sort Mode: Curated'
       m_Image: {fileID: 0}
+      m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -13523,7 +13532,7 @@ GameObject:
   - component: {fileID: 2948777166329540215}
   - component: {fileID: 7673191411389114836}
   - component: {fileID: 8683233982145362812}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Play Song Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13543,7 +13552,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 9083108995704928247}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
@@ -13720,7 +13728,7 @@ GameObject:
   - component: {fileID: 1668705719873040031}
   - component: {fileID: 1068166564280160608}
   - component: {fileID: 7231206527628195588}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Difficulties
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13740,7 +13748,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3488731814524894189}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -13821,15 +13828,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -13858,7 +13867,7 @@ GameObject:
   - component: {fileID: 962997985328873394}
   - component: {fileID: 2579630205042116691}
   - component: {fileID: 6976595817433065321}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Leg Day Mode Checkmark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13878,7 +13887,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5599179054135330085}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -13932,7 +13940,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8466725643891127679}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Map Types Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13959,7 +13967,6 @@ RectTransform:
   - {fileID: 1357291678247453955}
   - {fileID: 2006777185646927802}
   m_Father: {fileID: 9083108995704928247}
-  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -13977,7 +13984,7 @@ GameObject:
   - component: {fileID: 8880458183757968254}
   - component: {fileID: 1110278856058409668}
   - component: {fileID: 5626766893080631032}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Page Darkener
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13997,7 +14004,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4050134947087596576}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -14066,7 +14072,7 @@ GameObject:
   - component: {fileID: 1467724967975467794}
   - component: {fileID: 2506627184896251386}
   - component: {fileID: 4282308264473039481}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Search Button Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14086,7 +14092,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2923812840924938499}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -14165,15 +14170,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -14202,7 +14209,7 @@ GameObject:
   - component: {fileID: 2262346348663792265}
   - component: {fileID: 488029763054068567}
   - component: {fileID: 7941540900217006010}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Expert Mode Checkmark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14222,7 +14229,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8374793780979616075}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -14276,7 +14282,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1016934433691122293}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Song Score Info Card
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14298,7 +14304,6 @@ RectTransform:
   - {fileID: 4486300945759160671}
   - {fileID: 857452722445892062}
   m_Father: {fileID: 5313518645219912405}
-  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -14316,7 +14321,7 @@ GameObject:
   - component: {fileID: 9086728140993255747}
   - component: {fileID: 1214477519798500606}
   - component: {fileID: 657923353415844203}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14336,7 +14341,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4262568904530129492}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -14392,7 +14396,7 @@ GameObject:
   - component: {fileID: 1641127753101060277}
   - component: {fileID: 6395685216113658979}
   - component: {fileID: 6694862691785064205}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Upload Date Field
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14412,7 +14416,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2498514193417989148}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
@@ -14491,15 +14494,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -14531,7 +14536,7 @@ GameObject:
   - component: {fileID: 3702625436412728673}
   - component: {fileID: 3544426541728169431}
   - component: {fileID: 1718317822}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Down Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14553,7 +14558,6 @@ RectTransform:
   - {fileID: 4315274119326006363}
   - {fileID: 8156773538932940861}
   m_Father: {fileID: 4050134947087596576}
-  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -14718,7 +14722,7 @@ GameObject:
   - component: {fileID: 857452722445892062}
   - component: {fileID: 5995335374883890865}
   - component: {fileID: 8706563971994218944}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Song Score Field
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14738,7 +14742,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1016934433691122293}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
@@ -14817,15 +14820,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -14855,7 +14860,7 @@ GameObject:
   - component: {fileID: 4461086471443360425}
   - component: {fileID: 986028775178572832}
   - component: {fileID: 4788193335983606574}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Available Songs Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14875,7 +14880,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3996917357629721336}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -14974,15 +14978,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 0
+  m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 1
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -15011,7 +15017,7 @@ GameObject:
   - component: {fileID: 7906247690419894812}
   - component: {fileID: 5885358812227691836}
   - component: {fileID: 5370807253275285994}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15031,7 +15037,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8447225288700337173}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -15089,7 +15094,7 @@ GameObject:
   - component: {fileID: 1189244834668529336}
   - component: {fileID: 1509277371415606293}
   - component: {fileID: 7284609478146830940}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Leg Day Mode Toggle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15110,7 +15115,6 @@ RectTransform:
   m_Children:
   - {fileID: 962997985328873394}
   m_Father: {fileID: 7410229232605048051}
-  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -15256,7 +15260,7 @@ GameObject:
   - component: {fileID: 4748720649881056698}
   - component: {fileID: 6558489130727398136}
   - component: {fileID: 9047155777136496171}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Up Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15278,7 +15282,6 @@ RectTransform:
   - {fileID: 1170129450424270898}
   - {fileID: 967328793}
   m_Father: {fileID: 4050134947087596576}
-  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -15441,7 +15444,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9213862077521001465}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Sliding Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15462,7 +15465,6 @@ RectTransform:
   m_Children:
   - {fileID: 3825109910974462810}
   m_Father: {fileID: 2156455864679389358}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -15480,7 +15482,7 @@ GameObject:
   - component: {fileID: 3984407323820960943}
   - component: {fileID: 5040713783143354364}
   - component: {fileID: 6594045145818086904}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Loading Bar Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15501,7 +15503,6 @@ RectTransform:
   m_Children:
   - {fileID: 6351834691650400622}
   m_Father: {fileID: 3760678521695620811}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
@@ -15557,7 +15558,7 @@ GameObject:
   - component: {fileID: 439929887367669163}
   - component: {fileID: 7662031240224829473}
   - component: {fileID: 743005392817217128}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Item Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15577,7 +15578,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1783739896559164221}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -15656,15 +15656,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -15693,7 +15695,7 @@ GameObject:
   - component: {fileID: 939214199075912383}
   - component: {fileID: 4751716687806118600}
   - component: {fileID: 3038749780098167019}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Normal Mode Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15713,7 +15715,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7750979372735220571}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -15792,15 +15793,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 0
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -15829,7 +15832,7 @@ GameObject:
   - component: {fileID: 7807594404982621340}
   - component: {fileID: 4851545864505632392}
   - component: {fileID: 7247716530746262050}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Normal Mode Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15849,7 +15852,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8466725643891127679}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -15928,15 +15930,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 0
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -15965,7 +15969,7 @@ GameObject:
   - component: {fileID: 675068089517833606}
   - component: {fileID: 780168952223773464}
   - component: {fileID: 3829582065370740470}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Songs In Playlist Cards Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15985,7 +15989,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3760678521382343156}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -16044,7 +16047,7 @@ GameObject:
   - component: {fileID: 89741789343830496}
   - component: {fileID: 8477482755335796892}
   - component: {fileID: 729080907089846346}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Delete Song Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -16065,7 +16068,6 @@ RectTransform:
   m_Children:
   - {fileID: 5551867559896995258}
   m_Father: {fileID: 4753082799715900432}
-  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -16214,7 +16216,7 @@ GameObject:
   - component: {fileID: 1357291678247453955}
   - component: {fileID: 3307789342150870796}
   - component: {fileID: 4089593255370886627}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Leg Day Mode Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -16234,7 +16236,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8466725643891127679}
-  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -16313,15 +16314,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 0
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -16352,7 +16355,7 @@ GameObject:
   - component: {fileID: 8061631206760559}
   - component: {fileID: 3227709924089229436}
   - component: {fileID: 1347288086656167460}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: No Obstacles Mode Toggle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -16373,7 +16376,6 @@ RectTransform:
   m_Children:
   - {fileID: 7101372371126545462}
   m_Father: {fileID: 7410229232605048051}
-  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -16514,7 +16516,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2661059033909239670}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Content
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -16535,7 +16537,6 @@ RectTransform:
   m_Children:
   - {fileID: 1783739896559164221}
   m_Father: {fileID: 9171107880272082753}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -16554,7 +16555,7 @@ GameObject:
   - component: {fileID: 9123961472345797197}
   - component: {fileID: 1470803937229593626}
   - component: {fileID: 7841602837798320369}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -16574,7 +16575,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5313518644418983011}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -16688,7 +16688,7 @@ GameObject:
   - component: {fileID: 1108393676988105555}
   - component: {fileID: 4614452056790242259}
   - component: {fileID: 7222891742975968559}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: "360\xB0 Mode Toggle"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -16709,7 +16709,6 @@ RectTransform:
   m_Children:
   - {fileID: 2294613881866780680}
   m_Father: {fileID: 7410229232605048051}
-  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -16854,7 +16853,7 @@ GameObject:
   - component: {fileID: 4766402332658355995}
   - component: {fileID: 7555255536041751972}
   - component: {fileID: 4650778998304949344}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Normal Mode Toggle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -16875,7 +16874,6 @@ RectTransform:
   m_Children:
   - {fileID: 3417968345267240709}
   m_Father: {fileID: 3435566358303740280}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -17018,7 +17016,7 @@ GameObject:
   - component: {fileID: 4234971333619236817}
   - component: {fileID: 1951372943862293695}
   - component: {fileID: 1222135685735704726}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: "360\xB0 Mode Text (TMP)"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -17038,7 +17036,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8466725643891127679}
-  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -17117,15 +17114,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 0
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -17156,7 +17155,7 @@ GameObject:
   - component: {fileID: 5208649662849302998}
   - component: {fileID: 805952808449818882}
   - component: {fileID: 3142747365714109760}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Previous Page Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -17177,7 +17176,6 @@ RectTransform:
   m_Children:
   - {fileID: 1467724967975467794}
   m_Father: {fileID: 5313518645104041752}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
@@ -17308,7 +17306,7 @@ GameObject:
   - component: {fileID: 3980037253920253178}
   - component: {fileID: 4916221644293710772}
   - component: {fileID: 4859488025362953468}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Easy Mode Toggle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -17329,7 +17327,6 @@ RectTransform:
   m_Children:
   - {fileID: 6172484493924770803}
   m_Father: {fileID: 3435566358303740280}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -17473,7 +17470,7 @@ GameObject:
   - component: {fileID: 2503901431585727975}
   - component: {fileID: 104016225895703068}
   - component: {fileID: 876902755189609303}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Scrollbar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -17494,7 +17491,6 @@ RectTransform:
   m_Children:
   - {fileID: 9213862077521001465}
   m_Father: {fileID: 4050134947087596576}
-  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -17599,7 +17595,7 @@ GameObject:
   - component: {fileID: 8156773538932940861}
   - component: {fileID: 8870359397527505670}
   - component: {fileID: 5262462633359309861}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -17619,7 +17615,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5976851851098236149}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 180}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -17676,7 +17671,7 @@ GameObject:
   - component: {fileID: 3738456282308571776}
   - component: {fileID: 3949597013303307561}
   - component: {fileID: 8749754246950679294}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Viewport
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -17697,7 +17692,6 @@ RectTransform:
   m_Children:
   - {fileID: 2661059033909239670}
   m_Father: {fileID: 4262568904530129492}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -17766,7 +17760,7 @@ GameObject:
   - component: {fileID: 4685429203897985370}
   - component: {fileID: 2790688760324801716}
   - component: {fileID: 2546387234559047419}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Item Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -17786,7 +17780,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3997464148515656081}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -17843,7 +17836,7 @@ GameObject:
   - component: {fileID: 7298931010185116774}
   - component: {fileID: 2219579038057597830}
   - component: {fileID: 3440030428784173423}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Bottom Divider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -17863,7 +17856,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4753082799715900432}
-  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
@@ -17938,7 +17930,7 @@ GameObject:
   m_Component:
   - component: {fileID: 625719133848935120}
   - component: {fileID: 231584304437077599}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Header
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -17960,7 +17952,6 @@ RectTransform:
   - {fileID: 8971580932223999761}
   - {fileID: 8599689096382881871}
   m_Father: {fileID: 3760678521382343156}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -17986,7 +17977,7 @@ GameObject:
   - component: {fileID: 3891492205775856916}
   - component: {fileID: 4884592417371248075}
   - component: {fileID: 4150942254842071518}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Item Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -18006,7 +17997,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3997464148515656081}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -18085,15 +18075,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -18122,7 +18114,7 @@ GameObject:
   - component: {fileID: 790144872217477087}
   - component: {fileID: 2967932260354798591}
   - component: {fileID: 1611735894352851585}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Clear Button Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -18142,7 +18134,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2177177148572955238}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -18198,7 +18189,7 @@ GameObject:
   - component: {fileID: 5216589104745968887}
   - component: {fileID: 6752240807489882668}
   - component: {fileID: 3508577047041870609}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Upload Date
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -18218,7 +18209,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2498514193417989148}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
@@ -18297,15 +18287,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -18334,7 +18326,7 @@ GameObject:
   - component: {fileID: 8256794882365916710}
   - component: {fileID: 7997347949477475708}
   - component: {fileID: 6602451742288002436}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Handle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -18354,7 +18346,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2394407381187854072}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0.81333363}
@@ -18410,7 +18401,7 @@ GameObject:
   - component: {fileID: 6692622038780854792}
   - component: {fileID: 9201863544057337059}
   - component: {fileID: 2080134157508211951}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Normal Mode Checkmark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -18430,7 +18421,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4057097828343978022}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -18486,7 +18476,7 @@ GameObject:
   - component: {fileID: 6312812402978007018}
   - component: {fileID: 7050050914738055000}
   - component: {fileID: 5664044534837724208}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: "90\xB0 Mode Text (TMP)"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -18506,7 +18496,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8466725643891127679}
-  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -18585,15 +18574,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 0
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -18623,7 +18614,7 @@ GameObject:
   - component: {fileID: 5752618531910383780}
   - component: {fileID: 247621430579919844}
   - component: {fileID: 8398118229199607781}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Scrollbar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -18644,7 +18635,6 @@ RectTransform:
   m_Children:
   - {fileID: 6399358420292694416}
   m_Father: {fileID: 8447225288700337173}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -18748,7 +18738,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7410229232605048051}
   - component: {fileID: 7163768149984887219}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Map Types
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -18775,7 +18765,6 @@ RectTransform:
   - {fileID: 5599179054135330085}
   - {fileID: 4249227906530237405}
   m_Father: {fileID: 9083108995704928247}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -18807,7 +18796,7 @@ GameObject:
   - component: {fileID: 7262553484774818817}
   - component: {fileID: 5713199679466487710}
   - component: {fileID: 1996742591588524789}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Dropdown Template
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -18830,7 +18819,6 @@ RectTransform:
   - {fileID: 5374600977997398056}
   - {fileID: 7906247690419894812}
   m_Father: {fileID: 8649687180669092956}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
@@ -18916,7 +18904,7 @@ GameObject:
   - component: {fileID: 2844890449571993464}
   - component: {fileID: 8261729420695363234}
   - component: {fileID: 5283375415504357303}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Easy Mode Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -18936,7 +18924,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7750979372735220571}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -19015,15 +19002,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 0
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -19052,7 +19041,7 @@ GameObject:
   - component: {fileID: 7746659389625805811}
   - component: {fileID: 8006662374975030217}
   - component: {fileID: 3383742124483549462}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Song Infos Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19073,7 +19062,6 @@ RectTransform:
   m_Children:
   - {fileID: 9083108995704928247}
   m_Father: {fileID: 2758414718695650345}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 25, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -19131,7 +19119,7 @@ GameObject:
   - component: {fileID: 5040283935463026104}
   - component: {fileID: 6697863046181655486}
   - component: {fileID: 191462003048968262}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Normal Mode Toggle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19152,7 +19140,6 @@ RectTransform:
   m_Children:
   - {fileID: 6692622038780854792}
   m_Father: {fileID: 7410229232605048051}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -19296,7 +19283,7 @@ GameObject:
   - component: {fileID: 9047155775932938440}
   - component: {fileID: 9047155775932938447}
   - component: {fileID: 9047155775932938446}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19316,7 +19303,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4050134947087596576}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -19392,7 +19378,7 @@ GameObject:
   - component: {fileID: 2006777185646927802}
   - component: {fileID: 655126772818671728}
   - component: {fileID: 7436453882993753659}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: No Obstacles Mode Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19412,7 +19398,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8466725643891127679}
-  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -19493,15 +19478,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 0
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -19530,7 +19517,7 @@ GameObject:
   - component: {fileID: 4535045891504032875}
   - component: {fileID: 7420520855787314106}
   - component: {fileID: 6519425200697310109}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Hard Mode Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19550,7 +19537,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7750979372735220571}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -19629,15 +19615,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 0
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -19666,7 +19654,7 @@ GameObject:
   - component: {fileID: 2294613881866780680}
   - component: {fileID: 1409393417598620165}
   - component: {fileID: 5432188850635772510}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: "360\xB0 Mode Checkmark"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19686,7 +19674,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 850542711300408422}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -19742,7 +19729,7 @@ GameObject:
   - component: {fileID: 7047965385918594293}
   - component: {fileID: 1469502308238531711}
   - component: {fileID: 522659306662152964}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19762,7 +19749,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6106950847158632670}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -19841,15 +19827,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0

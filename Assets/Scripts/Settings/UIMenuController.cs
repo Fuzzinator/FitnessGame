@@ -13,6 +13,9 @@ public class UIMenuController : MonoBehaviour
     [SerializeField]
     protected CanvasGroup[] _settingsPages;
 
+    [SerializeField]
+    protected TriggerableOVRCanvasOverlay _overlayCanvas;
+
     protected CanvasGroup _activePage;
 
     protected bool _initialized = false;
@@ -103,6 +106,8 @@ public class UIMenuController : MonoBehaviour
             return;
         }
         _toggles[pageNumber].SetIsOnWithoutNotify(true);
+
+        _overlayCanvas.RequestFrameUpdate();
     }
 
 

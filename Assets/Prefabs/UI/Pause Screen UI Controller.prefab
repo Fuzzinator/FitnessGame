@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7913740318022830394}
   - component: {fileID: 5219027447890505738}
   - component: {fileID: 4032101952773080578}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Restart Workout Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -35,7 +35,6 @@ RectTransform:
   m_Children:
   - {fileID: 223363862891887807}
   m_Father: {fileID: 4032101952938405086}
-  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
@@ -181,7 +180,7 @@ GameObject:
   - component: {fileID: 8653108171155363871}
   - component: {fileID: 966037660048627114}
   - component: {fileID: 7360968887677429967}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -201,7 +200,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3934400738466635471}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -280,15 +278,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -317,7 +317,7 @@ GameObject:
   - component: {fileID: 6606821100807252090}
   - component: {fileID: 3997855837876356559}
   - component: {fileID: 3286327624649159777}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Gear Icon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -337,7 +337,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4196593715089773079}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -396,7 +395,7 @@ GameObject:
   - component: {fileID: 2497602717990334442}
   - component: {fileID: 8886536664878607650}
   - component: {fileID: 7057337037356032783}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Restart Song Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -417,7 +416,6 @@ RectTransform:
   m_Children:
   - {fileID: 8653108171155363871}
   m_Father: {fileID: 4032101952938405086}
-  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
@@ -565,7 +563,7 @@ GameObject:
   - component: {fileID: 8511887176986191923}
   - component: {fileID: 5226742476066775096}
   - component: {fileID: 2184706660842469291}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Settings Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -586,7 +584,6 @@ RectTransform:
   m_Children:
   - {fileID: 6606821100807252090}
   m_Father: {fileID: 4032101951865575332}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
@@ -718,7 +715,7 @@ GameObject:
   - component: {fileID: 5260445047261164450}
   - component: {fileID: 4159333371981357001}
   - component: {fileID: 7275679176011965303}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Skip Song Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -739,7 +736,6 @@ RectTransform:
   m_Children:
   - {fileID: 7036954908741297069}
   m_Father: {fileID: 4032101952938405086}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -887,7 +883,8 @@ GameObject:
   - component: {fileID: 4032101951194455842}
   - component: {fileID: 4032101951194455841}
   - component: {fileID: 5101277001745877379}
-  m_Layer: 5
+  - component: {fileID: 6766059087870263860}
+  m_Layer: 3
   m_Name: Pause Screen Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -908,7 +905,6 @@ RectTransform:
   m_Children:
   - {fileID: 4032101951865575332}
   m_Father: {fileID: 8359378594685910287}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -932,7 +928,9 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
+  m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 1
   m_TargetDisplay: 0
@@ -995,6 +993,44 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RaycastTriggerInteraction: 1
+--- !u!114 &6766059087870263860
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4032101951194455847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6edd96817051f649937a827ffbf7d64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _enableMipmapping: 0
+  _dynamicResolution: 0
+  _redrawResolutionThreshold: 2147483647
+  rectTransform: {fileID: 4032101951194455840}
+  maxTextureSize: 2048
+  manualRedraw: 0
+  renderInterval: 1
+  renderIntervalFrameOffset: 0
+  expensive: 0
+  layer: 5
+  opacity: 2
+  shape: 1
+  curveRadius: 3.088428
+  overlapMask: 0
+  overlayType: 1
+  _overlayEnabled: 0
+  _updateRequested: 0
+  _cameraPositionOffset: {x: 0, y: 0, z: 0}
+  _nearClipPlane: 0.99
+  _farClipPlane: 1.01
+  _meshRendererOffsetPosition: {x: 0, y: 0, z: 0}
+  _meshRendererRotation: {x: 0, y: 0, z: 0}
+  _renderingCamera: {fileID: 0}
+  _imposterMeshRenderer: {fileID: 0}
+  _showCameraInEditor: 0
+  _showMeshRendererInEditor: 0
 --- !u!1 &4032101951492168569
 GameObject:
   m_ObjectHideFlags: 0
@@ -1009,7 +1045,7 @@ GameObject:
   - component: {fileID: 4032101951492168571}
   - component: {fileID: 6215368303158277268}
   - component: {fileID: 4032101952773080577}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Main Menu Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1030,7 +1066,6 @@ RectTransform:
   m_Children:
   - {fileID: 4032101951668380432}
   m_Father: {fileID: 4032101952938405086}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -1176,7 +1211,7 @@ GameObject:
   - component: {fileID: 4032101951668380432}
   - component: {fileID: 4032101951668380434}
   - component: {fileID: 4032101951668380433}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1196,7 +1231,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4032101951492168570}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -1275,15 +1309,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -1312,7 +1348,7 @@ GameObject:
   - component: {fileID: 4032101951865575332}
   - component: {fileID: 4032101951865575335}
   - component: {fileID: 4032101951865575334}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1335,7 +1371,6 @@ RectTransform:
   - {fileID: 4032101952938405086}
   - {fileID: 4196593715089773079}
   m_Father: {fileID: 4032101951194455840}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -1394,7 +1429,7 @@ GameObject:
   - component: {fileID: 4032101952036123762}
   - component: {fileID: 5854393589082713322}
   - component: {fileID: 4032101952773080579}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Resume Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1415,7 +1450,6 @@ RectTransform:
   m_Children:
   - {fileID: 4032101952230356423}
   m_Father: {fileID: 4032101952938405086}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -1561,7 +1595,7 @@ GameObject:
   - component: {fileID: 4032101952230356423}
   - component: {fileID: 4032101952230356417}
   - component: {fileID: 4032101952230356416}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1581,7 +1615,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4032101952036123761}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -1660,15 +1693,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -1697,7 +1732,7 @@ GameObject:
   - component: {fileID: 4032101952885464736}
   - component: {fileID: 4032101952885464738}
   - component: {fileID: 4032101952885464737}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1717,7 +1752,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4032101951865575332}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -1805,15 +1839,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -1840,7 +1876,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4032101952938405086}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Buttons
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1865,7 +1901,6 @@ RectTransform:
   - {fileID: 3934400738466635471}
   - {fileID: 5354820305723118778}
   m_Father: {fileID: 4032101951865575332}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
@@ -1883,7 +1918,7 @@ GameObject:
   - component: {fileID: 223363862891887807}
   - component: {fileID: 612061898020529815}
   - component: {fileID: 7144889747377395201}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1903,7 +1938,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5354820305723118778}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -1982,15 +2016,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -2032,6 +2068,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6942267195493193756}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 3}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -2039,7 +2076,6 @@ Transform:
   m_Children:
   - {fileID: 4032101951194455840}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6940222843148010249
 MonoBehaviour:
@@ -2068,7 +2104,7 @@ GameObject:
   - component: {fileID: 7036954908741297069}
   - component: {fileID: 5041361377167698240}
   - component: {fileID: 8482084952645862467}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2088,7 +2124,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8195006174183885953}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -2167,15 +2202,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0

@@ -210,6 +210,9 @@ public class MainMenuUIController : BaseGameStateListener
         [SerializeField]
         private TrackedDeviceGraphicRaycaster _trackedDeviceRaycaster;
 
+        [SerializeField]
+        private TriggerableOVRCanvasOverlay _overlay;
+
         public bool IsValid => _group != null && _canvas != null;
         public Canvas TargetCanvas => _canvas;
         public void SetActive(float alpha, bool enabled)
@@ -219,6 +222,13 @@ public class MainMenuUIController : BaseGameStateListener
             _trackedDeviceRaycaster.enabled = enabled;
             _canvas.enabled = enabled;
             _group.gameObject.SetActive(enabled);
+
+            if (!enabled)
+            {
+                return;
+            }
+
+            _overlay.RequestFrameUpdate();
         }
 
         public void SetActive(float alpha, bool enabled, bool canvasEnabled)
@@ -228,15 +238,19 @@ public class MainMenuUIController : BaseGameStateListener
             _trackedDeviceRaycaster.enabled = enabled;
             _canvas.enabled = canvasEnabled;
             _group.gameObject.SetActive(canvasEnabled);
+
+            if (!enabled)
+            {
+                return;
+            }
+
+            _overlay.RequestFrameUpdate();
         }
 
 
         public static bool operator ==(MenuPage page1, MenuPage page2)
         {
-            return page1._canvas == page2._canvas &&
-                   page1._group == page2._group &&
-                   page1._graphicRaycaster == page2._graphicRaycaster &&
-                   page1._trackedDeviceRaycaster == page2._trackedDeviceRaycaster;
+            return Equals(page1.GetHashCode(), page2.GetHashCode());
         }
 
         public static bool operator !=(MenuPage page1, MenuPage page2)
